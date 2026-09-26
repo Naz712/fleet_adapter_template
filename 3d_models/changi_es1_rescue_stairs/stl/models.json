@@ -1,0 +1,226 @@
+{
+  "scale": "1:100",
+  "design": {
+    "stair_width": 1500.0,
+    "rise": 170.0,
+    "lower_treads": 18,
+    "mid_platform_len": 1000.0,
+    "going": 280.0,
+    "top_platform_len": 2800.0,
+    "top_platform_width": 3000.0,
+    "guard_top": 900.0,
+    "rail_height": 1050.0,
+    "panel_bottom": 300.0,
+    "beam_bottom": 750.0,
+    "soffit": 350.0,
+    "panel_thk": 100.0,
+    "beam_inset": 30.0,
+    "rail_dia": 50.0,
+    "post_dia": 50.0,
+    "post_spacing": 1200.0,
+    "hole_dia": 220.0,
+    "hole_pitch": 600.0,
+    "bumper": 120.0,
+    "stripe_width": 150.0,
+    "stripe_low": -120.0,
+    "stripe_high": 600.0,
+    "stripe_platform": 150.0,
+    "emboss": 5.0,
+    "label": "ES1",
+    "label_height": 450.0
+  },
+  "models": {
+    "ES1_stairs_3.2m_1-100": {
+      "platform_height_mm": 3230.0,
+      "mid_platform_height_mm": 3230.0,
+      "bottom_flight": {
+        "treads": 18,
+        "risers": 19,
+        "rise_mm": 170.0,
+        "going_mm": 280.0,
+        "pitch_deg": 31.3
+      },
+      "mid_platform_length_mm": 1000.0,
+      "upper_flight": {
+        "treads": 0,
+        "risers": 0,
+        "rise_mm": 0.0,
+        "going_mm": 280.0,
+        "pitch_deg": 0
+      },
+      "top_platform_mm": [
+        2800.0,
+        3000.0
+      ],
+      "overall_length_mm": 9240.0,
+      "model_size_mm": [
+        98.4,
+        44.8,
+        45.3
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "triangles": 5990
+    },
+    "ES1_stairs_3.2m_1-100_stair_only": {
+      "platform_height_mm": 3230.0,
+      "mid_platform_height_mm": 3230.0,
+      "bottom_flight": {
+        "treads": 18,
+        "risers": 19,
+        "rise_mm": 170.0,
+        "going_mm": 280.0,
+        "pitch_deg": 31.3
+      },
+      "mid_platform_length_mm": 1000.0,
+      "upper_flight": {
+        "treads": 0,
+        "risers": 0,
+        "rise_mm": 0.0,
+        "going_mm": 280.0,
+        "pitch_deg": 0
+      },
+      "top_platform_mm": [
+        2800.0,
+        3000.0
+      ],
+      "overall_length_mm": 9240.0,
+      "model_size_mm": [
+        92.4,
+        30.8,
+        43.3
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "triangles": 4610
+    },
+    "ES1_stairs_5.8m_1-100": {
+      "platform_height_mm": 5800.0,
+      "mid_platform_height_mm": 3230.0,
+      "bottom_flight": {
+        "treads": 18,
+        "risers": 19,
+        "rise_mm": 170.0,
+        "going_mm": 280.0,
+        "pitch_deg": 31.3
+      },
+      "mid_platform_length_mm": 1000.0,
+      "upper_flight": {
+        "treads": 14,
+        "risers": 15,
+        "rise_mm": 171.3,
+        "going_mm": 280.0,
+        "pitch_deg": 31.5
+      },
+      "top_platform_mm": [
+        2800.0,
+        3000.0
+      ],
+      "overall_length_mm": 13160.0,
+      "model_size_mm": [
+        137.6,
+        44.8,
+        71.0
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "triangles": 8774
+    },
+    "ES1_stairs_5.8m_1-100_stair_only": {
+      "platform_height_mm": 5800.0,
+      "mid_platform_height_mm": 3230.0,
+      "bottom_flight": {
+        "treads": 18,
+        "risers": 19,
+        "rise_mm": 170.0,
+        "going_mm": 280.0,
+        "pitch_deg": 31.3
+      },
+      "mid_platform_length_mm": 1000.0,
+      "upper_flight": {
+        "treads": 14,
+        "risers": 15,
+        "rise_mm": 171.3,
+        "going_mm": 280.0,
+        "pitch_deg": 31.5
+      },
+      "top_platform_mm": [
+        2800.0,
+        3000.0
+      ],
+      "overall_length_mm": 13160.0,
+      "model_size_mm": [
+        131.6,
+        30.8,
+        69.0
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "triangles": 6988
+    },
+    "ES1_stairs_8.4m_1-100": {
+      "platform_height_mm": 8400.0,
+      "mid_platform_height_mm": 3230.0,
+      "bottom_flight": {
+        "treads": 18,
+        "risers": 19,
+        "rise_mm": 170.0,
+        "going_mm": 280.0,
+        "pitch_deg": 31.3
+      },
+      "mid_platform_length_mm": 1000.0,
+      "upper_flight": {
+        "treads": 29,
+        "risers": 30,
+        "rise_mm": 172.3,
+        "going_mm": 280.0,
+        "pitch_deg": 31.6
+      },
+      "top_platform_mm": [
+        2800.0,
+        3000.0
+      ],
+      "overall_length_mm": 17360.0,
+      "model_size_mm": [
+        179.6,
+        44.8,
+        97.0
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "triangles": 10848
+    },
+    "ES1_stairs_8.4m_1-100_stair_only": {
+      "platform_height_mm": 8400.0,
+      "mid_platform_height_mm": 3230.0,
+      "bottom_flight": {
+        "treads": 18,
+        "risers": 19,
+        "rise_mm": 170.0,
+        "going_mm": 280.0,
+        "pitch_deg": 31.3
+      },
+      "mid_platform_length_mm": 1000.0,
+      "upper_flight": {
+        "treads": 29,
+        "risers": 30,
+        "rise_mm": 172.3,
+        "going_mm": 280.0,
+        "pitch_deg": 31.6
+      },
+      "top_platform_mm": [
+        2800.0,
+        3000.0
+      ],
+      "overall_length_mm": 17360.0,
+      "model_size_mm": [
+        173.6,
+        30.8,
+        95.0
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "triangles": 9036
+    }
+  }
+}
