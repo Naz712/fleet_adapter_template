@@ -43,6 +43,15 @@
     twoArmSlide: 0.4, // the front pin slides this far either way along the cradle, m
     twoArmRateDegPerM: 90, // how fast each arm drive turns, per metre travelled
     twoArmLock: null, // 'rear' or 'front': that arm's drive has seized (a failure)
+    // More sections: one half kept whole and the other split in two, for example.
+    sections: null, // section lengths rear to front; null = two sections of unitLength
+    mainJoint: 1, // the hinge that carries the seat, counted from the rear
+    extraHingeMass: 6, // kg of motor at each extra hinge
+    extraHingeRateDegPerM: null, // how fast the extra hinges bend; null = as fast as the main one
+    extraHingeSeized: false, // the extra hinges have seized straight (a failure)
+    mainHingeSeized: false, // the seat's hinge has seized straight, the others still work (a failure)
+    trailMode: 'nearest', // a split trailing half: 'settle' over edges, 'straight', or 'nearest' (whichever the hinges reach sooner)
+    hingeControl: 'lead', // several hinges: 'lead' (the seat's hinge leads, the others keep up), 'together' or 'own'
     // mastMode 'vArms': two arms rising from the hinge in a V, feet on the averaging post
     vArmFoot: 0.06, // each foot this far fore or aft of the hinge, m
     vArmLen: 0.5, // arm length, m
@@ -363,7 +372,7 @@
 
   function supportMargin(T, o, p) {
     const rho = o.sprocketRadius, tol = SETTLE;
-    const cs = unitContacts(T, p.R, p.J, rho, tol).concat(unitContacts(T, p.J, p.F, rho, tol));
+    const cs = contactsOf(T, p, rho, tol);
     if (!cs.length) return -1;
     const com = centreOfMass(o, p);
     let minX = Infinity, maxX = -Infinity;
@@ -372,14 +381,20 @@
   }
 
   function centreOfMass(o, p) {
-    const s = seatModel(o), m = s.mass, mu = o.unitMass, M = m + 2 * mu;
+    const s = seatModel(o), m = s.mass;
     const c = Math.cos(p.phi), sn = Math.sin(p.phi);
     const lx = p.P.x + s.com.u * c - s.com.v * sn, lz = p.P.z + s.com.u * sn + s.com.v * c;
-    return {
-      x: (m * lx + mu * (p.R.x + p.J.x) / 2 + mu * (p.J.x + p.F.x) / 2) / M,
-      z: (m * lz + mu * (p.R.z + p.J.z) / 2 + mu * (p.J.z + p.F.z) / 2) / M,
-      load: { x: lx, z: lz },
-    };
+    // the tracks weigh 2 x unitMass in all, shared out by section length
+    const us = unitsOf(p);
+    let Ltot = 0;
+    for (const [A, B] of us) Ltot += Math.hypot(B.x - A.x, B.z - A.z);
+    let M = m, sx = m * lx, sz = m * lz;
+    for (const [A, B] of us) {
+      const mk = (2 * o.unitMass * Math.hypot(B.x - A.x, B.z - A.z)) / Ltot;
+      M += mk; sx += (mk * (A.x + B.x)) / 2; sz += (mk * (A.z + B.z)) / 2;
+    }
+    if (p.pts) for (let j = 1; j < p.pts.length - 1; j++) if (j !== o.mainJoint) { M += o.extraHingeMass; sx += o.extraHingeMass * p.pts[j].x; sz += o.extraHingeMass * p.pts[j].z; }
+    return { x: sx / M, z: sz / M, load: { x: lx, z: lz } };
   }
 
   // Where the seat pivot sits. 'average': at the top of a post that leans with the
@@ -440,7 +455,7 @@
     const lo = rad(15), hi = rad(165); // each arm stays above its own unit
     const stepMax = prev ? rad(o.twoArmRateDegPerM) * ds : Infinity;
     const tip = (B, g) => ({ x: B.x + l * Math.cos(g), z: B.z + l * Math.sin(g) });
-    const wide = unitContacts(TR, p.R, p.J, rho, FALL).concat(unitContacts(TR, p.J, p.F, rho, FALL));
+    const wide = contactsOf(TR, p, rho, FALL);
     let cLo = null, cHi = null;
     for (const q of wide) { if (!cLo || q.x < cLo.x) cLo = q; if (!cHi || q.x > cHi.x) cHi = q; }
     const lean = (com) => (!cLo ? -1 : Math.min(Math.atan2(com.x - cLo.x, Math.max(1e-6, com.z - cLo.z)), Math.atan2(cHi.x - com.x, Math.max(1e-6, com.z - cHi.z))));
@@ -486,9 +501,9 @@
       let gap = Infinity;
       for (const q of placeSeat(o, p)) {
         gap = Math.min(gap, segTerrainDist(T, q.ax, q.az, q.bx, q.bz) - q.r);
-        for (const [A, B] of [[p.R, p.J], [p.J, p.F]]) gap = Math.min(gap, segSegDist(q.ax, q.az, q.bx, q.bz, A.x, A.z, B.x, B.z) - q.r - rho);
+        for (const [A, B] of unitsOf(p)) gap = Math.min(gap, segSegDist(q.ax, q.az, q.bx, q.bz, A.x, A.z, B.x, B.z) - q.r - rho);
       }
-      for (const [F, Tp, others] of [[cd.arms.B1, cd.arms.T1, v ? [[p.R, p.J], [p.J, p.F]] : [[p.J, p.F]]], [cd.arms.B2, cd.arms.T2, v ? [[p.R, p.J], [p.J, p.F]] : [[p.R, p.J]]]]) {
+      for (const [F, Tp, others] of [[cd.arms.B1, cd.arms.T1, v ? unitsOf(p) : [[p.J, p.F]]], [cd.arms.B2, cd.arms.T2, v ? unitsOf(p) : [[p.R, p.J]]]]) {
         gap = Math.min(gap, segTerrainDist(T, F.x, F.z, Tp.x, Tp.z) - 0.03);
         // an arm must not come down onto a track: stay 3 cm clear once past its own foot
         for (const [A, B] of others) {
@@ -514,7 +529,7 @@
       placePivot(o, p);
       return;
     }
-    const wide = unitContacts(TR, p.R, p.J, rho, FALL).concat(unitContacts(TR, p.J, p.F, rho, FALL));
+    const wide = contactsOf(TR, p, rho, FALL);
     let lo = null, hi = null;
     for (const c of wide) { if (!lo || c.x < lo.x) lo = c; if (!hi || c.x > hi.x) hi = c; }
     if (!lo) return;
@@ -537,7 +552,7 @@
       let gap = Infinity;
       for (const q of placeSeat(o, p)) {
         gap = Math.min(gap, segTerrainDist(T, q.ax, q.az, q.bx, q.bz) - q.r);
-        for (const [A, B] of [[p.R, p.J], [p.J, p.F]]) gap = Math.min(gap, segSegDist(q.ax, q.az, q.bx, q.bz, A.x, A.z, B.x, B.z) - q.r - rho);
+        for (const [A, B] of unitsOf(p)) gap = Math.min(gap, segSegDist(q.ax, q.az, q.bx, q.bz, A.x, A.z, B.x, B.z) - q.r - rho);
       }
       if (gap >= 0.03) { pick = c; break; }
     }
@@ -617,6 +632,319 @@
     return p;
   }
 
+  // ------------------------------------------------- more than two sections
+  // A chain of track sections joined by driven hinges, rear to front. The hinge that
+  // carries the seat (o.mainJoint) rides the hinge path like the two-section vehicle's
+  // hinge, and the same rules apply, section by section:
+  //  - each section settles onto the stairs about its inner end (the end nearer the
+  //    seat's hinge); an outer hinge stops at its limit and leaves its section hanging;
+  //  - working out from the seat's hinge, the first section reaching out past a
+  //    platform edge with its end in the air is folded down onto the next surface by
+  //    lifting its inner end as little as possible: the seat's hinge (keeping the far
+  //    track end on the stairs, as the two-section tent) or the hinge inside it, by
+  //    turning the section inside it up;
+  //  - once over an edge, the seat's hinge stays lifted with both track ends on the
+  //    stairs until the centre of mass is HOLD past the edge;
+  //  - a split half that is trailing (or not folding) either settles or is held in
+  //    line as one piece, whichever shape the hinges reach sooner (o.trailMode);
+  //  - every hinge bends only so fast; the seat's hinge goes as fast as it can and the
+  //    others keep up with it (o.hingeControl).
+  // With two sections this gives exactly the same poses as solveHinged.
+  function chainPoints(L, m, M, a) {
+    const N = L.length, P = new Array(N + 1);
+    P[m] = { x: M.x, z: M.z };
+    for (let k = m; k < N; k++) P[k + 1] = { x: P[k].x + L[k] * Math.cos(a[k]), z: P[k].z + L[k] * Math.sin(a[k]) };
+    for (let k = m - 1; k >= 0; k--) P[k] = { x: P[k + 1].x - L[k] * Math.cos(a[k]), z: P[k + 1].z - L[k] * Math.sin(a[k]) };
+    return P;
+  }
+  // section angles from the bends (bend j sits between sections j-1 and j) and the
+  // angle of the section just ahead of the seat's hinge
+  function chainAngles(betas, m, N, th) {
+    const a = new Array(N);
+    a[m] = th;
+    for (let k = m + 1; k < N; k++) a[k] = a[k - 1] + betas[k - 1];
+    for (let k = m - 1; k >= 0; k--) a[k] = a[k + 1] - betas[k];
+    return a;
+  }
+  function makeChainPose(o, M, a) {
+    const L = o.sections, m = o.mainJoint, N = L.length;
+    const pts = chainPoints(L, m, M, a);
+    const units = [], bends = [];
+    for (let k = 0; k < N; k++) units.push([pts[k], pts[k + 1]]);
+    for (let j = 1; j < N; j++) bends.push(a[j] - a[j - 1]);
+    return finishPose(o, { J: pts[m], R: pts[0], F: pts[N], a1: a[m - 1], a2: a[m], beta: a[m] - a[m - 1], units, pts, m, angles: a.slice(), bends });
+  }
+  const bendsOk = (o, a) => a.every((v, k) => k === 0 || Math.abs(v - a[k - 1]) <= rad(o.hingeLimitDeg) + 1e-9);
+  // Settle section k0 and the sections beyond it (away from the seat's hinge) onto the
+  // stairs, each about its inner end. An outer hinge bends down no further than its
+  // limit, leaving its section hanging.
+  function settle(T, o, M, a, k0) {
+    const L = o.sections, m = o.mainJoint, N = L.length, rho = o.sprocketRadius, lim = rad(o.hingeLimitDeg);
+    const aa = a.slice();
+    if (k0 >= m) {
+      let P = chainPoints(L, m, M, aa)[k0];
+      for (let k = k0; k < N; k++) {
+        let th = restAngle(T, P.x, P.z, L[k], rho);
+        if (k > m) th = Math.max(th, aa[k - 1] - lim);
+        aa[k] = th;
+        P = { x: P.x + L[k] * Math.cos(th), z: P.z + L[k] * Math.sin(th) };
+      }
+    } else {
+      let P = chainPoints(L, m, M, aa)[k0 + 1];
+      for (let k = k0; k >= 0; k--) {
+        let th = -restAngleBack(T, P.x, P.z, L[k], rho);
+        if (k < m - 1) th = Math.min(th, aa[k + 1] + lim);
+        aa[k] = th;
+        P = { x: P.x - L[k] * Math.cos(th), z: P.z - L[k] * Math.sin(th) };
+      }
+    }
+    return aa;
+  }
+  function drapeChain(T, o, M) {
+    const a = settle(T, o, M, new Array(o.sections.length).fill(0), o.mainJoint);
+    return settle(T, o, M, a, o.mainJoint - 1);
+  }
+  // With every bend fixed, the angles the chain can take at hinge height z without
+  // any section cutting into the stairs (an interval of the section-ahead angle).
+  function chainInterval(T, o, x, z, betas) {
+    const L = o.sections, m = o.mainJoint, N = L.length, rho = o.sprocketRadius, M = { x, z };
+    const angles = (th) => chainAngles(betas, m, N, th);
+    let lo = restAngle(T, x, z, L[m], rho);
+    let hi = -restAngleBack(T, x, z, L[m - 1], rho) + betas[m - 1];
+    if (hi < lo - 1e-9) return null;
+    // outer sections ahead clear more easily as the chain turns up, those behind as it turns down
+    const okFwd = (th) => { const a = angles(th), P = chainPoints(L, m, M, a); for (let k = m + 1; k < N; k++) if (a[k] < restAngle(T, P[k].x, P[k].z, L[k], rho) - 1e-7) return false; return true; };
+    const okBack = (th) => { const a = angles(th), P = chainPoints(L, m, M, a); for (let k = m - 2; k >= 0; k--) if (a[k] > -restAngleBack(T, P[k + 1].x, P[k + 1].z, L[k], rho) + 1e-7) return false; return true; };
+    if (m + 1 < N) {
+      if (!okFwd(hi)) return null;
+      if (!okFwd(lo)) { let u = lo, v = hi; for (let i = 0; i < 30; i++) { const w = (u + v) / 2; if (okFwd(w)) v = w; else u = w; } lo = v; }
+    }
+    if (m > 1) {
+      if (!okBack(lo)) return null;
+      if (!okBack(hi)) { let u = lo, v = hi; for (let i = 0; i < 30; i++) { const w = (u + v) / 2; if (okBack(w)) u = w; else v = w; } hi = u; }
+    }
+    return hi >= lo - 1e-9 ? { lo, hi: Math.max(lo, hi), angles } : null;
+  }
+  // Chain with fixed bends: lift the seat's hinge from z0 until it fits, then let it
+  // settle onto whichever side keeps the centre of mass supported (as solveBent).
+  function solveChainBent(T, o, x, z0, betas, prevTh) {
+    const Ltot = o.sections.reduce((u, v) => u + v, 0);
+    let z = z0, iv = chainInterval(T, o, x, z, betas);
+    if (!iv) {
+      let lo = z0, hi = z0 + Ltot;
+      if (!chainInterval(T, o, x, hi, betas)) return null;
+      for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; if (chainInterval(T, o, x, mid, betas)) hi = mid; else lo = mid; }
+      z = hi; iv = chainInterval(T, o, x, z, betas);
+      if (!iv) return null;
+    }
+    const M = { x, z }, cands = [iv.hi, iv.lo];
+    if (prevTh !== undefined && prevTh !== null) cands.push(clamp(prevTh, iv.lo, iv.hi));
+    let best = null, bm = -Infinity;
+    for (const th of cands) { const q = makeChainPose(o, M, iv.angles(th)); const mg = supportMargin(T, o, q); if (mg > bm + 1e-6) { bm = mg; best = q; } }
+    return best;
+  }
+  // Where section k can put its outer end down on the stairs from its inner end Pj
+  // without cutting into them: a list of angle sets, nearest spot first.
+  function endSpots(T, QE, o, a, k, Pj, ahead) {
+    const L = o.sections, rho = o.sprocketRadius;
+    let cs = ahead ? circleOnPath(QE, Pj.x, Pj.z, L[k], Pj.x + 1e-6) : circleOnPath(QE, Pj.x, Pj.z, L[k], -Infinity).filter((q) => q.x < Pj.x - 1e-6);
+    cs = cs.sort((u, v) => (ahead ? u.x - v.x : v.x - u.x));
+    const out = [];
+    for (const q of cs) {
+      if (segTerrainDist(T, Pj.x, Pj.z, q.x, q.z) < rho - 6e-4) continue;
+      const aa = a.slice();
+      aa[k] = ahead ? Math.atan2(q.z - Pj.z, q.x - Pj.x) : Math.atan2(Pj.z - q.z, Pj.x - q.x);
+      out.push(aa);
+    }
+    return out;
+  }
+  // Put section k's outer end down on the stairs, if it fits within the hinge limits.
+  function placeEnd(T, QE, o, a, k, Pj, ahead) {
+    return endSpots(T, QE, o, a, k, Pj, ahead).find((aa) => bendsOk(o, aa)) || null;
+  }
+  // Scan a lift upwards in 1 cm (or 0.5 degree) steps, then refine the first hit.
+  function firstFit(at, step, max) {
+    let prev = 0;
+    for (let d = 0; d <= max + 1e-9; d += step) {
+      const hit = at(d);
+      if (hit) {
+        let lo = prev, hi = d, best = hit;
+        for (let k = 0; k < 12; k++) { const mid = (lo + hi) / 2, q = at(mid); if (q) { hi = mid; best = q; } else lo = mid; }
+        return best;
+      }
+      prev = d;
+    }
+    return null;
+  }
+  // The sections on one side of the seat's hinge (side +1 ahead of it, -1 behind).
+  function sideSections(o, side) {
+    const m = o.mainJoint, N = o.sections.length, ks = [];
+    for (let k = side > 0 ? m : m - 1; side > 0 ? k < N : k >= 0; k += side) ks.push(k);
+    return ks;
+  }
+  // The shapes one side of the seat's hinge can take from a lifted hinge Mz with its
+  // far track end on the stairs, of one kind: 'fold' (section `first`, next to the
+  // hinge, puts its end down and the ones beyond it settle), 'settle' (the sections
+  // settle, the last one letting its end down if it hangs) or 'straight' (the sections
+  // held in line as one piece, its far end on the stairs).
+  function sideShapes(T, QE, o, Mz, side, kind, first) {
+    const L = o.sections, m = o.mainJoint, N = L.length, lim = rad(o.hingeLimitDeg), rho = o.sprocketRadius;
+    const ks = sideSections(o, side), k0 = ks[0], kEnd = ks[ks.length - 1];
+    const inside = (aa) => ks.every((k) => k === k0 || Math.abs(aa[k] - aa[k - side]) <= lim + 1e-9);
+    const zero = new Array(N).fill(0);
+    if (kind === 'fold') {
+      return endSpots(T, QE, o, zero, first, Mz, side > 0)
+        .map((aa) => (first === kEnd ? aa : settle(T, o, Mz, aa, first + side)))
+        .filter(inside);
+    }
+    if (kind === 'settle') {
+      const aa = settle(T, o, Mz, zero, k0), P = chainPoints(L, m, Mz, aa), E = side > 0 ? P[N] : P[0];
+      if (Math.abs(E.z - pathZ(QE, E.x)) <= 1e-3) return [aa];
+      return endSpots(T, QE, o, aa, kEnd, side > 0 ? P[N - 1] : P[1], side > 0).filter(inside);
+    }
+    const Ls = ks.reduce((u, k) => u + L[k], 0), out = [];
+    let cs = side > 0 ? circleOnPath(QE, Mz.x, Mz.z, Ls, Mz.x + 1e-6) : circleOnPath(QE, Mz.x, Mz.z, Ls, -Infinity).filter((q) => q.x < Mz.x - 1e-6);
+    cs = cs.sort((u, v) => (side > 0 ? u.x - v.x : v.x - u.x));
+    for (const q of cs) {
+      if (segTerrainDist(T, Mz.x, Mz.z, q.x, q.z) < rho - 6e-4) continue;
+      const th = side > 0 ? Math.atan2(q.z - Mz.z, q.x - Mz.x) : Math.atan2(Mz.z - q.z, Mz.x - q.x);
+      const bb = zero.slice();
+      for (const k of ks) bb[k] = th;
+      out.push(bb);
+    }
+    return out;
+  }
+  // Of several candidate shapes, the one the hinges can reach soonest from the last
+  // pose (smallest largest bend change); the first one if there is no last pose.
+  function nearest(cands, prev) {
+    if (!prev || cands.length < 2) return cands[0] || null;
+    let best = cands[0], bs = Infinity;
+    for (const c of cands) {
+      let d = 0;
+      for (let j = 1; j < c.a.length; j++) d = Math.max(d, Math.abs(c.a[j] - c.a[j - 1] - prev.bends[j - 1]));
+      if (d < bs - 1e-6) { bs = d; best = c; }
+    }
+    return best;
+  }
+  // Lift the seat's hinge as little as possible until both outer track ends rest on
+  // the stairs (with two sections, the tent of solveTent). With `first` given, that
+  // section (next to the hinge) is the one folding down past an edge. A split half may
+  // settle or be held straight; of those, the shape nearest the last pose is used.
+  function chainLift(T, QE, o, M, first, prev, trail) {
+    const m = o.mainJoint, lim = rad(o.hingeLimitDeg);
+    const fSide = first == null ? 0 : first >= m ? 1 : -1;
+    const kinds = (side) => (side === fSide ? ['fold'] : sideSections(o, side).length < 2 ? ['settle'] : trail === side && o.trailMode !== 'nearest' ? [o.trailMode] : ['settle', 'straight']);
+    const cands = [];
+    for (const kb of kinds(-1)) for (const kf of kinds(1)) {
+      const t = firstFit((dz) => {
+        const Mz = { x: M.x, z: M.z + dz };
+        const behind = sideShapes(T, QE, o, Mz, -1, kb, first);
+        if (!behind.length) return null;
+        for (const f of sideShapes(T, QE, o, Mz, 1, kf, first)) for (const r of behind) {
+          if (Math.abs(f[m] - r[m - 1]) <= lim + 1e-9) return { M: Mz, a: r.slice(0, m).concat(f.slice(m)) };
+        }
+        return null;
+      }, 0.01, 0.5);
+      if (t) cands.push(t);
+    }
+    return nearest(cands, prev);
+  }
+  // Fold section k (ahead of the seat's hinge in the direction of travel) down past an
+  // edge: lift its inner end as little as possible until its outer end reaches the
+  // stairs, then let the sections beyond it settle.
+  function foldSection(T, QE, o, M, a, k, dir, prev) {
+    const L = o.sections, m = o.mainJoint, N = L.length, rho = o.sprocketRadius, up = dir === 'up';
+    if (k === (up ? m : m - 1)) return chainLift(T, QE, o, M, k, prev, up ? -1 : 1);
+    const parent = up ? k - 1 : k + 1, beyond = up ? k + 1 : k - 1;
+    return firstFit((d) => {
+      const aa = a.slice();
+      aa[parent] = a[parent] + (up ? d : -d); // turn the section inside it up
+      const P = chainPoints(L, m, M, aa), A = P[parent], B = P[parent + 1];
+      if (segTerrainDist(T, A.x, A.z, B.x, B.z) < rho - 6e-4) return null;
+      let out = placeEnd(T, QE, o, aa, k, up ? P[k] : P[k + 1], up);
+      if (out && beyond >= 0 && beyond < N) out = settle(T, o, M, out, beyond);
+      return out && bendsOk(o, out) ? { M, a: out } : null;
+    }, rad(0.5), rad(60));
+  }
+  function targetChain(T, QE, J0, o, prof, dir, state, prev) {
+    const N = o.sections.length, m = o.mainJoint, rho = o.sprocketRadius, lim = rad(o.hingeLimitDeg);
+    const up = dir === 'up', sgn = up ? 1 : -1;
+    let a0 = drapeChain(T, o, J0);
+    // a split trailing half settles, or stays in line as one piece if the hinges reach that sooner
+    const ks = sideSections(o, -sgn);
+    if (ks.length > 1 && o.trailMode !== 'settle' && (prev || o.trailMode === 'straight')) {
+      const Ls = ks.reduce((u, k) => u + o.sections[k], 0);
+      const th = up ? -restAngleBack(T, J0.x, J0.z, Ls, rho) : restAngle(T, J0.x, J0.z, Ls, rho);
+      const b = a0.slice();
+      for (const k of ks) b[k] = th;
+      a0 = o.trailMode === 'straight' ? b : nearest([{ a: a0 }, { a: b }], prev).a;
+    }
+    let p = makeChainPose(o, J0, a0);
+    // a bend past its limit locks at the limit
+    if (!bendsOk(o, p.angles)) {
+      const q = solveChainBent(T, o, J0.x, J0.z, p.bends.map((b) => clamp(b, -lim, lim)));
+      if (q) p = q;
+    }
+    const folding = state.chainFolding || (state.chainFolding = {});
+    // working out from the seat's hinge, fold the first section that reaches out past
+    // an edge with its end in the air (or is already folding over it)
+    for (let k = up ? m : m - 1; up ? k < N : k >= 0; k += sgn) {
+      const A = p.pts[up ? k : k + 1], B = p.pts[up ? k + 1 : k];
+      const edge = prof.edges.find((c) => sgn * (c.x - A.x) > 0 && sgn * (B.x - c.x) > rho);
+      if (!edge) { delete folding[k]; continue; }
+      if (folding[k] === edge || B.z - pathZ(QE, B.x) > 0.02) {
+        const t = foldSection(T, QE, o, p.J, p.angles, k, dir, prev);
+        if (t) {
+          for (let j = k + sgn; j >= 0 && j < N; j += sgn) delete folding[j];
+          folding[k] = edge;
+          const q = makeChainPose(o, t.M, t.a);
+          q.folded = true;
+          return q;
+        }
+      }
+    }
+    // once the seat's hinge is over an edge, it stays lifted with both track ends on
+    // the stairs until the weight is HOLD past the edge
+    const trailEnd = up ? p.R : p.F;
+    const tEdge = prof.edges.find((c) => sgn * (p.J.x - c.x) > 0 && sgn * (c.x - trailEnd.x) > 0);
+    if (tEdge) {
+      const h = chainLift(T, QE, o, J0, null, prev, -sgn);
+      if (h) {
+        const q = makeChainPose(o, h.M, h.a);
+        if (sgn * (centreOfMass(o, q).x - tEdge.x) < HOLD) { q.folded = true; return q; }
+      }
+    }
+    return p;
+  }
+  function solveChainStep(T, QE, J0, o, prof, dir, prev, ds, state) {
+    const target = targetChain(T, QE, J0, o, prof, dir, state, prev);
+    const m = o.mainJoint, stuck = o.mainHingeSeized;
+    if (!prev && !stuck) return target;
+    // a seized seat's hinge stays straight; the others still go for their targets
+    const want = stuck ? target.bends.map((b, j) => (j === m - 1 ? 0 : b)) : target.bends;
+    // How far each hinge gets towards its target this step, as a share of the way.
+    // 'lead': the seat's hinge goes as fast as it can and the others keep up with it,
+    // never getting further along than it; 'together': all cover the same share, as
+    // much as the slowest allows; 'own': each as fast as it can.
+    const extraRate = o.extraHingeRateDegPerM == null ? o.hingeRateDegPerM : o.extraHingeRateDegPerM;
+    const own = want.map((b, j) => {
+      const maxStep = rad(j === m - 1 ? o.hingeRateDegPerM : extraRate) * ds, d = prev ? Math.abs(b - prev.bends[j]) : 0;
+      return d > maxStep + 1e-9 ? maxStep / d : 1;
+    });
+    const shares = o.hingeControl === 'own' ? own
+      : o.hingeControl === 'together' ? own.map(() => Math.min(...own))
+      : own.map((sh, j) => (j === m - 1 ? sh : Math.min(sh, own[m - 1])));
+    const share = Math.min(...shares);
+    if (share >= 1 && !stuck) return target;
+    const betas = prev ? want.map((b, j) => prev.bends[j] + shares[j] * (b - prev.bends[j])) : want;
+    // with room to rock, it may stay where the section behind the seat's hinge was
+    const q = solveChainBent(T, o, J0.x, J0.z, betas, prev ? prev.angles[m - 1] + betas[m - 1] : undefined);
+    if (!q) return target;
+    q.rateLimited = share < 1;
+    q.folded = target.folded;
+    return q;
+  }
+
   // One rigid track the same overall length as the two units.
   function solveRigid(T, J0, o, prev) {
     return solveBent(T, J0.x, J0.z, 0, o, prev ? prev.a1 : undefined);
@@ -627,15 +955,21 @@
     const J = { x: xJ, z: zJ };
     const R = { x: xJ - L * Math.cos(a1), z: zJ - L * Math.sin(a1) };
     const F = { x: xJ + L * Math.cos(a2), z: zJ + L * Math.sin(a2) };
-    const avg = (a1 + a2) / 2; // pitch-averaging mast
+    return finishPose(o, { J, R, F, a1, a2, beta: a2 - a1 });
+  }
+  // Seat attitude and pivot for a vehicle pose; a1 and a2 are the sections either side
+  // of the hinge that carries the seat.
+  function finishPose(o, p) {
+    const avg = (p.a1 + p.a2) / 2; // pitch-averaging mast
     // seat tilt if the levelling drive keeps up (the travel loop applies its speed limit)
     const psiRel = o.mastMode === 'balance' ? o._psiRel || 0 : 0; // balance arm: its last lean
     const lean = avg + psiRel;
     const lam = o.levelLockDeg != null ? rad(o.levelLockDeg) : o.levelSeat ? clamp(lean, -rad(o.levelLimitDeg), rad(o.levelLimitDeg)) : 0;
-    const p = { J, R, F, a1, a2, beta: a2 - a1, pitch: avg, psiRel, lam, phi: lean - lam };
+    Object.assign(p, { pitch: avg, psiRel, lam, phi: lean - lam });
     placePivot(o, p);
     return p;
   }
+  const unitsOf = (p) => p.units || [[p.R, p.J], [p.J, p.F]];
 
   // --------------------------------------------------------------- checks
   function segPointDist(ax, az, bx, bz, px, pz) {
@@ -661,33 +995,47 @@
   }
 
   // Where one unit (axle segment A-B grown by rho) touches the real stairs.
-  function unitContacts(T, A, B, rho, tol) {
+  // Where a stretch of track touches the stairs, or comes within tol of them. The
+  // stretch runs through the points P; P[0] and P[last] are its end sprockets. Hinges
+  // inside it are held by their drives, so they count as track, not as ends.
+  function trackContacts(T, P, rho, tol) {
     const out = [];
-    const lo = Math.min(A.x, B.x) - rho - tol, hi = Math.max(A.x, B.x) + rho + tol;
+    let lo = Infinity, hi = -Infinity;
+    for (const Q of P) { lo = Math.min(lo, Q.x); hi = Math.max(hi, Q.x); }
+    lo -= rho + tol; hi += rho + tol;
     const add = (x, z, v) => out.push({ x, z, nosing: !!(v && v.convex) });
+    const ends = [P[0], P[P.length - 1]];
     for (const e of T.E) {
       if (e.x1 < lo || e.x0 > hi) continue;
-      const c = closestSegSeg(A.x, A.z, B.x, B.z, e.A.x, e.A.z, e.B.x, e.B.z);
+      let c = null;
+      for (let k = 0; k + 1 < P.length; k++) {
+        const q = closestSegSeg(P[k].x, P[k].z, P[k + 1].x, P[k + 1].z, e.A.x, e.A.z, e.B.x, e.B.z);
+        if (!c || q.d < c.d) c = q;
+      }
       if (c.d > rho + tol) continue;
       add(c.qx, c.qz, c.t < 1e-6 ? e.A : c.t > 1 - 1e-6 ? e.B : null);
       // a track lying along an edge touches it over a stretch: record both ends of it
-      for (const P of [A, B]) {
-        const q = segPointDist(e.A.x, e.A.z, e.B.x, e.B.z, P.x, P.z);
+      for (const Q of ends) {
+        const q = segPointDist(e.A.x, e.A.z, e.B.x, e.B.z, Q.x, Q.z);
         if (q.d <= rho + tol) add(q.cx, q.cz, null);
       }
       for (const v of [e.A, e.B]) {
-        if (segPointDist(A.x, A.z, B.x, B.z, v.x, v.z).d <= rho + tol) add(v.x, v.z, v);
+        for (let k = 0; k + 1 < P.length; k++) if (segPointDist(P[k].x, P[k].z, P[k + 1].x, P[k + 1].z, v.x, v.z).d <= rho + tol) { add(v.x, v.z, v); break; }
       }
     }
     // de-duplicate vertices shared by two edges
     return out.filter((q, i) => out.findIndex((r) => Math.hypot(r.x - q.x, r.z - q.z) < 1e-6) === i);
   }
+  const unitContacts = (T, A, B, rho, tol) => trackContacts(T, [A, B], rho, tol);
+  // The track behind the seat's hinge and the track ahead of it, as lines of points.
+  const halvesOf = (p) => (p.pts ? [p.pts.slice(0, p.m + 1), p.pts.slice(p.m)] : [[p.R, p.J], [p.J, p.F]]);
+  const contactsOf = (T, p, rho, tol) => halvesOf(p).flatMap((P) => trackContacts(T, P, rho, tol));
 
   // T: real steps. TR: nosing line the tracks ride on (support and stability).
   function evaluate(T, TR, o, p) {
     const rho = o.sprocketRadius, tol = 0.004;
-    const rear = unitContacts(TR, p.R, p.J, rho, SETTLE);
-    const front = unitContacts(TR, p.J, p.F, rho, SETTLE);
+    const us = unitsOf(p), N = us.length, [hr, hf] = halvesOf(p);
+    const rear = trackContacts(TR, hr, rho, SETTLE), front = trackContacts(TR, hf, rho, SETTLE);
     const all = rear.concat(front);
     const realNosings = (A, B) => T.V.filter((v) => v.convex && segPointDist(A.x, A.z, B.x, B.z, v.x, v.z).d <= rho + tol).length;
     const com = centreOfMass(o, p);
@@ -704,7 +1052,7 @@
     // How far the weight's line of action can lean (a push, a hard stop, a bump)
     // before the vehicle falls. Rocking onto a track end within FALL of the stairs
     // only settles it, so those ends count as support here.
-    const wide = unitContacts(TR, p.R, p.J, rho, FALL).concat(unitContacts(TR, p.J, p.F, rho, FALL));
+    const wide = contactsOf(TR, p, rho, FALL);
     let cLo = null, cHi = null;
     for (const c of wide) { if (!cLo || c.x < cLo.x) cLo = c; if (!cHi || c.x > cHi.x) cHi = c; }
     const leanDown = cLo ? Math.atan2(com.x - cLo.x, Math.max(1e-6, com.z - cLo.z)) : -Math.PI / 2;
@@ -715,15 +1063,16 @@
     for (const q of placeSeat(o, p)) {
       const d = segTerrainDist(T, q.ax, q.az, q.bx, q.bz) - q.r;
       if (d < clearance) { clearance = d; hit = q.name; }
-      for (const [A, B, unit] of [[p.R, p.J, 'rear'], [p.J, p.F, 'front']]) {
+      for (let k = 0; k < N; k++) {
+        const [A, B] = us[k], unit = k === 0 ? 'rear' : k === N - 1 ? 'front' : 'middle';
         const dt = segSegDist(q.ax, q.az, q.bx, q.bz, A.x, A.z, B.x, B.z) - q.r - rho;
         if (dt < trackClearance) { trackClearance = dt; trackHit = { part: q.name, unit }; }
       }
     }
     return {
       rear, front,
-      rearNosings: realNosings(p.R, p.J),
-      frontNosings: realNosings(p.J, p.F),
+      rearNosings: p.units ? null : realNosings(p.R, p.J),
+      frontNosings: p.units ? null : realNosings(p.J, p.F),
       com, support: [minX, maxX], margin, tipDrop, clearance, closest: hit, trackClearance, trackHit, tipAngle, tipDir,
       // bending the seat's weight puts on the mast at the hinge axle, and on the levelling drive
       mastMoment: seatModel(o).mass * G * (com.load.x - p.J.x),
@@ -756,6 +1105,8 @@
       if (sAcc >= next - 1e-12) { path.push({ s: sAcc, x: Q.X[i], z: Q.Z[i] }); next += step; }
     }
     const out = { opts: o, profile: prof, terrain: T, path, seat: seatModel(o), up: [], down: [], rigidUp: [], rigidDown: [] };
+    const sum = (ls) => ls.reduce((u, v) => u + v, 0);
+    const seized = o.sections && o.extraHingeSeized ? Object.assign({}, o, { sections: [sum(o.sections.slice(0, o.mainJoint)), sum(o.sections.slice(o.mainJoint))], mainJoint: 1 }) : null;
     const withOne = o.oneTrack !== false; // oneTrack: false skips the one-long-track comparison
     const rigid = [];
     let prev = null;
@@ -772,7 +1123,15 @@
       let last = null, lam = null, psi = null, arms = null;
       o._psiRel = 0; o._twoArmOff = null;
       for (const i of seq) {
-        const h = solveHinged(TR, QE, path[i], o, prof, dir, last, step, state);
+        let h;
+        if (!o.sections) h = solveHinged(TR, QE, path[i], o, prof, dir, last, step, state);
+        else if (!seized) h = solveChainStep(TR, QE, path[i], o, prof, dir, last, step, state);
+        else { // each split half moves as one piece
+          Object.assign(seized, { _psiRel: o._psiRel, _twoArmOff: o._twoArmOff });
+          const g = solveChainStep(TR, QE, path[i], seized, prof, dir, last && last.merged, step, state);
+          const a = o.sections.map((_, k) => (k < o.mainJoint ? g.a1 : g.a2));
+          h = Object.assign(makeChainPose(o, g.J, a), { merged: g, folded: g.folded, rateLimited: g.rateLimited });
+        }
         h.s = path[i].s;
         if (o.mastMode === 'balance') { balanceArm(T, TR, o, h, psi, step); psi = o._psiRel = h.psiRel; }
         if (o.mastMode === 'twoArm' || o.mastMode === 'vArms') { twoArms(T, TR, o, h, arms, step); arms = h.arms; o._twoArmOff = { dx: h.P.x - h.J.x, dz: h.P.z - h.J.z }; }
@@ -812,7 +1171,7 @@
   function summarise(poses, o, prof, step = 0.01) {
     let maxHinge = 0, maxPitch = 0, minMargin = Infinity, minClear = Infinity, maxJump = 0, jumpAt = null, minNosings = Infinity;
     let maxDrop = 0, dropAt = null, maxTilt = 0, maxTiltJump = 0, maxLevel = 0, minTrack = Infinity, closest = null, trackHit = null;
-    let maxMast = 0, maxLevelM = 0, minTip = Infinity, tipAt = null, tipDir = null, maxLink = 0, maxArmT = 0;
+    let maxMast = 0, maxLevelM = 0, minTip = Infinity, tipAt = null, tipDir = null, maxLink = 0, maxArmT = 0, maxOther = 0;
     const win = Math.max(1, Math.round(0.1 / step)); // samples in 10 cm of travel
     for (let i = 0; i < poses.length; i++) {
       const p = poses[i];
@@ -824,6 +1183,7 @@
       if (p.ev.trackClearance < minTrack) { minTrack = p.ev.trackClearance; trackHit = p.ev.trackHit; }
       maxTilt = Math.max(maxTilt, Math.abs(p.phi));
       maxMast = Math.max(maxMast, Math.abs(p.ev.mastMoment));
+      if (p.bends) p.bends.forEach((b, j) => { if (j !== o.mainJoint - 1) maxOther = Math.max(maxOther, Math.abs(b)); });
       if (p.ev.armTorques) maxArmT = Math.max(maxArmT, Math.abs(p.ev.armTorques[0]), Math.abs(p.ev.armTorques[1]));
       // the averaging diamond opens to 90 degrees minus the bend: link force M / (2 arm cos(bend))
       maxLink = Math.max(maxLink, Math.abs(p.ev.mastMoment) / (2 * LINK_ARM * Math.max(0.2, Math.cos(p.beta))));
@@ -840,8 +1200,8 @@
       const within = (a, b) => [[0, prof.xL0], [prof.xL1, prof.xP0]].some(([lo, hi]) => a - rho >= lo && b + rho <= hi);
       const pitchAt = (x) => (x < prof.xL1 ? prof.pitchLower : prof.pitchUpper);
       const straight = Math.abs(p.beta) < rad(0.5);
-      if (straight && within(p.R.x, p.J.x) && Math.abs(p.a1 - pitchAt(p.R.x)) < rad(0.5)) minNosings = Math.min(minNosings, p.ev.rearNosings);
-      if (straight && within(p.J.x, p.F.x) && Math.abs(p.a2 - pitchAt(p.F.x)) < rad(0.5)) minNosings = Math.min(minNosings, p.ev.frontNosings);
+      if (!p.units && straight && within(p.R.x, p.J.x) && Math.abs(p.a1 - pitchAt(p.R.x)) < rad(0.5)) minNosings = Math.min(minNosings, p.ev.rearNosings);
+      if (!p.units && straight && within(p.J.x, p.F.x) && Math.abs(p.a2 - pitchAt(p.F.x)) < rad(0.5)) minNosings = Math.min(minNosings, p.ev.frontNosings);
     }
     return {
       maxHingeDeg: deg(maxHinge), maxPitchDeg: deg(maxPitch),
@@ -850,7 +1210,7 @@
       maxPitchChangePer10cmDeg: deg(maxJump), worstAt: jumpAt,
       maxSeatTiltDeg: deg(maxTilt), maxSeatTiltChangePer10cmDeg: deg(maxTiltJump), maxLevelDeg: deg(maxLevel),
       maxMastMoment: maxMast, maxLevelMoment: maxLevelM,
-      minTipAngleDeg: deg(minTip), tipAngleAt: tipAt, tipAngleDir: tipDir, maxLinkForce: maxLink, maxArmTorque: maxArmT,
+      minTipAngleDeg: deg(minTip), tipAngleAt: tipAt, tipAngleDir: tipDir, maxLinkForce: maxLink, maxArmTorque: maxArmT, maxOtherHingeDeg: deg(maxOther),
       minNosingsOnFlight: minNosings === Infinity ? null : minNosings,
     };
   }
@@ -926,7 +1286,8 @@
     const pitch = Math.max(s.pitchLower, s.pitchUpper);
     const L = o.unitLength, rho = o.sprocketRadius;
     const seat = seatModel(o);
-    const M = seat.mass + 2 * o.unitMass;
+    const extraMass = o.sections ? (o.sections.length - 2) * o.extraHingeMass : 0; // motors at the extra hinges
+    const M = seat.mass + 2 * o.unitMass + extraMass;
     // On a slope the centre of mass slides downhill by (its height above the track) x
     // sin(pitch). A level seat keeps its own centre of mass over the pivot, so only the
     // mast height counts; a fixed seat leans with the vehicle and its full height counts.
@@ -939,8 +1300,10 @@
       nosingSpacing: nosing,
       pitchDeg: deg(pitch),
       minUnitLength: 2 * nosing,
-      unitOverall: L + 2 * rho,
-      totalLength: 2 * L + 2 * rho,
+      unitOverall: (o.sections ? Math.max(...o.sections) : L) + 2 * rho,
+      shortestSection: o.sections ? Math.min(...o.sections) : L,
+      totalLength: (o.sections ? o.sections.reduce((u, v) => u + v, 0) : 2 * L) + 2 * rho,
+      extraMass,
       loadMass: seat.mass,
       totalMass: M,
       seatComAbovePivot: seat.com.v,

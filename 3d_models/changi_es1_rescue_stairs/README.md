@@ -72,8 +72,8 @@ compares that vehicle with the same vehicle built as one long straight track.
 
 Open `track_sim/index.html` in a browser, keeping `track-model.js` in the same folder. The page
 animates the trip up or down at each height setting, plots the casualty's tilt and the hinge
-bend, and recalculates everything when you change the seat or the vehicle. `track-model.js`
-also runs in Node:
+bend, and recalculates everything when you change the seat or the vehicle, including a layout
+with one half of the tracks split in two. `track-model.js` also runs in Node:
 
 ```bash
 node -e "const TM = require('./track_sim/track-model.js'); console.log(TM.simulate({ height: 8.4 }).summary.two)"
@@ -158,14 +158,18 @@ cd track_sim && node stress-test.js
 ```
 
 It also writes `stress-results.js`, which the page shows. A case passes if the vehicle never
-falls and can take a 7.3° lean anywhere. It runs four ways of holding up the seat:
+falls and can take a 7.3° lean anywhere. It runs four ways of holding up the seat, and the two
+layouts with one half of the tracks split in two (see below):
 
 | Seat support | Pass | Tight | Fail | Lean it can take, default (up · down) | Seat drives, with bumps |
 |---|---|---|---|---|---|
-| One balancing arm (recommended) | 16 | 4 | 3 | 10.7° · 8.3° | arm drive 1.0 kN·m, two tilt drives 0.48 kN·m |
-| Two arms from the hinge (a V) | 12 | 5 | 3 | 9.5° · 7.8° | two arm drives 0.82 kN·m |
-| Two arms, one on each track | 7 | 6 | 7 | 16.1° · 9.9° | two arm drives 0.89 kN·m |
-| One arm without a drive | 7 | 8 | 5 | 8.0° · 8.2° | two tilt drives 0.48 kN·m |
+| One balancing arm (recommended) | 17 | 4 | 3 | 10.7° · 8.3° | arm drive 1.0 kN·m, two tilt drives 0.48 kN·m |
+| Two arms from the hinge (a V) | 12 | 6 | 3 | 9.5° · 7.8° | two arm drives 0.82 kN·m |
+| Two arms, one on each track | 7 | 7 | 7 | 16.1° · 9.9° | two arm drives 0.89 kN·m |
+| One arm without a drive | 7 | 9 | 5 | 8.0° · 8.2° | two tilt drives 0.48 kN·m |
+
+One case is not a stress but a possible fix: a hinge motor half as fast again (180°/m). With the
+balancing arm it passes, taking 13.1° up and 7.8° down.
 
 Two arms holding the stretcher like a bed look the most reassuring, but only if they rise from
 the hinge. Standing on the track units, the arms' feet swing at every fold and, on the flights,
@@ -181,7 +185,7 @@ The single balancing arm passes the most cases. Its results case by case:
   - a person sliding 10 cm either way, or 25 cm towards the feet;
   - sitting up, or lying flat and sliding;
   - stairs as steep as 35.8°;
-  - a hinge at three-quarter speed or with only ±45° of range;
+  - a hinge at three-quarter speed or with only ±45° of range, or one half as fast again;
   - a seat drive at half speed;
   - an arm drive that seizes in the middle or leaning uphill;
   - a seat drive stuck level, with the arm taking over the levelling.
@@ -214,17 +218,50 @@ person, and at least 3.7 times below for 200 kg. What the stress test asks for:
 7. Use cleated tracks. Holding on the flight needs a grip (friction coefficient) of 0.61, and a
    hard stop going down 0.76. Wet rubber on steel can be well below that.
 
-### Splitting the front track again
+### One half split in two
 
-Splitting the 0.70 m front unit into two 0.35 m halves keeps the vehicle the same length, and each
-half is still a little longer than the 328 mm between step nosings, so it can rest on them.
-But it only stays in line if its hinge is motor-driven, so it adds a third hinge motor. It
-also fixes nothing the stress test found. With the balancing arm, the only failures left are
-hinge failures: a hinge that is too slow, or one that seizes. Another hinge adds one more of
-exactly that. Three full-length units, each at least 0.66 m to bridge two nosings, would make
-the vehicle 2.2 m long instead of 1.58 m. That could let the middle unit lie flat on the 1 m
-mid platform, but it would be harder to turn on the 2.8 × 3.0 m top platform. The model only
-covers two units, so a three-unit version would need its own model and stress test.
+The model also handles more than two sections (`sections` and `mainJoint` in `track-model.js`,
+and "Track layout" on the page). The seat stays on the middle hinge. One half is split into two
+0.35 m sections, joined by a hinge with its own motor, about 6 kg. The same rules apply, section
+by section:
+
+- each section settles onto the stairs;
+- working out from the seat, the first section reaching over an edge folds down;
+- the seat's hinge stays lifted until the weight is past the edge;
+- every hinge turns at most 120° per metre, with the seat's hinge leading and the extra hinge
+  keeping up with it.
+
+With two 0.70 m sections, this gives exactly the same poses as the two-section model, which is how
+it was checked.
+
+Worst case over the three height settings, with the balancing arm:
+
+| | Two sections | Front half split | Rear half split |
+|---|---|---|---|
+| Lean it can take (up · down) | 10.7° · 8.3° | 7.2° · 8.7° | 10.0° · falls |
+| Worst drop at an edge | none | none | 5 cm, at the 1 m mid platform going down |
+| Stress test (pass · tight · fail) | 17 · 4 · 3 | 7 · 12 · 7 | 2 · 1 · 23 |
+| Hinges at 180°/m (up · down) | 13.1° · 7.8° | 7.6° · 7.7° | 12.2° · 8.0° |
+| Instant hinges (up · down) | 17.8° · 11.7° | 10.9° · 11.9° | 17.9° · 11.8° |
+
+Splitting a half does not help:
+
+- For the same change of slope, a short section has to turn about twice as fast. At an edge the
+  hinges fall behind, and while they lag the sections move as one stiff piece that rocks.
+- The one thing a split could do is keep the rear end on the stairs as the vehicle passes an edge.
+  For that, the 0.35 m section has to swing about 30° in 25 cm of travel. Even with instant hinges,
+  the rear split only matches two sections.
+- Split at the front, the vehicle folds the short end section first and its main hinge later. It
+  has less margin going up at every hinge speed, and lying flat, the person hits the tracks.
+- Split at the rear, it tips at the 1 m mid platform going down unless its hinges turn at 180°/m.
+  At that speed, two sections do about as well.
+- A 0.35 m section spans only one gap between nosings. On a flight, its hinge has to hold it in
+  line anyway.
+- It adds a 6 kg motor and one more hinge that can fail:
+  - If the extra hinge seizes straight, the vehicle becomes the two-section one, which passes.
+  - If the seat's hinge seizes, the long stiff part still drops 22 to 23 cm at an edge.
+
+Keep two sections.
 
 ### Design rules from the math
 

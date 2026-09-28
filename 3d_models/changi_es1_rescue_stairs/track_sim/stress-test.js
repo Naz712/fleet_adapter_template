@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-// Stress test for the two-track stair climber. Runs each way of holding up the seat
-// through harder conditions than its default design, at all three height settings
-// and in both directions, and reports what holds and what does not. It also sizes
-// the parts of the seat support at twice the worst load.
+// Stress test for the two-track stair climber. Runs each way of holding up the seat,
+// and the three-section layouts (one half of the tracks split in two), through harder
+// conditions than its default design, at all three height settings and in both
+// directions, and reports what holds and what does not. It also sizes the parts of
+// the seat support at twice the worst load.
 //
 //   node stress-test.js      prints the results and writes stress-results.js for the page
+//   node stress-test.js frontSplit rearSplit    only those designs (does not write the file)
 const fs = require('fs');
 const path = require('path');
 const TM = require('./track-model.js');
@@ -19,6 +21,9 @@ const DESIGNS = [
   { id: 'vArms', name: 'Two arms from the hinge', opts: { mastMode: 'vArms' } },
   { id: 'twoArm', name: 'Two arms, one on each track', opts: { mastMode: 'twoArm' } },
   { id: 'average', name: 'One arm without a drive', opts: { mastMode: 'average' } },
+  // three sections: one half kept whole, the other split in two with its own hinge motor
+  { id: 'frontSplit', name: 'Front half split in two', opts: { mastMode: 'balance', sections: [0.7, 0.35, 0.35], mainJoint: 1 }, split: true },
+  { id: 'rearSplit', name: 'Rear half split in two', opts: { mastMode: 'balance', sections: [0.35, 0.35, 0.7], mainJoint: 2 }, split: true },
 ];
 
 const COMMON = [
@@ -36,6 +41,13 @@ const COMMON = [
   { group: 'Motors', name: 'Hinge motor at three-quarter speed', what: '90°/m, or driving a third faster', opts: { hingeRateDegPerM: 90 } },
   { group: 'Motors', name: 'Hinge motor at half speed', what: '60°/m, or driving twice as fast', opts: { hingeRateDegPerM: 60 } },
   { group: 'Motors', name: 'Hinge range cut to ±45°', what: 'a smaller hinge motor', opts: { hingeLimitDeg: 45 } },
+  { group: 'Motors', name: 'Hinge motor half as fast again', what: '180°/m: not a stress, a possible fix', opts: { hingeRateDegPerM: 180 } },
+];
+// the three-section layouts: the balancing arm's cases, plus their extra hinge
+const SPLIT = [
+  { group: 'Motors', name: 'Extra hinge motor at half speed', what: '60°/m; the seat\'s hinge at full speed', opts: { extraHingeRateDegPerM: 60 } },
+  { group: 'Failures', name: 'Extra hinge seizes straight', what: 'then keeps going', opts: { extraHingeSeized: true } },
+  { group: 'Failures', name: 'Seat\'s hinge motor seizes straight', what: 'the extra hinge still works, the tracks keep driving', opts: { mainHingeSeized: true }, stopTracks: true },
 ];
 const PER_DESIGN = {
   balance: [
@@ -68,7 +80,7 @@ const COMBINED = [
 ];
 
 function runScenario(design, sc) {
-  const w = { tipUp: Infinity, tipDown: Infinity, drop: 0, tilt: 0, steps: Infinity, stepsPart: '', tracks: Infinity, tracksHit: null, hinge: 0, one: null, sm: null };
+  const w = { tipUp: Infinity, tipDown: Infinity, drop: 0, tilt: 0, steps: Infinity, stepsPart: '', tracks: Infinity, tracksHit: null, hinge: 0, extra: 0, one: null, sm: null };
   for (const h of [3.2, 5.8, 8.4]) {
     const r = TM.simulate(Object.assign({ height: h }, design.opts, sc.opts));
     const u = r.summary.up, d = r.summary.down, t = r.summary.two;
@@ -77,13 +89,14 @@ function runScenario(design, sc) {
     w.drop = Math.max(w.drop, t.maxTipDrop);
     w.tilt = Math.max(w.tilt, t.maxSeatTiltDeg);
     w.hinge = Math.max(w.hinge, t.maxHingeDeg);
+    w.extra = Math.max(w.extra, t.maxOtherHingeDeg);
     if (t.minClearance < w.steps) { w.steps = t.minClearance; w.stepsPart = t.closestPart; }
     if (t.minTrackClearance < w.tracks) { w.tracks = t.minTrackClearance; w.tracksHit = t.trackHit; }
     // keep the worst loads for the structure check
     if (!w.sm) w.sm = Object.assign({}, t);
     else for (const k of ['maxMastMoment', 'maxLevelMoment', 'maxLinkForce', 'maxArmTorque']) w.sm[k] = Math.max(w.sm[k], t[k]);
     const g = r.summary.rigid;
-    if (!w.one || g.maxTipDrop > w.one.drop) w.one = { drop: g.maxTipDrop, tilt: g.maxSeatTiltDeg, tip: g.minTipAngleDeg };
+    if (g && (!w.one || g.maxTipDrop > w.one.drop)) w.one = { drop: g.maxTipDrop, tilt: g.maxSeatTiltDeg, tip: g.minTipAngleDeg };
   }
   const tip = Math.min(w.tipUp, w.tipDown), gap = Math.min(w.steps, w.tracks);
   let level = 'pass', why = `takes a ${tip.toFixed(1)}° lean anywhere; a hard stop needs ${HARD_STOP_DEG.toFixed(1)}°`;
@@ -93,7 +106,7 @@ function runScenario(design, sc) {
   else if (w.tilt > 20) { level = 'warn'; why = `stays up, but the person tilts ${w.tilt.toFixed(0)}°`; }
   else if (gap < 0.03) { level = 'warn'; why = `fits with only ${Math.round(gap * 100)} cm to spare`; }
   return { tipUp: w.tipUp, tipDown: w.tipDown, drop: w.drop, tilt: w.tilt, steps: w.steps, stepsPart: w.stepsPart,
-    tracks: w.tracks, tracksHit: w.tracksHit, hinge: w.hinge, one: w.one, level, why, sm: w.sm };
+    tracks: w.tracks, tracksHit: w.tracksHit, hinge: w.hinge, extra: w.extra, one: w.one, level, why, sm: w.sm };
 }
 
 const t0 = Date.now();
@@ -101,12 +114,17 @@ const pitch = Math.atan(TM.DEFAULTS.rise / TM.DEFAULTS.going);
 const aStop = 0.25 / 0.2;
 const grip = { hold: Math.tan(pitch), stop: Math.tan(pitch) + aStop / (G * Math.cos(pitch)), pitchDeg: TM.deg(pitch) };
 const designs = [];
-for (const design of DESIGNS) {
-  const list = COMMON.concat(PER_DESIGN[design.id], COMBINED);
-  const results = list.map((sc) => Object.assign({ group: sc.group, name: sc.name, what: sc.what, opts: sc.opts }, runScenario(design, sc)));
+const only = process.argv.slice(2);
+for (const design of DESIGNS.filter((d) => !only.length || only.includes(d.id))) {
+  const list = COMMON.concat(design.split ? PER_DESIGN.balance.concat(SPLIT) : PER_DESIGN[design.id], COMBINED);
+  const results = list.map((sc) => {
+    const r = Object.assign({ group: sc.group, name: sc.name, what: sc.what, opts: sc.opts }, runScenario(design, sc));
+    if (sc.stopTracks && r.level === 'fail') r.why = `the long part rocks over edges and drops ${Math.round(r.drop * 100)} cm, so the tracks must stop if the hinge stops`;
+    return r;
+  });
   const base = results[0];
   // A seized hinge motor: if the tracks keep driving, it is one long track.
-  results.push({ group: 'Failures', name: 'Hinge motor seizes straight', what: 'and the tracks keep driving', opts: {},
+  if (!design.split) results.push({ group: 'Failures', name: 'Hinge motor seizes straight', what: 'and the tracks keep driving', opts: {},
     tipUp: base.one.tip, tipDown: base.one.tip, drop: base.one.drop, tilt: base.one.tilt, steps: base.steps, stepsPart: base.stepsPart,
     tracks: base.tracks, tracksHit: base.tracksHit, hinge: 0, level: 'fail',
     why: `behaves like one long track and drops ${Math.round(base.one.drop * 100)} cm at an edge, so the tracks must stop if the hinge stops` });
@@ -114,7 +132,7 @@ for (const design of DESIGNS) {
   const structure = { normal: TM.structure(design.opts, base.sm), heavy: TM.structure(Object.assign({ personMass: 200 }, design.opts), heavy.sm) };
   const count = { pass: 0, warn: 0, fail: 0 };
   for (const r of results) count[r.level]++;
-  designs.push({ id: design.id, name: design.name, opts: design.opts, count, structure, results: results.map(({ sm, ...r }) => r) });
+  designs.push({ id: design.id, name: design.name, opts: design.opts, split: !!design.split, count, structure, results: results.map(({ sm, ...r }) => r) });
   console.log(`\n=== ${design.name}: ${count.pass} pass, ${count.warn} tight, ${count.fail} fail`);
   const pad = (x, n) => String(x).padEnd(n);
   for (const r of results) console.log(`${pad(r.level.toUpperCase(), 5)} ${pad(r.group, 9)} ${pad(r.name, 46)} lean up ${r.tipUp.toFixed(1).padStart(5)}° down ${r.tipDown.toFixed(1).padStart(5)}°  drop ${String(Math.round(r.drop * 100)).padStart(2)} cm  tilt ${r.tilt.toFixed(0).padStart(2)}°  gaps ${Math.round(r.steps * 100)}/${Math.round(r.tracks * 100)} cm`);
@@ -125,7 +143,7 @@ for (const design of DESIGNS) {
   }
 }
 const out = { hardStopDeg: HARD_STOP_DEG, grip, generated: new Date().toISOString().slice(0, 10), designs };
-fs.writeFileSync(path.join(__dirname, 'stress-results.js'),
+if (!only.length) fs.writeFileSync(path.join(__dirname, 'stress-results.js'),
   '// Written by stress-test.js; do not edit by hand.\nwindow.STRESS_RESULTS = ' + JSON.stringify(out, null, 1) + ';\n');
 console.log(`\nGrip needed on ${grip.pitchDeg.toFixed(1)}° stairs: ${grip.hold.toFixed(2)} to hold, ${grip.stop.toFixed(2)} for a hard stop going down.`);
 console.log(`${((Date.now() - t0) / 1000).toFixed(0)} s`);

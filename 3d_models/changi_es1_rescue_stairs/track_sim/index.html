@@ -129,6 +129,7 @@
   .key { display: inline-block; width: 14px; height: 0; border-top: 2px solid; border-radius: 2px; vertical-align: middle; flex: none; }
   .key.two { border-color: var(--two); }
   .key.one { border-color: var(--one); }
+  .key.dashed { border-top: 0; height: 2px; background: repeating-linear-gradient(90deg, var(--two) 0 4px, transparent 4px 7px); }
 
   /* simulator */
   .sim { overflow: hidden; }
@@ -287,7 +288,7 @@
   <header>
     <p class="eyebrow">Changi AES · ES1 rescue stairs · 18 × 170 mm steps, 1 m mid platform</p>
     <h1>Two-Track Stair Climber</h1>
-    <p class="lede">A tracked casualty carrier split into a front and a rear track unit with a driven hinge between them. It carries a person up and down the ES1 stairs in a reclining seat that stays level, on an arm that leans to keep their weight away from the edges. The same vehicle built as one long straight track runs alongside for comparison.</p>
+    <p class="lede">A tracked casualty carrier split into a front and a rear track unit with a driven hinge between them. It carries a person up and down the ES1 stairs in a reclining seat that stays level, on an arm that leans to keep their weight away from the edges. The same vehicle built as one long straight track runs alongside for comparison, and the stress test also tries it with one half of the tracks split in two.</p>
   </header>
 
   <section class="card verdict" aria-labelledby="verdict-h">
@@ -341,20 +342,20 @@
       <p class="sub">Distance travelled on the x-axis. Hover to read values, click to jump the simulation there.</p>
       <div class="chart-block">
         <div class="chart-title"><h3>Casualty tilt (°)</h3>
-          <div class="legend"><span><i class="key two"></i>Two tracks + hinge</span><span id="legend-one"><i class="key one"></i>One long track</span></div>
+          <div class="legend"><span><i class="key two"></i><span class="veh-name">Two tracks + hinge</span></span><span id="legend-one"><i class="key one"></i>One long track</span></div>
         </div>
         <p class="chart-note">0 is the recline they were set at; + head end up, − head end down.</p>
         <div class="chart" id="chart-tilt"></div>
       </div>
       <div class="chart-block">
         <div class="chart-title"><h3>Lean it can take before it falls (°)</h3>
-          <div class="legend"><span><i class="key two"></i>Two tracks + hinge</span><span class="legend-one"><i class="key one"></i>One long track</span></div>
+          <div class="legend"><span><i class="key two"></i><span class="veh-name">Two tracks + hinge</span></span><span class="legend-one"><i class="key one"></i>One long track</span></div>
         </div>
         <p class="chart-note">How far a push, a hard stop or a bump can lean the weight before the vehicle falls over an edge. Below the dashed line a hard stop from walking pace would tip it.</p>
         <div class="chart" id="chart-lean"></div>
       </div>
       <div class="chart-block">
-        <div class="chart-title"><h3>Hinge bend, two tracks (°)</h3><div class="legend"><span>+ bends up · − folds down</span></div></div>
+        <div class="chart-title"><h3>Hinge bend (°)</h3><div class="legend"><span id="legend-extra" hidden><i class="key two"></i>Seat's hinge</span><span id="legend-extra2" hidden><i class="key two dashed"></i>Extra hinge</span><span>+ bends up · − folds down</span></div></div>
         <div class="chart" id="chart-hinge"></div>
       </div>
     </section>
@@ -386,14 +387,14 @@
   <section class="card panel" id="stress-section" aria-labelledby="stress-h">
     <h2 id="stress-h">Stress test</h2>
     <p class="sub" id="stress-sub"></p>
-    <h3 class="spec-h">The four ways to hold up the seat</h3>
+    <h3 class="spec-h">Four ways to hold up the seat, and two split track layouts</h3>
     <div class="table-wrap">
       <table class="stress-compare">
-        <thead><tr><th>Seat support</th><th class="fit">Pass · tight · fail</th><th>Lean it can take, default<br>up · down</th><th>Worst casualty tilt<br>in the tests</th><th class="fit">Seat drives needed, with bumps</th></tr></thead>
+        <thead><tr><th>Design</th><th class="fit">Pass · tight · fail</th><th>Lean it can take, default<br>up · down</th><th>Worst casualty tilt<br>in the tests</th><th class="fit">Seat drives needed, with bumps</th></tr></thead>
         <tbody id="compare-body"></tbody>
       </table>
     </div>
-    <p class="note">Pick a support under Design to see it in the simulation and its cases below.</p>
+    <p class="note" id="stress-note">Pick a seat support or a track layout under Design to see it in the simulation and its cases below.</p>
     <h3 class="spec-h" id="stress-detail-h">Case by case</h3>
     <div class="stress-summary" id="stress-summary"></div>
     <div class="table-wrap">
@@ -459,7 +460,7 @@
       <table>
         <thead>
           <tr class="group-row"><th></th><th colspan="2">Casualty tilt</th><th colspan="2">Worst drop</th><th colspan="2">Lean it can take</th><th></th></tr>
-          <tr><th>Setting</th><th>Two tracks (up · down)</th><th>One track</th><th>Two tracks (up · down)</th><th>One track</th><th>Two tracks (up · down)</th><th>One track</th><th>Closest gap</th></tr>
+          <tr><th>Setting</th><th>This design (up · down)</th><th>One track</th><th>This design (up · down)</th><th>One track</th><th>This design (up · down)</th><th>One track</th><th>Closest gap</th></tr>
         </thead>
         <tbody id="table-body"></tbody>
       </table>
@@ -484,20 +485,35 @@
     { key: 'seatHeight', label: 'Seat height', unit: ' m', min: 0.25, max: 0.9, step: 0.01, fmt: (v) => v.toFixed(2), hint: 'Length of the arm from the hinge axle to the seat pivot.' },
   ];
   const VEHICLE_SLIDERS = [
-    { key: 'unitLength', label: 'Unit length', unit: ' m', min: 0.5, max: 1.0, step: 0.01, fmt: (v) => v.toFixed(2), hint: 'Sprocket centre to sprocket centre, each unit.' },
+    { key: 'unitLength', label: 'Unit length', unit: ' m', min: 0.5, max: 1.0, step: 0.01, fmt: (v) => v.toFixed(2), hint: 'Sprocket centre to sprocket centre, each unit. A split half is two sections of half this.' },
     { key: 'sprocketRadius', label: 'Sprocket radius', unit: ' m', min: 0.06, max: 0.15, step: 0.005, fmt: (v) => v.toFixed(3), hint: 'Half the track height.' },
     { key: 'hingeLimitDeg', label: 'Hinge range', unit: '°', min: 30, max: 90, step: 1, fmt: (v) => '±' + v.toFixed(0), hint: 'How far the hinge can bend either way.' },
-    { key: 'hingeRateDegPerM', label: 'Hinge speed', unit: '°/m', min: 30, max: 300, step: 10, fmt: (v) => v.toFixed(0), hint: 'How much the hinge can bend per metre travelled.' },
+    { key: 'hingeRateDegPerM', label: 'Hinge speed', unit: '°/m', min: 30, max: 300, step: 10, fmt: (v) => v.toFixed(0), hint: 'How much each hinge can bend per metre travelled.' },
   ];
   const SLIDERS = SEAT_SLIDERS.concat(VEHICLE_SLIDERS);
   const RECLINES = [15, 30, 45, 60, 75, 90];
+  // Track layouts: two sections with one hinge, or one half split in two with a
+  // hinge motor of its own (the seat stays on the hinge in the middle).
+  const LAYOUTS = {
+    two: { name: 'Two sections, one hinge', short: 'Two tracks + hinge', sections: null },
+    frontSplit: { name: 'Front half split in two', short: 'Front half split', sections: (L) => [L, L / 2, L / 2], mainJoint: 1 },
+    rearSplit: { name: 'Rear half split in two', short: 'Rear half split', sections: (L) => [L / 2, L / 2, L], mainJoint: 2 },
+  };
   const state = {
-    height: 8.4, dir: 'down', view: 'follow', compare: true,
+    height: 8.4, dir: 'down', view: 'follow', compare: true, layout: 'two',
     design: Object.assign(Object.fromEntries(SLIDERS.map((s) => [s.key, TM.DEFAULTS[s.key]])), { levelSeat: TM.DEFAULTS.levelSeat, mastMode: TM.DEFAULTS.mastMode }),
     sim: null, idx: 0, playing: false, speed: 4, lastT: 0, travel: 0,
     cam: null, tableToken: 0,
   };
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isSplit = () => state.layout !== 'two';
+  const vehName = () => LAYOUTS[state.layout].short;
+  // everything the model needs for the current design, at one height setting
+  function simOpts(extra) {
+    const lay = LAYOUTS[state.layout];
+    const sec = lay.sections ? { sections: lay.sections(state.design.unitLength), mainJoint: lay.mainJoint } : {};
+    return Object.assign({ height: state.height }, state.design, sec, extra);
+  }
   // A hard stop, from walking pace (0.25 m/s) to rest in 0.2 s, leans the weight this far.
   const HARD_STOP = TM.deg(Math.atan(0.25 / 0.2 / 9.81));
 
@@ -545,7 +561,7 @@
   function runSim() {
     $('busy').hidden = false;
     setTimeout(() => {
-      const opts = Object.assign({ height: state.height }, state.design);
+      const opts = simOpts();
       const sim = TM.simulate(opts);
       sim.an = TM.analyse(opts);
       sim.sEnd = sim.path[sim.path.length - 1].s;
@@ -591,13 +607,14 @@
       const plural = ['thighs', 'lower legs', 'feet'].includes(part);
       const legs = /leg|feet|thigh|seat/.test(part);
       text = `At the ${h} m setting the ${part} ${plural ? 'hit' : 'hits'} the ${thing}. ${legs ? 'Raise the seat or recline it further so the legs come up.' : 'Raise the seat or sit the person up a little.'}`;
-    } else if (two.maxTipDrop > 0.1) {
-      text = `At the ${h} m setting this design still tips at an edge and drops up to ${cm(two.maxTipDrop)} cm. Try a wider hinge range or a faster hinge.`;
+    } else if (two.maxTipDrop > 0.1 || two.minTipAngleDeg < 0) {
+      text = `At the ${h} m setting this design still tips at an edge and drops up to ${cm(two.maxTipDrop)} cm. Try a wider hinge range or a faster hinge${isSplit() ? ', or go back to two sections' : ''}.`;
     } else {
       const tilt = o.levelSeat
         ? `The seat stays within ${two.maxSeatTiltDeg.toFixed(0)}° of level the whole way`
         : `The seat is fixed to the vehicle, so the person tilts with it by up to ${two.maxSeatTiltDeg.toFixed(0)}°`;
-      text = `At the ${h} m setting the two-track vehicle carries a ${who} up and down without tipping. ${tilt}. One long track drops ${cm(one.maxTipDrop)} cm at every platform edge and tilts the person by ${one.maxSeatTiltDeg.toFixed(0)}°.`;
+      const veh = isSplit() ? `vehicle with its ${state.layout === 'frontSplit' ? 'front' : 'rear'} half split in two` : 'two-track vehicle';
+      text = `At the ${h} m setting the ${veh} carries a ${who} up and down without tipping. ${tilt}. One long track drops ${cm(one.maxTipDrop)} cm at every platform edge and tilts the person by ${one.maxSeatTiltDeg.toFixed(0)}°.`;
       if (two.maxTipDrop > 0.005) text += ` There is a ${cm(two.maxTipDrop)} cm rock as the hinge crosses an edge.`;
       text += two.minTipAngleDeg >= HARD_STOP
         ? ` Everywhere on the way it can take a ${two.minTipAngleDeg.toFixed(1)}° lean before it falls, more than the ${HARD_STOP.toFixed(1)}° of a hard stop from walking pace.`
@@ -644,6 +661,7 @@
       d.append(bb, ss); fb.appendChild(d);
     }
     const ok = Object.fromEntries(an.checks.map((c) => [c.id, c.ok ? 'good' : 'bad']));
+    if (o.sections && ok.support === 'good') ok.support = 'warn';
     const n = (v) => `<span class="num">${v}</span>`;
     const g1 = two.minClearance, g2 = two.minTrackClearance, gMin = Math.min(g1, g2);
     ok.gap = gMin < 0 ? 'bad' : gMin < 0.05 ? 'warn' : 'good';
@@ -653,7 +671,8 @@
     const th = two.trackHit || { part: 'seat', unit: 'rear' };
     const rules = [
       { id: 'support', title: 'Each unit must bridge two nosings',
-        body: `A straight track only rests steadily if it always spans two step nosings, otherwise it rocks into the gaps. Nosings are ${(an.nosingSpacing * 1000).toFixed(0)} mm apart, so a unit needs at least ${n((an.minUnitLength * 1000).toFixed(0) + ' mm')}. This one is ${n((o.unitLength * 1000).toFixed(0) + ' mm')}.` },
+        body: `A straight track only rests steadily if it always spans two step nosings, otherwise it rocks into the gaps. Nosings are ${(an.nosingSpacing * 1000).toFixed(0)} mm apart, so a unit needs at least ${n((an.minUnitLength * 1000).toFixed(0) + ' mm')}. This one is ${n((o.unitLength * 1000).toFixed(0) + ' mm')}.` +
+          (o.sections ? ` The split half is two ${n((an.shortestSection * 1000).toFixed(0) + ' mm')} sections: on their own they would rock into the gaps, so on a flight the extra hinge has to hold them in line as one unit.` : '') },
       { id: 'landing', title: 'One unit must fit on the mid platform',
         body: `A unit is ${n(an.unitOverall.toFixed(2) + ' m')} overall and the mid platform is ${n('1.00 m')}, so a unit can lie flat on it. The whole vehicle is ${n(an.totalLength.toFixed(2) + ' m')}, longer than the platform, so it crosses in an S-bend.` },
       { id: 'hinge', title: 'The hinge must bend further than the stairs',
@@ -683,11 +702,12 @@
     // what carrying the load takes
     $('spec-h').textContent = `What carrying ${o.personMass.toFixed(0)} kg takes`;
     const spec = [
-      ['Total mass', `person ${o.personMass.toFixed(0)} + seat ${o.chairMass.toFixed(0)} + two units ${(2 * o.unitMass).toFixed(0)} kg`, `${an.totalMass.toFixed(0)} kg`],
+      ['Total mass', `person ${o.personMass.toFixed(0)} + seat ${o.chairMass.toFixed(0)} + tracks ${(2 * o.unitMass).toFixed(0)}${an.extraMass ? ` + extra hinge motor ${an.extraMass.toFixed(0)}` : ''} kg`, `${an.totalMass.toFixed(0)} kg`],
       ['Track pull on the slope', `total weight × sin ${an.pitchDeg.toFixed(1)}°, to climb or to hold on the brakes`, `${(an.traction / 1000).toFixed(2)} kN`],
       ['Drive power at the tracks', `at walking pace, 0.25 m/s, before losses`, `${an.drivePower.toFixed(0)} W`],
       ['Sprocket torque', 'per unit, both units driving', `${an.sprocketTorque.toFixed(0)} N·m`],
       ['Hinge actuator', 'holding the vehicle up on its two ends while folded over an edge', `${(Math.round(an.hingeTorque / 10) * 10).toFixed(0)} N·m`],
+      ...(o.sections ? [['Extra hinge actuator', 'the same job for the short end section, on half the lever', `${(Math.round(an.hingeTorque / 20) * 10).toFixed(0)} N·m`]] : []),
       ...((o.mastMode === 'vArms' || o.mastMode === 'twoArm')
         ? [['Arm drives', 'two, self-locking; they level the cradle and move it fore and aft', `${(Math.round(two.maxArmTorque / 10) * 10).toFixed(0)} N·m each`]]
         : [
@@ -719,7 +739,7 @@
       tr.innerHTML = `<td>${a}°</td><td class="muted" colspan="6">calculating…</td>`;
       pb.appendChild(tr); prow[a] = tr;
       jobs.push(() => {
-        const r = TM.simulate(Object.assign({ height: state.height }, state.design, { reclineDeg: a, oneTrack: false }));
+        const r = TM.simulate(simOpts({ reclineDeg: a, oneTrack: false }));
         const t = r.summary.two, cg = closestGap(t), lv = assess(t);
         const tr2 = prow[a]; tr2.textContent = '';
         tr2.className = Math.abs(a - state.design.reclineDeg) < 7.5 ? 'current' : '';
@@ -740,7 +760,7 @@
       tr.innerHTML = `<td>${h.toFixed(1)} m</td><td class="muted" colspan="7">calculating…</td>`;
       body.appendChild(tr); rows[h] = tr;
       jobs.push(() => {
-        const r = h === state.height ? state.sim : TM.simulate(Object.assign({ height: h }, state.design));
+        const r = h === state.height ? state.sim : TM.simulate(simOpts({ height: h }));
         const u = r.summary.up, d = r.summary.down, g = r.summary.rigid, cg = closestGap(r.summary.two);
         const tr2 = rows[h]; tr2.textContent = '';
         if (h === state.height) tr2.className = 'current';
@@ -781,16 +801,18 @@
     const dist = (i) => (state.dir === 'up' ? sim.path[i].s : sim.sEnd - sim.path[i].s);
     const two = sim[state.dir], one = oneList(sim);
     const val = (p) => (key === 'tilt' ? deg(p.phi) : key === 'lean' ? deg(p.ev.tipAngle) : deg(p.beta));
-    return seq.map((i) => ({ x: dist(i), two: val(two[i]), one: key === 'hinge' ? null : val(one[i]) }));
+    return seq.map((i) => ({ x: dist(i), two: val(two[i]), one: key === 'hinge' ? null : val(one[i]), extra: key === 'hinge' && two[i].bends ? deg(extraBend(two[i])) : null }));
   }
   function buildCharts() {
     const lim = state.sim.opts.hingeLimitDeg;
     const hl = Math.max(40, Math.ceil(lim / 10) * 10);
     $('legend-one').hidden = !state.compare;
     document.querySelectorAll('.legend-one').forEach((e) => { e.hidden = !state.compare; });
+    document.querySelectorAll('.veh-name').forEach((e) => { e.textContent = vehName(); });
+    $('legend-extra').hidden = $('legend-extra2').hidden = !isSplit();
     makeChart('tilt', $('chart-tilt'), { height: 190, y0: -35, y1: 35, ticks: [-30, -15, 0, 15, 30], bands: true, series: ['two', 'one'] });
     makeChart('lean', $('chart-lean'), { height: 170, y0: -20, y1: 40, ticks: [-20, 0, 20, 40], bands: true, series: ['two', 'one'], ref: { y: HARD_STOP, label: `hard stop ${HARD_STOP.toFixed(1)}°` } });
-    makeChart('hinge', $('chart-hinge'), { height: 150, y0: -hl, y1: hl, ticks: null, bands: false, series: ['two'], limit: lim });
+    makeChart('hinge', $('chart-hinge'), { height: 150, y0: -hl, y1: hl, ticks: null, bands: false, series: isSplit() ? ['two', 'extra'] : ['two'], limit: lim });
   }
   function makeChart(key, host, cfg) {
     const data = seriesFor(key);
@@ -840,9 +862,10 @@
       return d;
     };
     if (cfg.series.includes('one') && state.compare) el('path', { d: path('one'), fill: 'none', stroke: C.one, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' });
+    if (cfg.series.includes('extra')) el('path', { d: path('extra'), fill: 'none', stroke: C.two, 'stroke-width': 2, 'stroke-dasharray': '6 4', 'stroke-linejoin': 'round' });
     el('path', { d: path('two'), fill: 'none', stroke: C.two, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' });
     const cross = el('line', { y1: m.t, y2: H - m.b, stroke: C.ink, 'stroke-width': 1, opacity: 0.55 });
-    const dots = cfg.series.filter((s) => s === 'two' || state.compare).map((s) => el('circle', { r: 4.5, fill: s === 'two' ? C.two : C.one, stroke: C.surface, 'stroke-width': 2 }));
+    const dots = cfg.series.filter((s) => s !== 'one' || state.compare).map((s) => el('circle', { r: s === 'extra' ? 3.5 : 4.5, fill: s === 'one' ? C.one : s === 'extra' ? C.surface : C.two, stroke: s === 'extra' ? C.two : C.surface, 'stroke-width': 2 }));
     host.textContent = '';
     host.appendChild(svg);
     const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
@@ -862,9 +885,9 @@
       for (const s of cfg.series) {
         if (s === 'one' && !state.compare) continue;
         const row = document.createElement('div'); row.className = 't-row';
-        const kk = document.createElement('i'); kk.className = 'key ' + s;
+        const kk = document.createElement('i'); kk.className = s === 'extra' ? 'key two dashed' : 'key ' + s;
         const b = document.createElement('b'); b.textContent = dpt[s].toFixed(1) + '°';
-        const sp = document.createElement('span'); sp.textContent = s === 'two' ? 'Two tracks' : 'One long track';
+        const sp = document.createElement('span'); sp.textContent = s === 'one' ? 'One long track' : key !== 'hinge' ? vehName() : s === 'extra' ? 'Extra hinge' : isSplit() ? "Seat's hinge" : 'Hinge';
         row.append(kk, b, sp); tip.appendChild(row);
       }
       const r = svg.getBoundingClientRect();
@@ -884,7 +907,7 @@
       const dp = ch.data[Math.min(k, ch.data.length - 1)];
       if (!dp) continue;
       ch.cross.setAttribute('x1', ch.X(dp.x)); ch.cross.setAttribute('x2', ch.X(dp.x));
-      const ser = ch.cfg.series.filter((s) => s === 'two' || state.compare);
+      const ser = ch.cfg.series.filter((s) => s !== 'one' || state.compare);
       ch.dots.forEach((dot, j) => {
         dot.setAttribute('cx', ch.X(dp.x));
         dot.setAttribute('cy', ch.Y(Math.max(ch.cfg.y0, Math.min(ch.cfg.y1, dp[ser[j]]))));
@@ -906,9 +929,19 @@
     const L = (u, v) => u + (v - u) * t;
     const P = (u, v) => ({ x: L(u.x, v.x), z: L(u.z, v.z) });
     const arms = a.arms && b.arms ? { B1: P(a.arms.B1, b.arms.B1), B2: P(a.arms.B2, b.arms.B2), T1: P(a.arms.T1, b.arms.T1), T2: P(a.arms.T2, b.arms.T2) } : null;
-    return { R: P(a.R, b.R), J: P(a.J, b.J), F: P(a.F, b.F), P: P(a.P, b.P), pitch: L(a.pitch, b.pitch), beta: L(a.beta, b.beta),
+    const q = { R: P(a.R, b.R), J: P(a.J, b.J), F: P(a.F, b.F), P: P(a.P, b.P), pitch: L(a.pitch, b.pitch), beta: L(a.beta, b.beta),
       phi: L(a.phi, b.phi), a1: L(a.a1, b.a1), a2: L(a.a2, b.a2), arms, ev: t < 0.5 ? a.ev : b.ev };
+    if (a.pts && b.pts) {
+      q.pts = a.pts.map((u, i) => P(u, b.pts[i]));
+      q.units = q.pts.slice(1).map((u, i) => [q.pts[i], u]);
+      q.bends = a.bends.map((u, i) => L(u, b.bends[i]));
+      q.m = a.m;
+    }
+    return q;
   }
+  const unitsOf = (p) => p.units || [[p.R, p.J], [p.J, p.F]];
+  // bend of the extra hinge (the largest, if more than one) on a split vehicle
+  const extraBend = (p) => (!p.bends ? null : p.bends.filter((_, j) => j !== p.m - 1).reduce((u, v) => (Math.abs(v) > Math.abs(u) ? v : u), 0));
   function poseAt(list, k) {
     const n = state.sim.path.length;
     const k0 = Math.max(0, Math.min(n - 1, Math.floor(k))), k1 = Math.min(n - 1, k0 + 1), t = k - k0;
@@ -1013,21 +1046,32 @@
 
     function hinge(p, rho) {
       const r = rho * 0.5;
-      const a1 = Math.atan2(p.J.z - p.R.z, p.J.x - p.R.x), a2 = Math.atan2(p.F.z - p.J.z, p.F.x - p.J.x);
-      if (Math.abs(p.beta) > 0.02) {
+      const bendArc = (Q, a1, a2, b, rr) => {
+        if (Math.abs(b) <= 0.02) return;
         g.beginPath();
-        g.arc(SX(p.J.x), SY(p.J.z), rho * 1.9 * scale, -a1, -a2, p.beta > 0);
+        g.arc(SX(Q.x), SY(Q.z), rr * scale, -a1, -a2, b > 0);
         g.strokeStyle = C.ink; g.globalAlpha = 0.5; g.lineWidth = 1.5; g.stroke(); g.globalAlpha = 1;
-      }
+      };
+      bendArc(p.J, p.a1, p.a2, p.beta, rho * 1.9);
       g.beginPath(); g.arc(SX(p.J.x), SY(p.J.z), r * scale, 0, Math.PI * 2);
       g.fillStyle = C.nosing; g.fill(); g.lineWidth = 2; g.strokeStyle = C.track; g.stroke();
+      // the extra hinges of a split half: their own motor, drawn as a smaller disc
+      if (!p.pts) return;
+      for (let j = 1; j < p.pts.length - 1; j++) {
+        if (j === p.m) continue;
+        const Q = p.pts[j], A = p.pts[j - 1], B = p.pts[j + 1];
+        const a1 = Math.atan2(Q.z - A.z, Q.x - A.x), a2 = Math.atan2(B.z - Q.z, B.x - Q.x);
+        bendArc(Q, a1, a2, a2 - a1, rho * 1.5);
+        g.beginPath(); g.arc(SX(Q.x), SY(Q.z), r * 0.8 * scale, 0, Math.PI * 2);
+        g.fillStyle = C.nosing; g.fill(); g.lineWidth = 2; g.strokeStyle = C.track; g.stroke();
+      }
     }
 
     // Averaging link: an arm fixed to each unit and two equal links to a collar on a
     // short post. The four equal sides make a diamond, so that post always points
     // halfway between the units; the arm leans from it.
     function link(p) {
-      const a1 = Math.atan2(p.J.z - p.R.z, p.J.x - p.R.x), a2 = Math.atan2(p.F.z - p.J.z, p.F.x - p.J.x);
+      const a1 = p.a1, a2 = p.a2;
       const A1 = { x: p.J.x + TM.LINK_ARM * Math.cos(a1 + 0.75 * Math.PI), z: p.J.z + TM.LINK_ARM * Math.sin(a1 + 0.75 * Math.PI) };
       const A2 = { x: p.J.x + TM.LINK_ARM * Math.cos(a2 + 0.25 * Math.PI), z: p.J.z + TM.LINK_ARM * Math.sin(a2 + 0.25 * Math.PI) };
       const Q = { x: A1.x + A2.x - p.J.x, z: A1.z + A2.z - p.J.z };
@@ -1180,7 +1224,7 @@
 
     // two tracks
     const dirSign = state.dir === 'up' ? 1 : -1;
-    for (const [A, B] of [[two.R, two.J], [two.J, two.F]]) paint.unit(A, B, rho, state.travel, dirSign);
+    for (const [A, B] of unitsOf(two)) paint.unit(A, B, rho, state.travel, dirSign);
     paint.hinge(two, rho);
     paint.seat(o, two, false);
     drawCom(two, false);
@@ -1280,16 +1324,17 @@
     twoArm: ['tracks', 'hinge', 'armsTrack', 'cradle', 'chair'],
   };
   const SUPPORT_NAMES = { balance: 'One balancing arm', vArms: 'Two arms from the hinge', twoArm: 'Two arms, one on each track', average: 'One arm without a drive' };
-  const partNo = (o, id) => PARTS[o.mastMode].indexOf(id) + 1;
+  const partsFor = (o) => (o.sections ? PARTS[o.mastMode].slice(0, 2).concat(['extraHinge'], PARTS[o.mastMode].slice(2)) : PARTS[o.mastMode]);
+  const partNo = (o, id) => partsFor(o).indexOf(id) + 1;
   const isArms = (o) => o.mastMode === 'vArms' || o.mastMode === 'twoArm';
 
   function drawMechSide() {
     const sim = state.sim, o = sim.opts, prof = sim.profile, rho = o.sprocketRadius;
     const { g, W, H } = fitCanvas($('mech-side'));
     const p = mechPose(sim);
-    const parts = TM.placeSeat(o, p);
-    let x0 = Math.min(p.R.x, p.F.x) - rho - 0.12, x1 = Math.max(p.R.x, p.F.x) + rho + 0.12;
-    let z0 = Math.min(p.R.z, p.F.z, p.J.z) - rho - 0.12, z1 = -Infinity;
+    const parts = TM.placeSeat(o, p), joints = p.pts || [p.R, p.J, p.F];
+    let x0 = Math.min(...joints.map((q) => q.x)) - rho - 0.12, x1 = Math.max(...joints.map((q) => q.x)) + rho + 0.12;
+    let z0 = Math.min(...joints.map((q) => q.z)) - rho - 0.12, z1 = -Infinity;
     for (const q of parts) { x0 = Math.min(x0, q.ax - q.r, q.bx - q.r); x1 = Math.max(x1, q.ax + q.r, q.bx + q.r); z1 = Math.max(z1, q.az + q.r, q.bz + q.r); }
     z1 += 0.08;
     const pad = 22, scale = Math.min((W - 2 * pad) / (x1 - x0), (H - 2 * pad) / (z1 - z0));
@@ -1297,7 +1342,7 @@
     const SX = (x) => ox + (x - x0) * scale, SY = (z) => H - oy - (z - z0) * scale;
     const pt = painter(g, SX, SY, scale);
     pt.stairs(prof, sim.terrain.V, false);
-    for (const [A, B] of [[p.R, p.J], [p.J, p.F]]) pt.unit(A, B, rho, 0, 1);
+    for (const [A, B] of unitsOf(p)) pt.unit(A, B, rho, 0, 1);
     pt.hinge(p, rho);
     const s = pt.seat(o, p, false), Q = s.link ? s.link.Q : null, A = p.arms;
     // callouts, pushed sideways off the arm so they do not hide the joints
@@ -1306,8 +1351,9 @@
     const back = parts.find((q) => q.name === 'backrest');
     const armMid = { x: p.J.x + (p.P.x - p.J.x) * 0.62, z: p.J.z + (p.P.z - p.J.z) * 0.62 };
     const at = {
-      tracks: [(p.R.x + p.J.x) / 2, (p.R.z + p.J.z) / 2, { dx: -8, dy: 34 }],
+      tracks: p.pts && p.m > 1 ? [p.J.x + (p.F.x - p.J.x) * 0.75, p.J.z + (p.F.z - p.J.z) * 0.75, { dx: 14, dy: 32 }] : [(p.R.x + p.J.x) / 2, (p.R.z + p.J.z) / 2, { dx: -8, dy: 34 }],
       hinge: [p.J.x, p.J.z, { dx: 34, dy: 34 }],
+      extraHinge: p.pts ? (() => { const j = p.m === 1 ? 2 : 1; return [p.pts[j].x, p.pts[j].z, { dx: p.m === 1 ? 26 : -26, dy: 36 }]; })() : null,
       link: Q ? [Q.x, Q.z, side(-48)] : null,
       armDrive: [p.J.x + 0.05, p.J.z - 0.05, { dx: 44, dy: 8 }],
       arm: [armMid.x, armMid.z, side(46)],
@@ -1318,7 +1364,7 @@
       armsTrack: A ? [(A.B1.x + A.T1.x) / 2, (A.B1.z + A.T1.z) / 2, { dx: -44, dy: 4 }] : null,
       cradle: A ? [A.T2.x, A.T2.z, { dx: 38, dy: -24 }] : null,
     };
-    PARTS[o.mastMode].forEach((id, i) => { const a = at[id]; if (a) callout(g, SX(a[0]), SY(a[1]), a[2].dx, a[2].dy, i + 1); });
+    partsFor(o).forEach((id, i) => { const a = at[id]; if (a) callout(g, SX(a[0]), SY(a[1]), a[2].dx, a[2].dy, i + 1); });
   }
   function drawMechFront() {
     const sim = state.sim, o = sim.opts, an = sim.an, rho = o.sprocketRadius, seat = sim.seat;
@@ -1418,8 +1464,12 @@
     const mem = Object.fromEntries(st.members.map((m) => [m.part, m])), drv = Object.fromEntries(st.drives.map((d) => [d.part, d]));
     const r10 = (v) => Math.round(v / 10) * 10;
     const armLoad = mem.Arms ? `At twice the worst load they reach ${(mem.Arms.stress / 1e6).toFixed(0)} MPa, ${mem.Arms.factor.toFixed(1)} times below yield.` : '';
+    const half = o.sections ? (o.mainJoint === 1 ? 'front' : 'rear') : null, short = o.sections ? Math.min(...o.sections) : 0;
     const text = {
-      tracks: ['Two track units', `Front and rear, each with a left and a right rubber track, ${o.unitLength.toFixed(2)} m sprocket to sprocket and ${o.vehicleWidth.toFixed(2)} m across. Cleats on the tracks hook the step nosings.`],
+      tracks: o.sections
+        ? ['Three track sections', `A ${o.unitLength.toFixed(2)} m ${half === 'front' ? 'rear' : 'front'} unit, and a ${half} half made of two ${short.toFixed(2)} m sections, each with a left and a right rubber track, ${o.vehicleWidth.toFixed(2)} m across. Cleats on the tracks hook the step nosings.`]
+        : ['Two track units', `Front and rear, each with a left and a right rubber track, ${o.unitLength.toFixed(2)} m sprocket to sprocket and ${o.vehicleWidth.toFixed(2)} m across. Cleats on the tracks hook the step nosings.`],
+      extraHinge: ['Extra hinge and motor', `Joins the two short sections of the ${half} half: a second self-locking gear motor, about ${o.extraHingeMass} kg with its axle, holding about ${r10(an.hingeTorque / 2)} N·m. It folds the short end section over an edge, or holds it in line with its neighbour. A ${short.toFixed(2)} m section spans only one gap between nosings, so on a flight it must be held straight or it rocks into the gaps.`],
       hinge: ['Hinge axle and hinge motor', `A 40 mm steel axle joins the units. A self-locking gear motor bends the hinge and holds a fold with the power off: about ${r10(an.hingeTorque)} N·m, ${drv['Hinge motor'].need} with bumps. It must turn at least 90° per metre travelled, 23°/s at walking pace.`],
       link: ['Averaging link', `A ${Math.round(TM.LINK_ARM * 1000)} mm arm fixed to each unit and two equal links to a collar on a short post. The four equal sides make a diamond, so that post always points halfway between the two units. ${o.mastMode === 'vArms' ? 'Both arms stand on it' : 'The arm leans from it'}, and it passes their load equally into both units${mem['Averaging links'] ? ': ' + mem['Averaging links'].load : ''}.`],
       armDrive: ['Arm drive', `A self-locking gear motor at the foot of the arm leans it up to ±${o.armLimitDeg}° from halfway, at ${(o.armRateDegPerM * o.speed).toFixed(0)}°/s, to keep the weight away from whichever edge the vehicle is near. It holds up to ${r10(two.maxMastMoment)} N·m, ${r10(2 * two.maxMastMoment)} N·m with bumps.`],
@@ -1432,7 +1482,7 @@
       cradle: ['Cradle', `Two 40 × 40 × 3 mm rails under the seat: a pin on the rear arm, and a pin on the front arm that slides ±${Math.round((o.mastMode === 'vArms' ? o.vArmSlide : o.twoArmSlide) * 100)} cm along the rail, so the arms can move without twisting it.`],
     };
     const ol = $('parts'); ol.textContent = '';
-    PARTS[o.mastMode].forEach((id, i) => {
+    partsFor(o).forEach((id, i) => {
       const [t, d] = text[id];
       const li = document.createElement('li');
       const n = document.createElement('span'); n.className = 'n'; n.textContent = String(i + 1);
@@ -1451,6 +1501,11 @@
       vArms: [middle, ['Why two arms from the hinge.', `The stretcher is held at two points, but both arms stand on the averaging post at the hinge, which does not swing with the tracks. That keeps most of the single arm's stability: it passes ${tally('vArms')} stress cases, against ${tally('balance')} for one balancing arm. It gives up some margin with a 200 kg person or a person who has slid 25 cm, and a seized front arm drive leaves the person tilted.`]],
       twoArm: [['Why arms on the tracks struggle.', `Each track unit tips at every fold, and on the flights one arm's foot sits about ${Math.round(2 * o.twoArmBase * Math.sin(pitch) * 100)} cm lower than the other's. The arms have to keep correcting, and the cradle's front pin needs ±${Math.round(o.twoArmSlide * 100)} cm of slide to stay level. It passes only ${tally('twoArm')} stress cases: on steeper stairs the cradle tilts up to 16°, lying flat hits the steps, and it needs a faster, wider hinge.`]],
     }[o.mastMode];
+    if (o.sections) {
+      const d = res(state.layout), b = res('balance');
+      why.unshift([`Splitting the ${half} half.`, `Two ${short.toFixed(2)} m sections let the ${half} half bend in two places, but for the same change of slope a short section has to turn about twice as fast, and it spans only one gap between nosings.` +
+        (d && b ? ` In the stress test this layout passes ${d.count.pass} of ${d.results.length} cases, against ${b.count.pass} of ${b.results.length} for two sections with the same seat support.` : '')]);
+    }
     why.push(['Side to side', `the vehicle stands on its left and right tracks. With the seat ${o.seatHeight.toFixed(2)} m up, the centre of mass is ${an.comHeight.toFixed(2)} m off the ground, so a ${o.vehicleWidth.toFixed(2)} m wide vehicle only tips when tilted past ${an.sideTipDeg.toFixed(0)}°. The stairs have no side slope, so that margin is for the person shifting and for bumps. Twin columns 0.4 m apart keep the support from rocking sideways.`]);
     const box = $('mech-why'); box.textContent = '';
     for (const [h, t] of why) {
@@ -1465,31 +1520,45 @@
   function renderStress() {
     const Rall = window.STRESS_RESULTS;
     if (!Rall || !Rall.designs) { $('stress-section').hidden = true; return; }
-    const mode = state.design.mastMode;
+    const mode = isSplit() ? state.layout : state.design.mastMode;
     const D = Rall.designs.find((d) => d.id === mode) || Rall.designs[0];
+    const dName = (d) => SUPPORT_NAMES[d.id] || d.name;
     const R = { hardStopDeg: Rall.hardStopDeg, grip: Rall.grip, results: D.results, structure: D.structure };
-    $('stress-sub').textContent = `Each way of holding up the seat, put through harder conditions at all three height settings and in both directions. A case passes if the vehicle never falls and can take a ${R.hardStopDeg.toFixed(1)}° lean anywhere, the lean of a stop from walking pace in 0.2 s. These results are for the default design of each, so they do not follow the sliders; run stress-test.js after changing it.`;
+    $('stress-sub').textContent = `Each way of holding up the seat, and each track layout with one half split in two, put through harder conditions at all three height settings and in both directions. A case passes if the vehicle never falls and can take a ${R.hardStopDeg.toFixed(1)}° lean anywhere, the lean of a stop from walking pace in 0.2 s. These results are for the default design of each, so they do not follow the sliders; run stress-test.js after changing it.`;
     // the four supports side by side
     const cb = $('compare-body'); cb.textContent = '';
+    let splitHead = false;
     for (const d of Rall.designs) {
+      if (d.split && !splitHead) {
+        splitHead = true;
+        const hr = document.createElement('tr'); hr.className = 'group-head';
+        const td = document.createElement('td'); td.colSpan = 5; td.textContent = 'One half split in two, with the balancing arm (compare with the first row)'; hr.appendChild(td); cb.appendChild(hr);
+      }
       const base = d.results[0], tr = document.createElement('tr');
       if (d.id === mode) tr.className = 'current';
       const drives = d.structure.normal.drives.filter((x) => x.part !== 'Hinge motor' && x.part !== 'Track drives').map((x) => `${x.part.toLowerCase()} ${x.need}`).join(', ');
-      const name = document.createElement('td'); name.textContent = SUPPORT_NAMES[d.id] + (d.id === 'balance' ? ' (recommended)' : ''); tr.appendChild(name);
+      const name = document.createElement('td'); name.textContent = dName(d) + (d.id === 'balance' ? ' (recommended)' : ''); tr.appendChild(name);
       const res = document.createElement('td'); res.className = 'fit';
       res.innerHTML = [['good', d.count.pass], ['warn', d.count.warn], ['bad', d.count.fail]].map(([l, n]) => chipHtml(l, String(n), true)).join(' ');
       tr.appendChild(res);
       const worstTilt = Math.max(...d.results.filter((r) => r.group !== 'Failures').map((r) => r.tilt));
-      for (const c of [`${base.tipUp.toFixed(1)}° · ${base.tipDown.toFixed(1)}°`, `${worstTilt.toFixed(0)}°`]) { const td = document.createElement('td'); td.textContent = c; tr.appendChild(td); }
+      const leanOf = (v) => (v < 0 ? 'falls' : v.toFixed(1) + '°');
+      for (const c of [`${leanOf(base.tipUp)} · ${leanOf(base.tipDown)}`, `${worstTilt.toFixed(0)}°`]) { const td = document.createElement('td'); td.textContent = c; tr.appendChild(td); }
       const dv = document.createElement('td'); dv.className = 'txt'; dv.textContent = drives || 'none'; tr.appendChild(dv);
       cb.appendChild(tr);
     }
-    $('stress-detail-h').textContent = `${SUPPORT_NAMES[D.id]}, case by case`;
+    $('stress-detail-h').textContent = `${dName(D)}${D.split ? ', with the balancing arm' : ''}, case by case`;
+    $('stress-note').textContent = isSplit() && state.design.mastMode !== 'balance'
+      ? 'The split layouts were stress tested with the balancing arm, so the cases below are for that, not for the seat support picked under Design.'
+      : 'Pick a seat support or a track layout under Design to see it in the simulation and its cases below.';
     $('stress-summary').innerHTML = [['good', `${D.count.pass} pass`], ['warn', `${D.count.warn} tight`], ['bad', `${D.count.fail} fail`]].map(([l, t]) => chipHtml(l, t)).join('');
     const body = $('stress-body'); body.textContent = '';
     let group = null;
     const lvl = { pass: 'good', warn: 'warn', fail: 'bad' }, word = { pass: 'Pass', warn: 'Tight', fail: 'Fail' };
-    for (const r of R.results) {
+    const ORDER = ['Baseline', 'Load', 'Posture', 'Stairs', 'Motors', 'Failures', 'Combined'];
+    const rank = (g) => (ORDER.indexOf(g) < 0 ? ORDER.length : ORDER.indexOf(g));
+    const ordered = R.results.map((r, i) => [r, i]).sort((a, b) => rank(a[0].group) - rank(b[0].group) || a[1] - b[1]).map(([r]) => r);
+    for (const r of ordered) {
       if (r.group !== group) {
         group = r.group;
         const tr = document.createElement('tr'); tr.className = 'group-head';
@@ -1528,16 +1597,29 @@
     });
     $('stress-parts-note').textContent = 'Members show stress at twice the worst steady load, to allow for bumps, and how many times that is below the limit (steel S355, 355 MPa). Drives show what each must deliver.';
     const find = (n) => R.results.find((r) => r.name === n);
-    const half = find('Hinge motor at half speed'), seize = find('Hinge motor seizes straight'), flat = find('Heavy, lying flat, steepest stairs');
-    const asks = [
+    const half = find('Hinge motor at half speed'), seize = find('Hinge motor seizes straight') || find("Seat's hinge motor seizes straight"), flat = find('Heavy, lying flat, steepest stairs');
+    const asks = [];
+    if (D.split) {
+      const b0 = D.results[0], bal = Rall.designs.find((d) => d.id === 'balance'), k0 = bal ? bal.results[0] : null;
+      const fast = find('Hinge motor half as fast again'), kFast = bal ? bal.results.find((r) => r.name === 'Hinge motor half as fast again') : null;
+      const lv = (v) => (v < 0 ? null : v.toFixed(1) + '°');
+      const pair = (r) => { const u = lv(r.tipUp), d = lv(r.tipDown); return u && d ? `${u} up and ${d} down` : u ? `${u} up but falls going down` : d ? `falls going up and ${d} down` : 'falls both ways'; };
+      if (k0) asks.push(`Keep two sections. Splitting the ${D.id === 'frontSplit' ? 'front' : 'rear'} half adds a second hinge motor and 6 kg but no margin: it takes ${pair(b0)}, against ${pair(k0)} for two sections, and fails ${D.count.fail} cases against ${bal.count.fail}.`);
+      if (b0.level === 'fail' && fast && fast.level !== 'fail') asks.push(`If it is built split anyway, its hinges must turn at least 180° per metre: at 120°/m it ${b0.why}. At 180°/m it takes ${pair(fast)}${kFast ? `, and two sections at 180°/m take ${pair(kFast)}` : ''}.`);
+      else if (D.id === 'frontSplit') asks.push('A split front half folds its short end section over an edge first and the seat\'s hinge later, which leaves less margin going up than folding the whole front unit at once.');
+      asks.push('A short section spans only one gap between nosings, so its hinge must hold it in line on the flights. If that hinge seizes straight the vehicle becomes the two-section one, which is safe.');
+    }
+    asks.push(
       'Keep the balance arm. It is what carries a person who has slid 25 cm, climbs 35.8° stairs and copes with a smaller hinge; the arm without its drive only just passes the default case.',
       `A hinge motor that turns at least 90° per metre travelled, 23°/s at walking pace. At half that it drops ${half ? Math.round(half.drop * 100) : '?'} cm at an edge.`,
-      `Stop the tracks the moment the hinge stops following. A seized hinge turns it into one long track, which drops ${seize ? Math.round(seize.drop * 100) : '?'} cm.`,
+      D.split
+        ? `Stop the tracks the moment the seat's hinge stops following. Seized straight, it leaves a long stiff part that drops ${seize ? Math.round(seize.drop * 100) : '?'} cm at an edge.`
+        : `Stop the tracks the moment the hinge stops following. A seized hinge turns it into one long track, which drops ${seize ? Math.round(seize.drop * 100) : '?'} cm.`,
       'After any drive fault, stop gently over half a second. That leans the weight only 2.9°, which every tight case can take.',
       'A four-point harness and a foot stop, so the person cannot slide more than about 10 cm.',
       `An arm about 5 cm taller if people will be carried lying flat on steeper stairs; at 0.5 m the backrest comes within ${flat ? Math.abs(Math.round(Math.min(flat.steps, flat.tracks) * 100)) : 3} cm of hitting.`,
       `Cleated tracks. Holding on the ${R.grip.pitchDeg.toFixed(1)}° flight needs grip of ${R.grip.hold.toFixed(2)}, and a hard stop going down ${R.grip.stop.toFixed(2)}. Wet rubber on steel can be well below that, so the tracks should hook the nosings, not rely on friction.`,
-    ];
+    );
     const ol = $('stress-asks'); ol.textContent = '';
     for (const a of asks) { const li = document.createElement('li'); const sp = document.createElement('span'); sp.textContent = a; li.appendChild(sp); ol.appendChild(li); }
   }
@@ -1552,9 +1634,11 @@
     const tiltCls = (p) => (Math.abs(deg(p.phi)) < 3 ? 'ok-t' : Math.abs(deg(p.phi)) < 10 ? 'warn-t' : 'bad-t');
     const leanTxt = (ev) => (!ev ? '–' : ev.tipAngle < 0 ? 'falling' : `${deg(ev.tipAngle).toFixed(1)}°`);
     const leanCls = (ev) => (!ev ? '' : deg(ev.tipAngle) >= HARD_STOP ? 'ok-t' : ev.tipAngle >= 0 ? 'warn-t' : 'bad-t');
+    const signed = (r) => `${deg(r) >= 0 ? '+' : ''}${deg(r).toFixed(1)}°`;
     const rows = [
-      ['group', 'two', 'Two tracks + hinge'],
-      ['two', 'Hinge bend', `${deg(two.beta) >= 0 ? '+' : ''}${deg(two.beta).toFixed(1)}°`, null],
+      ['group', 'two', vehName()],
+      ['two', isSplit() ? "Seat's hinge" : 'Hinge bend', signed(two.beta), null],
+      ...(two.bends ? [['two', 'Extra hinge', signed(extraBend(two)), null]] : []),
       ['two', 'Casualty tilt', tiltTxt(two), tiltCls(two)],
       ['two', 'Lean it can take', leanTxt(two.ev), leanCls(two.ev)],
       ['two', 'Support', marginText(two.ev), marginClass(two.ev)],
@@ -1659,11 +1743,18 @@
   const syncLevel = () => { lvl.hidden = isArms(state.design); };
   syncLevel();
   $('support').addEventListener('change', (e) => { state.design.mastMode = e.target.value; syncLevel(); rerun(); });
+  const lay = document.createElement('div'); lay.className = 'slider';
+  lay.innerHTML = '<div class="slider-top"><label for="layout">Track layout</label></div><select id="layout"></select><div class="hint">Split one half into two shorter sections, each pair joined by a hinge motor of its own. The stress test compares all three.</div>';
+  $('grp-vehicle').appendChild(lay);
+  for (const [id, l] of Object.entries(LAYOUTS)) { const op = document.createElement('option'); op.value = id; op.textContent = l.name + (id === 'two' ? ' (recommended)' : ''); $('layout').appendChild(op); }
+  $('layout').value = state.layout;
+  $('layout').addEventListener('change', (e) => { state.layout = e.target.value; rerun(); });
   VEHICLE_SLIDERS.forEach((s) => addSlider(s, $('grp-vehicle')));
   $('reset').addEventListener('click', () => {
     for (const s of SLIDERS) { state.design[s.key] = TM.DEFAULTS[s.key]; const i = $('sl-' + s.key); i.value = TM.DEFAULTS[s.key]; i.dispatchEvent(new Event('input')); }
     state.design.levelSeat = TM.DEFAULTS.levelSeat; $('level-seat').checked = state.design.levelSeat;
     state.design.mastMode = TM.DEFAULTS.mastMode; $('support').value = state.design.mastMode; syncLevel();
+    state.layout = 'two'; $('layout').value = 'two';
   });
 
   // theme + size
