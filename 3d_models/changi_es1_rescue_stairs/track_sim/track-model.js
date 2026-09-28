@@ -13,6 +13,8 @@
 
   const DEFAULTS = {
     height: 8.4, // top platform setting, m
+    rise: 0.17, // step rise, m
+    going: 0.28, // step going (tread depth), m
     unitLength: 0.7, // sprocket centre to sprocket centre, per unit
     sprocketRadius: 0.09,
     unitMass: 25,
@@ -27,8 +29,17 @@
     hingeLimitDeg: 55,
     hingeRateDegPerM: 120, // how fast the hinge actuator can bend, per metre travelled
     speed: 0.25, // m/s: only used to turn rates per metre into rates per second
+    comOffset: 0, // person shifted along the seat, m (+ towards the head)
+    seatBias: 0.15, // the seat's load centre set this far towards the head from the post, m
+    mastMode: 'balance', // 'balance': a drive at the arm's foot leans it to keep the weight
+    // furthest from tipping; 'average': arm held halfway between the units; 'upright': kept vertical
+    armLimitDeg: 50, // balance arm: lean either way from halfway between the units
+    armRateDegPerM: 60, // balance arm: how fast its drive turns, per metre travelled
+    armLockDeg: null, // balance arm drive seized at this lean from halfway (a failure), or null
+    levelLockDeg: null, // levelling drive frozen at this angle (a failure), or null
   };
 
+  const stairsOf = (o) => Object.assign({}, STAIRS, { rise: o.rise, going: o.going });
   const deg = (r) => (r * 180) / Math.PI;
   const rad = (d) => (d * Math.PI) / 180;
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -42,7 +53,7 @@
   // standard anthropometric tables. Every part is a capsule (a segment grown by r).
   const SEAT = { board: 0.03, bracket: 0.05, thigh: 0.48, shank: 0.5, torso: 0.5 };
   function seatModel(o) {
-    const key = `${o.reclineDeg}|${o.personMass}|${o.chairMass}`;
+    const key = `${o.reclineDeg}|${o.personMass}|${o.chairMass}|${o.comOffset}|${o.seatBias}`;
     if (o._seat && o._seat.key === key) return o._seat;
     const al = rad(o.reclineDeg);
     const sg = rad(10 * clamp((90 - o.reclineDeg) / 30, 0, 1)); // thighs a little raised, flat when lying
@@ -83,13 +94,14 @@
     // seat board a bracket's height above it. The drive and mast (40 %) sit at the pivot.
     let mu = 0, su = 0, sv = 0;
     for (const q of masses) { mu += q.m; su += q.m * q.p.u; sv += q.m * q.p.v; }
-    const du = -su / mu, dv = w + SEAT.bracket;
-    const mv = (p) => V(p.u + du, p.v + dv);
-    for (const q of parts) { q.a = mv(q.a); q.b = mv(q.b); }
-    for (const q of masses) q.p = mv(q.p);
+    const du = -su / mu + (o.seatBias || 0), dv = w + SEAT.bracket, off = o.comOffset || 0;
+    const mv = (p, k) => V(p.u + du + k, p.v + dv);
+    for (const q of parts) { const k = q.kind === 'body' ? off : 0; q.a = mv(q.a, k); q.b = mv(q.b, k); }
+    masses.forEach((q, i) => { q.p = mv(q.p, i < 5 ? off : 0); }); // the first five are the person
     masses.push({ p: V(0, 0), m: 0.4 * mc });
-    const M = mu + 0.4 * mc;
-    const out = { key, parts, masses, mass: M, com: V(0, (sv + mu * dv) / M), person: mp,
+    let M = 0, cu = 0, cv = 0;
+    for (const q of masses) { M += q.m; cu += q.m * q.p.u; cv += q.m * q.p.v; }
+    const out = { key, parts, masses, mass: M, com: V(cu / M, cv / M), person: mp,
       recline: o.reclineDeg, thighDeg: deg(sg), legDeg: deg(gm) };
     o._seat = out;
     return out;
@@ -103,8 +115,8 @@
   }
 
   // ---------------------------------------------------------------- stairs
-  function stairProfile(height) {
-    const { rise: r, going: g, lowerTreads: n, landing } = STAIRS;
+  function stairProfile(height, st = STAIRS) {
+    const { rise: r, going: g, lowerTreads: n, landing } = st;
     const zL = (n + 1) * r;
     const xL0 = n * g;
     const xL1 = xL0 + landing;
@@ -112,7 +124,7 @@
     const rUp = nUp ? (height - zL) / nUp : 0;
     const H = zL + nUp * rUp;
     const xP0 = xL1 + Math.max(nUp - 1, 0) * g;
-    const xP1 = xP0 + STAIRS.topPlatform;
+    const xP1 = xP0 + st.topPlatform;
     const pts = [[-6, 0], [0, 0]];
     for (let i = 1; i <= n; i++) pts.push([(i - 1) * g, i * r], [i * g, i * r]);
     pts.push([xL0, zL], [xL1, zL]);
@@ -333,7 +345,9 @@
   }
 
   // Horizontal distance from the centre of mass to the nearest edge of support.
+  const LINK_ARM = 0.15; // averaging-link arm fixed to each unit, m
   const SETTLE = 0.03; // a track within 3 cm of the surface settles onto it
+  const FALL = 0.05; // tipping further than this onto a track end counts as a fall
 
   function supportMargin(T, o, p) {
     const rho = o.sprocketRadius, tol = SETTLE;
@@ -356,14 +370,70 @@
     };
   }
 
+  // Where the seat pivot sits. 'average': at the top of a post that leans with the
+  // average pitch, the drive levelling the seat on top. 'upright': the drive sits at
+  // the foot of the post and tilts the whole post, so the pivot stays over the hinge
+  // and leans only by the seat tilt the drive has not yet taken out.
+  function placePivot(o, p) {
+    const a = o.mastMode === 'upright' ? p.phi : o.mastMode === 'balance' ? p.pitch + (p.psiRel || 0) : p.pitch;
+    p.P = { x: p.J.x - o.seatHeight * Math.sin(a), z: p.J.z + o.seatHeight * Math.cos(a) };
+  }
+
   // The levelling pivot turns the seat back towards level, but only so fast.
   function level(o, p, prevLam, ds) {
-    if (!o.levelSeat) { p.lam = 0; p.phi = p.pitch; return; }
-    const lim = rad(o.levelLimitDeg), target = clamp(p.pitch, -lim, lim);
+    const lean = p.pitch + (p.psiRel || 0); // what the arm leans, which the seat drive cancels
+    if (o.levelLockDeg != null) { p.lam = rad(o.levelLockDeg); p.phi = lean - p.lam; placePivot(o, p); return; }
+    if (!o.levelSeat) { p.lam = 0; p.phi = lean; placePivot(o, p); return; }
+    const lim = rad(o.levelLimitDeg), target = clamp(lean, -lim, lim);
     let lam = target;
     if (prevLam !== null) { const mx = rad(o.levelRateDegPerM) * ds; lam = prevLam + clamp(target - prevLam, -mx, mx); }
     p.lam = lam;
-    p.phi = p.pitch - lam;
+    p.phi = lean - lam;
+    placePivot(o, p);
+  }
+
+  // Balance arm: with the vehicle pose settled, lean the arm (within its range and
+  // speed) to where the weight can take the biggest push before the vehicle falls,
+  // without bringing the seat within 3 cm of the steps or tracks.
+  function balanceArm(T, TR, o, p, prevRel, ds) {
+    if (o.armLockDeg != null) { p.psiRel = rad(o.armLockDeg); placePivot(o, p); return; }
+    const rho = o.sprocketRadius, lim = rad(o.armLimitDeg), stepMax = rad(o.armRateDegPerM) * ds;
+    if (o.levelLockDeg != null) {
+      // the seat drive has stuck: the arm takes over levelling the seat as far as it can
+      const want = clamp(rad(o.levelLockDeg) - p.pitch, -lim, lim);
+      p.psiRel = prevRel == null ? want : prevRel + clamp(want - prevRel, -stepMax, stepMax);
+      placePivot(o, p);
+      return;
+    }
+    const wide = unitContacts(TR, p.R, p.J, rho, FALL).concat(unitContacts(TR, p.J, p.F, rho, FALL));
+    let lo = null, hi = null;
+    for (const c of wide) { if (!lo || c.x < lo.x) lo = c; if (!hi || c.x > hi.x) hi = c; }
+    if (!lo) return;
+    const a = prevRel == null ? -lim : Math.max(-lim, prevRel - stepMax);
+    const b = prevRel == null ? lim : Math.min(lim, prevRel + stepMax);
+    const cands = [];
+    for (let i = 0; i <= 16; i++) {
+      p.psiRel = a + ((b - a) * i) / 16;
+      p.phi = 0; // the seat drive keeps up (its lag is applied afterwards)
+      placePivot(o, p);
+      const c = centreOfMass(o, p);
+      const t = Math.min(Math.atan2(c.x - lo.x, Math.max(1e-6, c.z - lo.z)), Math.atan2(hi.x - c.x, Math.max(1e-6, c.z - hi.z)));
+      // beyond 25 degrees of margin there is nothing to gain; then move as little as possible
+      cands.push({ rel: p.psiRel, score: Math.min(t, rad(25)) - 1e-3 * Math.abs(p.psiRel - (prevRel == null ? 0 : prevRel)) });
+    }
+    cands.sort((u, v) => v.score - u.score);
+    let pick = cands[0];
+    for (const c of cands) {
+      p.psiRel = c.rel; placePivot(o, p);
+      let gap = Infinity;
+      for (const q of placeSeat(o, p)) {
+        gap = Math.min(gap, segTerrainDist(T, q.ax, q.az, q.bx, q.bz) - q.r);
+        for (const [A, B] of [[p.R, p.J], [p.J, p.F]]) gap = Math.min(gap, segSegDist(q.ax, q.az, q.bx, q.bz, A.x, A.z, B.x, B.z) - q.r - rho);
+      }
+      if (gap >= 0.03) { pick = c; break; }
+    }
+    p.psiRel = pick.rel;
+    placePivot(o, p);
   }
 
   // Lift the hinge above (jx, jz0) until both outer track ends can touch the stairs.
@@ -449,10 +519,13 @@
     const R = { x: xJ - L * Math.cos(a1), z: zJ - L * Math.sin(a1) };
     const F = { x: xJ + L * Math.cos(a2), z: zJ + L * Math.sin(a2) };
     const avg = (a1 + a2) / 2; // pitch-averaging mast
-    const P = { x: xJ - o.seatHeight * Math.sin(avg), z: zJ + o.seatHeight * Math.cos(avg) };
-    // seat tilt if the levelling pivot keeps up (the travel loop applies its speed limit)
-    const lam = o.levelSeat ? clamp(avg, -rad(o.levelLimitDeg), rad(o.levelLimitDeg)) : 0;
-    return { J, R, F, a1, a2, beta: a2 - a1, pitch: avg, P, lam, phi: avg - lam };
+    // seat tilt if the levelling drive keeps up (the travel loop applies its speed limit)
+    const psiRel = o.mastMode === 'balance' ? o._psiRel || 0 : 0; // balance arm: its last lean
+    const lean = avg + psiRel;
+    const lam = o.levelLockDeg != null ? rad(o.levelLockDeg) : o.levelSeat ? clamp(lean, -rad(o.levelLimitDeg), rad(o.levelLimitDeg)) : 0;
+    const p = { J, R, F, a1, a2, beta: a2 - a1, pitch: avg, psiRel, lam, phi: lean - lam };
+    placePivot(o, p);
+    return p;
   }
 
   // --------------------------------------------------------------- checks
@@ -519,6 +592,15 @@
       const end = com.x < minX ? (p.R.x < p.F.x ? p.R : p.F) : (p.R.x < p.F.x ? p.F : p.R);
       tipDrop = Math.max(0, end.z - clearanceZ(TR, end.x, rho));
     }
+    // How far the weight's line of action can lean (a push, a hard stop, a bump)
+    // before the vehicle falls. Rocking onto a track end within FALL of the stairs
+    // only settles it, so those ends count as support here.
+    const wide = unitContacts(TR, p.R, p.J, rho, FALL).concat(unitContacts(TR, p.J, p.F, rho, FALL));
+    let cLo = null, cHi = null;
+    for (const c of wide) { if (!cLo || c.x < cLo.x) cLo = c; if (!cHi || c.x > cHi.x) cHi = c; }
+    const leanDown = cLo ? Math.atan2(com.x - cLo.x, Math.max(1e-6, com.z - cLo.z)) : -Math.PI / 2;
+    const leanUp = cHi ? Math.atan2(cHi.x - com.x, Math.max(1e-6, com.z - cHi.z)) : -Math.PI / 2;
+    const tipAngle = Math.min(leanDown, leanUp), tipDir = leanDown < leanUp ? 'downhill' : 'uphill';
     // seat and casualty: gap to the steps, and to the vehicle's own tracks
     let clearance = Infinity, trackClearance = Infinity, hit = null, trackHit = null;
     for (const q of placeSeat(o, p)) {
@@ -533,7 +615,7 @@
       rear, front,
       rearNosings: realNosings(p.R, p.J),
       frontNosings: realNosings(p.J, p.F),
-      com, support: [minX, maxX], margin, tipDrop, clearance, closest: hit, trackClearance, trackHit,
+      com, support: [minX, maxX], margin, tipDrop, clearance, closest: hit, trackClearance, trackHit, tipAngle, tipDir,
       // bending the seat's weight puts on the mast at the hinge axle, and on the levelling drive
       mastMoment: seatModel(o).mass * G * (com.load.x - p.J.x),
       levelMoment: seatModel(o).mass * G * (com.load.x - p.P.x),
@@ -543,7 +625,7 @@
   // ----------------------------------------------------------- whole trip
   function simulate(opts, step = 0.01) {
     const o = Object.assign({}, DEFAULTS, opts);
-    const prof = stairProfile(o.height);
+    const prof = stairProfile(o.height, stairsOf(o));
     const T = makeTerrain(prof); // the real steps: payload clearance, nosing count
     const TR = makeTerrain({ pts: prof.ride }); // nosing line with real floors and first risers
     const L = o.unitLength, rho = o.sprocketRadius;
@@ -572,10 +654,12 @@
       const seq = dir === 'up' ? path.map((_, i) => i) : path.map((_, i) => path.length - 1 - i);
       const res = new Array(path.length);
       const state = { folding: null };
-      let last = null, lam = null;
+      let last = null, lam = null, psi = null;
+      o._psiRel = 0;
       for (const i of seq) {
         const h = solveHinged(TR, QE, path[i], o, prof, dir, last, step, state);
         h.s = path[i].s;
+        if (o.mastMode === 'balance') { balanceArm(T, TR, o, h, psi, step); psi = o._psiRel = h.psiRel; }
         level(o, h, lam, step);
         lam = h.lam;
         res[i] = Object.assign(h, { ev: evaluate(T, TR, o, h) });
@@ -586,9 +670,10 @@
       // one long track: the same poses either way, but the seat levelling lags behind
       // in the direction of travel
       const one = new Array(path.length);
-      lam = null;
+      lam = null; psi = null;
       for (const i of seq) {
         const q = Object.assign({}, rigid[i]);
+        if (o.mastMode === 'balance') { balanceArm(T, TR, o, q, psi, step); psi = q.psiRel; }
         level(o, q, lam, step);
         lam = q.lam;
         q.ev = evaluate(T, TR, o, q);
@@ -609,7 +694,7 @@
   function summarise(poses, o, prof, step = 0.01) {
     let maxHinge = 0, maxPitch = 0, minMargin = Infinity, minClear = Infinity, maxJump = 0, jumpAt = null, minNosings = Infinity;
     let maxDrop = 0, dropAt = null, maxTilt = 0, maxTiltJump = 0, maxLevel = 0, minTrack = Infinity, closest = null, trackHit = null;
-    let maxMast = 0, maxLevelM = 0;
+    let maxMast = 0, maxLevelM = 0, minTip = Infinity, tipAt = null, tipDir = null, maxLink = 0;
     const win = Math.max(1, Math.round(0.1 / step)); // samples in 10 cm of travel
     for (let i = 0; i < poses.length; i++) {
       const p = poses[i];
@@ -621,6 +706,9 @@
       if (p.ev.trackClearance < minTrack) { minTrack = p.ev.trackClearance; trackHit = p.ev.trackHit; }
       maxTilt = Math.max(maxTilt, Math.abs(p.phi));
       maxMast = Math.max(maxMast, Math.abs(p.ev.mastMoment));
+      // the averaging diamond opens to 90 degrees minus the bend: link force M / (2 arm cos(bend))
+      maxLink = Math.max(maxLink, Math.abs(p.ev.mastMoment) / (2 * LINK_ARM * Math.max(0.2, Math.cos(p.beta))));
+      if (p.ev.tipAngle < minTip) { minTip = p.ev.tipAngle; tipAt = p.s; tipDir = p.ev.tipDir; }
       maxLevelM = Math.max(maxLevelM, Math.abs(p.ev.levelMoment));
       maxLevel = Math.max(maxLevel, Math.abs(p.lam));
       if (i >= win) {
@@ -643,6 +731,7 @@
       maxPitchChangePer10cmDeg: deg(maxJump), worstAt: jumpAt,
       maxSeatTiltDeg: deg(maxTilt), maxSeatTiltChangePer10cmDeg: deg(maxTiltJump), maxLevelDeg: deg(maxLevel),
       maxMastMoment: maxMast, maxLevelMoment: maxLevelM,
+      minTipAngleDeg: deg(minTip), tipAngleAt: tipAt, tipAngleDir: tipDir, maxLinkForce: maxLink,
       minNosingsOnFlight: minNosings === Infinity ? null : minNosings,
     };
   }
@@ -657,15 +746,48 @@
     }
     out.closestPart = a.minClearance <= b.minClearance ? a.closestPart : b.closestPart;
     out.trackHit = a.minTrackClearance <= b.minTrackClearance ? a.trackHit : b.trackHit;
+    out.tipAngleDir = a.minTipAngleDeg <= b.minTipAngleDeg ? a.tipAngleDir : b.tipAngleDir;
     return out;
+  }
+
+  // Hand-calculation stresses in the seat support ("column and cradle") at twice the
+  // worst steady load, to allow for bumps. Steel S355: yield 355 MPa, shear 205 MPa.
+  // sm: a run summary (worst of up and down) for these options.
+  const SUPPORT = { dyn: 2, fy: 355e6, fs: 205e6, col: [0.05, 0.004], colGap: 0.4, rod: 0.012,
+    rail: [0.04, 0.003], hingeAxle: 0.04, hingeAxleArm: 0.08, tiltAxle: 0.03 };
+  function structure(opts, sm) {
+    const o = Object.assign({}, DEFAULTS, opts), S = SUPPORT, seat = seatModel(o), W = seat.mass * G;
+    const boxZ = ([b, t]) => (b ** 4 - (b - 2 * t) ** 4) / 12 / (b / 2);
+    const Mcol = S.dyn * sm.maxMastMoment;
+    const link = (S.dyn * sm.maxLinkForce) / 2; // two diamonds, one each side
+    // cradle: each half of the load cantilevers from the tilt axle
+    let head = 0, feet = 0;
+    for (const q of seat.masses) { const m = q.m * G * q.p.u; if (m > 0) head += m; else feet -= m; }
+    const Mrail = S.dyn * Math.max(head, feet);
+    const Mhinge = S.dyn * ((W + o.unitMass * G) / 2) * S.hingeAxleArm;
+    const members = [
+      { part: 'Columns', size: '2 × 50 × 50 × 4 mm box tube, 0.4 m apart', load: `${Mcol.toFixed(0)} N·m bend`, stress: Mcol / (2 * boxZ(S.col)), limit: S.fy },
+      { part: 'Averaging links', size: '12 mm rods, a diamond each side', load: `${(link / 1000).toFixed(1)} kN each`, stress: link / (Math.PI * S.rod ** 2 / 4), limit: S.fy },
+      { part: 'Cradle rails', size: '2 × 40 × 40 × 3 mm box tube', load: `${Mrail.toFixed(0)} N·m bend`, stress: Mrail / (2 * boxZ(S.rail)), limit: S.fy },
+      { part: 'Hinge axle', size: '40 mm solid bar', load: `${Mhinge.toFixed(0)} N·m bend`, stress: Mhinge / (Math.PI * S.hingeAxle ** 3 / 32), limit: S.fy },
+      { part: 'Tilt axle', size: '30 mm bar, double shear', load: `${(S.dyn * W / 1000).toFixed(1)} kN`, stress: (S.dyn * W) / (2 * Math.PI * S.tiltAxle ** 2 / 4), limit: S.fs },
+    ];
+    for (const m of members) m.factor = m.limit / m.stress;
+    const an = analyse(o);
+    const drives = [
+      { part: 'Hinge motor', need: `${(S.dyn * an.hingeTorque).toFixed(0)} N·m`, note: 'self-locking; holds a fold with the power off' },
+      { part: 'Seat tilt drives', need: `${Math.max(S.dyn * sm.maxLevelMoment, an.levelTorque).toFixed(0)} N·m each`, note: 'two, self-locking; either one holds the seat alone' },
+      { part: 'Track drives', need: `${an.sprocketTorque.toFixed(0)} N·m, ${an.drivePower.toFixed(0)} W`, note: 'per unit and in total, at 0.25 m/s; spring brakes' },
+    ];
+    return { members, drives };
   }
 
   // Closed-form checks from the stair and track dimensions.
   function analyse(opts) {
     const o = Object.assign({}, DEFAULTS, opts);
-    const s = stairProfile(o.height);
-    const g = STAIRS.going;
-    const nosing = Math.max(Math.hypot(g, STAIRS.rise), s.nUp ? Math.hypot(g, s.rUp) : 0);
+    const st = stairsOf(o), s = stairProfile(o.height, st);
+    const g = st.going;
+    const nosing = Math.max(Math.hypot(g, st.rise), s.nUp ? Math.hypot(g, s.rUp) : 0);
     const pitch = Math.max(s.pitchLower, s.pitchUpper);
     const L = o.unitLength, rho = o.sprocketRadius;
     const seat = seatModel(o);
@@ -716,6 +838,6 @@
     };
   }
 
-  return { STAIRS, DEFAULTS, stairProfile, makeTerrain, groundZ, clearanceZ, restAngle, restAngleBack,
-    sprocketPath, solveHinged, solveRigid, evaluate, simulate, analyse, seatModel, placeSeat, deg, rad };
+  return { STAIRS, DEFAULTS, SUPPORT, LINK_ARM, stairProfile, makeTerrain, groundZ, clearanceZ, restAngle, restAngleBack,
+    sprocketPath, solveHinged, solveRigid, evaluate, simulate, analyse, structure, seatModel, placeSeat, deg, rad };
 });

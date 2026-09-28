@@ -83,74 +83,121 @@ node -e "const TM = require('./track_sim/track-model.js'); console.log(TM.simula
 
 - **Vehicle:** 0.70 m units (sprocket centre to sprocket centre), a 90 mm sprocket radius, and
   25 kg per unit. The hinge bends ±55° at up to 120° per metre of travel.
-- **Seat:** a 120 kg person reclined 45° from vertical. The seat and its drive weigh 25 kg, and
-  the levelling pivot sits on a post 0.5 m above the hinge axle, so every posture from sitting up
-  to lying flat fits. The person rides head uphill: backwards going up and facing forward coming
-  down.
+- **Seat:** a 120 kg person reclined 45° from vertical, in a stretcher-chair that weighs 25 kg
+  with its drives. It sits on an arm 0.5 m above the hinge axle, so every posture from sitting up
+  to lying flat fits. The seat's load centre is set 15 cm towards the head from the arm. The
+  person rides head uphill: backwards going up and facing forward coming down.
+- **Balance arm:** a drive at the foot of the arm leans it up to ±50° from halfway between the
+  units, at 60° per metre of travel. It keeps the weight away from whichever edge the vehicle is
+  near. Drives on top of the arm keep the seat level.
 
 ### Results
 
-Worst case over the three height settings (at 3.2 m the casualty tilts at most 3°).
+Worst case over the three height settings.
 
 | | Two tracks + driven hinge | One long track |
 |---|---|---|
-| Casualty tilt, worst moment | 5° (the seat drive catches up within 3 cm) | 23° |
-| Vehicle pitch change per 10 cm of travel | 7.4° up, 9.8° down | 31.6° |
-| Worst drop at a platform edge | none, up or down | 40 cm (tips over the edge) |
+| Casualty tilt, worst moment | 5° (the seat drives catch up within 3 cm) | 25° |
+| Vehicle pitch change per 10 cm of travel | 7.9° up, 8.6° down | 31.6° |
+| Worst drop at a platform edge | none, up or down | 23 cm (tips over the edge) |
+| Lean it can take anywhere before it falls | 10.7° up, 8.3° down | falls at every edge |
 | Hinge bend used | ±40° | – |
 
-The fit of the seat and person depends on the recline and the seat height, not on the person's
-mass. Stability stays the same from 60 kg to 180 kg because the level seat keeps its centre of
-mass over the pivot. Each cell shows the closest gap to the steps / to the vehicle's own tracks:
+"Lean it can take" is how far a push, a hard stop or a bump can lean the weight before the
+vehicle falls over an edge. A stop from walking pace (0.25 m/s) in 0.2 s leans it 7.3°.
 
-| Recline | Posture | Seat 0.35 m above hinge | Seat 0.50 m above hinge |
+The fit of the seat and person depends on the recline. With the default 0.5 m arm, the closest
+gaps to the steps and to the vehicle's own tracks are:
+
+| Recline | Posture | To the steps | To its own tracks |
 |---|---|---|---|
-| 15° | sitting up | 12 / −6 cm: feet hit the rear track | 26 / 8 cm |
-| 30° | leaning back | 21 / 5 cm | 36 / 20 cm |
-| 45° | half lying, half sitting | 34 / 23 cm | 49 / 36 cm |
-| 60° | half lying | 45 / 27 cm | 59 / 42 cm |
-| 75° | mostly lying | 24 / 10 cm | 39 / 24 cm |
-| 90° | lying flat | 7 / −10 cm: backrest hits the front track | 21 / 5 cm |
-
-What a 120 kg person asks of the vehicle (195 kg in total, on the 31.6° flight):
-
-| Item | Value |
-|---|---|
-| Track pull to climb, or to hold on the brakes | 1.0 kN |
-| Drive power at the tracks at 0.25 m/s, before losses | 250 W |
-| Sprocket torque, each unit | 45 N·m |
-| Hinge actuator, holding the vehicle up on its two ends over an edge | about 580 N·m |
-| Seat levelling drive (self-locking) | about 250 N·m, ±40°, at least 25°/s at 0.25 m/s |
-| Track grip on the treads (friction coefficient) | at least 0.62, whatever the load |
+| 15° | sitting up | 25 cm | 6 cm |
+| 30° | leaning back | 34 cm | 15 cm |
+| 45° | half lying, half sitting | 45 cm | 25 cm |
+| 60° | half lying | 45 cm | 28 cm |
+| 75° | mostly lying | 26 cm | 21 cm |
+| 90° | lying flat | 11 cm | 2 cm (tight) |
 
 ### How the seat is held up
 
-A single post rises from the hinge axle to the seat. Front to back, the vehicle stands on its two
-track units, so the post only has to carry the seat's 1.4 kN down to the axle and keep it centred
-between them. The parts, with loads for the 120 kg default:
+A level stretcher over a 31.6° flight has stairs about 0.6 m higher under one end of each metre
+than the other, and the slope reverses at every platform. Legs on each track unit would have to
+grow and shrink by that much all the time, so the support sits in the middle, on the hinge axle.
+Operating tables hold lying patients the same way, on one central column with a tilting top.
+The support is built to look and be sturdy:
 
-1. **Two track units**, front and rear. Each has a left and a right rubber track, 0.70 m sprocket
-   to sprocket, and the vehicle is 0.75 m across the tracks.
-2. **Hinge axle and hinge motor.** A 30 mm steel axle joins the units. A self-locking gear motor
-   bends the hinge and holds a fold without power: about 580 N·m, turning 30°/s.
-3. **Averaging link.** A 150 mm arm fixed to each unit, and two equal links to a collar that
-   slides on the post. The four equal sides make a diamond, so the post always sits halfway
-   between the two units' angles. Without it, the post would swing with one unit through every
-   fold, up to 40°. The link carries up to 370 N·m, about 1.2 kN in each link. A small bevel
-   differential on the axle, like a car's, does the same job.
-4. **Post.** A fork pivots on the hinge axle on two bearings 0.3 m apart, which stops it rocking
-   sideways. It joins into one tube up to the seat pivot, 0.5 m from the axle. The worst steady
-   bend is 370 N·m, on the flights, where the post leans 31.6°. A 60 × 4 mm steel tube takes that
-   at 81 MPa with twice the load for bumps, 4.4 times below yield, and bends 0.5 mm.
-5. **Levelling drive.** A self-locking worm-gear drive at the top of the post, steered by a tilt
-   sensor on the seat. It turns the seat back to level: ±40° at 38°/s. It sees about 40 N·m on the
-   trip and should hold 250 N·m.
-6. **Reclining stretcher-chair** with a chest harness, 15° (sitting up) to 90° (flat).
+1. **Two track units**, front and rear, each with a left and a right rubber track, 0.75 m across.
+   The tracks have cleats that hook the step nosings.
+2. **Hinge axle and hinge motor.** A 40 mm steel axle joins the units. A self-locking gear motor
+   bends the hinge and holds a fold with the power off, about 580 N·m (1.2 kN·m with bumps). It
+   must turn at least 90° per metre of travel (23°/s at walking pace).
+3. **Averaging link.** A 150 mm arm fixed to each unit, and two equal links to a collar on a short
+   post. The four equal sides make a diamond, so that post always points halfway between the two
+   units. The arm leans from it, and it passes the arm's load equally into both units.
+4. **Arm drive.** A self-locking gear motor at the foot of the arm leans it up to ±50° from halfway
+   at 15°/s. It holds up to 500 N·m (1 kN·m with bumps).
+5. **Arm.** Two 50 × 50 × 4 mm steel box columns 0.4 m apart, joined by cross tubes, 0.5 m from
+   the hinge axle to the seat's tilt axle. The two columns stop it rocking sideways.
+6. **Tilt drives and cradle.** Two self-locking tilt drives on top of the columns keep the seat
+   level; either one can hold the seat alone. A cradle of two 40 × 40 × 3 mm rails and struts
+   holds the seat on a triangle, not on a single point.
+7. **Stretcher-chair.** Reclines from 15° (sitting up) to 90° (flat), with a four-point harness
+   and a foot stop so the person can't slide more than about 10 cm.
 
-Side to side, the vehicle stands on its left and right tracks. With the seat 0.5 m up, the centre
-of mass is 0.71 m off the ground, so a 0.75 m wide vehicle tips only when tilted past 28°. The
-stairs have no side slope, so that margin covers the person shifting and bumps. The stairs are
-1.5 m wide between the side panels, so a wider vehicle would also fit.
+Side to side, the centre of mass is 0.71 m off the ground, so a 0.75 m wide vehicle only tips
+past 28° of side tilt. The stairs have no side slope, so that margin covers the person shifting
+and bumps.
+
+### Stress test
+
+`stress-test.js` puts the default design through harder conditions at all three height settings,
+in both directions, and sizes the support parts at twice the worst load:
+
+```bash
+cd track_sim && node stress-test.js
+```
+
+It also writes `stress-results.js`, which the page shows. A case passes if the vehicle never
+falls and can take a 7.3° lean anywhere. Results for the default design: 18 pass, 4 are tight
+and 3 fail.
+
+- **Passes:**
+  - a 200 kg or a 40 kg person;
+  - a person sliding 10 cm either way, or 25 cm towards the feet;
+  - sitting up, or lying flat and sliding;
+  - stairs as steep as 35.8°;
+  - a hinge at three-quarter speed or with only ±45° of range;
+  - a seat drive at half speed;
+  - an arm drive that seizes in the middle or leaning uphill;
+  - a seat drive stuck level, with the arm taking over the levelling.
+- **Tight:**
+  - lying flat comes within 2 cm of the front track;
+  - an arm drive seized leaning 20° downhill;
+  - a seat drive stuck on a flight;
+  - a 200 kg person half lying on 35.8° stairs.
+
+  None of these falls, but a hard stop at the worst moment could rock the vehicle.
+- **Fails:**
+  - a hinge motor at half speed drops 17 cm at an edge;
+  - a hinge motor that seizes and keeps driving becomes one long track and drops 23 cm;
+  - a 200 kg person lying flat on 35.8° stairs hits the tracks.
+
+Without its drive, the arm only passes the default case with 8.0°. It fails with the person
+sliding 25 cm, and is tight on steeper stairs and with a ±45° hinge. That is why the balance arm
+is part of the design.
+
+The support parts stay 4 to 100 times below their limit at twice the worst load for a 120 kg
+person, and at least 3.7 times below for 200 kg. What the stress test asks for:
+
+1. Keep the balance arm.
+2. Use a hinge motor that turns at least 90° per metre of travel.
+3. Stop the tracks the moment the hinge stops following.
+4. After any drive fault, stop gently over half a second. That leans the weight only 2.9°,
+   which every tight case can take.
+5. Fit a four-point harness and a foot stop.
+6. Make the arm about 5 cm taller if people will be carried lying flat on steeper stairs.
+7. Use cleated tracks. Holding on the flight needs a grip (friction coefficient) of 0.61, and a
+   hard stop going down 0.76. Wet rubber on steel can be well below that.
 
 ### Design rules from the math
 
@@ -159,23 +206,19 @@ stairs have no side slope, so that margin covers the person shifting and bumps. 
 2. One unit (0.88 m overall) must fit on the 1.0 m mid platform. The whole vehicle is longer than
    the platform, so it crosses in an S-bend.
 3. The hinge needs a range of at least ±45°, even though the slope only changes by 31.6°. It has
-   to fold the leading unit down before the middle reaches the edge. At ±35° the vehicle pivots
-   over the edge like one long track.
-4. The hinge must be driven. It needs at least 1.5 × 31.6° ÷ unit length, about 68°/m of travel,
-   and works best at 90–150°/m; much faster than that and the fold snaps. With a free hinge, the
-   units follow gravity and the front rears up on the risers.
-5. The hinge holds its fold over an edge until the centre of mass is 5 cm past it. That keeps the
-   trailing unit's end on the stairs. Straightening any earlier makes the vehicle rock back about
-   7 cm onto the stairs as it reaches the top platform.
-6. To stay stable on the slope, unit length divided by the height of the centre of mass above the
-   track must stay above 1.5 × tan(pitch). A level seat keeps its own centre of mass over the
-   pivot, so only the mast height counts.
-7. Half lying (a 45–60° recline) is the most compact posture and fits with the lowest seat.
-   Sitting up needs the seat about 0.5 m above the hinge so the feet clear the rear track, and so
-   does lying flat, so the head and feet clear the tracks on the slope.
+   to fold the leading unit down before the middle reaches the edge.
+4. The hinge must be driven, at 90–150° per metre of travel. Slower, the fold comes too late and
+   the vehicle drops at an edge. Much faster, it over-reacts. With a free hinge, the units follow
+   gravity and the front rears up on the risers.
+5. The hinge holds its fold over an edge until the centre of mass is 5 cm past it, so the trailing
+   unit keeps its end on the stairs.
+6. The vehicle must be able to take a hard stop anywhere, a 7.3° lean. The balance arm and the
+   seat's offset towards the head give it at least 8.3°.
+7. Half lying (a 45–60° recline) is the most compact posture. Sitting up and lying flat both need
+   the 0.5 m arm.
 
 The model is quasi-static (slow speed). At every centimetre it solves how both units rest on the
 real step geometry, then checks support, the gap around the seat and person, and tipping. Tracks
 ride on the line joining the step nosings. The person is a 1.80 m adult built from standard
-body-segment proportions. Forces and torques are for slow, steady driving; impacts and braking
-are not modelled.
+body-segment proportions. Forces and torques are for slow, steady driving, with a factor of two
+for bumps; impacts and braking dynamics are not modelled.
