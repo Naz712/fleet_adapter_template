@@ -19,7 +19,8 @@
     personMass: 120,
     chairMass: 25, // stretcher-chair, levelling drive and mast
     reclineDeg: 45, // backrest from vertical: about 15 sitting up, 90 lying flat
-    seatHeight: 0.35, // levelling pivot above the hinge axle
+    seatHeight: 0.5, // levelling pivot above the hinge axle (mast length)
+    vehicleWidth: 0.75, // across the outer edges of the left and right tracks
     levelSeat: true, // a driven pivot keeps the seat level
     levelLimitDeg: 40,
     levelRateDegPerM: 150, // how fast the pivot can re-level, per metre travelled
@@ -533,6 +534,9 @@
       rearNosings: realNosings(p.R, p.J),
       frontNosings: realNosings(p.J, p.F),
       com, support: [minX, maxX], margin, tipDrop, clearance, closest: hit, trackClearance, trackHit,
+      // bending the seat's weight puts on the mast at the hinge axle, and on the levelling drive
+      mastMoment: seatModel(o).mass * G * (com.load.x - p.J.x),
+      levelMoment: seatModel(o).mass * G * (com.load.x - p.P.x),
     };
   }
 
@@ -605,6 +609,7 @@
   function summarise(poses, o, prof, step = 0.01) {
     let maxHinge = 0, maxPitch = 0, minMargin = Infinity, minClear = Infinity, maxJump = 0, jumpAt = null, minNosings = Infinity;
     let maxDrop = 0, dropAt = null, maxTilt = 0, maxTiltJump = 0, maxLevel = 0, minTrack = Infinity, closest = null, trackHit = null;
+    let maxMast = 0, maxLevelM = 0;
     const win = Math.max(1, Math.round(0.1 / step)); // samples in 10 cm of travel
     for (let i = 0; i < poses.length; i++) {
       const p = poses[i];
@@ -615,6 +620,8 @@
       if (p.ev.clearance < minClear) { minClear = p.ev.clearance; closest = p.ev.closest; }
       if (p.ev.trackClearance < minTrack) { minTrack = p.ev.trackClearance; trackHit = p.ev.trackHit; }
       maxTilt = Math.max(maxTilt, Math.abs(p.phi));
+      maxMast = Math.max(maxMast, Math.abs(p.ev.mastMoment));
+      maxLevelM = Math.max(maxLevelM, Math.abs(p.ev.levelMoment));
       maxLevel = Math.max(maxLevel, Math.abs(p.lam));
       if (i >= win) {
         const jmp = Math.abs(p.pitch - poses[i - win].pitch);
@@ -635,6 +642,7 @@
       maxTipDrop: maxDrop, tipDropAt: dropAt,
       maxPitchChangePer10cmDeg: deg(maxJump), worstAt: jumpAt,
       maxSeatTiltDeg: deg(maxTilt), maxSeatTiltChangePer10cmDeg: deg(maxTiltJump), maxLevelDeg: deg(maxLevel),
+      maxMastMoment: maxMast, maxLevelMoment: maxLevelM,
       minNosingsOnFlight: minNosings === Infinity ? null : minNosings,
     };
   }
@@ -693,6 +701,10 @@
       // The seat's centre of mass sits above its pivot, so a seat left tilted by the full
       // pitch pulls on the levelling drive with this torque.
       levelTorque: seat.mass * G * seat.com.v * Math.sin(pitch),
+      // Side to side: the vehicle stands on its left and right tracks. It tips sideways
+      // once a side tilt carries the centre of mass past the outer track edge.
+      comHeight: rho + (seat.mass * (o.seatHeight + seat.com.v)) / M,
+      sideTipDeg: deg(Math.atan(o.vehicleWidth / 2 / (rho + (seat.mass * (o.seatHeight + seat.com.v)) / M))),
       friction: Math.tan(pitch),
       checks: [
         { id: 'support', ok: L >= 2 * nosing },

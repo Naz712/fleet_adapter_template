@@ -84,8 +84,9 @@ node -e "const TM = require('./track_sim/track-model.js'); console.log(TM.simula
 - **Vehicle:** 0.70 m units (sprocket centre to sprocket centre), a 90 mm sprocket radius, and
   25 kg per unit. The hinge bends ±55° at up to 120° per metre of travel.
 - **Seat:** a 120 kg person reclined 45° from vertical. The seat and its drive weigh 25 kg, and
-  the levelling pivot sits 0.35 m above the hinge. The person rides head uphill: backwards going
-  up and facing forward coming down.
+  the levelling pivot sits on a post 0.5 m above the hinge axle, so every posture from sitting up
+  to lying flat fits. The person rides head uphill: backwards going up and facing forward coming
+  down.
 
 ### Results
 
@@ -121,6 +122,35 @@ What a 120 kg person asks of the vehicle (195 kg in total, on the 31.6° flight)
 | Hinge actuator, holding the vehicle up on its two ends over an edge | about 580 N·m |
 | Seat levelling drive (self-locking) | about 250 N·m, ±40°, at least 25°/s at 0.25 m/s |
 | Track grip on the treads (friction coefficient) | at least 0.62, whatever the load |
+
+### How the seat is held up
+
+A single post rises from the hinge axle to the seat. Front to back, the vehicle stands on its two
+track units, so the post only has to carry the seat's 1.4 kN down to the axle and keep it centred
+between them. The parts, with loads for the 120 kg default:
+
+1. **Two track units**, front and rear. Each has a left and a right rubber track, 0.70 m sprocket
+   to sprocket, and the vehicle is 0.75 m across the tracks.
+2. **Hinge axle and hinge motor.** A 30 mm steel axle joins the units. A self-locking gear motor
+   bends the hinge and holds a fold without power: about 580 N·m, turning 30°/s.
+3. **Averaging link.** A 150 mm arm fixed to each unit, and two equal links to a collar that
+   slides on the post. The four equal sides make a diamond, so the post always sits halfway
+   between the two units' angles. Without it, the post would swing with one unit through every
+   fold, up to 40°. The link carries up to 370 N·m, about 1.2 kN in each link. A small bevel
+   differential on the axle, like a car's, does the same job.
+4. **Post.** A fork pivots on the hinge axle on two bearings 0.3 m apart, which stops it rocking
+   sideways. It joins into one tube up to the seat pivot, 0.5 m from the axle. The worst steady
+   bend is 370 N·m, on the flights, where the post leans 31.6°. A 60 × 4 mm steel tube takes that
+   at 81 MPa with twice the load for bumps, 4.4 times below yield, and bends 0.5 mm.
+5. **Levelling drive.** A self-locking worm-gear drive at the top of the post, steered by a tilt
+   sensor on the seat. It turns the seat back to level: ±40° at 38°/s. It sees about 40 N·m on the
+   trip and should hold 250 N·m.
+6. **Reclining stretcher-chair** with a chest harness, 15° (sitting up) to 90° (flat).
+
+Side to side, the vehicle stands on its left and right tracks. With the seat 0.5 m up, the centre
+of mass is 0.71 m off the ground, so a 0.75 m wide vehicle tips only when tilted past 28°. The
+stairs have no side slope, so that margin covers the person shifting and bumps. The stairs are
+1.5 m wide between the side panels, so a wider vehicle would also fit.
 
 ### Design rules from the math
 

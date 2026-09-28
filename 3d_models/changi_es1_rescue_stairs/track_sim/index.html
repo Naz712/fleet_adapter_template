@@ -206,6 +206,20 @@
   .slider input { width: 100%; accent-color: var(--two); margin: 2px 0 0; }
   .slider .hint { font-size: 12px; color: var(--muted); }
 
+  /* mechanism */
+  .mech { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px; }
+  @media (max-width: 760px) { .mech { grid-template-columns: minmax(0, 1fr); } }
+  .mech figure { margin: 0; display: grid; gap: 6px; }
+  .mech canvas { display: block; width: 100%; height: 340px; border: 1px solid var(--hair); border-radius: 10px; }
+  .mech figcaption { font-size: 12px; color: var(--muted); }
+  .mech-text { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+  @media (max-width: 860px) { .mech-text { grid-template-columns: minmax(0, 1fr); } }
+  .mech-text p { margin: 0; font-size: 14px; max-width: 64ch; }
+  .parts { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .parts li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+  .parts .n { width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--surface); display: grid; place-items: center; font: 600 11px var(--sans); margin-top: 1px; }
+  .parts b { color: var(--ink); font-weight: 600; }
+
   /* the math */
   .math { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
   @media (max-width: 860px) { .math { grid-template-columns: minmax(0, 1fr); } }
@@ -334,6 +348,19 @@
     </section>
   </div>
 
+  <section class="card panel" aria-labelledby="mech-h">
+    <h2 id="mech-h">How the seat is held up</h2>
+    <p class="sub">One post rises from the hinge axle to the seat. The side view shows the vehicle folded over the top platform edge on the way down, and the front view is from the foot of the stairs. Both are drawn to scale with the current design.</p>
+    <div class="mech">
+      <figure><canvas id="mech-side" aria-label="Side view of the vehicle, post and seat with numbered parts"></canvas><figcaption>Side view. The numbers match the parts list below.</figcaption></figure>
+      <figure><canvas id="mech-front" aria-label="Front view of the vehicle, post and seat between the stair side panels"></canvas><figcaption id="front-cap">Front view</figcaption></figure>
+    </div>
+    <div class="mech-text">
+      <ol class="parts" id="parts"></ol>
+      <div class="col" id="mech-why"></div>
+    </div>
+  </section>
+
   <section class="card panel" aria-labelledby="math-h">
     <h2 id="math-h">The math</h2>
     <div class="math">
@@ -398,7 +425,7 @@
   const SEAT_SLIDERS = [
     { key: 'personMass', label: 'Person', unit: ' kg', min: 40, max: 180, step: 5, fmt: (v) => v.toFixed(0), hint: 'The seat, its levelling drive and the mast add 25 kg.' },
     { key: 'reclineDeg', label: 'Recline', unit: '°', min: 10, max: 90, step: 1, fmt: (v) => `${v.toFixed(0)}° · ${postureName(v)}`, hint: 'Backrest from vertical: 15° sitting up, 45° half lying, 90° flat.' },
-    { key: 'seatHeight', label: 'Seat height', unit: ' m', min: 0.25, max: 0.9, step: 0.01, fmt: (v) => v.toFixed(2), hint: 'Levelling pivot above the hinge pin.' },
+    { key: 'seatHeight', label: 'Seat height', unit: ' m', min: 0.25, max: 0.9, step: 0.01, fmt: (v) => v.toFixed(2), hint: 'Length of the post from the hinge axle to the seat pivot.' },
   ];
   const VEHICLE_SLIDERS = [
     { key: 'unitLength', label: 'Unit length', unit: ' m', min: 0.5, max: 1.0, step: 0.01, fmt: (v) => v.toFixed(2), hint: 'Sprocket centre to sprocket centre, each unit.' },
@@ -420,7 +447,7 @@
   function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
   let C = {};
   function readColors() {
-    for (const k of ['bg', 'surface', 'surface-2', 'ink', 'ink-2', 'muted', 'hair', 'hair-strong', 'steel', 'steel-edge', 'nosing', 'two', 'one', 'track', 'tread', 'chair', 'person', 'person-edge', 'good', 'warn', 'bad']) C[k] = css('--' + k);
+    for (const k of ['bg', 'surface', 'surface-2', 'ink', 'ink-2', 'muted', 'hair', 'hair-strong', 'steel', 'steel-edge', 'nosing', 'two', 'one', 'track', 'tread', 'chair', 'person', 'person-edge', 'good', 'warn', 'bad', 'good-ink', 'warn-ink', 'bad-ink']) C[k] = css('--' + k);
   }
   const icons = {
     good: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -483,6 +510,7 @@
       buildCharts();
       state.cam = null;
       draw();
+      drawMech();
       scheduleTables();
     }, 30);
   }
@@ -817,6 +845,163 @@
     return 'Top platform';
   }
 
+  // Drawing helpers for one canvas; SX/SY map world metres to screen pixels.
+  const LINK_ARM = 0.15; // averaging-link arm on each unit, m
+  function painter(g, SX, SY, scale) {
+    const capsule = (ax, az, bx, bz, r) => {
+      const dx = bx - ax, dz = bz - az;
+      g.beginPath();
+      if (Math.hypot(dx, dz) < 1e-6) { g.arc(SX(ax), SY(az), r * scale, 0, Math.PI * 2); return; }
+      const ang = Math.atan2(dz, dx);
+      // canvas y is flipped: world angle a maps to screen angle -a
+      g.arc(SX(bx), SY(bz), r * scale, -ang - Math.PI / 2, -ang + Math.PI / 2, false);
+      g.arc(SX(ax), SY(az), r * scale, -ang + Math.PI / 2, -ang + 1.5 * Math.PI, false);
+      g.closePath();
+    };
+    const line = (a, b, color, w, cap = 'round') => {
+      g.beginPath(); g.moveTo(SX(a.x), SY(a.z)); g.lineTo(SX(b.x), SY(b.z));
+      g.strokeStyle = color; g.lineWidth = w; g.lineCap = cap; g.stroke();
+    };
+    const pin = (q, r) => {
+      g.beginPath(); g.arc(SX(q.x), SY(q.z), r, 0, Math.PI * 2);
+      g.fillStyle = C.surface; g.fill(); g.strokeStyle = C['ink-2']; g.lineWidth = 1.5; g.stroke();
+    };
+
+    function stairs(prof, V, labels) {
+      const pts = prof.pts;
+      g.beginPath();
+      g.moveTo(SX(pts[0][0]), SY(-2));
+      for (const p of pts) g.lineTo(SX(p[0]), SY(p[1]));
+      g.lineTo(SX(pts[pts.length - 1][0]), SY(-2));
+      g.closePath();
+      g.fillStyle = C.steel; g.fill();
+      g.strokeStyle = C['steel-edge']; g.lineWidth = 1.2;
+      g.beginPath(); g.moveTo(SX(pts[0][0]), SY(pts[0][1])); for (const p of pts) g.lineTo(SX(p[0]), SY(p[1])); g.stroke();
+      // anti-slip nosing strips
+      const w = Math.max(2, 0.018 * scale);
+      g.strokeStyle = C.nosing; g.lineWidth = w; g.lineCap = 'butt';
+      g.beginPath();
+      for (const v of V) { if (v.convex) { g.moveTo(SX(v.x), SY(v.z) + w / 2); g.lineTo(SX(v.x + 0.05), SY(v.z) + w / 2); } }
+      g.stroke();
+      if (labels) {
+        g.fillStyle = C.muted; g.font = `600 ${labels === 'small' ? 10 : 11}px ${getComputedStyle(document.body).fontFamily}`;
+        const label = (text, x, z) => { g.fillText(text, SX(x), SY(z) + 16); };
+        if (prof.nUp) label(`MID PLATFORM · ${prof.zL.toFixed(2)} m`, prof.xL0 + 0.06, prof.zL);
+        label(`TOP PLATFORM · ${prof.H.toFixed(2)} m`, prof.xP0 + 0.06, prof.H);
+      }
+    }
+
+    function unit(A, B, r, trav, dirSign) {
+      // rubber track loop
+      g.fillStyle = C.track;
+      capsule(A.x, A.z, B.x, B.z, r); g.fill();
+      // grousers moving round the loop
+      const dx = B.x - A.x, dz = B.z - A.z, L = Math.hypot(dx, dz), ux = dx / L, uz = dz / L, nx = -uz, nz = ux;
+      const per = 2 * L + 2 * Math.PI * r, gap = 0.055;
+      const ph = ((dirSign * trav) % gap + gap) % gap;
+      g.strokeStyle = C.tread; g.lineWidth = Math.max(1, 0.012 * scale); g.lineCap = 'butt';
+      g.beginPath();
+      for (let s = ph; s < per; s += gap) {
+        // walk the loop from the rear top: top run forward, front arc, bottom run back, rear arc
+        let px, pz, ox, oz;
+        if (s < L) { px = A.x + ux * s + nx * r; pz = A.z + uz * s + nz * r; ox = nx; oz = nz; }
+        else if (s < L + Math.PI * r) { const t = (s - L) / r; const c = Math.cos(t), si = Math.sin(t); ox = nx * c + ux * si; oz = nz * c + uz * si; px = B.x + ox * r; pz = B.z + oz * r; }
+        else if (s < 2 * L + Math.PI * r) { const q = s - L - Math.PI * r; px = B.x - ux * q - nx * r; pz = B.z - uz * q - nz * r; ox = -nx; oz = -nz; }
+        else { const t = (s - 2 * L - Math.PI * r) / r; const c = Math.cos(t), si = Math.sin(t); ox = -nx * c - ux * si; oz = -nz * c - uz * si; px = A.x + ox * r; pz = A.z + oz * r; }
+        g.moveTo(SX(px), SY(pz)); g.lineTo(SX(px - ox * 0.022), SY(pz - oz * 0.022));
+      }
+      g.stroke();
+      // frame
+      const fw = r * 0.62;
+      g.fillStyle = C.two;
+      g.beginPath();
+      g.moveTo(SX(A.x + nx * fw), SY(A.z + nz * fw)); g.lineTo(SX(B.x + nx * fw), SY(B.z + nz * fw));
+      g.lineTo(SX(B.x - nx * fw), SY(B.z - nz * fw)); g.lineTo(SX(A.x - nx * fw), SY(A.z - nz * fw)); g.closePath(); g.fill();
+      // sprockets and road wheels
+      const wheel = (x, z, wr, spokes) => {
+        g.beginPath(); g.arc(SX(x), SY(z), wr * scale, 0, Math.PI * 2);
+        g.fillStyle = C['ink-2']; g.fill();
+        g.lineWidth = Math.max(1, 0.01 * scale); g.strokeStyle = C.track; g.stroke();
+        if (spokes) {
+          const rot = -(dirSign * trav) / wr;
+          g.beginPath();
+          for (let i = 0; i < 5; i++) { const a = rot + (i * 2 * Math.PI) / 5; g.moveTo(SX(x), SY(z)); g.lineTo(SX(x) + Math.cos(a) * wr * scale * 0.85, SY(z) + Math.sin(a) * wr * scale * 0.85); }
+          g.strokeStyle = C.track; g.stroke();
+        }
+      };
+      wheel(A.x, A.z, r * 0.78, true); wheel(B.x, B.z, r * 0.78, true);
+      for (const t of [0.3, 0.5, 0.7]) wheel(A.x + dx * t - nx * r * 0.45, A.z + dz * t - nz * r * 0.45, r * 0.34, false);
+    }
+
+    function hinge(p, rho) {
+      const r = rho * 0.5;
+      const a1 = Math.atan2(p.J.z - p.R.z, p.J.x - p.R.x), a2 = Math.atan2(p.F.z - p.J.z, p.F.x - p.J.x);
+      if (Math.abs(p.beta) > 0.02) {
+        g.beginPath();
+        g.arc(SX(p.J.x), SY(p.J.z), rho * 1.9 * scale, -a1, -a2, p.beta > 0);
+        g.strokeStyle = C.ink; g.globalAlpha = 0.5; g.lineWidth = 1.5; g.stroke(); g.globalAlpha = 1;
+      }
+      g.beginPath(); g.arc(SX(p.J.x), SY(p.J.z), r * scale, 0, Math.PI * 2);
+      g.fillStyle = C.nosing; g.fill(); g.lineWidth = 2; g.strokeStyle = C.track; g.stroke();
+    }
+
+    // Averaging link: an arm on each unit and two equal links to a collar on the mast.
+    // The four equal sides make a diamond, so the mast stays halfway between the units.
+    function link(p) {
+      const a1 = Math.atan2(p.J.z - p.R.z, p.J.x - p.R.x), a2 = Math.atan2(p.F.z - p.J.z, p.F.x - p.J.x);
+      const A1 = { x: p.J.x + LINK_ARM * Math.cos(a1 + 0.75 * Math.PI), z: p.J.z + LINK_ARM * Math.sin(a1 + 0.75 * Math.PI) };
+      const A2 = { x: p.J.x + LINK_ARM * Math.cos(a2 + 0.25 * Math.PI), z: p.J.z + LINK_ARM * Math.sin(a2 + 0.25 * Math.PI) };
+      const Q = { x: A1.x + A2.x - p.J.x, z: A1.z + A2.z - p.J.z };
+      const pr = Math.max(2.5, 0.012 * scale);
+      line(p.J, A1, C.two, Math.max(3, 0.03 * scale)); line(p.J, A2, C.two, Math.max(3, 0.03 * scale));
+      line(A1, Q, C['ink-2'], Math.max(2, 0.016 * scale)); line(A2, Q, C['ink-2'], Math.max(2, 0.016 * scale));
+      // collar sliding on the mast
+      const mx = p.P.x - p.J.x, mz = p.P.z - p.J.z, ml = Math.hypot(mx, mz) || 1;
+      line({ x: Q.x - (mx / ml) * 0.035, z: Q.z - (mz / ml) * 0.035 }, { x: Q.x + (mx / ml) * 0.035, z: Q.z + (mz / ml) * 0.035 }, C['ink-2'], Math.max(7, 0.075 * scale), 'butt');
+      pin(A1, pr); pin(A2, pr); pin(Q, pr);
+      return { A1, A2, Q };
+    }
+
+    function seat(o, p, ghost) {
+      const parts = TM.placeSeat(o, p);
+      const chair = parts.filter((q) => q.kind === 'chair');
+      const body = ['thigh', 'shank', 'foot', 'torso', 'head'].map((nm) => parts.find((q) => q.name === nm));
+      let lk = null;
+      g.save();
+      g.lineCap = 'round'; g.lineJoin = 'round';
+      if (ghost) {
+        g.setLineDash([7, 5]); line(p.J, p.P, C.one, 1.5); g.setLineDash([]);
+        g.strokeStyle = C.one; g.lineWidth = 1.5; g.lineCap = 'round';
+        g.beginPath(); for (const q of chair) { g.moveTo(SX(q.ax), SY(q.az)); g.lineTo(SX(q.bx), SY(q.bz)); } g.stroke();
+        g.setLineDash([5, 4]);
+        for (const q of body) { capsule(q.ax, q.az, q.bx, q.bz, q.r); g.stroke(); }
+        g.setLineDash([]);
+      } else {
+        line(p.J, p.P, C.chair, Math.max(3, 0.04 * scale));
+        lk = link(p);
+        g.strokeStyle = C.chair; g.lineWidth = Math.max(2.5, 2 * chair[0].r * scale); g.lineCap = 'round';
+        g.beginPath(); for (const q of chair) { g.moveTo(SX(q.ax), SY(q.az)); g.lineTo(SX(q.bx), SY(q.bz)); } g.stroke();
+        for (const q of body) {
+          capsule(q.ax, q.az, q.bx, q.bz, q.r);
+          g.fillStyle = C.person; g.fill();
+          g.strokeStyle = C['person-edge']; g.lineWidth = 1.5; g.stroke();
+        }
+        // harness strap across the chest
+        const t = parts.find((q) => q.name === 'torso');
+        const sx = t.ax + (t.bx - t.ax) * 0.62, sz = t.az + (t.bz - t.az) * 0.62;
+        const ux = t.bx - t.ax, uz = t.bz - t.az, ul = Math.hypot(ux, uz) || 1;
+        const nx = (-uz / ul) * t.r, nz = (ux / ul) * t.r;
+        line({ x: sx - nx, z: sz - nz }, { x: sx + nx, z: sz + nz }, C.two, Math.max(2, 0.025 * scale), 'butt');
+        // levelling drive
+        g.beginPath(); g.arc(SX(p.P.x), SY(p.P.z), Math.max(4, 0.035 * scale), 0, Math.PI * 2);
+        g.fillStyle = C.nosing; g.fill(); g.strokeStyle = C.track; g.lineWidth = 2; g.stroke();
+      }
+      g.restore();
+      return { parts, link: lk };
+    }
+    return { capsule, stairs, unit, hinge, seat, line };
+  }
+
   function draw() {
     if (!state.sim) return;
     const sim = state.sim, o = sim.opts, prof = sim.profile, rho = o.sprocketRadius;
@@ -843,6 +1028,7 @@
     }
     const SX = (x) => (x - cx) * scale + CW / 2;
     const SY = (z) => CH / 2 - (z - cz) * scale;
+    const paint = painter(ctx, SX, SY, scale);
 
     // faint grid (drawing-sheet feel)
     ctx.strokeStyle = C.hair; ctx.lineWidth = 1;
@@ -852,156 +1038,29 @@
     for (let gz = Math.floor((cz - CH / 2 / scale) / gStep) * gStep; SY(gz) > 0; gz += gStep) { ctx.moveTo(0, Math.round(SY(gz)) + 0.5); ctx.lineTo(CW, Math.round(SY(gz)) + 0.5); }
     ctx.globalAlpha = 0.55; ctx.stroke(); ctx.globalAlpha = 1;
 
-    // stairs
-    const pts = prof.pts;
-    ctx.beginPath();
-    ctx.moveTo(SX(pts[0][0]), SY(-2));
-    for (const p of pts) ctx.lineTo(SX(p[0]), SY(p[1]));
-    ctx.lineTo(SX(pts[pts.length - 1][0]), SY(-2));
-    ctx.closePath();
-    ctx.fillStyle = C.steel; ctx.fill();
-    ctx.strokeStyle = C['steel-edge']; ctx.lineWidth = 1.2;
-    ctx.beginPath(); ctx.moveTo(SX(pts[0][0]), SY(pts[0][1])); for (const p of pts) ctx.lineTo(SX(p[0]), SY(p[1])); ctx.stroke();
-    // anti-slip nosing strips
-    ctx.strokeStyle = C.nosing; ctx.lineWidth = Math.max(2, 0.018 * scale); ctx.lineCap = 'butt';
-    ctx.beginPath();
-    for (const v of sim.terrain.V) {
-      if (!v.convex) continue;
-      ctx.moveTo(SX(v.x), SY(v.z) + ctx.lineWidth / 2); ctx.lineTo(SX(v.x + 0.05), SY(v.z) + ctx.lineWidth / 2);
-    }
-    ctx.stroke();
-    // platform labels
-    ctx.fillStyle = C.muted; ctx.font = `600 ${state.view === 'whole' ? 10 : 11}px ${getComputedStyle(document.body).fontFamily}`;
-    const label = (text, x, z) => { ctx.fillText(text, SX(x), SY(z) + 16); };
-    if (prof.nUp) label(`MID PLATFORM · ${prof.zL.toFixed(2)} m`, prof.xL0 + 0.06, prof.zL);
-    label(`TOP PLATFORM · ${prof.H.toFixed(2)} m`, prof.xP0 + 0.06, prof.H);
-
-    // world-space capsule (a segment grown by r) as a closed path
-    const capsule = (ax, az, bx, bz, r) => {
-      const dx = bx - ax, dz = bz - az;
-      ctx.beginPath();
-      if (Math.hypot(dx, dz) < 1e-6) { ctx.arc(SX(ax), SY(az), r * scale, 0, Math.PI * 2); return; }
-      const ang = Math.atan2(dz, dx);
-      // canvas y is flipped: world angle a maps to screen angle -a
-      ctx.arc(SX(bx), SY(bz), r * scale, -ang - Math.PI / 2, -ang + Math.PI / 2, false);
-      ctx.arc(SX(ax), SY(az), r * scale, -ang + Math.PI / 2, -ang + 1.5 * Math.PI, false);
-      ctx.closePath();
-    };
+    paint.stairs(prof, sim.terrain.V, state.view === 'whole' ? 'small' : 'normal');
 
     // one long track (ghost)
     if (state.compare) {
       ctx.save();
       ctx.setLineDash([7, 5]);
       ctx.strokeStyle = C.one; ctx.lineWidth = 2;
-      capsule(one.R.x, one.R.z, one.F.x, one.F.z, rho); ctx.stroke();
+      paint.capsule(one.R.x, one.R.z, one.F.x, one.F.z, rho); ctx.stroke();
       ctx.setLineDash([]);
-      drawSeat(one, true);
+      paint.seat(o, one, true);
       drawCom(one, true);
       ctx.restore();
     }
 
     // two tracks
-    for (const [A, B] of [[two.R, two.J], [two.J, two.F]]) drawUnit(A, B, rho, state.travel);
-    drawHinge(two);
-    drawSeat(two, false);
+    const dirSign = state.dir === 'up' ? 1 : -1;
+    for (const [A, B] of [[two.R, two.J], [two.J, two.F]]) paint.unit(A, B, rho, state.travel, dirSign);
+    paint.hinge(two, rho);
+    paint.seat(o, two, false);
     drawCom(two, false);
 
     // mini map
     if (state.view === 'follow') drawMini(two);
-
-    function drawUnit(A, B, r, trav) {
-      // rubber track loop
-      ctx.fillStyle = C.track;
-      capsule(A.x, A.z, B.x, B.z, r); ctx.fill();
-      // grousers moving round the loop
-      const dx = B.x - A.x, dz = B.z - A.z, L = Math.hypot(dx, dz), ux = dx / L, uz = dz / L, nx = -uz, nz = ux;
-      const per = 2 * L + 2 * Math.PI * r, gap = 0.055;
-      const dirSign = state.dir === 'up' ? 1 : -1;
-      const ph = ((dirSign * trav) % gap + gap) % gap;
-      ctx.strokeStyle = C.tread; ctx.lineWidth = Math.max(1, 0.012 * scale);
-      ctx.beginPath();
-      for (let s = ph; s < per; s += gap) {
-        // walk the loop from the rear top: top run forward, front arc, bottom run back, rear arc
-        let px, pz, ox, oz;
-        if (s < L) { px = A.x + ux * s + nx * r; pz = A.z + uz * s + nz * r; ox = nx; oz = nz; }
-        else if (s < L + Math.PI * r) { const t = (s - L) / r; const c = Math.cos(t), si = Math.sin(t); ox = nx * c + ux * si; oz = nz * c + uz * si; px = B.x + ox * r; pz = B.z + oz * r; }
-        else if (s < 2 * L + Math.PI * r) { const q = s - L - Math.PI * r; px = B.x - ux * q - nx * r; pz = B.z - uz * q - nz * r; ox = -nx; oz = -nz; }
-        else { const t = (s - 2 * L - Math.PI * r) / r; const c = Math.cos(t), si = Math.sin(t); ox = -nx * c - ux * si; oz = -nz * c - uz * si; px = A.x + ox * r; pz = A.z + oz * r; }
-        ctx.moveTo(SX(px), SY(pz)); ctx.lineTo(SX(px - ox * 0.022), SY(pz - oz * 0.022));
-      }
-      ctx.stroke();
-      // frame
-      const fw = r * 0.62;
-      ctx.fillStyle = C.two;
-      ctx.beginPath();
-      ctx.moveTo(SX(A.x + nx * fw), SY(A.z + nz * fw)); ctx.lineTo(SX(B.x + nx * fw), SY(B.z + nz * fw));
-      ctx.lineTo(SX(B.x - nx * fw), SY(B.z - nz * fw)); ctx.lineTo(SX(A.x - nx * fw), SY(A.z - nz * fw)); ctx.closePath(); ctx.fill();
-      // sprockets and road wheels
-      const wheel = (x, z, wr, spokes) => {
-        ctx.beginPath(); ctx.arc(SX(x), SY(z), wr * scale, 0, Math.PI * 2);
-        ctx.fillStyle = C['ink-2']; ctx.fill();
-        ctx.lineWidth = Math.max(1, 0.01 * scale); ctx.strokeStyle = C.track; ctx.stroke();
-        if (spokes) {
-          const rot = -(dirSign * trav) / wr;
-          ctx.beginPath();
-          for (let i = 0; i < 5; i++) { const a = rot + (i * 2 * Math.PI) / 5; ctx.moveTo(SX(x), SY(z)); ctx.lineTo(SX(x) + Math.cos(a) * wr * scale * 0.85, SY(z) + Math.sin(a) * wr * scale * 0.85); }
-          ctx.strokeStyle = C.track; ctx.stroke();
-        }
-      };
-      wheel(A.x, A.z, r * 0.78, true); wheel(B.x, B.z, r * 0.78, true);
-      for (const t of [0.3, 0.5, 0.7]) wheel(A.x + dx * t - nx * r * 0.45, A.z + dz * t - nz * r * 0.45, r * 0.34, false);
-    }
-
-    function drawHinge(p) {
-      const r = rho * 0.5;
-      const a1 = Math.atan2(p.J.z - p.R.z, p.J.x - p.R.x), a2 = Math.atan2(p.F.z - p.J.z, p.F.x - p.J.x);
-      if (Math.abs(p.beta) > 0.02) {
-        ctx.beginPath();
-        ctx.arc(SX(p.J.x), SY(p.J.z), rho * 1.9 * scale, -a1, -a2, p.beta > 0);
-        ctx.strokeStyle = C.ink; ctx.globalAlpha = 0.5; ctx.lineWidth = 1.5; ctx.stroke(); ctx.globalAlpha = 1;
-      }
-      ctx.beginPath(); ctx.arc(SX(p.J.x), SY(p.J.z), r * scale, 0, Math.PI * 2);
-      ctx.fillStyle = C.nosing; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = C.track; ctx.stroke();
-    }
-
-    function drawSeat(p, ghost) {
-      const parts = TM.placeSeat(o, p);
-      const chair = parts.filter((q) => q.kind === 'chair');
-      const body = ['thigh', 'shank', 'foot', 'torso', 'head'].map((nm) => parts.find((q) => q.name === nm));
-      ctx.save();
-      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      // mast from the hinge to the levelling pivot
-      ctx.beginPath(); ctx.moveTo(SX(p.J.x), SY(p.J.z)); ctx.lineTo(SX(p.P.x), SY(p.P.z));
-      if (ghost) { ctx.setLineDash([7, 5]); ctx.strokeStyle = C.one; ctx.lineWidth = 1.5; }
-      else { ctx.strokeStyle = C.chair; ctx.lineWidth = Math.max(3, 0.04 * scale); }
-      ctx.stroke(); ctx.setLineDash([]);
-      if (ghost) {
-        ctx.strokeStyle = C.one; ctx.lineWidth = 1.5;
-        ctx.beginPath(); for (const q of chair) { ctx.moveTo(SX(q.ax), SY(q.az)); ctx.lineTo(SX(q.bx), SY(q.bz)); } ctx.stroke();
-        ctx.setLineDash([5, 4]);
-        for (const q of body) { capsule(q.ax, q.az, q.bx, q.bz, q.r); ctx.stroke(); }
-        ctx.setLineDash([]);
-      } else {
-        ctx.strokeStyle = C.chair; ctx.lineWidth = Math.max(2.5, 2 * chair[0].r * scale);
-        ctx.beginPath(); for (const q of chair) { ctx.moveTo(SX(q.ax), SY(q.az)); ctx.lineTo(SX(q.bx), SY(q.bz)); } ctx.stroke();
-        for (const q of body) {
-          capsule(q.ax, q.az, q.bx, q.bz, q.r);
-          ctx.fillStyle = C.person; ctx.fill();
-          ctx.strokeStyle = C['person-edge']; ctx.lineWidth = 1.5; ctx.stroke();
-        }
-        // harness strap across the chest
-        const t = parts.find((q) => q.name === 'torso');
-        const sx = t.ax + (t.bx - t.ax) * 0.62, sz = t.az + (t.bz - t.az) * 0.62;
-        const ux = (t.bx - t.ax), uz = (t.bz - t.az), ul = Math.hypot(ux, uz) || 1;
-        const nx = -uz / ul * t.r, nz = ux / ul * t.r;
-        ctx.beginPath(); ctx.moveTo(SX(sx - nx), SY(sz - nz)); ctx.lineTo(SX(sx + nx), SY(sz + nz));
-        ctx.strokeStyle = C.two; ctx.lineWidth = Math.max(2, 0.025 * scale); ctx.lineCap = 'butt'; ctx.stroke();
-        // levelling pivot
-        ctx.beginPath(); ctx.arc(SX(p.P.x), SY(p.P.z), Math.max(4, 0.035 * scale), 0, Math.PI * 2);
-        ctx.fillStyle = C.nosing; ctx.fill(); ctx.strokeStyle = C.track; ctx.lineWidth = 2; ctx.stroke();
-      }
-      ctx.restore();
-    }
 
     function drawCom(p, ghost) {
       const ev = p.ev; if (!ev) return;
@@ -1046,7 +1105,7 @@
       ctx.fillStyle = C.surface; ctx.strokeStyle = C.hair; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.roundRect(ox, oy, mw, mh, 8); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(mx(x0), mz(z0));
-      for (const q of pts) if (q[0] >= x0 && q[0] <= x1) ctx.lineTo(mx(q[0]), mz(q[1]));
+      for (const q of prof.pts) if (q[0] >= x0 && q[0] <= x1) ctx.lineTo(mx(q[0]), mz(q[1]));
       ctx.lineTo(mx(x1), mz(prof.H)); ctx.lineTo(mx(x1), mz(z0)); ctx.closePath();
       ctx.fillStyle = C.steel; ctx.fill();
       ctx.beginPath(); ctx.arc(mx(p.J.x), mz(p.J.z + 0.1), 4, 0, Math.PI * 2); ctx.fillStyle = C.two; ctx.fill(); ctx.strokeStyle = C.surface; ctx.lineWidth = 2; ctx.stroke();
@@ -1058,6 +1117,199 @@
     $('scrub').value = String(Math.round(state.idx));
     const total = sim.sEnd - sim.path[0].s;
     $('pos').textContent = `${(state.idx / Math.max(1, n) * total).toFixed(1)} / ${total.toFixed(1)} m`;
+  }
+
+  // ------------------------------------------------------- mechanism views
+  function fitCanvas(cvs) {
+    const r = cvs.getBoundingClientRect(), k = Math.min(2, window.devicePixelRatio || 1);
+    cvs.width = Math.round(r.width * k); cvs.height = Math.round(r.height * k);
+    const g = cvs.getContext('2d'); g.setTransform(k, 0, 0, k, 0, 0);
+    g.fillStyle = C.surface; g.fillRect(0, 0, r.width, r.height);
+    return { g, W: r.width, H: r.height };
+  }
+  // numbered callout: a short leader from the part to a numbered disc
+  function callout(g, x, y, dx, dy, n) {
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + dx, y + dy);
+    g.strokeStyle = C.ink; g.lineWidth = 1.2; g.stroke();
+    g.beginPath(); g.arc(x, y, 2.5, 0, Math.PI * 2); g.fillStyle = C.ink; g.fill();
+    g.beginPath(); g.arc(x + dx, y + dy, 10, 0, Math.PI * 2); g.fillStyle = C.ink; g.fill();
+    g.strokeStyle = C.surface; g.lineWidth = 2; g.stroke();
+    g.fillStyle = C.surface; g.font = `600 11px ${getComputedStyle(document.body).fontFamily}`;
+    g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(String(n), x + dx, y + dy + 0.5);
+    g.textAlign = 'start'; g.textBaseline = 'alphabetic';
+  }
+  // the pose shown in the side view: folded deepest over the top platform edge, going down
+  function mechPose(sim) {
+    const seq = seqFor(sim, 'down'), list = sim.down;
+    const k = seq.findIndex((i) => list[i].folded);
+    let best = Math.max(0, k);
+    for (let j = best; k > 0 && j < Math.min(seq.length, k + 150); j++) if (Math.abs(list[seq[j]].beta) > Math.abs(list[seq[best]].beta)) best = j;
+    return list[seq[best]];
+  }
+  function drawMechSide() {
+    const sim = state.sim, o = sim.opts, prof = sim.profile, rho = o.sprocketRadius;
+    const { g, W, H } = fitCanvas($('mech-side'));
+    const p = mechPose(sim);
+    const parts = TM.placeSeat(o, p);
+    let x0 = Math.min(p.R.x, p.F.x) - rho - 0.12, x1 = Math.max(p.R.x, p.F.x) + rho + 0.12;
+    let z0 = Math.min(p.R.z, p.F.z, p.J.z) - rho - 0.12, z1 = -Infinity;
+    for (const q of parts) { x0 = Math.min(x0, q.ax - q.r, q.bx - q.r); x1 = Math.max(x1, q.ax + q.r, q.bx + q.r); z1 = Math.max(z1, q.az + q.r, q.bz + q.r); }
+    z1 += 0.08;
+    const pad = 22, scale = Math.min((W - 2 * pad) / (x1 - x0), (H - 2 * pad) / (z1 - z0));
+    const ox = (W - (x1 - x0) * scale) / 2, oy = (H - (z1 - z0) * scale) / 2;
+    const SX = (x) => ox + (x - x0) * scale, SY = (z) => H - oy - (z - z0) * scale;
+    const pt = painter(g, SX, SY, scale);
+    pt.stairs(prof, sim.terrain.V, false);
+    for (const [A, B] of [[p.R, p.J], [p.J, p.F]]) pt.unit(A, B, rho, 0, 1);
+    pt.hinge(p, rho);
+    const s = pt.seat(o, p, false), Q = s.link.Q;
+    // callouts, pushed sideways off the mast so they do not hide the joints
+    const mx = p.P.x - p.J.x, mz = p.P.z - p.J.z, ml = Math.hypot(mx, mz);
+    const side = (k) => ({ dx: (mz / ml) * k, dy: (mx / ml) * k }); // perpendicular to the mast, on screen
+    const back = parts.find((q) => q.name === 'backrest');
+    const items = [
+      [1, (p.R.x + p.J.x) / 2, (p.R.z + p.J.z) / 2, { dx: -8, dy: 34 }],
+      [2, p.J.x, p.J.z, { dx: 30, dy: 30 }],
+      [3, Q.x, Q.z, side(-46)],
+      [4, (Q.x + p.P.x) / 2, (Q.z + p.P.z) / 2, side(46)],
+      [5, p.P.x, p.P.z, side(-46)],
+      [6, back.ax + (back.bx - back.ax) * 0.55, back.az + (back.bz - back.az) * 0.55, { dx: 32, dy: -28 }],
+    ];
+    for (const [n, x, z, d] of items) callout(g, SX(x), SY(z), d.dx, d.dy, n);
+  }
+  function drawMechFront() {
+    const sim = state.sim, o = sim.opts, an = sim.an, rho = o.sprocketRadius, seat = sim.seat;
+    const { g, W, H } = fitCanvas($('mech-front'));
+    const Wv = o.vehicleWidth, belt = 0.15, h = o.seatHeight, pz = rho + h;
+    const V = (q) => pz + q; // seat-frame height to world height, on the flat
+    let top = 0;
+    for (const q of seat.parts) top = Math.max(top, q.a.v + q.r, q.b.v + q.r);
+    const y0 = -0.95, y1 = 0.95, z0 = -0.3, z1 = Math.max(1.12, V(top) + 0.08);
+    const pad = 14, scale = Math.min((W - 2 * pad) / (y1 - y0), (H - 2 * pad) / (z1 - z0));
+    const ox = (W - (y1 - y0) * scale) / 2, oyy = (H - (z1 - z0) * scale) / 2;
+    const SX = (y) => ox + (y - y0) * scale, SY = (z) => H - oyy - (z - z0) * scale;
+    const font = getComputedStyle(document.body).fontFamily;
+    const rect = (ya, za, yb, zb, fill, rad = 0) => { g.beginPath(); g.roundRect(SX(ya), SY(zb), (yb - ya) * scale, (zb - za) * scale, rad); g.fillStyle = fill; g.fill(); };
+    const text = (t, y, z, align = 'center', color = C['ink-2']) => { g.fillStyle = color; g.font = `500 11px ${font}`; g.textAlign = align; g.fillText(t, SX(y), SY(z)); g.textAlign = 'start'; };
+    // tread and the stair side panels with handrails
+    rect(-0.8, -0.05, 0.8, 0, C.steel);
+    g.strokeStyle = C['steel-edge']; g.lineWidth = 1; g.beginPath(); g.moveTo(SX(-0.8), SY(0)); g.lineTo(SX(0.8), SY(0)); g.stroke();
+    for (const sgn of [-1, 1]) {
+      rect(sgn > 0 ? 0.75 : -0.79, 0, sgn > 0 ? 0.79 : -0.75, 0.9, C.steel, 2);
+      g.beginPath(); g.arc(SX(sgn * 0.77), SY(1.05), 0.022 * scale, 0, Math.PI * 2); g.fillStyle = C['steel-edge']; g.fill();
+      g.beginPath(); g.moveTo(SX(sgn * 0.77), SY(0.9)); g.lineTo(SX(sgn * 0.77), SY(1.05)); g.strokeStyle = C['steel-edge']; g.lineWidth = 2; g.stroke();
+    }
+    // tracks, chassis and hinge axle
+    for (const sgn of [-1, 1]) {
+      const ya = sgn > 0 ? Wv / 2 - belt : -Wv / 2;
+      rect(ya, 0, ya + belt, 2 * rho, C.track, 0.03 * scale);
+      g.beginPath(); g.roundRect(SX(ya), SY(2 * rho), belt * scale, 2 * rho * scale, 0.03 * scale); g.strokeStyle = C.tread; g.lineWidth = 1.5; g.stroke();
+    }
+    rect(-Wv / 2 + belt, 0.035, Wv / 2 - belt, 2 * rho - 0.035, C.two, 3);
+    g.beginPath(); g.moveTo(SX(-Wv / 2 + belt + 0.02), SY(rho)); g.lineTo(SX(Wv / 2 - belt - 0.02), SY(rho));
+    g.strokeStyle = C.nosing; g.lineWidth = Math.max(3, 0.03 * scale); g.lineCap = 'round'; g.stroke();
+    // mast: a fork on two bearings 0.3 m apart, joining into one post
+    const fj = rho + 0.2;
+    g.strokeStyle = C.chair; g.lineWidth = Math.max(3, 0.04 * scale); g.lineJoin = 'round';
+    g.beginPath(); g.moveTo(SX(-0.15), SY(rho)); g.lineTo(SX(-0.03), SY(fj)); g.lineTo(SX(0.03), SY(fj)); g.lineTo(SX(0.15), SY(rho)); g.stroke();
+    g.beginPath(); g.moveTo(SX(0), SY(fj)); g.lineTo(SX(0), SY(pz)); g.stroke();
+    for (const sgn of [-1, 1]) { g.beginPath(); g.arc(SX(sgn * 0.15), SY(rho), 0.03 * scale, 0, Math.PI * 2); g.fillStyle = C.surface; g.fill(); g.strokeStyle = C['ink-2']; g.lineWidth = 1.5; g.stroke(); }
+    // seat and person, seen from the foot of the stairs
+    const part = (nm) => seat.parts.find((q) => q.name === nm);
+    const span = (nm) => { const q = part(nm); return [Math.min(q.a.v, q.b.v) - q.r, Math.max(q.a.v, q.b.v) + q.r]; };
+    const bk = span('backrest');
+    rect(-0.27, V(bk[0]), 0.27, V(bk[1]), C.chair, 0.04 * scale);
+    const tv = span('torso');
+    rect(-0.21, V(tv[0]), 0.21, V(tv[1]), C.person, 0.1 * scale);
+    g.strokeStyle = C['person-edge']; g.lineWidth = 1.5; g.beginPath(); g.roundRect(SX(-0.21), SY(V(tv[1])), 0.42 * scale, (tv[1] - tv[0]) * scale, 0.1 * scale); g.stroke();
+    const lv = [Math.min(span('thigh')[0], span('shank')[0], span('foot')[0]), Math.max(span('thigh')[1], span('shank')[1], span('foot')[1])];
+    for (const sgn of [-1, 1]) {
+      g.beginPath(); g.roundRect(SX(sgn > 0 ? 0.02 : -0.15), SY(V(lv[1])), 0.13 * scale, (lv[1] - lv[0]) * scale, 0.06 * scale);
+      g.fillStyle = C.person; g.fill(); g.strokeStyle = C['person-edge']; g.lineWidth = 1.5; g.stroke();
+    }
+    const hd = part('head');
+    g.beginPath(); g.arc(SX(0), SY(V(hd.a.v)), hd.r * scale, 0, Math.PI * 2); g.fillStyle = C.person; g.fill(); g.strokeStyle = C['person-edge']; g.stroke();
+    const strap = V(tv[0] + (tv[1] - tv[0]) * 0.62);
+    g.beginPath(); g.moveTo(SX(-0.21), SY(strap)); g.lineTo(SX(0.21), SY(strap)); g.strokeStyle = C.two; g.lineWidth = Math.max(2, 0.025 * scale); g.lineCap = 'butt'; g.stroke();
+    // levelling drive on top of the post
+    g.beginPath(); g.arc(SX(0), SY(pz), Math.max(4, 0.035 * scale), 0, Math.PI * 2); g.fillStyle = C.nosing; g.fill(); g.strokeStyle = C.track; g.lineWidth = 2; g.stroke();
+    // centre of mass and the side-tip lines to the outer track edges
+    const cz = an.comHeight;
+    g.setLineDash([5, 4]); g.strokeStyle = C.warn; g.lineWidth = 1.5;
+    for (const sgn of [-1, 1]) { g.beginPath(); g.moveTo(SX(0), SY(cz)); g.lineTo(SX(sgn * Wv / 2), SY(0)); g.stroke(); }
+    g.setLineDash([]);
+    const r = Math.max(5, 0.03 * scale);
+    g.beginPath(); g.arc(SX(0), SY(cz), r, 0, Math.PI * 2); g.fillStyle = C.surface; g.fill();
+    g.fillStyle = C.ink; for (const q of [0, Math.PI]) { g.beginPath(); g.moveTo(SX(0), SY(cz)); g.arc(SX(0), SY(cz), r, q, q + Math.PI / 2); g.closePath(); g.fill(); }
+    g.beginPath(); g.arc(SX(0), SY(cz), r, 0, Math.PI * 2); g.strokeStyle = C.ink; g.lineWidth = 1.5; g.stroke();
+    // dimensions
+    const dim = (ya, yb, z, label) => {
+      g.strokeStyle = C.muted; g.lineWidth = 1; g.beginPath();
+      g.moveTo(SX(ya), SY(z)); g.lineTo(SX(yb), SY(z));
+      for (const y of [ya, yb]) { g.moveTo(SX(y), SY(z) - 4); g.lineTo(SX(y), SY(z) + 4); }
+      g.stroke(); text(label, (ya + yb) / 2, z - 0.045);
+    };
+    dim(-Wv / 2, Wv / 2, -0.07, `${Wv.toFixed(2)} m across the tracks`);
+    dim(-0.77, 0.77, -0.2, '1.50 m between the stair side panels');
+    $('front-cap').textContent = `Front view. The chequered disc is the centre of mass, ${cz.toFixed(2)} m up; along the dashed lines the vehicle would tip sideways, past ${an.sideTipDeg.toFixed(0)}° of side tilt.`;
+    // callouts matching the side view
+    callout(g, SX(-Wv / 2 + belt / 2), SY(rho), -18, -26, 1);
+    callout(g, SX(0.33), SY(rho), 22, -26, 2);
+    callout(g, SX(0), SY((fj + pz) / 2), 34, 0, 4);
+    callout(g, SX(0), SY(pz), -34, 8, 5);
+  }
+  function drawMech() { if (state.sim) { drawMechSide(); drawMechFront(); renderParts(); } }
+
+  const TUBE = { D: 0.06, t: 0.004, E: 210e9, fy: 355e6 }; // steel tube suggested for the post
+  function mechNumbers() {
+    const sim = state.sim, o = sim.opts, W = sim.seat.mass * 9.81;
+    let mMax = 0, fLink = 0, lean = 0, lvl = 0, unitLean = 0;
+    for (const dir of ['up', 'down']) for (const p of sim[dir]) {
+      const M = Math.abs(p.ev.mastMoment);
+      mMax = Math.max(mMax, M);
+      // the diamond's arms open to 90 degrees minus the bend; link force = M / (2 arm cos(bend))
+      fLink = Math.max(fLink, M / (2 * LINK_ARM * Math.cos(p.beta)));
+      lean = Math.max(lean, Math.abs(p.pitch));
+      unitLean = Math.max(unitLean, Math.abs(p.a1), Math.abs(p.a2));
+      lvl = Math.max(lvl, Math.abs(p.ev.levelMoment));
+    }
+    const di = TUBE.D - 2 * TUBE.t, I = (Math.PI * (TUBE.D ** 4 - di ** 4)) / 64, Z = I / (TUBE.D / 2);
+    const stress = (2 * mMax) / Z; // twice the worst steady load, for bumps
+    return { W, mMax, fLink, lean, unitLean, lvl, stress, safety: TUBE.fy / stress,
+      defl: (W * Math.sin(lean) * o.seatHeight ** 3) / (3 * TUBE.E * I) };
+  }
+  function renderParts() {
+    const sim = state.sim, o = sim.opts, an = sim.an, m = mechNumbers();
+    const kN = (n) => (n / 1000).toFixed(1) + ' kN';
+    const r10 = (v) => Math.round(v / 10) * 10;
+    const items = [
+      ['Two track units', `Front and rear, each with a left and a right rubber track, ${o.unitLength.toFixed(2)} m sprocket to sprocket and ${o.vehicleWidth.toFixed(2)} m across.`],
+      ['Hinge axle and hinge motor', `A 30 mm steel axle joins the units. A self-locking gear motor on it bends the hinge and holds a fold without power: about ${r10(an.hingeTorque)} N·m, turning ${(o.hingeRateDegPerM * o.speed).toFixed(0)}°/s.`],
+      ['Averaging link', `A ${Math.round(LINK_ARM * 1000)} mm arm fixed to each unit, and two equal links to a collar that slides on the post. The four equal sides make a diamond, so the post always sits halfway between the two units' angles, however far the hinge bends. It carries up to ${r10(m.mMax)} N·m, about ${kN(m.fLink)} in each link.`],
+      ['Post', `Pivots on the hinge axle between two bearings 0.3 m apart, then one tube up to the seat pivot, ${o.seatHeight.toFixed(2)} m from the axle. A 60 × 4 mm steel tube reaches ${(m.stress / 1e6).toFixed(0)} MPa at twice the worst steady load, ${m.safety.toFixed(1)} times below yield, and bends ${(m.defl * 1000).toFixed(1)} mm.`],
+      ['Levelling drive', `A self-locking worm-gear drive, steered by a tilt sensor on the seat, turns the seat back to level as the post leans: ±${o.levelLimitDeg.toFixed(0)}° at ${(o.levelRateDegPerM * o.speed).toFixed(0)}°/s. It sees about ${r10(m.lvl)} N·m on the trip and should hold ${r10(an.levelTorque)} N·m.`],
+      ['Reclining stretcher-chair', 'Reclines from 15° (sitting up) to 90° (flat), with a chest harness. Head uphill, feet downhill.'],
+    ];
+    const ol = $('parts'); ol.textContent = '';
+    items.forEach(([t, d], i) => {
+      const li = document.createElement('li');
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = String(i + 1);
+      const tx = document.createElement('div');
+      const b = document.createElement('b'); b.textContent = t + '. ';
+      tx.append(b, document.createTextNode(d));
+      li.append(n, tx); ol.appendChild(li);
+    });
+    const why = [
+      ['Why one post is enough.', `Front to back, the vehicle stands on its two track units, spread over ${an.totalLength.toFixed(2)} m of stairs. The post only has to carry the seat's ${kN(m.W)} down to the hinge axle and keep it centred between them. Its biggest bend is ${r10(m.mMax)} N·m, on the flights where it leans ${deg(m.lean).toFixed(1)}°.`],
+      ['Why the averaging link.', `Fixed to one unit, the post would swing with that unit through every fold, leaning up to ${deg(m.unitLean).toFixed(0)}° and carrying the seat back and forth over the stairs. Halfway between the units it leans no more than the stairs do, ${deg(m.lean).toFixed(1)}°, and the levelling drive only has to take out that lean.`],
+      ['Side to side', `the vehicle stands on its left and right tracks. With the seat ${o.seatHeight.toFixed(2)} m up, the centre of mass is ${an.comHeight.toFixed(2)} m off the ground, so a ${o.vehicleWidth.toFixed(2)} m wide vehicle only tips when tilted past ${an.sideTipDeg.toFixed(0)}°. The stairs have no side slope, so that margin is for the person shifting and for bumps. The fork's two bearings stop the post rocking sideways on the axle.`],
+    ];
+    const box = $('mech-why'); box.textContent = '';
+    for (const [h, t] of why) {
+      const para = document.createElement('p');
+      const b = document.createElement('b'); b.textContent = h + ' ';
+      para.append(b, document.createTextNode(t)); box.appendChild(para);
+    }
   }
 
   function updateHud(two, one) {
@@ -1168,11 +1420,11 @@
   });
 
   // theme + size
-  const retheme = () => { readColors(); if (state.sim) { buildCharts(); draw(); } };
+  const retheme = () => { readColors(); if (state.sim) { buildCharts(); draw(); drawMech(); } };
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', retheme);
   new MutationObserver(retheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   let rsTimer = null;
-  window.addEventListener('resize', () => { clearTimeout(rsTimer); rsTimer = setTimeout(() => { resize(); if (state.sim) { buildCharts(); state.cam = null; draw(); } }, 120); });
+  window.addEventListener('resize', () => { clearTimeout(rsTimer); rsTimer = setTimeout(() => { resize(); if (state.sim) { buildCharts(); state.cam = null; draw(); drawMech(); } }, 120); });
 
   readColors();
   resize();
