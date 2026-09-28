@@ -158,7 +158,7 @@ cd track_sim && node stress-test.js
 ```
 
 It also writes `stress-results.js`, which the page shows. A case passes if the vehicle never
-falls and can take a 7.3° lean anywhere. Results for the default design: 18 pass, 4 are tight
+falls and can take a 7.3° lean anywhere. Results for the default design: 17 pass, 4 are tight
 and 3 fail.
 
 - **Passes:**
@@ -186,7 +186,7 @@ Without its drive, the arm only passes the default case with 8.0°. It fails wit
 sliding 25 cm, and is tight on steeper stairs and with a ±45° hinge. That is why the balance arm
 is part of the design.
 
-The support parts stay 4 to 100 times below their limit at twice the worst load for a 120 kg
+The support parts stay 6 to 100 times below their limit at twice the worst load for a 120 kg
 person, and at least 3.7 times below for 200 kg. What the stress test asks for:
 
 1. Keep the balance arm.
