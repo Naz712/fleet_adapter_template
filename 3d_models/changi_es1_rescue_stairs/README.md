@@ -89,7 +89,7 @@ node -e "const TM = require('./track_sim/track-model.js'); console.log(TM.simula
 
 ### Results
 
-The results are the same at all three height settings.
+Worst case over the three height settings (at 3.2 m the casualty tilts at most 3°).
 
 | | Two tracks + driven hinge | One long track |
 |---|---|---|
