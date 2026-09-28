@@ -19,11 +19,12 @@
     --steel-edge: #8e98a3;
     --nosing: #b3cc16;
     --two: #2a78d6;
-    --two-soft: rgba(42, 120, 214, 0.12);
     --one: #eb6834;
     --track: #262b32;
     --tread: #59616b;
-    --load: #e6eaef;
+    --chair: #3a424c;
+    --person: #e9dccb;
+    --person-edge: #8a765f;
     --good: #0ca30c;
     --warn: #fab219;
     --bad: #d03b3b;
@@ -50,11 +51,12 @@
       --steel-edge: #6a7480;
       --nosing: #9fb514;
       --two: #3987e5;
-      --two-soft: rgba(57, 135, 229, 0.16);
       --one: #d95926;
       --track: #0b0e11;
       --tread: #6f7883;
-      --load: #2a323b;
+      --chair: #aeb8c3;
+      --person: #5b4d3f;
+      --person-edge: #c4ad92;
       --good-ink: #3fc43f;
       --warn-ink: #f5c04a;
       --bad-ink: #f07a7a;
@@ -75,11 +77,12 @@
     --steel-edge: #6a7480;
     --nosing: #9fb514;
     --two: #3987e5;
-    --two-soft: rgba(57, 135, 229, 0.16);
     --one: #d95926;
     --track: #0b0e11;
     --tread: #6f7883;
-    --load: #2a323b;
+    --chair: #aeb8c3;
+    --person: #5b4d3f;
+    --person-edge: #c4ad92;
     --good-ink: #3fc43f;
     --warn-ink: #f5c04a;
     --bad-ink: #f07a7a;
@@ -101,18 +104,20 @@
   header { display: grid; gap: 6px; }
   .eyebrow { margin: 0; font: 600 12px/1.2 var(--sans); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
   h1 { margin: 0; font: 700 clamp(34px, 6vw, 52px)/1 var(--display); letter-spacing: 0.01em; text-wrap: balance; }
-  .lede { margin: 4px 0 0; max-width: 68ch; color: var(--ink-2); }
+  .lede { margin: 4px 0 0; max-width: 70ch; color: var(--ink-2); }
 
   .card { background: var(--surface); border: 1px solid var(--hair); border-radius: 14px; box-shadow: var(--shadow); }
 
   /* verdict */
   .verdict { padding: 18px 20px; display: grid; gap: 16px; }
   .verdict-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
-  .chip { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px 5px 9px; border-radius: 999px; font: 600 13px/1 var(--sans); border: 1px solid currentColor; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px 5px 9px; border-radius: 999px; font: 600 13px/1 var(--sans); border: 1px solid currentColor; white-space: nowrap; }
   .chip svg { width: 15px; height: 15px; flex: none; }
   .chip.good { color: var(--good-ink); }
   .chip.warn { color: var(--warn-ink); }
   .chip.bad { color: var(--bad-ink); }
+  .chip.small { padding: 3px 8px 3px 6px; font-size: 12px; gap: 5px; }
+  .chip.small svg { width: 12px; height: 12px; }
   .verdict-text { margin: 0; flex: 1 1 380px; font-size: 16px; text-wrap: pretty; }
   .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
   @media (max-width: 860px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -121,7 +126,7 @@
   .tile-value { font: 700 30px/1.05 var(--display); letter-spacing: 0.01em; }
   .tile-value small { font: 500 14px/1 var(--sans); color: var(--ink-2); margin-left: 2px; }
   .tile-vs { font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-  .key { display: inline-block; width: 14px; height: 0; border-top: 2px solid; border-radius: 2px; vertical-align: middle; }
+  .key { display: inline-block; width: 14px; height: 0; border-top: 2px solid; border-radius: 2px; vertical-align: middle; flex: none; }
   .key.two { border-color: var(--two); }
   .key.one { border-color: var(--one); }
 
@@ -136,15 +141,17 @@
   .seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
   .seg button:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--two); outline-offset: 2px; }
   .check { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--ink-2); cursor: pointer; }
-  .check input { width: 16px; height: 16px; accent-color: var(--one); margin: 0; }
+  .check input { width: 16px; height: 16px; margin: 0; }
+  #compare { accent-color: var(--one); }
+  #level-seat { accent-color: var(--two); }
 
   .viewport { position: relative; background: var(--surface); }
-  #sim { display: block; width: 100%; height: clamp(300px, 52vw, 560px); touch-action: pan-y; }
+  #sim { display: block; width: 100%; height: clamp(320px, 52vw, 580px); touch-action: pan-y; }
   .hud { position: absolute; inset: 12px 12px auto 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; pointer-events: none; }
   .hud-box { background: color-mix(in srgb, var(--surface) 88%, transparent); border: 1px solid var(--hair); border-radius: 10px; padding: 8px 11px; backdrop-filter: blur(6px); }
   .hud-where { font: 700 18px/1.1 var(--display); letter-spacing: 0.02em; }
   .hud-sub { font: 12px/1.3 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
-  .hud-read { display: grid; grid-template-columns: auto auto; gap: 2px 12px; font-size: 12.5px; align-items: baseline; }
+  .hud-read { display: grid; grid-template-columns: auto auto; gap: 2px 12px; margin: 0; font-size: 12.5px; align-items: baseline; }
   .hud-read dt { color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
   .hud-read dd { margin: 0; font: 500 13px/1.35 var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
   .hud-read .sep { grid-column: 1 / -1; border-top: 1px solid var(--hair); margin: 3px 0; }
@@ -178,6 +185,7 @@
   .chart-title h3 { margin: 0; font: 600 14px/1.3 var(--sans); }
   .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--ink-2); }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .chart-note { margin: -2px 0 0; font-size: 12px; color: var(--muted); }
   .chart { position: relative; }
   .chart svg { display: block; width: 100%; overflow: visible; cursor: crosshair; }
   .chart .axis text { font: 11px var(--mono); fill: var(--muted); }
@@ -188,17 +196,20 @@
   .tip .t-row b { font: 600 13px var(--mono); min-width: 6ch; }
   .tip .t-row span { color: var(--ink-2); }
 
-  .sliders { display: grid; gap: 14px; }
-  .slider { display: grid; gap: 4px; }
+  .controls { display: grid; gap: 18px; }
+  .ctl-group { display: grid; gap: 12px; }
+  .ctl-group h3 { margin: 0; font: 600 12px/1.2 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .slider { display: grid; gap: 3px; }
   .slider-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
   .slider label { font-size: 13.5px; font-weight: 500; }
-  .slider output { font: 500 13px var(--mono); font-variant-numeric: tabular-nums; }
+  .slider output { font: 500 13px var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
   .slider input { width: 100%; accent-color: var(--two); margin: 2px 0 0; }
   .slider .hint { font-size: 12px; color: var(--muted); }
 
   /* the math */
   .math { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
   @media (max-width: 860px) { .math { grid-template-columns: minmax(0, 1fr); } }
+  .col { display: grid; gap: 16px; align-content: start; }
   .math p { margin: 0; max-width: 64ch; }
   .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
   @media (max-width: 480px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -210,24 +221,35 @@
   .rules .ico { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; margin-top: 1px; }
   .rules .ico svg { width: 13px; height: 13px; }
   .rules .ico.good { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good-ink); }
+  .rules .ico.warn { background: color-mix(in srgb, var(--warn) 22%, transparent); color: var(--warn-ink); }
   .rules .ico.bad { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad-ink); }
   .rules h3 { margin: 0 0 2px; font: 600 14.5px/1.35 var(--sans); }
   .rules p { font-size: 13.5px; color: var(--ink-2); }
-  .rules .num { font-family: var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+  .num { font-family: var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; }
   .phase { display: grid; gap: 10px; counter-reset: ph; margin: 0; padding: 0; list-style: none; }
   .phase li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; font-size: 14px; }
   .phase li::before { counter-increment: ph; content: counter(ph); width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--hair-strong); display: grid; place-items: center; font: 600 12px var(--mono); color: var(--ink-2); }
   .note { font-size: 13px; color: var(--ink-2); }
+  .spec { display: grid; gap: 0; margin: 0; background: var(--surface-2); border-radius: 10px; padding: 4px 14px; }
+  .spec div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; padding: 8px 0; border-bottom: 1px solid var(--hair); align-items: baseline; }
+  .spec div:last-child { border-bottom: 0; }
+  .spec dt { font-size: 13.5px; }
+  .spec dt small { display: block; font-size: 12px; color: var(--muted); }
+  .spec dd { margin: 0; font: 600 14px var(--mono); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  h3.spec-h { margin: 0; font: 600 15px/1.3 var(--sans); }
 
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   th, td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--hair); white-space: nowrap; font-variant-numeric: tabular-nums; }
   th:first-child, td:first-child { text-align: left; }
   thead th { font: 600 12px var(--sans); color: var(--ink-2); vertical-align: bottom; }
-  thead tr:first-child th { border-bottom: 0; padding-bottom: 0; }
+  thead tr.group-row th { border-bottom: 0; padding-bottom: 0; }
   td { font-family: var(--mono); font-size: 13px; }
   td:first-child { font-family: var(--sans); font-weight: 600; }
-  .muted { color: var(--muted); }
+  td.fit { font-family: var(--sans); }
+  td.fit, th.fit { text-align: left; }
+  td .muted, .muted { color: var(--muted); font-weight: 400; }
+  tr.current td { background: var(--surface-2); }
 
   @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 </style>
@@ -236,15 +258,15 @@
   <header>
     <p class="eyebrow">Changi AES · ES1 rescue stairs · 18 × 170 mm steps, 1 m mid platform</p>
     <h1>Two-Track Stair Climber</h1>
-    <p class="lede">A tracked vehicle split into a front and a rear track unit with a driven hinge between them, driven up and down the ES1 stairs. The same vehicle as one long straight track runs alongside for comparison.</p>
+    <p class="lede">A tracked casualty carrier split into a front and a rear track unit with a driven hinge between them. It carries a person in a reclining seat that stays level, up and down the ES1 stairs. The same vehicle built as one long straight track runs alongside for comparison.</p>
   </header>
 
   <section class="card verdict" aria-labelledby="verdict-h">
+    <h2 id="verdict-h" hidden>Verdict</h2>
     <div class="verdict-head">
       <span id="verdict-chip" class="chip good" role="status"></span>
       <p id="verdict-text" class="verdict-text"></p>
     </div>
-    <h2 id="verdict-h" hidden>Verdict</h2>
     <div class="tiles" id="tiles"></div>
   </section>
 
@@ -268,12 +290,10 @@
       <label class="check"><input type="checkbox" id="compare" checked> Show one long track</label>
     </div>
     <div class="viewport">
-      <canvas id="sim" aria-label="Side view of the track vehicle on the stairs"></canvas>
+      <canvas id="sim" aria-label="Side view of the track vehicle carrying a person on the stairs"></canvas>
       <div class="hud">
         <div class="hud-box"><div class="hud-where" id="hud-where">Lower flight</div><div class="hud-sub" id="hud-sub">0.00 m travelled</div></div>
-        <div class="hud-box">
-          <dl class="hud-read" id="hud-read"></dl>
-        </div>
+        <div class="hud-box"><dl class="hud-read" id="hud-read"></dl></div>
       </div>
       <div class="busy" id="busy" hidden>Calculating…</div>
     </div>
@@ -291,9 +311,10 @@
       <h2 id="charts-h">Along the stairs</h2>
       <p class="sub">Distance travelled on the x-axis. Hover to read values, click to jump the simulation there.</p>
       <div class="chart-block">
-        <div class="chart-title"><h3>Load tilt (°)</h3>
-          <div class="legend"><span><i class="key two"></i>Two tracks + hinge</span><span><i class="key one"></i>One long track</span></div>
+        <div class="chart-title"><h3>Casualty tilt (°)</h3>
+          <div class="legend"><span><i class="key two"></i>Two tracks + hinge</span><span id="legend-one"><i class="key one"></i>One long track</span></div>
         </div>
+        <p class="chart-note">0 is the recline they were set at; + head end up, − head end down.</p>
         <div class="chart" id="chart-tilt"></div>
       </div>
       <div class="chart-block">
@@ -303,9 +324,12 @@
     </section>
 
     <section class="card panel" aria-labelledby="design-h">
-      <h2 id="design-h">Vehicle design</h2>
+      <h2 id="design-h">Design</h2>
       <p class="sub">Change a value and the whole trip is recalculated.</p>
-      <div class="sliders" id="sliders"></div>
+      <div class="controls">
+        <div class="ctl-group" id="grp-seat"><h3>Casualty seat</h3></div>
+        <div class="ctl-group" id="grp-vehicle"><h3>Vehicle</h3></div>
+      </div>
       <button type="button" class="btn" id="reset">Reset to defaults</button>
     </section>
   </div>
@@ -313,31 +337,48 @@
   <section class="card panel" aria-labelledby="math-h">
     <h2 id="math-h">The math</h2>
     <div class="math">
-      <div style="display:grid;gap:16px;align-content:start">
+      <div class="col">
         <div class="facts" id="facts"></div>
         <ul class="rules" id="rules"></ul>
       </div>
-      <div style="display:grid;gap:16px;align-content:start">
-        <p><b>Why one long track tips.</b> At a platform edge a straight track keeps climbing until its centre of mass passes the edge nosing. At that moment it is balanced on a single point, so it pivots through the whole change of slope in a few centimetres of travel and its far end drops onto the platform. Going down it is the same pivot in reverse: a nose-dive onto the stairs.</p>
+      <div class="col">
+        <p><b>Sitting and lying at once.</b> The seat is a reclining stretcher-chair. At about 45° the person is half lying and half sitting: back reclined, knees a little raised, lower legs out in front. A driven pivot under the seat keeps it level, so the person stays at the same angle from the ground to the top platform. Their head is uphill and feet downhill, the way casualties are carried on stairs: they ride backwards going up and face forward coming down.</p>
+        <p><b>Why one long track tips.</b> At a platform edge a straight track keeps climbing until its centre of mass passes the edge nosing. At that moment it balances on a single point, so it pivots through the whole change of slope in a few centimetres and its far end drops onto the platform. The seat drive cannot turn that fast, so the person is thrown forward or back as well.</p>
         <p><b>What the hinge does instead.</b> Split into two units, the change of slope happens in two halves, each spread over most of a unit length:</p>
         <ol class="phase">
           <li><span><b>Catch.</b> At the foot of a flight the front unit tilts up onto the nosings while the rear stays flat, then the rear follows.</span></li>
-          <li><span><b>Fold.</b> Nearing an edge, the hinge lifts slightly and folds the leading unit down onto the next surface before the middle reaches the edge, so both ends stay on something.</span></li>
-          <li><span><b>Straighten.</b> Once the leading unit is along the straight, the hinge unbends and the trailing unit comes over the edge and lines up.</span></li>
+          <li><span><b>Fold.</b> Nearing an edge, the hinge lifts slightly and folds the leading unit down onto the next surface. It holds that fold until the centre of mass is 5 cm past the edge, so the trailing unit keeps its end on the stairs.</span></li>
+          <li><span><b>Straighten.</b> Then the hinge unbends and the trailing unit comes over the edge and lines up.</span></li>
         </ol>
-        <p class="note"><b>How this simulation works.</b> It is a slow-speed (quasi-static) model: at every centimetre it finds how both units rest on the real ES1 step geometry, then checks support, clearance and tipping. Tracks ride on the line joining the step nosings and bridge the gaps between them, which holds because each unit spans at least two nosings. The hinge is driven: it settles each unit onto the stairs, folds the leading unit over an edge, lets the trailing unit straighten, and can only bend so fast per metre travelled. Traction, motor power and impact forces are not modelled. To hold on the slope the tracks need a friction coefficient of at least <span id="mu">0.62</span> on the treads.</p>
+        <h3 class="spec-h" id="spec-h">What carrying this load takes</h3>
+        <dl class="spec" id="spec"></dl>
+        <p class="note"><b>How this simulation works.</b> It is a slow-speed (quasi-static) model. At every centimetre it finds how both units rest on the real ES1 step geometry, then checks support, the gap around the seat and person, and tipping. Tracks ride on the line joining the step nosings and bridge the gaps between them, which holds because each unit spans at least two nosings. The person is a 1.80 m adult built from standard body-segment proportions. Motor torques and forces are worked out for slow, steady driving; impacts and braking are not modelled.</p>
       </div>
+    </div>
+  </section>
+
+  <section class="card panel" aria-labelledby="posture-h">
+    <h2 id="posture-h">Sitting up to lying flat</h2>
+    <p class="sub" id="posture-sub">Every recline angle, with the current seat height and vehicle, at the height setting shown above, up and down.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr class="group-row"><th></th><th></th><th colspan="2">Closest gap</th><th></th><th></th><th></th></tr>
+          <tr><th>Recline</th><th class="fit">Posture</th><th>to the steps</th><th>to its own tracks</th><th>Casualty tilt</th><th>Worst drop</th><th class="fit">Result</th></tr>
+        </thead>
+        <tbody id="posture-body"></tbody>
+      </table>
     </div>
   </section>
 
   <section class="card panel" aria-labelledby="table-h">
     <h2 id="table-h">All three settings</h2>
-    <p class="sub" id="table-sub">With the current vehicle design. Worst tilt change is the biggest change in load tilt over any 10 cm of travel; drop is how far the vehicle falls if its centre of mass passes the edge of its support.</p>
+    <p class="sub">With the current seat and vehicle. Casualty tilt is the worst moment in the trip; drop is how far the vehicle falls if its centre of mass passes the edge of its support.</p>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th></th><th colspan="2">Worst tilt change per 10 cm</th><th colspan="2">Worst drop</th><th></th></tr>
-          <tr><th>Setting</th><th>Two tracks (up · down)</th><th>One track</th><th>Two tracks (up · down)</th><th>One track</th><th>Hinge bend used</th></tr>
+          <tr class="group-row"><th></th><th colspan="2">Casualty tilt</th><th colspan="2">Worst drop</th><th></th></tr>
+          <tr><th>Setting</th><th>Two tracks (up · down)</th><th>One track</th><th>Two tracks (up · down)</th><th>One track</th><th>Closest gap</th></tr>
         </thead>
         <tbody id="table-body"></tbody>
       </table>
@@ -353,17 +394,23 @@
   const deg = TM.deg;
 
   // ------------------------------------------------------------------ state
-  const SLIDERS = [
-    { key: 'unitLength', label: 'Unit length', unit: 'm', min: 0.5, max: 1.0, step: 0.01, fmt: (v) => v.toFixed(2), hint: 'Sprocket centre to sprocket centre, each unit.' },
-    { key: 'sprocketRadius', label: 'Sprocket radius', unit: 'm', min: 0.06, max: 0.15, step: 0.005, fmt: (v) => v.toFixed(3), hint: 'Half the track height.' },
+  const postureName = (a) => (a < 25 ? 'sitting up' : a < 40 ? 'leaning back' : a < 65 ? 'half lying' : a < 80 ? 'mostly lying' : 'lying flat');
+  const SEAT_SLIDERS = [
+    { key: 'personMass', label: 'Person', unit: ' kg', min: 40, max: 180, step: 5, fmt: (v) => v.toFixed(0), hint: 'The seat, its levelling drive and the mast add 25 kg.' },
+    { key: 'reclineDeg', label: 'Recline', unit: '°', min: 10, max: 90, step: 1, fmt: (v) => `${v.toFixed(0)}° · ${postureName(v)}`, hint: 'Backrest from vertical: 15° sitting up, 45° half lying, 90° flat.' },
+    { key: 'seatHeight', label: 'Seat height', unit: ' m', min: 0.25, max: 0.9, step: 0.01, fmt: (v) => v.toFixed(2), hint: 'Levelling pivot above the hinge pin.' },
+  ];
+  const VEHICLE_SLIDERS = [
+    { key: 'unitLength', label: 'Unit length', unit: ' m', min: 0.5, max: 1.0, step: 0.01, fmt: (v) => v.toFixed(2), hint: 'Sprocket centre to sprocket centre, each unit.' },
+    { key: 'sprocketRadius', label: 'Sprocket radius', unit: ' m', min: 0.06, max: 0.15, step: 0.005, fmt: (v) => v.toFixed(3), hint: 'Half the track height.' },
     { key: 'hingeLimitDeg', label: 'Hinge range', unit: '°', min: 30, max: 90, step: 1, fmt: (v) => '±' + v.toFixed(0), hint: 'How far the hinge can bend either way.' },
     { key: 'hingeRateDegPerM', label: 'Hinge speed', unit: '°/m', min: 30, max: 300, step: 10, fmt: (v) => v.toFixed(0), hint: 'How much the hinge can bend per metre travelled.' },
-    { key: 'payloadHeight', label: 'Load height', unit: 'm', min: 0.15, max: 0.9, step: 0.01, fmt: (v) => v.toFixed(2), hint: 'Load centre above the hinge pin.' },
-    { key: 'payloadMass', label: 'Load mass', unit: 'kg', min: 20, max: 150, step: 5, fmt: (v) => v.toFixed(0), hint: 'Each track unit weighs 25 kg.' },
   ];
+  const SLIDERS = SEAT_SLIDERS.concat(VEHICLE_SLIDERS);
+  const RECLINES = [15, 30, 45, 60, 75, 90];
   const state = {
-    height: 5.8, dir: 'up', view: 'follow', compare: true,
-    design: Object.fromEntries(SLIDERS.map((s) => [s.key, TM.DEFAULTS[s.key]])),
+    height: 8.4, dir: 'down', view: 'follow', compare: true,
+    design: Object.assign(Object.fromEntries(SLIDERS.map((s) => [s.key, TM.DEFAULTS[s.key]])), { levelSeat: TM.DEFAULTS.levelSeat }),
     sim: null, idx: 0, playing: false, speed: 4, lastT: 0, travel: 0,
     cam: null, tableToken: 0,
   };
@@ -373,20 +420,41 @@
   function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
   let C = {};
   function readColors() {
-    for (const k of ['bg', 'surface', 'surface-2', 'ink', 'ink-2', 'muted', 'hair', 'hair-strong', 'steel', 'steel-edge', 'nosing', 'two', 'two-soft', 'one', 'track', 'tread', 'load', 'good', 'warn', 'bad']) C[k] = css('--' + k);
+    for (const k of ['bg', 'surface', 'surface-2', 'ink', 'ink-2', 'muted', 'hair', 'hair-strong', 'steel', 'steel-edge', 'nosing', 'two', 'one', 'track', 'tread', 'chair', 'person', 'person-edge', 'good', 'warn', 'bad']) C[k] = css('--' + k);
   }
   const icons = {
     good: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     warn: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5l6 11H2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 7v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="8" cy="11.9" r="0.9" fill="currentColor"/></svg>',
     bad: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   };
-  const fmtCm = (m) => (m * 100).toFixed(0) + ' cm';
+  const cm = (m) => Math.round(m * 100);
+  const PART = { backrest: 'backrest', seat: 'seat', 'leg rest': 'leg rest', thigh: 'thighs', shank: 'lower legs', foot: 'feet', torso: 'body', head: 'head' };
+  function chipHtml(level, text, small) {
+    return `<span class="chip ${level}${small ? ' small' : ''}">${icons[level]}<span>${text}</span></span>`;
+  }
+
+  // Closest gap of a summary: to the steps or to the vehicle's own tracks.
+  function closestGap(sm) {
+    if (sm.minTrackClearance < sm.minClearance) {
+      const h = sm.trackHit || { part: 'seat', unit: 'rear' };
+      return { gap: sm.minTrackClearance, text: `${PART[h.part] || h.part} to the ${h.unit} track` };
+    }
+    return { gap: sm.minClearance, text: `${PART[sm.closestPart] || sm.closestPart} to the steps` };
+  }
+  // good / warn / bad for one run of the two-track vehicle
+  function assess(sm) {
+    const g = Math.min(sm.minClearance, sm.minTrackClearance);
+    if (g < 0 || sm.maxTipDrop > 0.1) return 'bad';
+    if (sm.maxTipDrop > 0.005 || g < 0.05 || sm.maxSeatTiltDeg > 10) return 'warn';
+    return 'good';
+  }
 
   // Order samples in the direction of travel.
   function seqFor(sim, dir) {
     const n = sim.path.length;
     return dir === 'up' ? [...Array(n).keys()] : [...Array(n).keys()].reverse();
   }
+  const oneList = (sim) => (state.dir === 'up' ? sim.rigidUp : sim.rigidDown);
 
   // ------------------------------------------------------------ simulate
   function runSim() {
@@ -395,15 +463,16 @@
       const opts = Object.assign({ height: state.height }, state.design);
       const sim = TM.simulate(opts);
       sim.an = TM.analyse(opts);
-      const sEnd = sim.path[sim.path.length - 1].s;
-      sim.sEnd = sEnd;
+      sim.sEnd = sim.path[sim.path.length - 1].s;
       const keep = state.sim ? state.idx / Math.max(1, state.sim.path.length - 1) : null;
       state.sim = sim;
       if (keep === null) {
-        // open on an informative frame: the leading unit folding over the mid platform edge
-        const seq = seqFor(sim, state.dir);
-        const k = seq.findIndex((i) => sim[state.dir][i].folded);
-        state.idx = k > 0 ? Math.min(seq.length - 1, k + 18) : 0;
+        // open on an informative frame: the deepest fold over the first platform edge
+        const seq = seqFor(sim, state.dir), list = sim[state.dir];
+        const k = seq.findIndex((i) => list[i].folded);
+        let best = Math.max(0, k);
+        for (let j = best; k > 0 && j < Math.min(seq.length, k + 150); j++) if (Math.abs(list[seq[j]].beta) > Math.abs(list[seq[best]].beta)) best = j;
+        state.idx = best;
       } else {
         state.idx = Math.round(keep * (sim.path.length - 1));
       }
@@ -414,74 +483,66 @@
       buildCharts();
       state.cam = null;
       draw();
-      scheduleTable();
+      scheduleTables();
     }, 30);
   }
 
-  // Order-independent position: k = number of samples travelled so far.
-  function currentK() { return state.idx; }
   function sampleIndex(k) { return state.dir === 'up' ? k : state.sim.path.length - 1 - k; }
 
   // --------------------------------------------------------------- verdict
-  function classify(sum) {
-    if (sum.maxTipDrop > 0.1) return 'bad';
-    if (sum.maxTipDrop > 0.005 || sum.maxPitchChangePer10cmDeg > 12) return 'warn';
-    return 'good';
-  }
   function renderVerdict() {
-    const sm = state.sim.summary;
-    const up = sm.up, dn = sm.down, rg = sm.rigid;
-    const two = { tilt: Math.max(up.maxPitchChangePer10cmDeg, dn.maxPitchChangePer10cmDeg), drop: Math.max(up.maxTipDrop, dn.maxTipDrop),
-      hinge: Math.max(up.maxHingeDeg, dn.maxHingeDeg), clear: Math.min(up.minClearance, dn.minClearance) };
-    const checksOk = state.sim.an.checks.every((c) => c.ok);
-    const worst = [classify(up), classify(dn)].includes('bad') ? 'bad' : [classify(up), classify(dn)].includes('warn') ? 'warn' : 'good';
-    const level = !checksOk && worst === 'good' ? 'warn' : worst;
-    const chip = $('verdict-chip');
-    chip.className = 'chip ' + level;
-    chip.innerHTML = icons[level] + '<span></span>';
-    chip.querySelector('span').textContent = level === 'good' ? 'It works' : level === 'warn' ? 'Works, with a catch' : 'Does not work yet';
-    const h = state.height.toFixed(1);
+    const sim = state.sim, sm = sim.summary, two = sm.two, one = sm.rigid, o = sim.opts;
+    const checksOk = sim.an.checks.every((c) => c.ok);
+    let level = assess(two);
+    if (!checksOk && level === 'good') level = 'warn';
+    $('verdict-chip').outerHTML = `<span id="verdict-chip" role="status">${chipHtml(level, level === 'good' ? 'It works' : level === 'warn' ? 'Works, with a catch' : 'Does not work yet')}</span>`;
+    const h = state.height.toFixed(1), who = `${o.personMass.toFixed(0)} kg person`;
+    const cg = closestGap(two);
     let text;
-    if (level === 'bad') {
-      text = `At the ${h} m setting this design still tips at an edge (drops up to ${fmtCm(two.drop)}). Try a wider hinge range or a faster hinge.`;
+    if (cg.gap < 0) {
+      const [part, thing] = cg.text.split(' to the ');
+      const plural = ['thighs', 'lower legs', 'feet'].includes(part);
+      const legs = /leg|feet|thigh|seat/.test(part);
+      text = `At the ${h} m setting the ${part} ${plural ? 'hit' : 'hits'} the ${thing}. ${legs ? 'Raise the seat or recline it further so the legs come up.' : 'Raise the seat or sit the person up a little.'}`;
+    } else if (two.maxTipDrop > 0.1) {
+      text = `At the ${h} m setting this design still tips at an edge and drops up to ${cm(two.maxTipDrop)} cm. Try a wider hinge range or a faster hinge.`;
     } else {
-      const rock = up.maxTipDrop > 0.005 || dn.maxTipDrop > 0.005
-        ? ` The only give is a ${fmtCm(two.drop)} rock-back as the hinge crosses an edge${up.maxTipDrop >= dn.maxTipDrop ? ' going up' : ' going down'}, where the trailing unit settles onto the stairs.`
-        : ' It stays supported the whole way.';
-      text = `At the ${h} m setting the two-track vehicle climbs and descends without tipping. The load tilts at most ${two.tilt.toFixed(1)}° per 10 cm of travel, against ${rg.maxPitchChangePer10cmDeg.toFixed(1)}° for one long track, which tips over every platform edge.${rock}`;
+      const tilt = o.levelSeat
+        ? `The seat stays within ${two.maxSeatTiltDeg.toFixed(0)}° of level the whole way`
+        : `The seat is fixed to the vehicle, so the person tilts with it by up to ${two.maxSeatTiltDeg.toFixed(0)}°`;
+      text = `At the ${h} m setting the two-track vehicle carries a ${who} up and down without tipping. ${tilt}. One long track drops ${cm(one.maxTipDrop)} cm at every platform edge and tilts the person by ${one.maxSeatTiltDeg.toFixed(0)}°.`;
+      if (two.maxTipDrop > 0.005) text += ` There is a ${cm(two.maxTipDrop)} cm rock as the hinge crosses an edge.`;
+      if (cg.gap < 0.05) text += ` The closest gap is only ${cm(cg.gap)} cm (${cg.text}).`;
       if (!checksOk) text += ' One of the design rules below is not met, so check it before building.';
     }
     $('verdict-text').textContent = text;
     const tiles = [
-      { label: 'Worst tilt change per 10 cm', value: two.tilt.toFixed(1), unit: '°', vs: `${rg.maxPitchChangePer10cmDeg.toFixed(1)}° one long track` },
-      { label: 'Worst drop at an edge', value: (two.drop * 100).toFixed(0), unit: 'cm', vs: `${(rg.maxTipDrop * 100).toFixed(0)} cm one long track` },
-      { label: 'Hinge bend used', value: '±' + two.hinge.toFixed(0), unit: '°', vs: `stairs change slope by ${state.sim.an.pitchDeg.toFixed(1)}°` },
-      { label: 'Load clearance to steps', value: (two.clear * 100).toFixed(0), unit: 'cm', vs: 'closest the load box gets' },
+      { label: 'Casualty tilt, worst moment', value: two.maxSeatTiltDeg.toFixed(0), unit: '°', vs: `${one.maxSeatTiltDeg.toFixed(0)}° one long track`, key: true },
+      { label: 'Worst drop at an edge', value: String(cm(two.maxTipDrop)), unit: 'cm', vs: `${cm(one.maxTipDrop)} cm one long track`, key: true },
+      { label: 'Closest gap', value: String(cm(cg.gap)), unit: 'cm', vs: cg.text },
+      { label: 'Hinge bend used', value: '±' + two.maxHingeDeg.toFixed(0), unit: '°', vs: `stairs change slope by ${sim.an.pitchDeg.toFixed(1)}°` },
     ];
     const box = $('tiles');
     box.textContent = '';
-    tiles.forEach((t, i) => {
-      const d = document.createElement('div');
-      d.className = 'tile';
+    for (const t of tiles) {
+      const d = document.createElement('div'); d.className = 'tile';
       const l = document.createElement('div'); l.className = 'tile-label'; l.textContent = t.label;
       const v = document.createElement('div'); v.className = 'tile-value'; v.textContent = t.value;
       const u = document.createElement('small'); u.textContent = t.unit; v.appendChild(u);
       const vs = document.createElement('div'); vs.className = 'tile-vs';
-      if (i < 2) { const k = document.createElement('i'); k.className = 'key one'; vs.appendChild(k); }
+      if (t.key) { const k = document.createElement('i'); k.className = 'key one'; vs.appendChild(k); }
       vs.appendChild(document.createTextNode(t.vs));
-      d.append(l, v, vs);
-      box.appendChild(d);
-    });
+      d.append(l, v, vs); box.appendChild(d);
+    }
   }
 
   // ------------------------------------------------------------------ math
   function renderMath() {
-    const an = state.sim.an, o = state.sim.opts, p = state.sim.profile;
-    $('mu').textContent = Math.tan(an.pitchDeg * Math.PI / 180).toFixed(2);
+    const sim = state.sim, an = sim.an, o = sim.opts, p = sim.profile, two = sim.summary.two;
     const facts = [
       ['170 mm', 'step rise'], ['280 mm', 'step going'],
-      [p.pitchLower * 180 / Math.PI > 0 ? (TM.deg(p.pitchLower).toFixed(1) + '°') : '–', 'bottom flight pitch'],
-      [p.nUp ? TM.deg(p.pitchUpper).toFixed(1) + '°' : 'none', 'upper flight pitch'],
+      [deg(p.pitchLower).toFixed(1) + '°', 'bottom flight pitch'],
+      [p.nUp ? deg(p.pitchUpper).toFixed(1) + '°' : 'none', 'upper flight pitch'],
       [(an.nosingSpacing * 1000).toFixed(0) + ' mm', 'nosing to nosing'],
       ['1.00 m', 'mid platform, flat'],
     ];
@@ -492,57 +553,111 @@
       const ss = document.createElement('span'); ss.textContent = s;
       d.append(bb, ss); fb.appendChild(d);
     }
-    const ok = Object.fromEntries(an.checks.map((c) => [c.id, c.ok]));
-    const used = Math.max(state.sim.summary.up.maxHingeDeg, state.sim.summary.down.maxHingeDeg);
+    const ok = Object.fromEntries(an.checks.map((c) => [c.id, c.ok ? 'good' : 'bad']));
+    const n = (v) => `<span class="num">${v}</span>`;
+    const g1 = two.minClearance, g2 = two.minTrackClearance, gMin = Math.min(g1, g2);
+    ok.gap = gMin < 0 ? 'bad' : gMin < 0.05 ? 'warn' : 'good';
+    const needRate = two.maxPitchChangePer10cmDeg * 10; // degrees per metre the seat has to follow
+    ok.level = !o.levelSeat ? 'warn' : (o.levelLimitDeg >= two.maxPitchDeg && o.levelRateDegPerM >= needRate) ? 'good' : 'warn';
+    const th = two.trackHit || { part: 'seat', unit: 'rear' };
     const rules = [
       { id: 'support', title: 'Each unit must bridge two nosings',
-        body: `A straight track only rests steadily if it always spans two step nosings, otherwise it rocks into the gaps. Nosings are ${(an.nosingSpacing * 1000).toFixed(0)} mm apart, so a unit needs at least <span class="num">${(an.minUnitLength * 1000).toFixed(0)} mm</span>. This one is <span class="num">${(o.unitLength * 1000).toFixed(0)} mm</span>.` },
+        body: `A straight track only rests steadily if it always spans two step nosings, otherwise it rocks into the gaps. Nosings are ${(an.nosingSpacing * 1000).toFixed(0)} mm apart, so a unit needs at least ${n((an.minUnitLength * 1000).toFixed(0) + ' mm')}. This one is ${n((o.unitLength * 1000).toFixed(0) + ' mm')}.` },
       { id: 'landing', title: 'One unit must fit on the mid platform',
-        body: `A unit is <span class="num">${an.unitOverall.toFixed(2)} m</span> overall and the mid platform is <span class="num">1.00 m</span>, so a unit can lie flat on it. The whole vehicle is <span class="num">${an.totalLength.toFixed(2)} m</span>, longer than the platform, so it crosses in an S-bend.` },
+        body: `A unit is ${n(an.unitOverall.toFixed(2) + ' m')} overall and the mid platform is ${n('1.00 m')}, so a unit can lie flat on it. The whole vehicle is ${n(an.totalLength.toFixed(2) + ' m')}, longer than the platform, so it crosses in an S-bend.` },
       { id: 'hinge', title: 'The hinge must bend further than the stairs',
-        body: `The slope changes by <span class="num">${an.pitchDeg.toFixed(1)}°</span> at each edge, but folding the leading unit down before the middle reaches the edge takes more: this trip used up to <span class="num">±${used.toFixed(0)}°</span>. Below about ±45° the fold cannot start early and the vehicle pivots like one long track. This hinge: <span class="num">±${o.hingeLimitDeg.toFixed(0)}°</span>.` },
+        body: `The slope changes by ${n(an.pitchDeg.toFixed(1) + '°')} at each edge, but folding the leading unit down before the middle reaches the edge takes more: this trip used up to ${n('±' + two.maxHingeDeg.toFixed(0) + '°')}. Below about ±45° the fold cannot start early and the vehicle pivots like one long track. This hinge: ${n('±' + o.hingeLimitDeg.toFixed(0) + '°')}.` },
       { id: 'rate', title: 'The hinge must fold fast enough',
-        body: `The fold has to finish within one unit length of travel: ${an.pitchDeg.toFixed(1)}° ÷ ${o.unitLength.toFixed(2)} m = <span class="num">${an.minRate.toFixed(0)}°/m</span> at the very least, about <span class="num">${(1.5 * an.minRate).toFixed(0)}°/m</span> with margin. Much faster than 150°/m the fold snaps instead of easing. This hinge: <span class="num">${o.hingeRateDegPerM.toFixed(0)}°/m</span>.` },
+        body: `The fold has to finish within one unit length of travel: ${an.pitchDeg.toFixed(1)}° ÷ ${o.unitLength.toFixed(2)} m = ${n(an.minRate.toFixed(0) + '°/m')} at the very least, about ${n((1.5 * an.minRate).toFixed(0) + '°/m')} with margin. Much faster than 150°/m the fold snaps instead of easing. This hinge: ${n(o.hingeRateDegPerM.toFixed(0) + '°/m')}.` },
       { id: 'tip', title: 'It must not tip backwards on the slope',
-        body: `The centre of mass sits <span class="num">${(an.comAboveTrack * 1000).toFixed(0)} mm</span> above the track and one unit length ahead of the rear contact. Stable while ${o.unitLength.toFixed(2)} ÷ ${an.comAboveTrack.toFixed(3)} = <span class="num">${an.tipRatio.toFixed(2)}</span> beats tan ${an.pitchDeg.toFixed(1)}° × 1.5 = <span class="num">${an.tipNeed.toFixed(2)}</span>. That allows the centre of mass up to ${(an.maxComAboveTrack * 1000).toFixed(0)} mm above the track.` },
+        body: `On the slope the centre of mass slides downhill by its height above the track × sin(pitch). A level seat keeps its own centre of mass above its pivot, so only the mast counts: ${n((an.comAboveTrack * 1000).toFixed(0) + ' mm')} above the track. Stable while ${o.unitLength.toFixed(2)} ÷ ${an.comAboveTrack.toFixed(3)} = ${n(an.tipRatio.toFixed(2))} beats tan ${an.pitchDeg.toFixed(1)}° × 1.5 = ${n(an.tipNeed.toFixed(2))}.` },
+      { id: 'gap', title: 'The seat and person must clear everything',
+        body: `Closest to the steps: ${n(cm(g1) + ' cm')} (${PART[two.closestPart] || two.closestPart}). Closest to its own tracks: ${n(cm(g2) + ' cm')} (${PART[th.part] || th.part}, ${th.unit} track). Sitting up needs a taller mast so the feet clear the rear track; lying flat needs one so the head and feet clear the tracks on the slope. Half lying is the most compact.` },
+      { id: 'level', title: 'The seat drive must keep up',
+        body: o.levelSeat
+          ? `The vehicle pitches up to ${n(two.maxPitchDeg.toFixed(1) + '°')}, and up to ${n(two.maxPitchChangePer10cmDeg.toFixed(1) + '°')} per 10 cm, which is ${n((needRate * o.speed).toFixed(0) + '°/s')} at walking-pace 0.25 m/s. This drive: ${n('±' + o.levelLimitDeg.toFixed(0) + '°')} at ${n((o.levelRateDegPerM * o.speed).toFixed(0) + '°/s')}. It lags only where the vehicle rocks within a centimetre, which tilts the person ${n(two.maxSeatTiltDeg.toFixed(0) + '°')} for a moment.`
+          : `The seat is fixed, so the person tilts with the vehicle by up to ${n(two.maxSeatTiltDeg.toFixed(0) + '°')}. Turn on "Keep the seat level" to hold them at their seat angle.` },
     ];
     const ul = $('rules'); ul.textContent = '';
     for (const r of rules) {
       const li = document.createElement('li');
-      const good = ok[r.id];
-      li.innerHTML = `<span class="ico ${good ? 'good' : 'bad'}" role="img" aria-label="${good ? 'Met' : 'Not met'}">${good ? icons.good : icons.bad}</span><div><h3></h3><p>${r.body}</p></div>`;
+      const lv = ok[r.id];
+      const label = lv === 'good' ? 'Met' : lv === 'warn' ? 'Tight' : 'Not met';
+      li.innerHTML = `<span class="ico ${lv}" role="img" aria-label="${label}">${icons[lv]}</span><div><h3></h3><p>${r.body}</p></div>`;
       li.querySelector('h3').textContent = r.title;
       ul.appendChild(li);
     }
+    // what carrying the load takes
+    $('spec-h').textContent = `What carrying ${o.personMass.toFixed(0)} kg takes`;
+    const spec = [
+      ['Total mass', `person ${o.personMass.toFixed(0)} + seat ${o.chairMass.toFixed(0)} + two units ${(2 * o.unitMass).toFixed(0)} kg`, `${an.totalMass.toFixed(0)} kg`],
+      ['Track pull on the slope', `total weight × sin ${an.pitchDeg.toFixed(1)}°, to climb or to hold on the brakes`, `${(an.traction / 1000).toFixed(2)} kN`],
+      ['Drive power at the tracks', `at walking pace, 0.25 m/s, before losses`, `${an.drivePower.toFixed(0)} W`],
+      ['Sprocket torque', 'per unit, both units driving', `${an.sprocketTorque.toFixed(0)} N·m`],
+      ['Hinge actuator', 'holding the vehicle up on its two ends while folded over an edge', `${(Math.round(an.hingeTorque / 10) * 10).toFixed(0)} N·m`],
+      ['Seat levelling drive', 'self-locking; holds the seat if it is ever caught tilted by the full pitch', `${(Math.round(an.levelTorque / 10) * 10).toFixed(0)} N·m`],
+      ['Track grip on the treads', 'friction coefficient, whatever the load', `≥ ${an.friction.toFixed(2)}`],
+    ];
+    const dl = $('spec'); dl.textContent = '';
+    for (const [a, b, v] of spec) {
+      const row = document.createElement('div');
+      const dt = document.createElement('dt'); dt.textContent = a;
+      const sm = document.createElement('small'); sm.textContent = b; dt.appendChild(sm);
+      const dd = document.createElement('dd'); dd.textContent = v;
+      row.append(dt, dd); dl.appendChild(row);
+    }
   }
 
-  // ------------------------------------------------------------------ table
-  function scheduleTable() {
+  // ------------------------------------------------------------------ tables
+  // Worked out in small steps after the main run so the page stays responsive.
+  function scheduleTables() {
     const token = ++state.tableToken;
-    const body = $('table-body');
-    const heights = [3.2, 5.8, 8.4];
+    const jobs = [];
+    // posture table: every recline angle at this height setting
+    const pb = $('posture-body'); pb.textContent = '';
+    const prow = {};
+    for (const a of RECLINES) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${a}°</td><td class="muted" colspan="6">calculating…</td>`;
+      pb.appendChild(tr); prow[a] = tr;
+      jobs.push(() => {
+        const r = TM.simulate(Object.assign({ height: state.height }, state.design, { reclineDeg: a, oneTrack: false }));
+        const t = r.summary.two, cg = closestGap(t), lv = assess(t);
+        const tr2 = prow[a]; tr2.textContent = '';
+        tr2.className = Math.abs(a - state.design.reclineDeg) < 7.5 ? 'current' : '';
+        const cells = [`${a}°`, postureName(a), `${cm(t.minClearance)} cm`, `${cm(t.minTrackClearance)} cm`, `${t.maxSeatTiltDeg.toFixed(0)}°`, `${cm(t.maxTipDrop)} cm`];
+        cells.forEach((c, i) => { const td = document.createElement('td'); td.textContent = c; if (i === 1) td.className = 'fit'; tr2.appendChild(td); });
+        const td = document.createElement('td'); td.className = 'fit';
+        const label = lv === 'good' ? 'Fits' : lv === 'warn' ? (cg.gap < 0.05 && cg.gap >= 0 ? `Tight: ${cg.text}` : 'Works, with a catch') : (cg.gap < 0 ? `Hits: ${cg.text}` : 'Tips');
+        td.innerHTML = chipHtml(lv, '', true);
+        td.querySelector('.chip span').textContent = label;
+        tr2.appendChild(td);
+      });
+    }
+    // all three height settings
+    const body = $('table-body'); body.textContent = '';
     const rows = {};
-    body.textContent = '';
-    for (const h of heights) {
+    for (const h of [3.2, 5.8, 8.4]) {
       const tr = document.createElement('tr');
       tr.innerHTML = `<td>${h.toFixed(1)} m</td><td class="muted" colspan="5">calculating…</td>`;
       body.appendChild(tr); rows[h] = tr;
+      jobs.push(() => {
+        const r = h === state.height ? state.sim : TM.simulate(Object.assign({ height: h }, state.design));
+        const u = r.summary.up, d = r.summary.down, g = r.summary.rigid, cg = closestGap(r.summary.two);
+        const tr2 = rows[h]; tr2.textContent = '';
+        if (h === state.height) tr2.className = 'current';
+        const cells = [`${h.toFixed(1)} m${h === state.height ? ' (shown)' : ''}`,
+          `${u.maxSeatTiltDeg.toFixed(0)}° · ${d.maxSeatTiltDeg.toFixed(0)}°`, `${g.maxSeatTiltDeg.toFixed(0)}°`,
+          `${cm(u.maxTipDrop)} · ${cm(d.maxTipDrop)} cm`, `${cm(g.maxTipDrop)} cm`, `${cm(cg.gap)} cm`];
+        for (const c of cells) { const td = document.createElement('td'); td.textContent = c; tr2.appendChild(td); }
+      });
     }
-    const doOne = (i) => {
-      if (token !== state.tableToken || i >= heights.length) return;
-      const h = heights[i];
-      const r = h === state.height ? state.sim : TM.simulate(Object.assign({ height: h }, state.design));
-      const u = r.summary.up, d = r.summary.down, g = r.summary.rigid;
-      const tr = rows[h];
-      tr.textContent = '';
-      const cells = [`${h.toFixed(1)} m${h === state.height ? ' (shown)' : ''}`,
-        `${u.maxPitchChangePer10cmDeg.toFixed(1)}° · ${d.maxPitchChangePer10cmDeg.toFixed(1)}°`, `${g.maxPitchChangePer10cmDeg.toFixed(1)}°`,
-        `${(u.maxTipDrop * 100).toFixed(0)} · ${(d.maxTipDrop * 100).toFixed(0)} cm`, `${(g.maxTipDrop * 100).toFixed(0)} cm`,
-        `±${Math.max(u.maxHingeDeg, d.maxHingeDeg).toFixed(0)}°`];
-      for (const c of cells) { const td = document.createElement('td'); td.textContent = c; tr.appendChild(td); }
-      setTimeout(() => doOne(i + 1), 20);
+    const next = () => {
+      if (token !== state.tableToken || !jobs.length) return;
+      jobs.shift()();
+      setTimeout(next, 30);
     };
-    setTimeout(() => doOne(0), 60);
+    setTimeout(next, 120);
   }
 
   // ----------------------------------------------------------------- charts
@@ -565,13 +680,15 @@
     const sim = state.sim;
     const seq = seqFor(sim, state.dir);
     const dist = (i) => (state.dir === 'up' ? sim.path[i].s : sim.sEnd - sim.path[i].s);
-    const two = sim[state.dir];
-    return seq.map((i) => ({ x: dist(i), two: key === 'tilt' ? deg(two[i].pitch) : deg(two[i].beta), one: key === 'tilt' ? deg(sim.rigid[i].pitch) : null }));
+    const two = sim[state.dir], one = oneList(sim);
+    return seq.map((i) => ({ x: dist(i), two: key === 'tilt' ? deg(two[i].phi) : deg(two[i].beta), one: key === 'tilt' ? deg(one[i].phi) : null }));
   }
   function buildCharts() {
     const lim = state.sim.opts.hingeLimitDeg;
-    makeChart('tilt', $('chart-tilt'), { height: 190, y0: -5, y1: 40, ticks: [0, 10, 20, 30, 40], bands: true, series: ['two', 'one'] });
-    makeChart('hinge', $('chart-hinge'), { height: 150, y0: -Math.max(40, Math.ceil(lim / 10) * 10), y1: Math.max(40, Math.ceil(lim / 10) * 10), ticks: null, bands: false, series: ['two'], limit: lim });
+    const hl = Math.max(40, Math.ceil(lim / 10) * 10);
+    $('legend-one').hidden = !state.compare;
+    makeChart('tilt', $('chart-tilt'), { height: 190, y0: -35, y1: 35, ticks: [-30, -15, 0, 15, 30], bands: true, series: ['two', 'one'] });
+    makeChart('hinge', $('chart-hinge'), { height: 150, y0: -hl, y1: hl, ticks: null, bands: false, series: ['two'], limit: lim });
   }
   function makeChart(key, host, cfg) {
     const data = seriesFor(key);
@@ -585,7 +702,7 @@
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     svg.setAttribute('height', H);
     svg.setAttribute('role', 'img');
-    svg.setAttribute('aria-label', key === 'tilt' ? 'Load tilt along the stairs for both designs' : 'Hinge bend along the stairs');
+    svg.setAttribute('aria-label', key === 'tilt' ? 'Casualty tilt along the stairs for both designs' : 'Hinge bend along the stairs');
     const el = (tag, attrs, parent = svg) => { const e = document.createElementNS(ns, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
     if (cfg.bands) {
       sectionBands().forEach((b, i) => {
@@ -607,9 +724,7 @@
       const tx = el('text', { x: X(x), y: H - 6, 'text-anchor': x === 0 ? 'start' : 'middle' }, ax); tx.textContent = x + (x === 0 ? ' m' : '');
     }
     if (cfg.limit) {
-      for (const s of [1, -1]) {
-        el('line', { x1: m.l, x2: W - m.r, y1: Y(s * cfg.limit), y2: Y(s * cfg.limit), stroke: C['hair-strong'], 'stroke-width': 1 });
-      }
+      for (const s of [1, -1]) el('line', { x1: m.l, x2: W - m.r, y1: Y(s * cfg.limit), y2: Y(s * cfg.limit), stroke: C['hair-strong'], 'stroke-width': 1 });
       const lt = el('text', { x: W - m.r, y: Y(cfg.limit) - 4, 'text-anchor': 'end', class: 'band-label' }); lt.textContent = `hinge limit ±${cfg.limit}°`;
     }
     const path = (k) => {
@@ -657,7 +772,7 @@
     updateCharts();
   }
   function updateCharts() {
-    const k = currentK();
+    const k = Math.round(state.idx);
     for (const key in charts) {
       const ch = charts[key];
       const dp = ch.data[Math.min(k, ch.data.length - 1)];
@@ -665,9 +780,8 @@
       ch.cross.setAttribute('x1', ch.X(dp.x)); ch.cross.setAttribute('x2', ch.X(dp.x));
       const ser = ch.cfg.series.filter((s) => s === 'two' || state.compare);
       ch.dots.forEach((dot, j) => {
-        const v = dp[ser[j]];
         dot.setAttribute('cx', ch.X(dp.x));
-        dot.setAttribute('cy', ch.Y(Math.max(ch.cfg.y0, Math.min(ch.cfg.y1, v))));
+        dot.setAttribute('cy', ch.Y(Math.max(ch.cfg.y0, Math.min(ch.cfg.y1, dp[ser[j]]))));
       });
     }
   }
@@ -685,7 +799,8 @@
   function lerpPose(a, b, t) {
     const L = (u, v) => u + (v - u) * t;
     const P = (u, v) => ({ x: L(u.x, v.x), z: L(u.z, v.z) });
-    return { R: P(a.R, b.R), J: P(a.J, b.J), F: P(a.F, b.F), P: P(a.P, b.P), pitch: L(a.pitch, b.pitch), beta: L(a.beta, b.beta), a1: L(a.a1, b.a1), a2: L(a.a2, b.a2), ev: t < 0.5 ? a.ev : b.ev };
+    return { R: P(a.R, b.R), J: P(a.J, b.J), F: P(a.F, b.F), P: P(a.P, b.P), pitch: L(a.pitch, b.pitch), beta: L(a.beta, b.beta),
+      phi: L(a.phi, b.phi), a1: L(a.a1, b.a1), a2: L(a.a2, b.a2), ev: t < 0.5 ? a.ev : b.ev };
   }
   function poseAt(list, k) {
     const n = state.sim.path.length;
@@ -707,20 +822,20 @@
     const sim = state.sim, o = sim.opts, prof = sim.profile, rho = o.sprocketRadius;
     const k = state.idx;
     const two = poseAt(sim[state.dir], k);
-    const one = poseAt(sim.rigid, k);
+    const one = poseAt(oneList(sim), k);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = C.surface; ctx.fillRect(0, 0, CW, CH);
 
     // camera
     let scale, cx, cz;
     if (state.view === 'whole') {
-      const x0 = -2.2, x1 = prof.xP1 + 0.8, z0 = -0.4, z1 = prof.H + 1.3;
+      const x0 = -2.2, x1 = prof.xP1 + 0.8, z0 = -0.4, z1 = prof.H + 1.8;
       scale = Math.min(CW / (x1 - x0), (CH - 20) / (z1 - z0));
       cx = (x0 + x1) / 2; cz = (z0 + z1) / 2 + 20 / scale / 2;
     } else {
-      const span = CW < 520 ? 3.2 : CW < 900 ? 4.0 : 4.8;
+      const span = CW < 520 ? 3.4 : CW < 900 ? 4.2 : 5.0;
       scale = CW / span;
-      const target = { x: two.J.x, z: two.J.z + 0.35 };
+      const target = { x: two.J.x, z: two.J.z + 0.45 + 0.5 * o.seatHeight };
       if (!state.cam) state.cam = { ...target };
       const a = state.playing ? 0.12 : 1;
       state.cam.x += (target.x - state.cam.x) * a; state.cam.z += (target.z - state.cam.z) * a;
@@ -729,7 +844,7 @@
     const SX = (x) => (x - cx) * scale + CW / 2;
     const SY = (z) => CH / 2 - (z - cz) * scale;
 
-    // faint 0.5 m grid (drawing-sheet feel)
+    // faint grid (drawing-sheet feel)
     ctx.strokeStyle = C.hair; ctx.lineWidth = 1;
     const gStep = state.view === 'whole' ? 1 : 0.5;
     ctx.beginPath();
@@ -761,13 +876,15 @@
     if (prof.nUp) label(`MID PLATFORM · ${prof.zL.toFixed(2)} m`, prof.xL0 + 0.06, prof.zL);
     label(`TOP PLATFORM · ${prof.H.toFixed(2)} m`, prof.xP0 + 0.06, prof.H);
 
-    const drawStadium = (A, B, r) => {
-      const dx = B.x - A.x, dz = B.z - A.z, L = Math.hypot(dx, dz) || 1e-9;
-      const ang = Math.atan2(dz, dx);
+    // world-space capsule (a segment grown by r) as a closed path
+    const capsule = (ax, az, bx, bz, r) => {
+      const dx = bx - ax, dz = bz - az;
       ctx.beginPath();
+      if (Math.hypot(dx, dz) < 1e-6) { ctx.arc(SX(ax), SY(az), r * scale, 0, Math.PI * 2); return; }
+      const ang = Math.atan2(dz, dx);
       // canvas y is flipped: world angle a maps to screen angle -a
-      ctx.arc(SX(B.x), SY(B.z), r * scale, -ang - Math.PI / 2, -ang + Math.PI / 2, false);
-      ctx.arc(SX(A.x), SY(A.z), r * scale, -ang + Math.PI / 2, -ang + 1.5 * Math.PI, false);
+      ctx.arc(SX(bx), SY(bz), r * scale, -ang - Math.PI / 2, -ang + Math.PI / 2, false);
+      ctx.arc(SX(ax), SY(az), r * scale, -ang + Math.PI / 2, -ang + 1.5 * Math.PI, false);
       ctx.closePath();
     };
 
@@ -776,19 +893,18 @@
       ctx.save();
       ctx.setLineDash([7, 5]);
       ctx.strokeStyle = C.one; ctx.lineWidth = 2;
-      drawStadium(one.R, one.F, rho); ctx.stroke();
+      capsule(one.R.x, one.R.z, one.F.x, one.F.z, rho); ctx.stroke();
       ctx.setLineDash([]);
-      drawLoad(one, C.one, true);
-      drawCom(one, C.one, true);
+      drawSeat(one, true);
+      drawCom(one, true);
       ctx.restore();
     }
 
     // two tracks
-    const travel = state.travel;
-    for (const [A, B] of [[two.R, two.J], [two.J, two.F]]) drawUnit(A, B, rho, travel);
+    for (const [A, B] of [[two.R, two.J], [two.J, two.F]]) drawUnit(A, B, rho, state.travel);
     drawHinge(two);
-    drawLoad(two, C.two, false);
-    drawCom(two, C.two, false);
+    drawSeat(two, false);
+    drawCom(two, false);
 
     // mini map
     if (state.view === 'follow') drawMini(two);
@@ -796,16 +912,16 @@
     function drawUnit(A, B, r, trav) {
       // rubber track loop
       ctx.fillStyle = C.track;
-      drawStadium(A, B, r); ctx.fill();
+      capsule(A.x, A.z, B.x, B.z, r); ctx.fill();
       // grousers moving round the loop
       const dx = B.x - A.x, dz = B.z - A.z, L = Math.hypot(dx, dz), ux = dx / L, uz = dz / L, nx = -uz, nz = ux;
       const per = 2 * L + 2 * Math.PI * r, gap = 0.055;
       const dirSign = state.dir === 'up' ? 1 : -1;
-      let ph = ((dirSign * trav) % gap + gap) % gap;
+      const ph = ((dirSign * trav) % gap + gap) % gap;
       ctx.strokeStyle = C.tread; ctx.lineWidth = Math.max(1, 0.012 * scale);
       ctx.beginPath();
       for (let s = ph; s < per; s += gap) {
-        // walk the loop clockwise from the rear top: top run forward, front arc, bottom run back, rear arc
+        // walk the loop from the rear top: top run forward, front arc, bottom run back, rear arc
         let px, pz, ox, oz;
         if (s < L) { px = A.x + ux * s + nx * r; pz = A.z + uz * s + nz * r; ox = nx; oz = nz; }
         else if (s < L + Math.PI * r) { const t = (s - L) / r; const c = Math.cos(t), si = Math.sin(t); ox = nx * c + ux * si; oz = nz * c + uz * si; px = B.x + ox * r; pz = B.z + oz * r; }
@@ -838,40 +954,56 @@
 
     function drawHinge(p) {
       const r = rho * 0.5;
-      // bend arc
       const a1 = Math.atan2(p.J.z - p.R.z, p.J.x - p.R.x), a2 = Math.atan2(p.F.z - p.J.z, p.F.x - p.J.x);
-      ctx.beginPath(); ctx.arc(SX(p.J.x), SY(p.J.z), r * scale, 0, Math.PI * 2);
-      ctx.fillStyle = C.nosing; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = C.track; ctx.stroke();
       if (Math.abs(p.beta) > 0.02) {
         ctx.beginPath();
         ctx.arc(SX(p.J.x), SY(p.J.z), rho * 1.9 * scale, -a1, -a2, p.beta > 0);
         ctx.strokeStyle = C.ink; ctx.globalAlpha = 0.5; ctx.lineWidth = 1.5; ctx.stroke(); ctx.globalAlpha = 1;
       }
+      ctx.beginPath(); ctx.arc(SX(p.J.x), SY(p.J.z), r * scale, 0, Math.PI * 2);
+      ctx.fillStyle = C.nosing; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = C.track; ctx.stroke();
     }
 
-    function drawLoad(p, col, ghost) {
-      const hw = o.payloadHalfWidth, hh = o.payloadHalfHeight;
-      const c = Math.cos(p.pitch), s = Math.sin(p.pitch);
-      const corner = (u, v) => ({ x: p.P.x + u * c - v * s, z: p.P.z + u * s + v * c });
-      // mast from hinge to load
-      const base = corner(0, -hh);
-      ctx.beginPath(); ctx.moveTo(SX(p.J.x), SY(p.J.z)); ctx.lineTo(SX(base.x), SY(base.z));
-      ctx.strokeStyle = ghost ? col : C['ink-2']; ctx.lineWidth = ghost ? 1.5 : Math.max(2, 0.03 * scale); ctx.stroke();
-      ctx.beginPath();
-      const cs = [corner(-hw, -hh), corner(hw, -hh), corner(hw, hh), corner(-hw, hh)];
-      ctx.moveTo(SX(cs[0].x), SY(cs[0].z)); for (const q of cs.slice(1)) ctx.lineTo(SX(q.x), SY(q.z)); ctx.closePath();
-      if (ghost) { ctx.setLineDash([7, 5]); ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.stroke(); ctx.setLineDash([]); }
-      else {
-        ctx.fillStyle = C.load; ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.stroke();
-        if (scale > 120) {
-          ctx.save(); ctx.translate(SX(p.P.x), SY(p.P.z)); ctx.rotate(-p.pitch);
-          ctx.fillStyle = C['ink-2']; ctx.font = `600 ${Math.round(0.075 * scale)}px ${getComputedStyle(document.body).fontFamily}`;
-          ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(`LOAD ${o.payloadMass.toFixed(0)} kg`, 0, 0); ctx.restore();
+    function drawSeat(p, ghost) {
+      const parts = TM.placeSeat(o, p);
+      const chair = parts.filter((q) => q.kind === 'chair');
+      const body = ['thigh', 'shank', 'foot', 'torso', 'head'].map((nm) => parts.find((q) => q.name === nm));
+      ctx.save();
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      // mast from the hinge to the levelling pivot
+      ctx.beginPath(); ctx.moveTo(SX(p.J.x), SY(p.J.z)); ctx.lineTo(SX(p.P.x), SY(p.P.z));
+      if (ghost) { ctx.setLineDash([7, 5]); ctx.strokeStyle = C.one; ctx.lineWidth = 1.5; }
+      else { ctx.strokeStyle = C.chair; ctx.lineWidth = Math.max(3, 0.04 * scale); }
+      ctx.stroke(); ctx.setLineDash([]);
+      if (ghost) {
+        ctx.strokeStyle = C.one; ctx.lineWidth = 1.5;
+        ctx.beginPath(); for (const q of chair) { ctx.moveTo(SX(q.ax), SY(q.az)); ctx.lineTo(SX(q.bx), SY(q.bz)); } ctx.stroke();
+        ctx.setLineDash([5, 4]);
+        for (const q of body) { capsule(q.ax, q.az, q.bx, q.bz, q.r); ctx.stroke(); }
+        ctx.setLineDash([]);
+      } else {
+        ctx.strokeStyle = C.chair; ctx.lineWidth = Math.max(2.5, 2 * chair[0].r * scale);
+        ctx.beginPath(); for (const q of chair) { ctx.moveTo(SX(q.ax), SY(q.az)); ctx.lineTo(SX(q.bx), SY(q.bz)); } ctx.stroke();
+        for (const q of body) {
+          capsule(q.ax, q.az, q.bx, q.bz, q.r);
+          ctx.fillStyle = C.person; ctx.fill();
+          ctx.strokeStyle = C['person-edge']; ctx.lineWidth = 1.5; ctx.stroke();
         }
+        // harness strap across the chest
+        const t = parts.find((q) => q.name === 'torso');
+        const sx = t.ax + (t.bx - t.ax) * 0.62, sz = t.az + (t.bz - t.az) * 0.62;
+        const ux = (t.bx - t.ax), uz = (t.bz - t.az), ul = Math.hypot(ux, uz) || 1;
+        const nx = -uz / ul * t.r, nz = ux / ul * t.r;
+        ctx.beginPath(); ctx.moveTo(SX(sx - nx), SY(sz - nz)); ctx.lineTo(SX(sx + nx), SY(sz + nz));
+        ctx.strokeStyle = C.two; ctx.lineWidth = Math.max(2, 0.025 * scale); ctx.lineCap = 'butt'; ctx.stroke();
+        // levelling pivot
+        ctx.beginPath(); ctx.arc(SX(p.P.x), SY(p.P.z), Math.max(4, 0.035 * scale), 0, Math.PI * 2);
+        ctx.fillStyle = C.nosing; ctx.fill(); ctx.strokeStyle = C.track; ctx.lineWidth = 2; ctx.stroke();
       }
+      ctx.restore();
     }
 
-    function drawCom(p, col, ghost) {
+    function drawCom(p, ghost) {
       const ev = p.ev; if (!ev) return;
       const x = ev.com.x, z = ev.com.z;
       const lvl = ev.margin >= 0.02 ? 'good' : ev.tipDrop > 0.1 ? 'bad' : 'warn';
@@ -890,16 +1022,16 @@
         for (const c of ev.rear.concat(ev.front)) { ctx.beginPath(); ctx.arc(SX(c.x), SY(c.z), 3, 0, Math.PI * 2); ctx.fillStyle = C.ink; ctx.fill(); }
       }
       // centre-of-mass symbol
-      ctx.beginPath(); ctx.arc(SX(x), SY(z), r, 0, Math.PI * 2); ctx.fillStyle = ghost ? C.surface : C.surface; ctx.fill();
-      ctx.fillStyle = ghost ? col : C.ink;
+      ctx.beginPath(); ctx.arc(SX(x), SY(z), r, 0, Math.PI * 2); ctx.fillStyle = C.surface; ctx.fill();
+      ctx.fillStyle = ghost ? C.one : C.ink;
       for (const q of [0, Math.PI]) { ctx.beginPath(); ctx.moveTo(SX(x), SY(z)); ctx.arc(SX(x), SY(z), r, q, q + Math.PI / 2); ctx.closePath(); ctx.fill(); }
-      ctx.beginPath(); ctx.arc(SX(x), SY(z), r, 0, Math.PI * 2); ctx.strokeStyle = ghost ? col : C.ink; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.beginPath(); ctx.arc(SX(x), SY(z), r, 0, Math.PI * 2); ctx.strokeStyle = ghost ? C.one : C.ink; ctx.lineWidth = 1.5; ctx.stroke();
       if (ghost && ev.tipDrop > 0.1) {
         ctx.font = `600 12px ${getComputedStyle(document.body).fontFamily}`;
-        const txt = `tips · drops ${(ev.tipDrop * 100).toFixed(0)} cm`;
+        const txt = `tips · drops ${cm(ev.tipDrop)} cm`;
         const w = ctx.measureText(txt).width + 12;
         const bx = SX(x) + r + 6, by = SY(z) - 11;
-        ctx.fillStyle = C.surface; ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+        ctx.fillStyle = C.surface; ctx.strokeStyle = C.one; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.roundRect(bx, by, w, 22, 6); ctx.fill(); ctx.stroke();
         ctx.fillStyle = C.ink; ctx.textBaseline = 'middle'; ctx.fillText(txt, bx + 6, by + 11); ctx.textBaseline = 'alphabetic';
       }
@@ -924,21 +1056,24 @@
     updateCharts();
     const n = sim.path.length - 1;
     $('scrub').value = String(Math.round(state.idx));
-    const dNow = state.idx / Math.max(1, n) * (sim.sEnd - sim.path[0].s);
-    $('pos').textContent = `${dNow.toFixed(1)} / ${(sim.sEnd - sim.path[0].s).toFixed(1)} m`;
+    const total = sim.sEnd - sim.path[0].s;
+    $('pos').textContent = `${(state.idx / Math.max(1, n) * total).toFixed(1)} / ${total.toFixed(1)} m`;
   }
 
   function updateHud(two, one) {
+    const sim = state.sim;
     $('hud-where').textContent = locationName(two.J.x);
-    const n = state.sim.path.length - 1;
-    const dNow = state.idx / Math.max(1, n) * (state.sim.sEnd - state.sim.path[0].s);
+    const n = sim.path.length - 1;
+    const dNow = state.idx / Math.max(1, n) * (sim.sEnd - sim.path[0].s);
     $('hud-sub').textContent = `${dNow.toFixed(2)} m travelled · ${state.dir === 'up' ? 'going up' : 'going down'}`;
+    const tiltTxt = (p) => `${deg(p.phi) >= 0 ? '+' : ''}${deg(p.phi).toFixed(1)}°`;
+    const tiltCls = (p) => (Math.abs(deg(p.phi)) < 3 ? 'ok-t' : Math.abs(deg(p.phi)) < 10 ? 'warn-t' : 'bad-t');
     const rows = [
       ['two', 'Hinge bend', `${deg(two.beta) >= 0 ? '+' : ''}${deg(two.beta).toFixed(1)}°`, null],
-      ['two', 'Load tilt', `${deg(two.pitch).toFixed(1)}°`, null],
+      ['two', 'Casualty tilt', tiltTxt(two), tiltCls(two)],
       ['two', 'Support', marginText(two.ev), marginClass(two.ev)],
     ];
-    if (state.compare) rows.push(['sep'], ['one', 'Load tilt', `${deg(one.pitch).toFixed(1)}°`, null], ['one', 'Support', marginText(one.ev), marginClass(one.ev)]);
+    if (state.compare) rows.push(['sep'], ['one', 'Casualty tilt', tiltTxt(one), tiltCls(one)], ['one', 'Support', marginText(one.ev), marginClass(one.ev)]);
     const dl = $('hud-read'); dl.textContent = '';
     for (const r of rows) {
       if (r[0] === 'sep') { const s = document.createElement('div'); s.className = 'sep'; dl.appendChild(s); continue; }
@@ -949,8 +1084,8 @@
   }
   function marginText(ev) {
     if (!ev) return '–';
-    if (ev.margin >= 0) return `${(ev.margin * 100).toFixed(0)} cm inside`;
-    if (ev.tipDrop > 0.005) return `tips · ${(ev.tipDrop * 100).toFixed(0)} cm drop`;
+    if (ev.margin >= 0) return `${cm(ev.margin)} cm inside`;
+    if (ev.tipDrop > 0.005) return `tips · ${cm(ev.tipDrop)} cm drop`;
     return 'on the edge';
   }
   function marginClass(ev) { return !ev ? '' : ev.margin >= 0.02 ? 'ok-t' : ev.tipDrop > 0.1 ? 'bad-t' : 'warn-t'; }
@@ -970,10 +1105,9 @@
     if (!state.playing) return;
     const dt = Math.min(0.1, (t - state.lastT) / 1000);
     state.lastT = t;
-    const v = 0.25 * state.speed; // track speed, m/s
-    const ds = v * dt, step = 0.01;
+    const ds = 0.25 * state.speed * dt; // 1x = 0.25 m/s, walking pace on stairs
     const n = state.sim.path.length - 1;
-    state.idx = Math.min(n, state.idx + ds / step);
+    state.idx = Math.min(n, state.idx + ds / 0.01);
     state.travel += ds;
     draw();
     if (state.idx >= n) { setPlaying(false); return; }
@@ -1005,10 +1139,10 @@
   $('scrub').addEventListener('input', (e) => { seek(Number(e.target.value)); });
   $('speed').addEventListener('change', (e) => { state.speed = Number(e.target.value); });
 
-  // design sliders
+  // design controls
   let slTimer = null;
-  const sBox = $('sliders');
-  for (const s of SLIDERS) {
+  const rerun = () => { clearTimeout(slTimer); slTimer = setTimeout(runSim, 220); };
+  function addSlider(s, host) {
     const wrap = document.createElement('div'); wrap.className = 'slider';
     const top = document.createElement('div'); top.className = 'slider-top';
     const lab = document.createElement('label'); lab.htmlFor = 'sl-' + s.key; lab.textContent = s.label;
@@ -1016,16 +1150,21 @@
     top.append(lab, out);
     const inp = document.createElement('input'); inp.type = 'range'; inp.id = 'sl-' + s.key; inp.min = s.min; inp.max = s.max; inp.step = s.step; inp.value = state.design[s.key];
     const hint = document.createElement('div'); hint.className = 'hint'; hint.textContent = s.hint;
-    wrap.append(top, inp, hint); sBox.appendChild(wrap);
-    const show = () => { out.textContent = `${s.fmt(Number(inp.value))} ${s.unit === '°' ? '' : s.unit}`.trim() + (s.unit === '°' ? '°' : ''); };
+    wrap.append(top, inp, hint); host.appendChild(wrap);
+    const show = () => { const v = Number(inp.value); out.textContent = s.key === 'reclineDeg' ? s.fmt(v) : s.fmt(v) + s.unit; };
     show();
-    inp.addEventListener('input', () => {
-      state.design[s.key] = Number(inp.value); show();
-      clearTimeout(slTimer); slTimer = setTimeout(runSim, 220);
-    });
+    inp.addEventListener('input', () => { state.design[s.key] = Number(inp.value); show(); rerun(); });
   }
+  SEAT_SLIDERS.forEach((s) => addSlider(s, $('grp-seat')));
+  const lvl = document.createElement('label'); lvl.className = 'check';
+  lvl.innerHTML = '<input type="checkbox" id="level-seat"> Keep the seat level';
+  $('grp-seat').appendChild(lvl);
+  $('level-seat').checked = state.design.levelSeat;
+  $('level-seat').addEventListener('change', (e) => { state.design.levelSeat = e.target.checked; rerun(); });
+  VEHICLE_SLIDERS.forEach((s) => addSlider(s, $('grp-vehicle')));
   $('reset').addEventListener('click', () => {
     for (const s of SLIDERS) { state.design[s.key] = TM.DEFAULTS[s.key]; const i = $('sl-' + s.key); i.value = TM.DEFAULTS[s.key]; i.dispatchEvent(new Event('input')); }
+    state.design.levelSeat = TM.DEFAULTS.levelSeat; $('level-seat').checked = state.design.levelSeat;
   });
 
   // theme + size

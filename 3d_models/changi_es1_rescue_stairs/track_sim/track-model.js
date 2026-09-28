@@ -1,7 +1,8 @@
 // Quasi-static model of a two-part (hinged) track and a one-piece track on the
-// Changi AES "ES1" rescue stairs. For every position along the stairs it works out
-// how the track units rest on the real step nosings, then checks support,
-// clearance, hinge angle and tipping. Units: metres and radians.
+// Changi AES "ES1" rescue stairs, carrying a casualty in a reclining seat. For every
+// position along the stairs it works out how the track units rest on the real step
+// nosings, then checks support, clearance, hinge angle, seat tilt and tipping.
+// Units: metres, kilograms and radians.
 //
 // Works in Node (module.exports) and in the browser (window.TrackModel).
 (function (root, factory) {
@@ -15,16 +16,90 @@
     unitLength: 0.7, // sprocket centre to sprocket centre, per unit
     sprocketRadius: 0.09,
     unitMass: 25,
-    payloadMass: 60,
-    payloadHeight: 0.35, // payload centre above the hinge axle
-    payloadHalfWidth: 0.3,
-    payloadHalfHeight: 0.16,
+    personMass: 120,
+    chairMass: 25, // stretcher-chair, levelling drive and mast
+    reclineDeg: 45, // backrest from vertical: about 15 sitting up, 90 lying flat
+    seatHeight: 0.35, // levelling pivot above the hinge axle
+    levelSeat: true, // a driven pivot keeps the seat level
+    levelLimitDeg: 40,
+    levelRateDegPerM: 150, // how fast the pivot can re-level, per metre travelled
     hingeLimitDeg: 55,
     hingeRateDegPerM: 120, // how fast the hinge actuator can bend, per metre travelled
+    speed: 0.25, // m/s: only used to turn rates per metre into rates per second
   };
 
   const deg = (r) => (r * 180) / Math.PI;
   const rad = (d) => (d * Math.PI) / 180;
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const G = 9.81;
+
+  // ------------------------------------------------------------ casualty seat
+  // A reclining stretcher-chair on a levelling pivot at the top of a mast over the
+  // hinge. Seat frame: u forward (uphill, towards the head), v up, origin at the
+  // pivot. The person lies back with the head uphill and the feet downhill, the way
+  // casualties are carried on stairs. Body: a 1.80 m adult, segment masses from
+  // standard anthropometric tables. Every part is a capsule (a segment grown by r).
+  const SEAT = { board: 0.03, bracket: 0.05, thigh: 0.48, shank: 0.5, torso: 0.5 };
+  function seatModel(o) {
+    const key = `${o.reclineDeg}|${o.personMass}|${o.chairMass}`;
+    if (o._seat && o._seat.key === key) return o._seat;
+    const al = rad(o.reclineDeg);
+    const sg = rad(10 * clamp((90 - o.reclineDeg) / 30, 0, 1)); // thighs a little raised, flat when lying
+    const gm = rad(clamp(80 - 1.2 * o.reclineDeg, 0, 70)); // lower legs hang down when sitting up
+    const V = (u, v) => ({ u, v });
+    const at = (A, d, k, n, j = 0) => V(A.u + d.u * k + (n ? n.u * j : 0), A.v + d.v * k + (n ? n.v * j : 0));
+    const dot = (a, b) => a.u * b.u + a.v * b.v;
+    const b = V(Math.sin(al), Math.cos(al)), bn = V(-Math.cos(al), Math.sin(al)); // backrest, towards the chest
+    const t = V(-Math.cos(sg), Math.sin(sg)), tn = V(Math.sin(sg), Math.cos(sg)); // seat, up
+    const l = V(-Math.cos(gm), -Math.sin(gm)), ln = V(-Math.sin(gm), Math.cos(gm)); // leg rest, towards the shins
+    const w = SEAT.board, rT = 0.13, rH = 0.1, rTh = 0.085, rS = 0.06, rF = 0.045;
+    const C = V(0, 0), K = at(C, t, SEAT.thigh);
+    const sT = (w + rTh) * dot(tn, b); // torso starts level with the top of the thigh
+    const sS = (w + rTh) * dot(tn, l); // shank starts level with the end of the thigh
+    const ankle = at(K, l, 0.46, ln, w + rS);
+    const parts = [
+      { kind: 'chair', name: 'backrest', a: C, b: at(C, b, sT + SEAT.torso + 0.3), r: w },
+      { kind: 'chair', name: 'seat', a: C, b: K, r: w },
+      { kind: 'chair', name: 'leg rest', a: K, b: at(K, l, SEAT.shank), r: w },
+      { kind: 'body', name: 'thigh', a: at(C, t, 0, tn, w + rTh), b: at(K, t, 0, tn, w + rTh), r: rTh },
+      { kind: 'body', name: 'shank', a: at(K, l, sS, ln, w + rS), b: ankle, r: rS },
+      { kind: 'body', name: 'foot', a: ankle, b: at(ankle, ln, 0.16), r: rF },
+      { kind: 'body', name: 'torso', a: at(C, b, sT, bn, w + rT), b: at(C, b, sT + SEAT.torso, bn, w + rT), r: rT },
+    ];
+    const hc = at(C, b, sT + SEAT.torso + 0.17, bn, w + rH);
+    parts.push({ kind: 'body', name: 'head', a: hc, b: hc, r: rH });
+    const pt = (name, k) => { const q = parts.find((x) => x.name === name); return V(q.a.u + (q.b.u - q.a.u) * k, q.a.v + (q.b.v - q.a.v) * k); };
+    const mp = o.personMass, mc = o.chairMass;
+    const boards = parts.filter((q) => q.kind === 'chair');
+    const lens = boards.map((q) => Math.hypot(q.b.u - q.a.u, q.b.v - q.a.v));
+    const lsum = lens.reduce((x, y) => x + y, 0);
+    const masses = [
+      { p: pt('head', 0), m: 0.081 * mp }, { p: pt('torso', 0.45), m: 0.597 * mp }, { p: pt('thigh', 0.5), m: 0.2 * mp },
+      { p: pt('shank', 0.45), m: 0.093 * mp }, { p: pt('foot', 0.5), m: 0.029 * mp },
+      ...boards.map((q, i) => ({ p: V((q.a.u + q.b.u) / 2, (q.a.v + q.b.v) / 2), m: (0.6 * mc * lens[i]) / lsum })),
+    ];
+    // Place the chair so its centre of mass sits straight above the pivot, with the
+    // seat board a bracket's height above it. The drive and mast (40 %) sit at the pivot.
+    let mu = 0, su = 0, sv = 0;
+    for (const q of masses) { mu += q.m; su += q.m * q.p.u; sv += q.m * q.p.v; }
+    const du = -su / mu, dv = w + SEAT.bracket;
+    const mv = (p) => V(p.u + du, p.v + dv);
+    for (const q of parts) { q.a = mv(q.a); q.b = mv(q.b); }
+    for (const q of masses) q.p = mv(q.p);
+    masses.push({ p: V(0, 0), m: 0.4 * mc });
+    const M = mu + 0.4 * mc;
+    const out = { key, parts, masses, mass: M, com: V(0, (sv + mu * dv) / M), person: mp,
+      recline: o.reclineDeg, thighDeg: deg(sg), legDeg: deg(gm) };
+    o._seat = out;
+    return out;
+  }
+
+  // Seat parts in world coordinates for pose p (pivot p.P, seat tilted by p.phi).
+  function placeSeat(o, p) {
+    const s = seatModel(o), c = Math.cos(p.phi), sn = Math.sin(p.phi);
+    const W = (q) => ({ x: p.P.x + q.u * c - q.v * sn, z: p.P.z + q.u * sn + q.v * c });
+    return s.parts.map((q) => { const A = W(q.a), B = W(q.b); return { kind: q.kind, name: q.name, r: q.r, ax: A.x, az: A.z, bx: B.x, bz: B.z }; });
+  }
 
   // ---------------------------------------------------------------- stairs
   function stairProfile(height) {
@@ -270,11 +345,24 @@
   }
 
   function centreOfMass(o, p) {
-    const m = o.payloadMass, mu = o.unitMass, M = m + 2 * mu;
+    const s = seatModel(o), m = s.mass, mu = o.unitMass, M = m + 2 * mu;
+    const c = Math.cos(p.phi), sn = Math.sin(p.phi);
+    const lx = p.P.x + s.com.u * c - s.com.v * sn, lz = p.P.z + s.com.u * sn + s.com.v * c;
     return {
-      x: (m * p.P.x + mu * (p.R.x + p.J.x) / 2 + mu * (p.J.x + p.F.x) / 2) / M,
-      z: (m * p.P.z + mu * (p.R.z + p.J.z) / 2 + mu * (p.J.z + p.F.z) / 2) / M,
+      x: (m * lx + mu * (p.R.x + p.J.x) / 2 + mu * (p.J.x + p.F.x) / 2) / M,
+      z: (m * lz + mu * (p.R.z + p.J.z) / 2 + mu * (p.J.z + p.F.z) / 2) / M,
+      load: { x: lx, z: lz },
     };
+  }
+
+  // The levelling pivot turns the seat back towards level, but only so fast.
+  function level(o, p, prevLam, ds) {
+    if (!o.levelSeat) { p.lam = 0; p.phi = p.pitch; return; }
+    const lim = rad(o.levelLimitDeg), target = clamp(p.pitch, -lim, lim);
+    let lam = target;
+    if (prevLam !== null) { const mx = rad(o.levelRateDegPerM) * ds; lam = prevLam + clamp(target - prevLam, -mx, mx); }
+    p.lam = lam;
+    p.phi = p.pitch - lam;
   }
 
   // Lift the hinge above (jx, jz0) until both outer track ends can touch the stairs.
@@ -312,7 +400,9 @@
   // Target shape: each unit settles onto the stairs (a bend past the limit locks at
   // the limit); when the leading unit sticks out past a platform edge it is folded
   // down onto the next surface (hinge lifted just enough for both track ends to
-  // touch). The trailing unit is left to straighten on its own.
+  // touch). It stays folded until the centre of mass is HOLD past the edge, so the
+  // trailing unit keeps its end on the stairs; then the trailing unit straightens.
+  const HOLD = 0.05;
   function targetHinged(T, QE, J0, o, prof, dir, state) {
     const L = o.unitLength, rho = o.sprocketRadius, lim = rad(o.hingeLimitDeg);
     const tf = restAngle(T, J0.x, J0.z, L, rho), tb = restAngleBack(T, J0.x, J0.z, L, rho);
@@ -325,6 +415,10 @@
     if (edge && (state.folding === edge || lead.z - pathZ(QE, lead.x) > 0.02)) {
       const t = solveTent(T, QE, p.J.x, p.J.z, o);
       if (t) { t.folded = true; state.folding = edge; return t; }
+    }
+    if (!edge && state.folding) {
+      const t = solveTent(T, QE, p.J.x, p.J.z, o);
+      if (t && sgn * (centreOfMass(o, t).x - state.folding.x) < HOLD) { t.folded = true; return t; }
     }
     if (!edge) state.folding = null;
     return p;
@@ -353,15 +447,17 @@
     const J = { x: xJ, z: zJ };
     const R = { x: xJ - L * Math.cos(a1), z: zJ - L * Math.sin(a1) };
     const F = { x: xJ + L * Math.cos(a2), z: zJ + L * Math.sin(a2) };
-    const avg = (a1 + a2) / 2; // pitch-averaging payload mount
-    const P = { x: xJ - o.payloadHeight * Math.sin(avg), z: zJ + o.payloadHeight * Math.cos(avg) };
-    return { J, R, F, a1, a2, beta: a2 - a1, pitch: avg, P };
+    const avg = (a1 + a2) / 2; // pitch-averaging mast
+    const P = { x: xJ - o.seatHeight * Math.sin(avg), z: zJ + o.seatHeight * Math.cos(avg) };
+    // seat tilt if the levelling pivot keeps up (the travel loop applies its speed limit)
+    const lam = o.levelSeat ? clamp(avg, -rad(o.levelLimitDeg), rad(o.levelLimitDeg)) : 0;
+    return { J, R, F, a1, a2, beta: a2 - a1, pitch: avg, P, lam, phi: avg - lam };
   }
 
   // --------------------------------------------------------------- checks
   function segPointDist(ax, az, bx, bz, px, pz) {
-    const ex = bx - ax, ez = bz - az;
-    let t = ((px - ax) * ex + (pz - az) * ez) / (ex * ex + ez * ez);
+    const ex = bx - ax, ez = bz - az, l2 = ex * ex + ez * ez;
+    let t = l2 > 1e-18 ? ((px - ax) * ex + (pz - az) * ez) / l2 : 0;
     t = Math.max(0, Math.min(1, t));
     const cx = ax + t * ex, cz = az + t * ez;
     return { d: Math.hypot(px - cx, pz - cz), cx, cz };
@@ -422,27 +518,21 @@
       const end = com.x < minX ? (p.R.x < p.F.x ? p.R : p.F) : (p.R.x < p.F.x ? p.F : p.R);
       tipDrop = Math.max(0, end.z - clearanceZ(TR, end.x, rho));
     }
-    // payload box clearance: sample its outline against the ground height
-    const c = Math.cos(p.pitch), s = Math.sin(p.pitch);
-    const hw = o.payloadHalfWidth, hh = o.payloadHalfHeight;
-    let clearance = Infinity;
-    for (let i = 0; i <= 16; i++) {
-      const u = -hw + (2 * hw * i) / 16;
-      for (const v of [-hh, hh]) {
-        const x = p.P.x + u * c - v * s, z = p.P.z + u * s + v * c;
-        clearance = Math.min(clearance, z - groundZ(T, x));
+    // seat and casualty: gap to the steps, and to the vehicle's own tracks
+    let clearance = Infinity, trackClearance = Infinity, hit = null, trackHit = null;
+    for (const q of placeSeat(o, p)) {
+      const d = segTerrainDist(T, q.ax, q.az, q.bx, q.bz) - q.r;
+      if (d < clearance) { clearance = d; hit = q.name; }
+      for (const [A, B, unit] of [[p.R, p.J, 'rear'], [p.J, p.F, 'front']]) {
+        const dt = segSegDist(q.ax, q.az, q.bx, q.bz, A.x, A.z, B.x, B.z) - q.r - rho;
+        if (dt < trackClearance) { trackClearance = dt; trackHit = { part: q.name, unit }; }
       }
-    }
-    for (const u of [-hw, hw]) for (let j = 0; j <= 6; j++) {
-      const v = -hh + (2 * hh * j) / 6;
-      const x = p.P.x + u * c - v * s, z = p.P.z + u * s + v * c;
-      clearance = Math.min(clearance, z - groundZ(T, x));
     }
     return {
       rear, front,
       rearNosings: realNosings(p.R, p.J),
       frontNosings: realNosings(p.J, p.F),
-      com, support: [minX, maxX], margin, tipDrop, clearance,
+      com, support: [minX, maxX], margin, tipDrop, clearance, closest: hit, trackClearance, trackHit,
     };
   }
 
@@ -464,47 +554,72 @@
       if (i > i0) sAcc += Math.hypot(Q.X[i] - Q.X[i - 1], Q.Z[i] - Q.Z[i - 1]);
       if (sAcc >= next - 1e-12) { path.push({ s: sAcc, x: Q.X[i], z: Q.Z[i] }); next += step; }
     }
-    const out = { opts: o, profile: prof, terrain: T, path, rigid: [], up: [], down: [] };
+    const out = { opts: o, profile: prof, terrain: T, path, seat: seatModel(o), up: [], down: [], rigidUp: [], rigidDown: [] };
+    const withOne = o.oneTrack !== false; // oneTrack: false skips the one-long-track comparison
+    const rigid = [];
     let prev = null;
-    for (const J0 of path) {
+    if (withOne) for (const J0 of path) {
       const r = solveRigid(TR, J0, o, prev);
       r.s = J0.s;
       prev = r;
-      out.rigid.push(Object.assign(r, { ev: evaluate(T, TR, o, r) }));
+      rigid.push(r);
     }
     for (const dir of ['up', 'down']) {
       const seq = dir === 'up' ? path.map((_, i) => i) : path.map((_, i) => path.length - 1 - i);
       const res = new Array(path.length);
       const state = { folding: null };
-      let last = null;
+      let last = null, lam = null;
       for (const i of seq) {
         const h = solveHinged(TR, QE, path[i], o, prof, dir, last, step, state);
         h.s = path[i].s;
+        level(o, h, lam, step);
+        lam = h.lam;
         res[i] = Object.assign(h, { ev: evaluate(T, TR, o, h) });
         last = h;
       }
       out[dir] = res;
+      if (!withOne) continue;
+      // one long track: the same poses either way, but the seat levelling lags behind
+      // in the direction of travel
+      const one = new Array(path.length);
+      lam = null;
+      for (const i of seq) {
+        const q = Object.assign({}, rigid[i]);
+        level(o, q, lam, step);
+        lam = q.lam;
+        q.ev = evaluate(T, TR, o, q);
+        one[i] = q;
+      }
+      out[dir === 'up' ? 'rigidUp' : 'rigidDown'] = one;
     }
-    out.hinged = out.up;
-    out.summary = { up: summarise(out.up, o, prof), down: summarise(out.down, o, prof), rigid: summarise(out.rigid, o, prof) };
-    out.summary.hinged = out.summary.up;
+    const sm = (ps) => summarise(ps, o, prof, step);
+    out.summary = { up: sm(out.up), down: sm(out.down) };
+    out.summary.two = worstOf(out.summary.up, out.summary.down);
+    if (withOne) {
+      Object.assign(out.summary, { rigidUp: sm(out.rigidUp), rigidDown: sm(out.rigidDown) });
+      out.summary.rigid = worstOf(out.summary.rigidUp, out.summary.rigidDown);
+    }
     return out;
   }
 
-  function summarise(poses, o, prof) {
+  function summarise(poses, o, prof, step = 0.01) {
     let maxHinge = 0, maxPitch = 0, minMargin = Infinity, minClear = Infinity, maxJump = 0, jumpAt = null, minNosings = Infinity;
-    let maxDrop = 0, dropAt = null;
-    const win = 10; // 10 samples = 10 cm of travel
+    let maxDrop = 0, dropAt = null, maxTilt = 0, maxTiltJump = 0, maxLevel = 0, minTrack = Infinity, closest = null, trackHit = null;
+    const win = Math.max(1, Math.round(0.1 / step)); // samples in 10 cm of travel
     for (let i = 0; i < poses.length; i++) {
       const p = poses[i];
       maxHinge = Math.max(maxHinge, Math.abs(p.beta));
       maxPitch = Math.max(maxPitch, Math.abs(p.pitch));
       minMargin = Math.min(minMargin, p.ev.margin);
       if (p.ev.tipDrop > maxDrop) { maxDrop = p.ev.tipDrop; dropAt = p.s; }
-      minClear = Math.min(minClear, p.ev.clearance);
+      if (p.ev.clearance < minClear) { minClear = p.ev.clearance; closest = p.ev.closest; }
+      if (p.ev.trackClearance < minTrack) { minTrack = p.ev.trackClearance; trackHit = p.ev.trackHit; }
+      maxTilt = Math.max(maxTilt, Math.abs(p.phi));
+      maxLevel = Math.max(maxLevel, Math.abs(p.lam));
       if (i >= win) {
         const jmp = Math.abs(p.pitch - poses[i - win].pitch);
         if (jmp > maxJump) { maxJump = jmp; jumpAt = p.s; }
+        maxTiltJump = Math.max(maxTiltJump, Math.abs(p.phi - poses[i - win].phi));
       }
       // A unit lying along a flight should always sit on two or more nosings.
       const rho = o.sprocketRadius;
@@ -516,10 +631,25 @@
     }
     return {
       maxHingeDeg: deg(maxHinge), maxPitchDeg: deg(maxPitch),
-      minMargin, minClearance: minClear, maxTipDrop: maxDrop, tipDropAt: dropAt,
+      minMargin, minClearance: minClear, closestPart: closest, minTrackClearance: minTrack, trackHit,
+      maxTipDrop: maxDrop, tipDropAt: dropAt,
       maxPitchChangePer10cmDeg: deg(maxJump), worstAt: jumpAt,
+      maxSeatTiltDeg: deg(maxTilt), maxSeatTiltChangePer10cmDeg: deg(maxTiltJump), maxLevelDeg: deg(maxLevel),
       minNosingsOnFlight: minNosings === Infinity ? null : minNosings,
     };
+  }
+
+  // Worst case of two summaries (for example up and down).
+  function worstOf(a, b) {
+    const out = {};
+    for (const k of Object.keys(a)) {
+      const x = a[k], y = b[k];
+      if (typeof x !== 'number' || typeof y !== 'number') { out[k] = x; continue; }
+      out[k] = /^min/.test(k) ? Math.min(x, y) : Math.max(x, y);
+    }
+    out.closestPart = a.minClearance <= b.minClearance ? a.closestPart : b.closestPart;
+    out.trackHit = a.minTrackClearance <= b.minTrackClearance ? a.trackHit : b.trackHit;
+    return out;
   }
 
   // Closed-form checks from the stair and track dimensions.
@@ -530,21 +660,40 @@
     const nosing = Math.max(Math.hypot(g, STAIRS.rise), s.nUp ? Math.hypot(g, s.rUp) : 0);
     const pitch = Math.max(s.pitchLower, s.pitchUpper);
     const L = o.unitLength, rho = o.sprocketRadius;
-    const M = o.payloadMass + 2 * o.unitMass;
-    const comAboveTrack = rho + (o.payloadMass * o.payloadHeight) / M;
+    const seat = seatModel(o);
+    const M = seat.mass + 2 * o.unitMass;
+    // On a slope the centre of mass slides downhill by (its height above the track) x
+    // sin(pitch). A level seat keeps its own centre of mass over the pivot, so only the
+    // mast height counts; a fixed seat leans with the vehicle and its full height counts.
+    const loadLever = o.seatHeight + (o.levelSeat ? 0 : seat.com.v);
+    const comAboveTrack = rho + (seat.mass * loadLever) / M;
     const tipRatio = L / comAboveTrack; // CoM over the hinge, rear contact one unit behind
     const minRate = deg(pitch) / L; // fold the full pitch within one unit length of travel
+    const traction = M * G * Math.sin(pitch); // N the tracks push (or brake) on the slope
     return {
       nosingSpacing: nosing,
       pitchDeg: deg(pitch),
       minUnitLength: 2 * nosing,
       unitOverall: L + 2 * rho,
       totalLength: 2 * L + 2 * rho,
+      loadMass: seat.mass,
+      totalMass: M,
+      seatComAbovePivot: seat.com.v,
       comAboveTrack,
       tipRatio,
       tipNeed: 1.5 * Math.tan(pitch),
       maxComAboveTrack: L / (1.5 * Math.tan(pitch)),
       minRate,
+      traction,
+      drivePower: traction * o.speed, // W at the tracks
+      sprocketTorque: (traction / 2) * rho, // N m per unit
+      // Folded over an edge the vehicle stands on its two outer track ends and the hinge
+      // holds up the middle: seat plus half of each unit, at half a unit length.
+      hingeTorque: (seat.mass + o.unitMass) * G * (L / 2),
+      // The seat's centre of mass sits above its pivot, so a seat left tilted by the full
+      // pitch pulls on the levelling drive with this torque.
+      levelTorque: seat.mass * G * seat.com.v * Math.sin(pitch),
+      friction: Math.tan(pitch),
       checks: [
         { id: 'support', ok: L >= 2 * nosing },
         { id: 'landing', ok: L + 2 * rho <= STAIRS.landing },
@@ -556,5 +705,5 @@
   }
 
   return { STAIRS, DEFAULTS, stairProfile, makeTerrain, groundZ, clearanceZ, restAngle, restAngleBack,
-    sprocketPath, solveHinged, solveRigid, evaluate, simulate, analyse, deg, rad };
+    sprocketPath, solveHinged, solveRigid, evaluate, simulate, analyse, seatModel, placeSeat, deg, rad };
 });
