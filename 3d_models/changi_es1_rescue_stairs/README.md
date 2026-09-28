@@ -158,8 +158,23 @@ cd track_sim && node stress-test.js
 ```
 
 It also writes `stress-results.js`, which the page shows. A case passes if the vehicle never
-falls and can take a 7.3° lean anywhere. Results for the default design: 17 pass, 4 are tight
-and 3 fail.
+falls and can take a 7.3° lean anywhere. It runs four ways of holding up the seat:
+
+| Seat support | Pass | Tight | Fail | Lean it can take, default (up · down) | Seat drives, with bumps |
+|---|---|---|---|---|---|
+| One balancing arm (recommended) | 16 | 4 | 3 | 10.7° · 8.3° | arm drive 1.0 kN·m, two tilt drives 0.48 kN·m |
+| Two arms from the hinge (a V) | 12 | 5 | 3 | 9.5° · 7.8° | two arm drives 0.82 kN·m |
+| Two arms, one on each track | 7 | 6 | 7 | 16.1° · 9.9° | two arm drives 0.89 kN·m |
+| One arm without a drive | 7 | 8 | 5 | 8.0° · 8.2° | two tilt drives 0.48 kN·m |
+
+Two arms holding the stretcher like a bed look the most reassuring, but only if they rise from
+the hinge. Standing on the track units, the arms' feet swing at every fold and, on the flights,
+one sits about 25 cm lower than the other. The arms have to keep correcting: on steeper stairs
+the cradle tilts up to 16°, lying flat hits the steps, and the vehicle needs a faster, wider
+hinge. Rising from the hinge, the two arms keep most of the single arm's stability. They lose
+margin only with a 200 kg person, a person who has slid 25 cm, or a smaller hinge.
+
+The single balancing arm passes the most cases. Its results case by case:
 
 - **Passes:**
   - a 200 kg or a 40 kg person;
@@ -198,6 +213,18 @@ person, and at least 3.7 times below for 200 kg. What the stress test asks for:
 6. Make the arm about 5 cm taller if people will be carried lying flat on steeper stairs.
 7. Use cleated tracks. Holding on the flight needs a grip (friction coefficient) of 0.61, and a
    hard stop going down 0.76. Wet rubber on steel can be well below that.
+
+### Splitting the front track again
+
+Splitting the 0.70 m front unit into two 0.35 m halves keeps the vehicle the same length, and each
+half is still a little longer than the 328 mm between step nosings, so it can rest on them.
+But it only stays in line if its hinge is motor-driven, so it adds a third hinge motor. It
+also fixes nothing the stress test found. With the balancing arm, the only failures left are
+hinge failures: a hinge that is too slow, or one that seizes. Another hinge adds one more of
+exactly that. Three full-length units, each at least 0.66 m to bridge two nosings, would make
+the vehicle 2.2 m long instead of 1.58 m. That could let the middle unit lie flat on the 1 m
+mid platform, but it would be harder to turn on the 2.8 × 3.0 m top platform. The model only
+covers two units, so a three-unit version would need its own model and stress test.
 
 ### Design rules from the math
 

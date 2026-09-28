@@ -36,6 +36,18 @@
     armLimitDeg: 50, // balance arm: lean either way from halfway between the units
     armRateDegPerM: 60, // balance arm: how fast its drive turns, per metre travelled
     armLockDeg: null, // balance arm drive seized at this lean from halfway (a failure), or null
+    // mastMode 'twoArm': an arm on each track unit carries a level cradle between them
+    twoArmBase: 0.25, // each arm's foot, this far from the hinge along its unit, m
+    twoArmBaseUp: 0.12, // and this far above the unit's axle line (on its frame), m
+    twoArmLen: 0.55, // arm length, foot pivot to cradle pin, m
+    twoArmSlide: 0.4, // the front pin slides this far either way along the cradle, m
+    twoArmRateDegPerM: 90, // how fast each arm drive turns, per metre travelled
+    twoArmLock: null, // 'rear' or 'front': that arm's drive has seized (a failure)
+    // mastMode 'vArms': two arms rising from the hinge in a V, feet on the averaging post
+    vArmFoot: 0.06, // each foot this far fore or aft of the hinge, m
+    vArmLen: 0.5, // arm length, m
+    vArmPins: 0.25, // cradle pins nominally twice this apart, m
+    vArmSlide: 0.2, // the front pin slides this far either way, m
     levelLockDeg: null, // levelling drive frozen at this angle (a failure), or null
   };
 
@@ -375,12 +387,17 @@
   // the foot of the post and tilts the whole post, so the pivot stays over the hinge
   // and leans only by the seat tilt the drive has not yet taken out.
   function placePivot(o, p) {
+    if (o.mastMode === 'twoArm' || o.mastMode === 'vArms') {
+      if (!p.arms) { const off = o._twoArmOff || { dx: 0, dz: o.seatHeight }; p.P = { x: p.J.x + off.dx, z: p.J.z + off.dz }; }
+      return;
+    }
     const a = o.mastMode === 'upright' ? p.phi : o.mastMode === 'balance' ? p.pitch + (p.psiRel || 0) : p.pitch;
     p.P = { x: p.J.x - o.seatHeight * Math.sin(a), z: p.J.z + o.seatHeight * Math.cos(a) };
   }
 
   // The levelling pivot turns the seat back towards level, but only so fast.
   function level(o, p, prevLam, ds) {
+    if (o.mastMode === 'twoArm' || o.mastMode === 'vArms') { p.lam = 0; return; } // the two arms level the cradle themselves
     const lean = p.pitch + (p.psiRel || 0); // what the arm leans, which the seat drive cancels
     if (o.levelLockDeg != null) { p.lam = rad(o.levelLockDeg); p.phi = lean - p.lam; placePivot(o, p); return; }
     if (!o.levelSeat) { p.lam = 0; p.phi = lean; placePivot(o, p); return; }
@@ -390,6 +407,98 @@
     p.lam = lam;
     p.phi = lean - lam;
     placePivot(o, p);
+  }
+
+  // Two arms, one standing on each track unit, carry a cradle between them like a bed
+  // on two legs: a pin at the rear arm, a pin that slides along the cradle at the front.
+  // Each arm has its own drive. They keep the cradle level (tips at the same height)
+  // and, like the balance arm, move it fore and aft to keep the weight furthest from
+  // tipping, within their range and speed and without coming within 3 cm of anything.
+  // If a drive cannot turn far enough in time, the cradle tilts.
+  function armFeet(o, p) {
+    const e = o.twoArmBaseUp;
+    if (o.mastMode === 'vArms') {
+      // both feet on the averaging post, just fore and aft of the hinge
+      const f = o.vArmFoot, a = p.pitch, tx = Math.cos(a), tz = Math.sin(a), nx = -Math.sin(a), nz = Math.cos(a);
+      return [
+        { x: p.J.x - f * tx + e * nx, z: p.J.z - f * tz + e * nz, ref: a },
+        { x: p.J.x + f * tx + e * nx, z: p.J.z + f * tz + e * nz, ref: a },
+      ];
+    }
+    const d = o.twoArmBase;
+    return [
+      { x: p.J.x - d * Math.cos(p.a1) - e * Math.sin(p.a1), z: p.J.z - d * Math.sin(p.a1) + e * Math.cos(p.a1), ref: p.a1 },
+      { x: p.J.x + d * Math.cos(p.a2) - e * Math.sin(p.a2), z: p.J.z + d * Math.sin(p.a2) + e * Math.cos(p.a2), ref: p.a2 },
+    ];
+  }
+  function twoArms(T, TR, o, p, prev, ds) {
+    const v = o.mastMode === 'vArms';
+    const l = v ? o.vArmLen : o.twoArmLen, c = v ? o.vArmPins : o.twoArmBase, slide = v ? o.vArmSlide : o.twoArmSlide;
+    const rho = o.sprocketRadius;
+    const [B1, B2] = armFeet(o, p);
+    const ref1 = B1.ref, ref2 = B2.ref;
+    const lo = rad(15), hi = rad(165); // each arm stays above its own unit
+    const stepMax = prev ? rad(o.twoArmRateDegPerM) * ds : Infinity;
+    const tip = (B, g) => ({ x: B.x + l * Math.cos(g), z: B.z + l * Math.sin(g) });
+    const wide = unitContacts(TR, p.R, p.J, rho, FALL).concat(unitContacts(TR, p.J, p.F, rho, FALL));
+    let cLo = null, cHi = null;
+    for (const q of wide) { if (!cLo || q.x < cLo.x) cLo = q; if (!cHi || q.x > cHi.x) cHi = q; }
+    const lean = (com) => (!cLo ? -1 : Math.min(Math.atan2(com.x - cLo.x, Math.max(1e-6, com.z - cLo.z)), Math.atan2(cHi.x - com.x, Math.max(1e-6, com.z - cHi.z))));
+    // the arm angles, measured against their own units, carry over from the last step
+    const rel1 = prev ? prev.g1 - prev.ref1 : null, rel2 = prev ? prev.g2 - prev.ref2 : null;
+    let r0 = lo, r1 = hi;
+    if (prev) { r0 = Math.max(lo, rel1 - stepMax); r1 = Math.min(hi, rel1 + stepMax); }
+    if (o.twoArmLock === 'rear' && prev) { r0 = r1 = rel1; }
+    const N = prev ? 12 : 90;
+    const cands = [];
+    for (let i = 0; i <= N; i++) {
+      const g1 = ref1 + r0 + ((r1 - r0) * i) / N, T1 = tip(B1, g1);
+      // front arm: tip level with the rear one, on the branch that keeps the pins about 2c apart
+      const sn = (T1.z - B2.z) / l;
+      const want = Math.abs(sn) <= 1 ? [Math.asin(sn), Math.PI - Math.asin(sn)] : [sn > 0 ? Math.PI / 2 : -Math.PI / 2];
+      for (const gw of want) {
+        let rel = gw - ref2;
+        while (rel > Math.PI) rel -= 2 * Math.PI;
+        while (rel < -Math.PI) rel += 2 * Math.PI;
+        rel = clamp(rel, lo, hi);
+        if (prev) rel = o.twoArmLock === 'front' ? rel2 : rel2 + clamp(rel - rel2, -stepMax, stepMax);
+        const g2 = ref2 + rel, T2 = tip(B2, g2);
+        const span = Math.hypot(T2.x - T1.x, T2.z - T1.z);
+        if (T2.x <= T1.x || Math.abs(span - 2 * c) > slide) continue;
+        const phi = Math.atan2(T2.z - T1.z, T2.x - T1.x);
+        p.phi = phi; p.P = { x: T1.x + c * Math.cos(phi), z: T1.z + c * Math.sin(phi) };
+        p.arms = { B1, B2, T1, T2, g1, g2, ref1, ref2 };
+        const t = lean(centreOfMass(o, p));
+        const move = prev ? Math.abs(g1 - ref1 - rel1) + Math.abs(rel - rel2) : 0;
+        cands.push({ arms: p.arms, P: p.P, phi, score: Math.min(t, rad(25)) - 2 * Math.abs(phi) - 1e-3 * move });
+      }
+    }
+    if (!cands.length) {
+      // nothing reachable keeps the pins in their slide: hold the last arm angles
+      const g1 = prev ? ref1 + rel1 : ref1 + Math.PI / 2, g2 = prev ? ref2 + rel2 : ref2 + Math.PI / 2;
+      const T1 = tip(B1, g1), T2 = tip(B2, g2), phi = Math.atan2(T2.z - T1.z, T2.x - T1.x);
+      cands.push({ arms: { B1, B2, T1, T2, g1, g2, ref1, ref2 }, P: { x: T1.x + c * Math.cos(phi), z: T1.z + c * Math.sin(phi) }, phi, score: -Infinity });
+    }
+    cands.sort((u, v) => v.score - u.score);
+    let pick = cands[0];
+    for (const cd of cands.slice(0, 8)) {
+      p.arms = cd.arms; p.P = cd.P; p.phi = cd.phi;
+      let gap = Infinity;
+      for (const q of placeSeat(o, p)) {
+        gap = Math.min(gap, segTerrainDist(T, q.ax, q.az, q.bx, q.bz) - q.r);
+        for (const [A, B] of [[p.R, p.J], [p.J, p.F]]) gap = Math.min(gap, segSegDist(q.ax, q.az, q.bx, q.bz, A.x, A.z, B.x, B.z) - q.r - rho);
+      }
+      for (const [F, Tp, others] of [[cd.arms.B1, cd.arms.T1, v ? [[p.R, p.J], [p.J, p.F]] : [[p.J, p.F]]], [cd.arms.B2, cd.arms.T2, v ? [[p.R, p.J], [p.J, p.F]] : [[p.R, p.J]]]]) {
+        gap = Math.min(gap, segTerrainDist(T, F.x, F.z, Tp.x, Tp.z) - 0.03);
+        // an arm must not come down onto a track: stay 3 cm clear once past its own foot
+        for (const [A, B] of others) {
+          const q = { x: F.x + (Tp.x - F.x) * 0.25, z: F.z + (Tp.z - F.z) * 0.25 };
+          gap = Math.min(gap, segSegDist(q.x, q.z, Tp.x, Tp.z, A.x, A.z, B.x, B.z) - 0.03 - rho);
+        }
+      }
+      if (gap >= 0.03) { pick = cd; break; }
+    }
+    p.arms = pick.arms; p.P = pick.P; p.phi = pick.phi;
   }
 
   // Balance arm: with the vehicle pose settled, lean the arm (within its range and
@@ -619,6 +728,12 @@
       // bending the seat's weight puts on the mast at the hinge axle, and on the levelling drive
       mastMoment: seatModel(o).mass * G * (com.load.x - p.J.x),
       levelMoment: seatModel(o).mass * G * (com.load.x - p.P.x),
+      armTorques: p.arms ? (() => {
+        const W = seatModel(o).mass * G, A = p.arms;
+        const span = Math.max(1e-6, A.T2.x - A.T1.x);
+        const f2 = clamp((W * (com.load.x - A.T1.x)) / span, -3 * W, 3 * W), f1 = W - f2; // vertical loads on the two pins
+        return [f1 * (A.T1.x - A.B1.x), f2 * (A.T2.x - A.B2.x)];
+      })() : null,
     };
   }
 
@@ -654,12 +769,13 @@
       const seq = dir === 'up' ? path.map((_, i) => i) : path.map((_, i) => path.length - 1 - i);
       const res = new Array(path.length);
       const state = { folding: null };
-      let last = null, lam = null, psi = null;
-      o._psiRel = 0;
+      let last = null, lam = null, psi = null, arms = null;
+      o._psiRel = 0; o._twoArmOff = null;
       for (const i of seq) {
         const h = solveHinged(TR, QE, path[i], o, prof, dir, last, step, state);
         h.s = path[i].s;
         if (o.mastMode === 'balance') { balanceArm(T, TR, o, h, psi, step); psi = o._psiRel = h.psiRel; }
+        if (o.mastMode === 'twoArm' || o.mastMode === 'vArms') { twoArms(T, TR, o, h, arms, step); arms = h.arms; o._twoArmOff = { dx: h.P.x - h.J.x, dz: h.P.z - h.J.z }; }
         level(o, h, lam, step);
         lam = h.lam;
         res[i] = Object.assign(h, { ev: evaluate(T, TR, o, h) });
@@ -670,10 +786,12 @@
       // one long track: the same poses either way, but the seat levelling lags behind
       // in the direction of travel
       const one = new Array(path.length);
-      lam = null; psi = null;
+      lam = null; psi = null; arms = null;
       for (const i of seq) {
         const q = Object.assign({}, rigid[i]);
+        delete q.arms;
         if (o.mastMode === 'balance') { balanceArm(T, TR, o, q, psi, step); psi = q.psiRel; }
+        if (o.mastMode === 'twoArm' || o.mastMode === 'vArms') { twoArms(T, TR, o, q, arms, step); arms = q.arms; }
         level(o, q, lam, step);
         lam = q.lam;
         q.ev = evaluate(T, TR, o, q);
@@ -694,7 +812,7 @@
   function summarise(poses, o, prof, step = 0.01) {
     let maxHinge = 0, maxPitch = 0, minMargin = Infinity, minClear = Infinity, maxJump = 0, jumpAt = null, minNosings = Infinity;
     let maxDrop = 0, dropAt = null, maxTilt = 0, maxTiltJump = 0, maxLevel = 0, minTrack = Infinity, closest = null, trackHit = null;
-    let maxMast = 0, maxLevelM = 0, minTip = Infinity, tipAt = null, tipDir = null, maxLink = 0;
+    let maxMast = 0, maxLevelM = 0, minTip = Infinity, tipAt = null, tipDir = null, maxLink = 0, maxArmT = 0;
     const win = Math.max(1, Math.round(0.1 / step)); // samples in 10 cm of travel
     for (let i = 0; i < poses.length; i++) {
       const p = poses[i];
@@ -706,6 +824,7 @@
       if (p.ev.trackClearance < minTrack) { minTrack = p.ev.trackClearance; trackHit = p.ev.trackHit; }
       maxTilt = Math.max(maxTilt, Math.abs(p.phi));
       maxMast = Math.max(maxMast, Math.abs(p.ev.mastMoment));
+      if (p.ev.armTorques) maxArmT = Math.max(maxArmT, Math.abs(p.ev.armTorques[0]), Math.abs(p.ev.armTorques[1]));
       // the averaging diamond opens to 90 degrees minus the bend: link force M / (2 arm cos(bend))
       maxLink = Math.max(maxLink, Math.abs(p.ev.mastMoment) / (2 * LINK_ARM * Math.max(0.2, Math.cos(p.beta))));
       if (p.ev.tipAngle < minTip) { minTip = p.ev.tipAngle; tipAt = p.s; tipDir = p.ev.tipDir; }
@@ -731,7 +850,7 @@
       maxPitchChangePer10cmDeg: deg(maxJump), worstAt: jumpAt,
       maxSeatTiltDeg: deg(maxTilt), maxSeatTiltChangePer10cmDeg: deg(maxTiltJump), maxLevelDeg: deg(maxLevel),
       maxMastMoment: maxMast, maxLevelMoment: maxLevelM,
-      minTipAngleDeg: deg(minTip), tipAngleAt: tipAt, tipAngleDir: tipDir, maxLinkForce: maxLink,
+      minTipAngleDeg: deg(minTip), tipAngleAt: tipAt, tipAngleDir: tipDir, maxLinkForce: maxLink, maxArmTorque: maxArmT,
       minNosingsOnFlight: minNosings === Infinity ? null : minNosings,
     };
   }
@@ -772,10 +891,26 @@
       { part: 'Hinge axle', size: '40 mm solid bar', load: `${Mhinge.toFixed(0)} N·m bend`, stress: Mhinge / (Math.PI * S.hingeAxle ** 3 / 32), limit: S.fy },
       { part: 'Tilt axle', size: '30 mm bar, double shear', load: `${(S.dyn * W / 1000).toFixed(1)} kN`, stress: (S.dyn * W) / (2 * Math.PI * S.tiltAxle ** 2 / 4), limit: S.fs },
     ];
+    if (o.mastMode === 'twoArm' || o.mastMode === 'vArms') {
+      // each arm is a pair of box tubes (left and right); its drive holds the arm's moment
+      const Marm = S.dyn * sm.maxArmTorque;
+      members.splice(0, 2,
+        { part: 'Arms', size: '2 pairs of 40 × 40 × 4 mm box tube', load: `${Marm.toFixed(0)} N·m bend`, stress: Marm / (2 * boxZ([0.04, 0.004])), limit: S.fy });
+      members.splice(members.findIndex((m) => m.part === 'Tilt axle'), 1,
+        { part: 'Cradle pins', size: '25 mm bars, double shear', load: `${(S.dyn * W / 1000).toFixed(1)} kN`, stress: (S.dyn * W) / (2 * Math.PI * 0.025 ** 2 / 4), limit: S.fs });
+    }
     for (const m of members) m.factor = m.limit / m.stress;
     const an = analyse(o);
+    if (o.mastMode === 'twoArm' || o.mastMode === 'vArms') {
+      return { members, drives: [
+        { part: 'Hinge motor', need: `${(S.dyn * an.hingeTorque).toFixed(0)} N·m`, note: 'self-locking; holds a fold with the power off' },
+        { part: 'Arm drives', need: `${(S.dyn * sm.maxArmTorque).toFixed(0)} N·m each`, note: 'two, self-locking; they level the cradle and move it fore and aft' },
+        { part: 'Track drives', need: `${an.sprocketTorque.toFixed(0)} N·m, ${an.drivePower.toFixed(0)} W`, note: 'per unit and in total, at 0.25 m/s; spring brakes' },
+      ] };
+    }
     const drives = [
       { part: 'Hinge motor', need: `${(S.dyn * an.hingeTorque).toFixed(0)} N·m`, note: 'self-locking; holds a fold with the power off' },
+      ...(o.mastMode === 'balance' ? [{ part: 'Arm drive', need: `${(S.dyn * sm.maxMastMoment).toFixed(0)} N·m`, note: 'self-locking; leans the arm to keep the weight away from the edges' }] : []),
       { part: 'Seat tilt drives', need: `${Math.max(S.dyn * sm.maxLevelMoment, an.levelTorque).toFixed(0)} N·m each`, note: 'two, self-locking; either one holds the seat alone' },
       { part: 'Track drives', need: `${an.sprocketTorque.toFixed(0)} N·m, ${an.drivePower.toFixed(0)} W`, note: 'per unit and in total, at 0.25 m/s; spring brakes' },
     ];
@@ -838,6 +973,6 @@
     };
   }
 
-  return { STAIRS, DEFAULTS, SUPPORT, LINK_ARM, stairProfile, makeTerrain, groundZ, clearanceZ, restAngle, restAngleBack,
+  return { STAIRS, DEFAULTS, SUPPORT, LINK_ARM, armFeet, stairProfile, makeTerrain, groundZ, clearanceZ, restAngle, restAngleBack,
     sprocketPath, solveHinged, solveRigid, evaluate, simulate, analyse, structure, seatModel, placeSeat, deg, rad };
 });
