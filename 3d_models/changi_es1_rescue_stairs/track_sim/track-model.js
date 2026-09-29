@@ -61,7 +61,10 @@
     levelLockDeg: null, // levelling drive frozen at this angle (a failure), or null
   };
 
-  const stairsOf = (o) => Object.assign({}, STAIRS, { rise: o.rise, going: o.going });
+  // the stairs: ES1 by default; lowerTreads (and topPlatform) can be set for other stairs,
+  // e.g. one flight of lowerTreads + 1 risers with height (lowerTreads + 1) x rise
+  const stairsOf = (o) => Object.assign({}, STAIRS, { rise: o.rise, going: o.going },
+    o.lowerTreads != null ? { lowerTreads: o.lowerTreads } : {}, o.topPlatform != null ? { topPlatform: o.topPlatform } : {});
   const deg = (r) => (r * 180) / Math.PI;
   const rad = (d) => (d * Math.PI) / 180;
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));

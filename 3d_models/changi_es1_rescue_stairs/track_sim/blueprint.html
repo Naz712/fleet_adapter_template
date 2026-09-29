@@ -1,0 +1,708 @@
+<meta charset="utf-8">
+<title>Stair Climber Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Layout: drawing sheets on blueprint ground, each with a title block; parts and steps below.
+     One deliberate look (a blueprint), so there is no light variant. */
+  :root {
+    --ground: #0c2f55;      /* blueprint blue */
+    --sheet: #0f3864;       /* a drawing sheet */
+    --sheet-2: #133f70;     /* inputs, table heads */
+    --line: #e9f2fc;        /* object lines, text */
+    --line-2: #a9c9ea;      /* thin lines, secondary text */
+    --line-3: #6f9ccb;      /* hidden lines, dims, borders */
+    --grid: rgba(233, 242, 252, 0.07);
+    --mark: #ffcf5c;        /* callouts, links: the red-pencil of a blueprint, in amber */
+    --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--line); font: 15px/1.55 var(--sans);
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 24px 24px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 22px; }
+  header { display: grid; gap: 6px; }
+  .eyebrow { font: 600 12px/1.4 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--line-2); margin: 0; }
+  h1 { font: 700 clamp(34px, 6vw, 56px)/0.98 var(--display); letter-spacing: 0.01em; margin: 0; text-transform: uppercase; text-wrap: balance; }
+  .lede { max-width: 68ch; margin: 4px 0 0; color: var(--line-2); }
+  h2 { font: 700 26px/1.1 var(--display); letter-spacing: 0.02em; text-transform: uppercase; margin: 0; text-wrap: balance; }
+  h3 { font: 600 17px/1.2 var(--display); letter-spacing: 0.04em; text-transform: uppercase; margin: 0; color: var(--line-2); }
+  p { margin: 0; }
+  a { color: var(--mark); text-underline-offset: 2px; }
+  a:focus-visible, select:focus-visible, input:focus-visible, button:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+
+  .panel { background: var(--sheet); border: 1px solid var(--line-3); border-radius: 4px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+  .panel > .head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
+  .note { font-size: 13px; color: var(--line-2); max-width: 80ch; }
+
+  /* your parts */
+  .inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px 16px; }
+  .field { display: grid; gap: 5px; min-width: 0; }
+  .field label { font: 600 11.5px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--line-2); }
+  select, input[type="number"] { font: 500 14px var(--mono); color: var(--line); background: var(--sheet-2); border: 1px solid var(--line-3); border-radius: 3px; padding: 8px 9px; width: 100%; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); border-top: 1px solid var(--line-3); border-left: 1px solid var(--line-3); }
+  .kpi { padding: 10px 12px; display: grid; gap: 2px; min-width: 0; border-right: 1px solid var(--line-3); border-bottom: 1px solid var(--line-3); }
+  .kpi .k { font: 600 11px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--line-2); }
+  .kpi .v { font: 600 22px/1.15 var(--display); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+  .kpi .s { font: 12px/1.35 var(--mono); color: var(--line-2); }
+
+  /* sheets */
+  .sheets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+  .sheet { background: var(--sheet); border: 1px solid var(--line-3); border-radius: 4px; display: grid; grid-template-rows: auto 1fr auto; min-width: 0; }
+  .sheet.wide { grid-column: 1 / -1; }
+  @media (max-width: 860px) { .sheets { grid-template-columns: minmax(0, 1fr); } }
+  .sheet .draw { padding: 10px 12px 4px; overflow-x: auto; }
+  .sheet svg { display: block; width: 100%; height: auto; min-width: 520px; }
+  .tb { display: grid; grid-template-columns: auto 1fr auto auto; border-top: 1px solid var(--line-3); font: 12px/1.3 var(--mono); }
+  .tb > div { padding: 7px 10px; border-left: 1px solid var(--line-3); display: grid; gap: 1px; min-width: 0; }
+  .tb > div:first-child { border-left: 0; }
+  .tb .k { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--line-2); }
+  .tb .v { font-weight: 600; }
+  .tb .ttl { font: 700 16px/1.1 var(--display); letter-spacing: 0.04em; text-transform: uppercase; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 18px; padding: 0 12px 10px; font: 12px var(--mono); color: var(--line-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .legend i { display: inline-block; width: 26px; border-top: 2px solid var(--line); }
+  .legend i.hid { border-top: 2px dashed var(--line-2); }
+  .legend i.ctr { border-top: 1.5px dashed var(--line-3); }
+  .legend i.ph { border-top: 1.5px dotted var(--line-2); }
+
+  /* svg drawing styles, in model millimetres */
+  svg .obj { fill: none; stroke: var(--line); stroke-width: 0.55; stroke-linejoin: round; stroke-linecap: round; }
+  svg .fillobj { fill: var(--sheet-2); stroke: var(--line); stroke-width: 0.55; }
+  svg .thin { fill: none; stroke: var(--line-2); stroke-width: 0.3; }
+  svg .hid { fill: none; stroke: var(--line-2); stroke-width: 0.35; stroke-dasharray: 1.6 1; }
+  svg .ctr { fill: none; stroke: var(--line-3); stroke-width: 0.25; stroke-dasharray: 4 1 0.8 1; }
+  svg .ph { fill: none; stroke: var(--line-2); stroke-width: 0.3; stroke-dasharray: 0.4 0.8; stroke-linecap: round; }
+  svg .grip { fill: none; stroke: var(--mark); stroke-width: 0.7; }
+  svg .dim { fill: none; stroke: var(--line-3); stroke-width: 0.25; }
+  svg .hatch { fill: url(#hatch); stroke: none; }
+  svg .ground { fill: none; stroke: var(--line); stroke-width: 0.7; }
+  svg text { fill: var(--line); font-family: var(--mono); font-size: 3.1px; }
+  svg text.dimt { fill: var(--line); font-size: 3px; font-weight: 500; }
+  svg text.lab { fill: var(--mark); font-size: 3.1px; font-weight: 600; }
+  svg text.sm { font-size: 2.6px; fill: var(--line-2); }
+  svg .tag { fill: var(--mark); }
+  svg .tagt { fill: var(--sheet); font-size: 2.8px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+  svg .box { fill: var(--sheet-2); stroke: var(--line); stroke-width: 0.45; }
+  svg .wire { fill: none; stroke: var(--line-2); stroke-width: 0.45; }
+  svg .wire.pwr { stroke: var(--mark); }
+
+  /* parts and steps */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line-3); border-radius: 3px; }
+  table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13.5px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid rgba(111, 156, 203, 0.35); vertical-align: top; }
+  th { font: 600 11px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--line-2); background: var(--sheet-2); }
+  td.qty, td.ref { font: 600 13px var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td.ref { color: var(--mark); }
+  tr.group td { font: 600 12px/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--line-2); background: rgba(19, 63, 112, 0.6); }
+  .shop { display: grid; gap: 2px; }
+  .shop .where { font-size: 12px; color: var(--line-2); }
+  .sg { font: 600 10px var(--mono); letter-spacing: 0.08em; border: 1px solid var(--line-3); border-radius: 2px; padding: 0 4px; margin-left: 6px; color: var(--line-2); }
+  td .fit { font-size: 12.5px; color: var(--line-2); }
+  ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 10px; }
+  ol.steps li { counter-increment: s; display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; }
+  ol.steps li::before { content: counter(s, decimal-leading-zero); font: 700 18px/1.3 var(--display); color: var(--mark); letter-spacing: 0.04em; }
+  ol.steps b { font-weight: 600; }
+  ul.guides { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+  .prog-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+  .seg { display: inline-flex; border: 1px solid var(--line-3); border-radius: 3px; overflow: hidden; }
+  .seg button, .btn { appearance: none; border: 0; background: var(--sheet-2); color: var(--line); font: 600 13px var(--mono); padding: 8px 12px; cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--line-3); }
+  .seg button[aria-pressed="true"] { background: var(--line); color: var(--sheet); }
+  .btn { border: 1px solid var(--line-3); border-radius: 3px; }
+  .btn:hover { border-color: var(--line-2); }
+  .prog-status { font: 12.5px var(--mono); color: var(--line-2); }
+  .prog-wrap { max-height: 320px; overflow: auto; border: 1px solid var(--line-3); border-radius: 3px; }
+  .prog-wrap table { min-width: 520px; font: 12.5px var(--mono); font-variant-numeric: tabular-nums; }
+  .prog-wrap th { position: sticky; top: 0; }
+  .prog-wrap td { padding: 4px 10px; text-align: right; }
+  .prog-wrap th { text-align: right; }
+  .prog-wrap tr.bend td { color: var(--mark); }
+  .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+  @media (max-width: 860px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Changi AES · ES1 rescue stairs · model build</p>
+    <h1>Stair Climber Blueprint</h1>
+    <p class="lede">The layout with both halves split, built at about 1:10 from parts you can buy. Pick the pulley and belt you actually get, and every drawing, dimension and stair size below follows them.</p>
+  </header>
+
+  <section class="panel" aria-labelledby="parts-h">
+    <div class="head"><h2 id="parts-h">Your parts</h2><p class="note">Nothing has to be exactly 1:10. The belt loop sets the axle spacing, that sets the scale, and the stairs are built to match.</p></div>
+    <div class="inputs">
+      <div class="field"><label for="in-teeth">Pulley (GT2)</label><select id="in-teeth"></select></div>
+      <div class="field"><label for="in-loop">Closed belt loop</label><select id="in-loop"></select></div>
+      <div class="field"><label for="in-width">Belt width</label><select id="in-width"><option value="6">6 mm</option><option value="10">10 mm</option></select></div>
+      <div class="field"><label for="in-rpm">Drive motor speed</label><select id="in-rpm"><option value="50">50 rpm</option><option value="100" selected>100 rpm</option><option value="150">150 rpm</option></select></div>
+      <div class="field"><label for="in-steps">Test stairs: steps</label><input id="in-steps" type="number" min="6" max="30" step="1" value="12"></div>
+    </div>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <div class="sheets">
+    <section class="sheet wide" aria-labelledby="sa-h">
+      <div class="draw"><svg id="side" role="img" aria-labelledby="sa-h"></svg></div>
+      <div class="legend"><span><i></i>part</span><span><i class="hid"></i>hidden behind the near track</span><span><i class="ctr"></i>centre line</span><span><i class="ph"></i>person</span><span><i style="border-top-color: var(--mark)"></i>grip covering</span></div>
+      <div class="tb"><div><span class="k">Sheet</span><span class="v">A</span></div><div><span class="ttl" id="sa-h">Side view, level ground</span><span class="k" id="sa-sub"></span></div><div><span class="k">Scale</span><span class="v" id="sa-scale"></span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
+    </section>
+    <section class="sheet wide" aria-labelledby="sb-h">
+      <div class="draw"><svg id="top" role="img" aria-labelledby="sb-h"></svg></div>
+      <div class="tb"><div><span class="k">Sheet</span><span class="v">B</span></div><div><span class="ttl" id="sb-h">Top view, seat removed</span><span class="k">Belts run in two lanes per side so the neighbours overlap on the shared axles</span></div><div><span class="k">Scale</span><span class="v" id="sb-scale"></span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
+    </section>
+    <section class="sheet" aria-labelledby="sc-h">
+      <div class="draw"><svg id="joint" role="img" aria-labelledby="sc-h"></svg></div>
+      <div class="tb"><div><span class="k">Sheet</span><span class="v">C</span></div><div><span class="ttl" id="sc-h">Hinge joint</span><span class="k">Section through one side of a joint axle, and the servo link</span></div><div><span class="k">Scale</span><span class="v">2:1</span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
+    </section>
+    <section class="sheet" aria-labelledby="sd-h">
+      <div class="draw"><svg id="wiring" role="img" aria-labelledby="sd-h"></svg></div>
+      <div class="tb"><div><span class="k">Sheet</span><span class="v">D</span></div><div><span class="ttl" id="sd-h">Wiring</span><span class="k">Everything shares one ground</span></div><div><span class="k">Scale</span><span class="v">none</span></div><div><span class="k">Units</span><span class="v">–</span></div></div>
+    </section>
+    <section class="sheet wide" aria-labelledby="se-h">
+      <div class="draw"><svg id="stairs" role="img" aria-labelledby="se-h"></svg></div>
+      <div class="tb"><div><span class="k">Sheet</span><span class="v">E</span></div><div><span class="ttl" id="se-h">Test stairs to match</span><span class="k" id="se-sub"></span></div><div><span class="k">Scale</span><span class="v" id="se-scale"></span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="prog-h">
+    <div class="head"><h2 id="prog-h">Hinge program</h2><p class="note">From the simulator, run on your test stairs. Replay it by distance travelled, read from the drive motor's encoder.</p></div>
+    <div class="prog-bar">
+      <div class="seg" role="group" aria-label="Direction" id="prog-dir"><button type="button" data-v="up" aria-pressed="true">Up</button><button type="button" data-v="down" aria-pressed="false">Down</button></div>
+      <button type="button" class="btn" id="prog-copy">Copy as CSV</button>
+      <span class="prog-status" id="prog-status">Working out the hinge angles…</span>
+    </div>
+    <p class="note" id="prog-start"></p>
+    <div class="prog-wrap"><table><thead><tr><th>mm travelled</th><th>S1 · H1</th><th>S2 · H2</th><th>S3 · H3</th><th>S4 · arm</th><th>S5 · seat</th></tr></thead><tbody id="prog-body"></tbody></table></div>
+    <p class="note">Angles in degrees from straight. Set each servo to 90° plus its angle, and flip the sign for a servo mounted the other way round. Rows in amber are where a split half is bending. The seat angle is a starting point; the tilt sensor trims it level.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="bom-h">
+    <div class="head"><h2 id="bom-h">Parts list</h2><p class="note" id="bom-note"></p></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Ref</th><th>Part</th><th>Qty</th><th>Where to buy</th><th>Fit</th></tr></thead>
+      <tbody id="bom"></tbody>
+    </table></div>
+  </section>
+
+  <div class="two-col">
+    <section class="panel" aria-labelledby="steps-h">
+      <h2 id="steps-h">Build steps</h2>
+      <ol class="steps" id="steps"></ol>
+    </section>
+    <section class="panel" aria-labelledby="guides-h">
+      <h2 id="guides-h">How-to guides</h2>
+      <ul class="guides" id="guides"></ul>
+      <p class="note" id="guides-note"></p>
+    </section>
+  </div>
+</div>
+
+<script src="track-model.js"></script>
+<script src="blueprint-parts.js"></script>
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const f1 = (v) => (Math.round(v * 10) / 10).toFixed(1).replace(/\.0$/, '');
+  const f0 = (v) => String(Math.round(v));
+
+  // ------------------------------------------------------------------ inputs
+  // GT2: 2 mm pitch. A loop over two equal pulleys has pitch length 2C + teeth x 2 mm.
+  // sizes that are sold (sg: stocked by a shop in Singapore)
+  const PULLEYS = [[16, true], [20, true], [25, false], [28, false], [30, true], [36, false]];
+  const LOOPS = [[100, true], [102, false], [110, true], [112, true], [114, false], [116, false], [120, false], [122, false], [124, false], [126, false], [128, false], [130, false],
+    [140, false], [142, false], [144, false], [146, false], [150, false], [152, false], [154, false], [156, false], [158, true]];
+  const DEF = { teeth: 20, loop: 110 };
+  // the full-size design (metres) this model scales
+  const FULL = { section: 0.35, sprocketD: 0.18, width: 0.75, track: 0.15, arm: 0.5, rise: 0.17, going: 0.28, midPlatform: 1.0, cols: 0.4 };
+  // the stretcher-chair and person at a 45 degree recline, metres from the seat's tilt axle (u forward, v up)
+  const CHAIR = [[[0.187, 0.08], [0.819, 0.712]], [[0.187, 0.08], [-0.286, 0.163]], [[-0.286, 0.163], [-0.735, -0.056]]];
+  const BODY = [[[0.207, 0.193], [-0.266, 0.277], 0.085], [[-0.265, 0.274], [-0.739, 0.043], 0.06], [[-0.739, 0.043], [-0.809, 0.186], 0.045], [[0.14, 0.26], [0.494, 0.613], 0.13], [[0.635, 0.712], [0.635, 0.712], 0.1]];
+
+  for (const [t, sg] of PULLEYS) { const o = document.createElement('option'); o.value = t; o.textContent = `${t}T, Ø${f1(t * 2 / Math.PI)} mm${sg ? ' · in SG' : ''}`; $('in-teeth').appendChild(o); }
+  // the loops that give a sensible axle spacing with this pulley
+  function fillLoops(keep) {
+    const t = Number($('in-teeth').value), sel = $('in-loop'); sel.textContent = '';
+    for (const [l, sg] of LOOPS) {
+      const C = (l - 2 * t) / 2;
+      if (C < (t * 2) / Math.PI + 8 || C > 60) continue;
+      const o = document.createElement('option'); o.value = l;
+      o.textContent = `${l} mm · axles ${f1(C)} · 1:${f1(350 / C)}${sg ? ' · in SG' : ''}`;
+      sel.appendChild(o);
+    }
+    const want = keep != null ? keep : 70 + 2 * t;           // 35 mm apart = 1:10
+    const opts = [...sel.options].map((o) => Number(o.value));
+    sel.value = String(opts.reduce((a, b) => (Math.abs(b - want) < Math.abs(a - want) ? b : a), opts[0]));
+  }
+  $('in-teeth').value = DEF.teeth;
+  let savedLoop = DEF.loop;
+  try { const saved = JSON.parse(localStorage.getItem('blueprint-parts') || 'null'); if (saved) { for (const k of ['teeth', 'width', 'rpm', 'steps']) if (saved[k] != null) $('in-' + k).value = saved[k]; if (saved.loop) savedLoop = saved.loop; } } catch (e) { /* storage unavailable */ }
+  fillLoops(savedLoop);
+
+  function params() {
+    const teeth = Number($('in-teeth').value), loop = Number($('in-loop').value), bw = Number($('in-width').value), rpm = Number($('in-rpm').value);
+    const steps = Math.max(6, Math.min(30, Math.round(Number($('in-steps').value) || 12)));
+    const pd = (teeth * 2) / Math.PI;               // pulley pitch diameter
+    const C = (loop - teeth * 2) / 2;               // axle spacing of each section
+    const s = C / (FULL.section * 1000);            // model mm per full-size mm
+    const belt = 1.4, grip = 1.2;                    // GT2 belt and grip covering thickness
+    const R = pd / 2 + belt + grip;                  // track radius at each axle, to the grip surface
+    const gap = 3;                                   // between the two lanes of one track
+    const trackW = 2 * bw + gap;
+    const W = Math.max(FULL.width * 1000 * s, 2 * trackW + 40); // across the tracks, leaving room for the servos
+    return {
+      teeth, loop, bw, rpm, steps, pd, C, s, belt, grip, R, gap, trackW, W,
+      L: 4 * C + 2 * R,                              // overall length
+      arm: FULL.arm * 1000 * s,                      // seat's hinge axle to the seat's tilt axle
+      rise: FULL.rise * 1000 * s, going: FULL.going * 1000 * s,
+      speed: (rpm * Math.PI * pd) / 60,              // mm/s at the grip surface (pitch line)
+      ideal: FULL.sprocketD * 1000 * s,
+    };
+  }
+
+  // ------------------------------------------------------------------ svg helpers
+  function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  function txt(g, x, y, str, cls, anchor, rot) {
+    const t = el('text', { x, y, class: cls || '', 'text-anchor': anchor || 'start' }, g);
+    if (rot) t.setAttribute('transform', `rotate(${rot} ${x} ${y})`);
+    t.textContent = str; return t;
+  }
+  function setup(svg, x0, y0, w, h) {
+    svg.textContent = '';
+    svg.setAttribute('viewBox', `${x0} ${y0} ${w} ${h}`);
+    const defs = el('defs', {}, svg);
+    const m = el('marker', { id: svg.id + '-ar', viewBox: '0 0 6 6', refX: 5.5, refY: 3, markerWidth: 5, markerHeight: 5, orient: 'auto-start-reverse' }, defs);
+    el('path', { d: 'M0 0.6 L6 3 L0 5.4 Z', fill: 'var(--line-3)' }, m);
+    const p = el('pattern', { id: 'hatch', width: 2, height: 2, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
+    el('line', { x1: 0, y1: 0, x2: 0, y2: 2, stroke: 'var(--line-3)', 'stroke-width': 0.35 }, p);
+    return el('g', {}, svg);
+  }
+  // dimension between two points along x (y fixed) or along y (x fixed)
+  function dimX(g, svgId, x1, x2, y, yFrom, label, below) {
+    el('line', { x1, y1: yFrom, x2: x1, y2: y + (below ? 1 : -1), class: 'dim' }, g);
+    el('line', { x1: x2, y1: yFrom, x2: x2, y2: y + (below ? 1 : -1), class: 'dim' }, g);
+    el('line', { x1, y1: y, x2, y2: y, class: 'dim', 'marker-start': `url(#${svgId}-ar)`, 'marker-end': `url(#${svgId}-ar)` }, g);
+    txt(g, (x1 + x2) / 2, y - 1, label, 'dimt', 'middle');
+  }
+  function dimY(g, svgId, y1, y2, x, xFrom, label) {
+    el('line', { x1: xFrom, y1, x2: x + 1, y2: y1, class: 'dim' }, g);
+    el('line', { x1: xFrom, y1: y2, x2: x + 1, y2: y2, class: 'dim' }, g);
+    el('line', { x1: x, y1, x2: x, y2, class: 'dim', 'marker-start': `url(#${svgId}-ar)`, 'marker-end': `url(#${svgId}-ar)` }, g);
+    txt(g, x - 1.2, (y1 + y2) / 2, label, 'dimt', 'middle', -90);
+  }
+  function tag(g, x, y, label) {
+    const w = 3.2 + label.length * 1.9;
+    el('rect', { x: x - w / 2, y: y - 2.3, width: w, height: 4.6, rx: 1, class: 'tag' }, g);
+    txt(g, x, y + 0.1, label, 'tagt', 'middle');
+  }
+  function leader(g, x, y, tx, ty, label) {
+    el('line', { x1: x, y1: y, x2: tx, y2: ty, class: 'dim' }, g);
+    el('circle', { cx: x, cy: y, r: 0.45, fill: 'var(--line-3)' }, g);
+    tag(g, tx, ty, label);
+  }
+  // a track section: belt around two pulleys of radius r, centres on the x axis at a and b (y = up is negative)
+  function stadium(a, b, y, r) { return `M${a} ${y - r} L${b} ${y - r} A${r} ${r} 0 0 1 ${b} ${y + r} L${a} ${y + r} A${r} ${r} 0 0 1 ${a} ${y - r} Z`; }
+  function capsule(g, A, B, r, cls) {
+    const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy);
+    if (L < 1e-6) { el('circle', { cx: A[0], cy: A[1], r, class: cls }, g); return; }
+    const nx = (-dy / L) * r, ny = (dx / L) * r;
+    el('path', { d: `M${A[0] + nx} ${A[1] + ny} L${B[0] + nx} ${B[1] + ny} A${r} ${r} 0 0 0 ${B[0] - nx} ${B[1] - ny} L${A[0] - nx} ${A[1] - ny} A${r} ${r} 0 0 0 ${A[0] + nx} ${A[1] + ny} Z`, class: cls }, g);
+  }
+
+  // ------------------------------------------------------------------ sheet A: side view
+  function drawSide(P) {
+    const svg = $('side'), hz = P.R; // axle height above the ground
+    const top = hz + P.arm + 0.82 * 1000 * P.s + 12;
+    const x0 = -P.R - 26, x1 = 4 * P.C + P.R + 30;
+    const g = setup(svg, x0, -top, x1 - x0, top + 26);
+    const Y = (z) => -z;
+    // ground
+    el('rect', { x: x0 + 4, y: 0, width: x1 - x0 - 8, height: 3, class: 'hatch' }, g);
+    el('line', { x1: x0 + 4, y1: 0, x2: x1 - 4, y2: 0, class: 'ground' }, g);
+    // hidden parts between the tracks: the drive motor and the hinge servos, lying flat on the section trays
+    const sv = { l: 22.8, h: 12.2 }, floor = 4.5;
+    const servoX = (j) => (j === 1 ? j * P.C - 3 - sv.l : j * P.C + 3);  // S1 on T1, S2 on T3, S3 on T4
+    el('rect', { x: 2 * P.C - 16, y: Y(floor + 10), width: 12, height: 10, rx: 1, class: 'hid' }, g); // N20 end-on, on T2
+    el('circle', { cx: 2 * P.C - 10, cy: Y(floor + 5), r: 4.6, class: 'hid' }, g);          // its gear
+    el('circle', { cx: 2 * P.C, cy: Y(hz), r: 5.4, class: 'hid' }, g);                         // gear on the seat's hinge axle
+    for (const j of [1, 2, 3]) el('rect', { x: servoX(j), y: Y(floor + sv.h), width: sv.l, height: sv.h, rx: 0.8, class: 'hid' }, g);
+    // belts: lane A (sections 1 and 3) nearest, lane B behind them where they overlap
+    const secs = [0, 1, 2, 3];
+    for (const k of secs) {
+      const a = k * P.C, b = (k + 1) * P.C, near = k % 2 === 0;
+      el('path', { d: stadium(a, b, Y(hz), P.pd / 2 + P.belt), class: near ? 'obj' : 'hid' }, g);
+      if (near) el('path', { d: stadium(a, b, Y(hz), P.R), class: 'grip' }, g);
+      if (near) for (let x = a + 3; x < b; x += 6) el('line', { x1: x, y1: Y(hz - P.R), x2: x, y2: Y(hz - P.R - 1.2), class: 'grip' }, g);
+    }
+    // pulleys and axles
+    for (let k = 0; k <= 4; k++) {
+      const x = k * P.C;
+      el('circle', { cx: x, cy: Y(hz), r: P.pd / 2 - 0.25, class: 'obj' }, g);
+      el('circle', { cx: x, cy: Y(hz), r: P.pd / 2, class: 'ctr' }, g);
+      el('circle', { cx: x, cy: Y(hz), r: 2.5, class: 'fillobj' }, g);
+      el('line', { x1: x - P.pd / 2 - 3, y1: Y(hz), x2: x + P.pd / 2 + 3, y2: Y(hz), class: 'ctr' }, g);
+      el('line', { x1: x, y1: Y(hz - P.pd / 2 - 3), x2: x, y2: Y(hz + P.pd / 2 + 3), class: 'ctr' }, g);
+    }
+    // arm servo S4 on a bracket above the drive motor; the arm rides on its horn, just behind
+    // and above the H2 axle. Seat tilt servo S5 at the top; stretcher-chair upright on level ground.
+    const s4 = { x: 2 * P.C - 3 - sv.l, z: 2 * P.R + 1 }, ax4 = { x: 2 * P.C - 7, z: s4.z + sv.h / 2 };
+    el('rect', { x: s4.x, y: Y(s4.z + sv.h), width: sv.l, height: sv.h, rx: 0.8, class: 'box' }, g);
+    el('line', { x1: s4.x + 4, y1: Y(s4.z), x2: s4.x + 4, y2: Y(floor + 10), class: 'thin' }, g);
+    el('line', { x1: s4.x + sv.l - 3, y1: Y(s4.z), x2: s4.x + sv.l - 3, y2: Y(floor + 10), class: 'thin' }, g);
+    const Px = ax4.x, Pz = hz + P.arm, m = 1000 * P.s;
+    capsule(g, [Px, Y(ax4.z)], [Px, Y(Pz)], 2.4, 'fillobj');
+    el('circle', { cx: Px, cy: Y(Pz), r: 2.2, class: 'fillobj' }, g);
+    el('circle', { cx: Px, cy: Y(ax4.z), r: 2.2, class: 'obj' }, g);
+    for (const [A, B] of CHAIR) capsule(g, [Px + A[0] * m, Y(Pz + A[1] * m)], [Px + B[0] * m, Y(Pz + B[1] * m)], 0.03 * m, 'fillobj');
+    for (const [A, B, r] of BODY) capsule(g, [Px + A[0] * m, Y(Pz + A[1] * m)], [Px + B[0] * m, Y(Pz + B[1] * m)], r * m, 'ph');
+    // callouts
+    leader(g, 0, Y(hz), -P.R - 12, Y(hz + 12), 'P');
+    leader(g, 0.5 * P.C, Y(hz + P.pd / 2 + P.belt), 0.5 * P.C - 6, Y(hz + P.pd / 2 + 14), 'B');
+    leader(g, 1.5 * P.C, Y(hz - P.R + 0.6), 1.5 * P.C + 6, Y(-7), 'G');
+    leader(g, servoX(1) + sv.l / 2, Y(floor + sv.h), servoX(1) + sv.l / 2 - 4, Y(hz + P.pd / 2 + 16), 'S1');
+    leader(g, servoX(2) + sv.l / 2, Y(floor + sv.h), servoX(2) + sv.l / 2 + 4, Y(hz + P.pd / 2 + 16), 'S2');
+    leader(g, servoX(3) + sv.l / 2, Y(floor + sv.h), servoX(3) + sv.l / 2 + 2, Y(hz + P.pd / 2 + 16), 'S3');
+    leader(g, 2 * P.C - 10, Y(floor + 9), 2 * P.C - 20, Y(hz + P.pd / 2 + 20), 'M');
+    leader(g, Px, Y((ax4.z + Pz) / 2), Px + 12, Y((ax4.z + Pz) / 2), 'A');
+    leader(g, s4.x + 6, Y(s4.z + sv.h / 2), s4.x - 8, Y(s4.z + sv.h + 6), 'S4');
+    leader(g, Px, Y(Pz), Px - 14, Y(Pz + 6), 'S5');
+    // joint names
+    txt(g, P.C, Y(-8), 'H1', 'lab', 'middle'); txt(g, 2 * P.C, Y(-8), 'H2 seat', 'lab', 'middle'); txt(g, 3 * P.C, Y(-8), 'H3', 'lab', 'middle');
+    // dimensions
+    dimX(g, 'side', -P.R, 4 * P.C + P.R, Y(-15), 1.5, `${f1(P.L)} overall`, true);
+    dimX(g, 'side', 0, P.C, Y(hz + P.pd / 2 + 34), Y(hz + 3), `${f1(P.C)}`);
+    dimX(g, 'side', P.C, 2 * P.C, Y(hz + P.pd / 2 + 34), Y(hz + 3), `${f1(P.C)}`);
+    dimX(g, 'side', 2 * P.C, 3 * P.C, Y(hz + P.pd / 2 + 34), Y(hz + 3), `${f1(P.C)}`);
+    dimX(g, 'side', 3 * P.C, 4 * P.C, Y(hz + P.pd / 2 + 34), Y(hz + 3), `${f1(P.C)}`);
+    dimY(g, 'side', Y(hz), Y(Pz), 4 * P.C + P.R + 16, Px + 3, `${f1(P.arm)} to seat axle`);
+    dimY(g, 'side', 0, Y(hz), 4 * P.C + P.R + 8, 4 * P.C + 3, `${f1(hz)}`);
+    txt(g, -P.R - 22, Y(hz + 20), `Ø${f1(P.pd)} pitch`, 'sm');
+    $('sa-scale').textContent = `1:${f1(1 / P.s)}`;
+    $('sa-sub').textContent = `${P.teeth}T GT2 pulleys, ${P.loop} mm loops, axles ${f1(P.C)} mm apart`;
+  }
+
+  // ------------------------------------------------------------------ sheet B: top view
+  function drawTop(P) {
+    const svg = $('top'), half = P.W / 2;
+    const x0 = -P.R - 24, x1 = 4 * P.C + P.R + 34, y0 = -half - 14, h = P.W + 36;
+    const g = setup(svg, x0, y0, x1 - x0, h);
+    // lanes: A outside, B inside; sections 1 and 3 in lane A, 2 and 4 in lane B
+    const lane = (side, L) => {
+      const outer = side * half, inner = side * (half - P.bw);
+      const bOuter = side * (half - P.bw - P.gap), bInner = side * (half - 2 * P.bw - P.gap);
+      return L === 'A' ? [Math.min(outer, inner), Math.abs(outer - inner)] : [Math.min(bOuter, bInner), Math.abs(bOuter - bInner)];
+    };
+    const inner = half - P.trackW;             // inner edge of each track
+    // section trays between the tracks, with a knuckle where each meets an axle
+    for (let k = 0; k < 4; k++) {
+      const a = k * P.C, b = (k + 1) * P.C, inset = 3.2;
+      el('rect', { x: a + inset, y: -inner + 1.5, width: P.C - 2 * inset, height: 2 * inner - 3, rx: 1.2, class: 'thin' }, g);
+      for (const side of [-1, 1]) for (const [x, off] of [[a, k % 2 ? 5.5 : 1.5], [b, k % 2 ? 1.5 : 5.5]]) {
+        const y = side > 0 ? inner - off - 3 : -inner + off;
+        el('rect', { x: x - 3.2, y, width: 6.4, height: 3, rx: 0.6, class: 'fillobj' }, g);
+      }
+    }
+    // belts in their lanes, with the grip covering along the outside
+    for (let k = 0; k < 4; k++) {
+      const L = k % 2 === 0 ? 'A' : 'B';
+      for (const side of [-1, 1]) {
+        const [y, w] = lane(side, L);
+        el('rect', { x: k * P.C - P.R, y, width: P.C + 2 * P.R, height: w, rx: 1.5, class: 'obj' }, g);
+        el('line', { x1: k * P.C, y1: y + w / 2, x2: (k + 1) * P.C, y2: y + w / 2, class: 'grip', 'stroke-dasharray': '1.2 1.8' }, g);
+      }
+    }
+    // axles, pulleys (both lanes at the joints), collars
+    for (let k = 0; k <= 4; k++) {
+      const x = k * P.C;
+      el('line', { x1: x, y1: -half - 3, x2: x, y2: half + 3, class: 'ctr' }, g);
+      el('rect', { x: x - 2.5, y: -half + 0.5, width: 5, height: P.W - 1, class: 'thin' }, g);
+      for (const side of [-1, 1]) for (const L of ['A', 'B']) {
+        if ((k === 0 && L === 'B') || (k === 4 && L === 'A')) continue;
+        const [y, w] = lane(side, L);
+        el('rect', { x: x - P.pd / 2, y: y - 0.6, width: P.pd, height: w + 1.2, class: 'fillobj' }, g);
+      }
+      for (const side of [-1, 1]) el('rect', { x: x - 3, y: side > 0 ? half + 0.2 : -half - 2.2, width: 6, height: 2, rx: 0.5, class: 'fillobj' }, g);
+    }
+    // hinge servos lying on their sides, output shafts across the vehicle; each horn drives a
+    // link to a lever on the neighbouring tray. S1 on T1, S2 on T3, S3 on T4.
+    const sv = { l: 22.8, d: 28.5 };
+    for (const j of [1, 2, 3]) {
+      const x = j === 1 ? j * P.C - 3 - sv.l : j * P.C + 3, y = -sv.d / 2;
+      el('rect', { x, y, width: sv.l, height: sv.d, rx: 1, class: 'box' }, g);
+      const hx = j === 1 ? x + sv.l - 5 : x + 5;                  // output shaft, near the joint
+      el('rect', { x: hx - 2.4, y: y + sv.d, width: 4.8, height: 2.5, class: 'fillobj' }, g);
+      el('line', { x1: hx, y1: y + sv.d + 2.5, x2: j * P.C + (j === 1 ? 7 : -7), y2: y + sv.d + 2.5, class: 'obj' }, g);
+      el('circle', { cx: j * P.C + (j === 1 ? 7 : -7), cy: y + sv.d + 2.5, r: 0.9, class: 'fillobj' }, g);
+      tag(g, x + sv.l / 2, y + 6, 'S' + j);
+    }
+    // drive motor on T2, shaft across the vehicle, geared to the seat's hinge axle
+    const mx = 2 * P.C - 16;
+    el('rect', { x: mx, y: -17, width: 12, height: 34, rx: 1, class: 'box' }, g);
+    el('rect', { x: mx + 1.5, y: 17, width: 9, height: 2.6, class: 'fillobj' }, g);
+    el('rect', { x: 2 * P.C - 2.6, y: 17, width: 5.2, height: 2.6, class: 'fillobj' }, g);
+    tag(g, mx + 6, -10, 'M');
+    el('rect', { x: 2 * P.C - 3 - 22.8, y: -14.25, width: 22.8, height: 28.5, rx: 1, class: 'hid' }, g);
+    txt(g, 2 * P.C - 3 - 11.4, 12, 'S4 above', 'sm', 'middle');
+    // seat arm foot beside the seat's hinge axle
+    el('rect', { x: 2 * P.C - 3, y: -inner + 2, width: 6, height: 7, rx: 1, class: 'fillobj' }, g);
+    tag(g, 2 * P.C, -inner - 3.5, 'A');
+    // labels
+    txt(g, -P.R - 20, -half + P.bw / 2 + 1, 'lane A', 'sm'); txt(g, -P.R - 20, -half + P.bw + P.gap + P.bw / 2 + 1, 'lane B', 'sm');
+    for (let k = 0; k < 4; k++) txt(g, k * P.C + P.C / 2, -half - 5, `T${k + 1}`, 'lab', 'middle');
+    // dimensions
+    dimY(g, 'top', -half, half, 4 * P.C + P.R + 14, 4 * P.C + 3, `${f1(P.W)} wide`);
+    dimY(g, 'top', half - P.trackW, half, 4 * P.C + P.R + 6, 4 * P.C + P.R + 1, `${f1(P.trackW)}`);
+    dimX(g, 'top', -P.R, 4 * P.C + P.R, half + 12, half + 3, `${f1(P.L)}`, true);
+    $('sb-scale').textContent = `1:${f1(1 / P.s)}`;
+  }
+
+  // ------------------------------------------------------------------ sheet C: joint section and servo link
+  function drawJoint(P) {
+    const svg = $('joint'), k = 2; // drawn at 2:1
+    const g = setup(svg, -4, -4, 136, 86);
+    const outer = 6, ax = 26;          // axle centre line height in the section
+    const w = P.bw * k, gp = P.gap * k, pr = (P.pd / 2) * k;
+    // axle
+    el('rect', { x: outer - 2, y: ax - 5, width: 72, height: 10, class: 'fillobj' }, g);
+    el('line', { x1: outer - 6, y1: ax, x2: outer + 76, y2: ax, class: 'ctr' }, g);
+    // collar, pulley A, pulley B
+    el('rect', { x: outer - 2, y: ax - 8, width: 4, height: 16, rx: 0.8, class: 'fillobj' }, g);
+    const pa = outer + 3, pb = pa + w + gp;
+    for (const [x, L] of [[pa, 'A'], [pb, 'B']]) {
+      el('rect', { x, y: ax - pr, width: w, height: 2 * pr, class: 'fillobj' }, g);
+      el('rect', { x: x - 1, y: ax - pr - 1.2, width: w + 2, height: 1.2, class: 'fillobj' }, g);
+      el('rect', { x: x - 1, y: ax + pr, width: w + 2, height: 1.2, class: 'fillobj' }, g);
+      el('rect', { x, y: ax - pr - 1.2 - P.belt * k, width: w, height: P.belt * k, class: 'obj' }, g);
+      el('rect', { x, y: ax + pr + 1.2, width: w, height: P.belt * k, class: 'obj' }, g);
+      el('rect', { x, y: ax + pr + 1.2 + P.belt * k, width: w, height: P.grip * k, class: 'grip' }, g);
+      el('circle', { cx: x + w / 2, cy: ax - pr + 3, r: 1.1, class: 'thin' }, g);
+      txt(g, x + w / 2, ax - pr - 1.2 - P.belt * k - 2, 'lane ' + L, 'sm', 'middle');
+    }
+    // knuckles of the two trays, each with a bearing
+    const k1 = pb + w + 3, k2 = k1 + 10;
+    for (const [x, name, dy] of [[k1, 'next tray', 18], [k2, 'this tray', 22]]) {
+      el('rect', { x, y: ax - 13, width: 8, height: 26, rx: 1, class: 'box' }, g);
+      el('rect', { x: x + 1, y: ax - 8, width: 6, height: 16, class: 'hatch' }, g);
+      el('rect', { x: x + 1, y: ax - 8, width: 6, height: 16, class: 'thin' }, g);
+      el('line', { x1: x + 4, y1: ax + 13, x2: x + 4, y2: ax + dy - 2.4, class: 'dim' }, g);
+      txt(g, x + 4, ax + dy, name, 'sm', 'middle');
+    }
+    txt(g, outer + 74, ax + 1, '→ centre', 'sm', 'end');
+    leader(g, outer, ax - 8, outer - 1, ax - 16, 'C');
+    leader(g, pa + w / 2, ax - pr, pa + w / 2 - 4, 6, 'P');
+    leader(g, k1 + 4, ax - 6, k1 + 10, 4, 'BR');
+    leader(g, pa + w / 2, ax + pr + 1.2 + P.belt * k + P.grip * k, pa + w / 2 + 2, ax + pr + 12, 'G');
+    // the servo link, side on: servo on this tray, horn and rod to a lever on the next tray
+    const y0 = 70, jx = 96;
+    el('line', { x1: 58, y1: y0 + 6, x2: jx, y2: y0 + 6, class: 'obj' }, g);
+    el('line', { x1: jx, y1: y0 + 6, x2: jx + 26 * Math.cos(-0.5), y2: y0 + 6 + 26 * Math.sin(-0.5), class: 'obj' }, g);
+    el('line', { x1: jx, y1: y0 + 6, x2: jx + 26, y2: y0 + 6, class: 'hid' }, g);
+    el('circle', { cx: jx, cy: y0 + 6, r: 2, class: 'fillobj' }, g);
+    el('rect', { x: 62, y: y0 - 6, width: 20, height: 9, rx: 1, class: 'box' }, g);
+    el('circle', { cx: 78, cy: y0 - 1.5, r: 1.5, class: 'obj' }, g);
+    el('line', { x1: 78, y1: y0 - 1.5, x2: 78 + 6 * Math.cos(-1.2), y2: y0 - 1.5 + 6 * Math.sin(-1.2), class: 'obj' }, g);
+    const lx = jx + 9 * Math.cos(-0.5 - 1.2), ly = y0 + 6 + 9 * Math.sin(-0.5 - 1.2);
+    el('line', { x1: jx, y1: y0 + 6, x2: lx, y2: ly, class: 'obj' }, g);
+    el('line', { x1: 78 + 6 * Math.cos(-1.2), y1: y0 - 1.5 + 6 * Math.sin(-1.2), x2: lx, y2: ly, class: 'obj' }, g);
+    el('path', { d: `M${jx + 14} ${y0 + 6} A14 14 0 0 0 ${jx + 14 * Math.cos(-0.5)} ${y0 + 6 + 14 * Math.sin(-0.5)}`, class: 'dim', 'marker-end': 'url(#joint-ar)' }, g);
+    txt(g, jx + 15, y0 - 4, 'up to ±55°', 'sm');
+    txt(g, 60, y0 + 11, 'this tray', 'sm'); txt(g, jx + 6, y0 - 12, 'next tray', 'sm');
+    tag(g, 68, y0 - 1.5, 'S');
+  }
+
+  // ------------------------------------------------------------------ sheet D: wiring
+  function drawWiring() {
+    const svg = $('wiring');
+    const g = setup(svg, 0, 0, 142, 88);
+    const box = (x, y, w, h, title, sub) => { el('rect', { x, y, width: w, height: h, rx: 1.2, class: 'box' }, g); txt(g, x + 2, y + 4.4, title); if (sub) txt(g, x + 2, y + 8, sub, 'sm'); };
+    const wire = (pts, pwr) => el('polyline', { points: pts.map((p) => p.join(',')).join(' '), class: pwr ? 'wire pwr' : 'wire' }, g);
+    box(2, 4, 32, 12, '2S LiPo', '7.4 V, 450–1000 mAh');
+    box(2, 23, 32, 8, 'Switch');
+    box(2, 38, 32, 12, 'Buck to 6 V', '3 A or more');
+    box(50, 4, 36, 20, 'Arduino Nano', 'or XIAO / Pi Pico');
+    box(50, 34, 36, 12, 'TB6612FNG', 'motor driver');
+    box(50, 58, 36, 12, 'MPU-6050', 'on the seat cradle');
+    box(102, 36, 38, 12, 'N20 + encoder', 'M, the drive');
+    box(102, 4, 38, 26, 'Servos', 'S1–S3 the hinges');
+    txt(g, 104, 16.5, 'S4 arm lean', 'sm'); txt(g, 104, 20.5, 'S5 seat tilt', 'sm'); txt(g, 104, 26, 'D5 D6 D9 D10 D11', 'sm');
+    wire([[18, 16], [18, 23]], true);
+    wire([[18, 31], [18, 38]], true);
+    wire([[34, 27], [42, 27], [42, 10], [50, 10]], true); txt(g, 43, 9, 'VIN', 'sm');
+    wire([[34, 44], [44, 44], [44, 40], [50, 40]], true); txt(g, 44.5, 38.5, 'VM', 'sm');
+    wire([[34, 48], [96, 48], [96, 27], [102, 27]], true); txt(g, 72, 52, '6 V to the servos', 'sm');
+    wire([[86, 14], [102, 14]]); txt(g, 88, 12.8, 'signal', 'sm');
+    wire([[68, 24], [68, 34]]); txt(g, 69, 30, 'D3 D4 D7 D8', 'sm');
+    wire([[86, 42], [102, 42]], true); txt(g, 88, 40.8, 'A01 A02', 'sm');
+    wire([[121, 48], [121, 55], [80, 55], [80, 24]]); txt(g, 100, 58.5, 'encoder: D2 D12', 'sm');
+    wire([[56, 24], [56, 58]]); txt(g, 57, 55, 'A4 A5', 'sm');
+    txt(g, 2, 79, 'Charge the LiPo only on a balance charger, and never leave it charging alone.', 'sm');
+    txt(g, 2, 83.5, 'The servos take power from the buck converter, not from the Nano.', 'sm');
+  }
+
+  // ------------------------------------------------------------------ sheet E: test stairs
+  function drawStairs(P) {
+    const svg = $('stairs'), n = P.steps, r = P.rise, gng = P.going;
+    const run0 = RUN_OUT * 1000 * P.s, top = TOP * 1000 * P.s;   // as in the simulator
+    const H = n * r, X = run0 + (n - 1) * gng + top;
+    const q = 200 / X;                                    // drawn at this fraction, labels in real mm
+    const g = setup(svg, -8, -H * q - 14, 200 + 34, H * q + 34);
+    const pts = [[0, 0], [run0, 0]];
+    let x = run0, z = 0;
+    for (let i = 0; i < n; i++) { z += r; pts.push([x, -z]); if (i < n - 1) { x += gng; pts.push([x, -z]); } }
+    pts.push([x + top, -z], [x + top, 0], [0, 0]);
+    const Q = (p) => [p[0] * q, p[1] * q];
+    el('polygon', { points: pts.map((p) => Q(p).join(',')).join(' '), class: 'hatch' }, g);
+    el('polyline', { points: pts.slice(0, -2).map((p) => Q(p).join(',')).join(' '), class: 'ground' }, g);
+    el('line', { x1: run0 * q, y1: -r * q, x2: (run0 + (n - 1) * gng) * q, y2: -H * q, class: 'ctr' }, g);
+    // the vehicle, to the same scale, on the bottom run
+    el('path', { d: stadium((20 + P.R) * q, (20 + P.R + 4 * P.C) * q, -P.R * q, P.R * q), class: 'obj' }, g);
+    txt(g, (20 + P.R + 2 * P.C) * q, -2 * P.R * q - 2.5, 'vehicle', 'sm', 'middle');
+    // dimensions (real mm)
+    const sx = (run0 + 2 * gng) * q;
+    dimX(g, 'stairs', sx, sx + gng * q, -3 * r * q - 6, -3 * r * q - 1, `${f1(gng)} going`);
+    dimY(g, 'stairs', -2 * r * q, -3 * r * q, sx - 5, sx - 1, `${f1(r)}`);
+    dimY(g, 'stairs', 0, -H * q, 200 + 12, 200 + 1, `${f0(H)} high`);
+    dimX(g, 'stairs', 0, run0 * q, 8, 1, `${f0(run0)} run-out`, true);
+    dimX(g, 'stairs', run0 * q, x * q, 8, 1, `${f0(x - run0)} flight`, true);
+    dimX(g, 'stairs', x * q, (x + top) * q, 8, 1, `${f0(top)} top`, true);
+    $('se-scale').textContent = `1:${f1(1 / P.s)}`;
+    $('se-sub').textContent = `${n} steps, ${f1(r)} rise × ${f1(gng)} going (${(Math.atan2(r, gng) * 180 / Math.PI).toFixed(1)}°, as ES1). A mid platform would be ${f0(FULL.midPlatform * 1000 * P.s)} long.`;
+  }
+
+  // ------------------------------------------------------------------ key numbers
+  function drawKpis(P) {
+    const k = [
+      ['Scale', `1:${f1(1 / P.s)}`, 'from the axle spacing'],
+      ['Axle spacing', `${f1(P.C)} mm`, `${P.loop} mm loop, ${P.teeth}T`],
+      ['Pulley', `Ø${f1(P.pd)}`, `ideal Ø${f1(P.ideal)} at this scale`],
+      ['Vehicle', `${f0(P.L)} × ${f0(P.W)}`, 'mm, long × wide'],
+      ['Seat arm', `${f1(P.arm)} mm`, 'hinge axle to seat axle'],
+      ['Stairs', `${f1(P.rise)} × ${f1(P.going)}`, 'mm, rise × going'],
+      ['Track speed', `${f0(P.speed)} mm/s`, `at ${P.rpm} rpm`],
+    ];
+    const host = $('kpis'); host.textContent = '';
+    for (const [a, b, c] of k) { const d = document.createElement('div'); d.className = 'kpi'; d.innerHTML = `<span class="k"></span><span class="v"></span><span class="s"></span>`; d.children[0].textContent = a; d.children[1].textContent = b; d.children[2].textContent = c; host.appendChild(d); }
+  }
+
+  // ------------------------------------------------------------------ parts list, steps, guides
+  // filled from window.BLUEPRINT_PARTS (parts.js) when present
+  function renderBom(P) {
+    const data = window.BLUEPRINT_PARTS || { groups: [], note: '' };
+    const body = $('bom'); body.textContent = '';
+    for (const grp of data.groups) {
+      const gr = document.createElement('tr'); gr.className = 'group';
+      const gd = document.createElement('td'); gd.colSpan = 5; gd.textContent = grp.name; gr.appendChild(gd); body.appendChild(gr);
+      for (const it of grp.items) {
+        const tr = document.createElement('tr');
+        const ref = document.createElement('td'); ref.className = 'ref'; ref.textContent = it.ref || ''; tr.appendChild(ref);
+        const part = document.createElement('td'); part.textContent = typeof it.part === 'function' ? it.part(P) : it.part; tr.appendChild(part);
+        const qty = document.createElement('td'); qty.className = 'qty'; qty.textContent = it.qty; tr.appendChild(qty);
+        const shop = document.createElement('td'); const sd = document.createElement('div'); sd.className = 'shop';
+        for (const l of (typeof it.links === 'function' ? it.links(P) : it.links) || []) {
+          const row = document.createElement('div');
+          const a = document.createElement('a'); a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = l.shop; row.appendChild(a);
+          if (l.sg) { const b = document.createElement('span'); b.className = 'sg'; b.textContent = 'SG'; row.appendChild(b); }
+          if (l.where) { const w = document.createElement('div'); w.className = 'where'; w.textContent = l.where; row.appendChild(w); }
+          sd.appendChild(row);
+        }
+        shop.appendChild(sd); tr.appendChild(shop);
+        const fit = document.createElement('td'); const fd = document.createElement('div'); fd.className = 'fit'; fd.textContent = typeof it.fit === 'function' ? it.fit(P) : it.fit || ''; fit.appendChild(fd); tr.appendChild(fit);
+        body.appendChild(tr);
+      }
+    }
+    $('bom-note').textContent = data.note || '';
+    const ol = $('steps'); ol.textContent = '';
+    for (const st of data.steps || []) { const li = document.createElement('li'); const d = document.createElement('div'); const b = document.createElement('b'); b.textContent = st[0] + ' '; d.append(b, document.createTextNode(typeof st[1] === 'function' ? st[1](P) : st[1])); li.appendChild(d); ol.appendChild(li); }
+    const ul = $('guides'); ul.textContent = '';
+    for (const gd of data.guides || []) { const li = document.createElement('li'); const a = document.createElement('a'); a.href = gd.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = gd.title; li.appendChild(a); if (gd.note) li.appendChild(document.createTextNode(' · ' + gd.note)); ul.appendChild(li); }
+    $('guides-note').textContent = data.guidesNote || '';
+  }
+
+  // ------------------------------------------------------------------ hinge program
+  // One flight of `steps` risers at full size (the simulator works in metres), both ways.
+  const RUN_OUT = 2.8, TOP = 3.1;             // floor before the stairs and top platform, full size, m
+  const prog = { dir: 'up', key: null, rows: { up: [], down: [] }, start: {} };
+  const d0 = (r) => (r * 180) / Math.PI;
+  function runProgram(P) {
+    const key = `${P.steps}|${P.s.toFixed(5)}`;
+    if (prog.key === key) { showProgram(P); return; }
+    prog.key = key;
+    $('prog-status').textContent = 'Working out the hinge angles…';
+    setTimeout(() => {
+      if (prog.key !== key || !window.TrackModel && !window.TM) return;
+      const TMod = window.TrackModel || window.TM;
+      const sim = TMod.simulate({ height: P.steps * 0.17, lowerTreads: P.steps - 1, topPlatform: TOP, oneTrack: false, mastMode: 'balance', sections: [0.35, 0.35, 0.35, 0.35], mainJoint: 2 });
+      const n = sim.path.length, edge = sim.profile.edges[0].x;
+      for (const dir of ['up', 'down']) {
+        const list = sim[dir], at = (k) => list[dir === 'up' ? k : n - 1 - k];
+        const s0 = at(0).s, rows = [];
+        let next = 0;
+        for (let k = 0; k < n; k++) {
+          const p = at(k), d = Math.abs(p.s - s0);  // metres travelled, full size
+          if (d + 1e-9 < next) continue;
+          const b = p.bends.map(d0), bend = Math.abs(b[0]) >= 3 || Math.abs(b[2]) >= 3;
+          rows.push({ d, h1: b[0], h2: b[1], h3: b[2], arm: d0(p.beta / 2 + (p.psiRel || 0)), seat: d0(p.lam || 0), bend });
+          next = d + 0.005 / P.s;                   // every 5 mm of model travel
+        }
+        prog.rows[dir] = rows;
+        prog.start[dir] = dir === 'up' ? { before: -at(0).J.x } : { past: at(0).J.x - edge };
+      }
+      $('prog-status').textContent = `${prog.rows.up.length} rows up, ${prog.rows.down.length} down`;
+      showProgram(P);
+    }, 30);
+  }
+  function showProgram(P) {
+    const rows = prog.rows[prog.dir], mm = 1000 * P.s;
+    const body = $('prog-body'); body.textContent = '';
+    const f = (v) => (v >= 0 ? '+' : '\u2212') + Math.abs(v).toFixed(1);
+    for (const r of rows) {
+      const tr = document.createElement('tr'); if (r.bend) tr.className = 'bend';
+      for (const v of [(r.d * mm).toFixed(0), f(r.h1), f(r.h2), f(r.h3), f(r.arm), f(r.seat)]) { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); }
+      body.appendChild(tr);
+    }
+    const st = prog.start[prog.dir];
+    if (st) $('prog-start').textContent = prog.dir === 'up'
+      ? `Start on the floor with the H2 axle ${(st.before * mm).toFixed(0)} mm before the first riser, facing the stairs, and zero the encoder.`
+      : `Start on the top platform with the H2 axle ${(st.past * mm).toFixed(0)} mm back from the top edge, rear end towards the stairs, and zero the encoder.`;
+  }
+  function programCsv(P) {
+    const mm = 1000 * P.s, rows = prog.rows[prog.dir];
+    return ['mm,h1,h2,h3,arm,seat'].concat(rows.map((r) => [(r.d * mm).toFixed(1), r.h1.toFixed(1), r.h2.toFixed(1), r.h3.toFixed(1), r.arm.toFixed(1), r.seat.toFixed(1)].join(','))).join('\n');
+  }
+  $('prog-dir').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    prog.dir = b.dataset.v;
+    $('prog-dir').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    showProgram(params());
+  });
+  $('prog-copy').addEventListener('click', () => {
+    const csv = programCsv(params()), btn = $('prog-copy');
+    const done = (ok) => { btn.textContent = ok ? 'Copied' : 'Select and copy below'; setTimeout(() => { btn.textContent = 'Copy as CSV'; }, 1800); };
+    try {
+      navigator.clipboard.writeText(csv).then(() => done(true), () => fallback());
+    } catch (e) { fallback(); }
+    function fallback() {
+      let ta = $('prog-csv');
+      if (!ta) { ta = document.createElement('textarea'); ta.id = 'prog-csv'; ta.rows = 6; ta.style.width = '100%'; ta.style.font = '12px var(--mono)'; ta.style.background = 'var(--sheet-2)'; ta.style.color = 'var(--line)'; ta.setAttribute('aria-label', 'Hinge program as CSV'); $('prog-copy').closest('section').appendChild(ta); }
+      ta.value = csv; ta.focus(); ta.select(); done(false);
+    }
+  });
+
+  function render() {
+    const P = params();
+    try { localStorage.setItem('blueprint-parts', JSON.stringify({ teeth: P.teeth, loop: P.loop, width: P.bw, rpm: P.rpm, steps: P.steps })); } catch (e) { /* storage unavailable */ }
+    drawKpis(P); drawSide(P); drawTop(P); drawJoint(P); drawWiring(); drawStairs(P); renderBom(P); runProgram(P);
+  }
+  $('in-teeth').addEventListener('change', () => { fillLoops(null); render(); });
+  for (const id of ['in-loop', 'in-width', 'in-rpm', 'in-steps']) $(id).addEventListener('change', render);
+  $('in-steps').addEventListener('input', render);
+  render();
+})();
+</script>

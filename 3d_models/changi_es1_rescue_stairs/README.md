@@ -269,6 +269,16 @@ Worst case over the three height settings, with the balancing arm:
 each can take along the trip, and puts every stress case next to each other.
 `node track_sim/compare-test.js` regenerates its per-height numbers (`compare-results.js`).
 
+### Building a model
+
+`track_sim/blueprint.html` is a build sheet for a model of the layout with both halves split,
+made from parts sold in Singapore. Pick the GT2 pulley and closed belt loop you buy, and it redraws
+the side view, the top view, a hinge joint and the wiring to scale, and sizes the test stairs to
+match. 20-tooth pulleys with 110 mm loops, both stocked in Singapore, put the axles 35 mm apart,
+which is exactly 1:10. Its parts list (`blueprint-parts.js`) links each part to a shop. It also runs
+the simulator on the test stairs (the `lowerTreads` option in `track-model.js` gives one flight) and
+lists the hinge, arm and seat angles every 5 mm of travel, to replay from the drive motor's encoder.
+
 ### Design rules from the math
 
 1. Each unit must always bridge two step nosings. Nosings are 328 mm apart, so a unit needs at
