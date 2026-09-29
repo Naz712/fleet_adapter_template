@@ -72,8 +72,8 @@ compares that vehicle with the same vehicle built as one long straight track.
 
 Open `track_sim/index.html` in a browser, keeping `track-model.js` in the same folder. The page
 animates the trip up or down at each height setting, plots the casualty's tilt and the hinge
-bend, and recalculates everything when you change the seat or the vehicle, including a layout
-with one half of the tracks split in two. `track-model.js` also runs in Node:
+bend, and recalculates everything when you change the seat or the vehicle, including layouts
+with one or both halves of the tracks split in two. `track-model.js` also runs in Node:
 
 ```bash
 node -e "const TM = require('./track_sim/track-model.js'); console.log(TM.simulate({ height: 8.4 }).summary.two)"
@@ -158,8 +158,8 @@ cd track_sim && node stress-test.js
 ```
 
 It also writes `stress-results.js`, which the page shows. A case passes if the vehicle never
-falls and can take a 7.3° lean anywhere. It runs four ways of holding up the seat, and the two
-layouts with one half of the tracks split in two (see below):
+falls and can take a 7.3° lean anywhere. It runs four ways of holding up the seat, and the three
+layouts with one or both halves of the tracks split in two (see below):
 
 | Seat support | Pass | Tight | Fail | Lean it can take, default (up · down) | Seat drives, with bumps |
 |---|---|---|---|---|---|
@@ -218,12 +218,12 @@ person, and at least 3.7 times below for 200 kg. What the stress test asks for:
 7. Use cleated tracks. Holding on the flight needs a grip (friction coefficient) of 0.61, and a
    hard stop going down 0.76. Wet rubber on steel can be well below that.
 
-### One half split in two
+### Splitting the halves in two
 
 The model also handles more than two sections (`sections` and `mainJoint` in `track-model.js`,
-and "Track layout" on the page). The seat stays on the middle hinge. One half is split into two
-0.35 m sections, joined by a hinge with its own motor, about 6 kg. The rules are the same as for
-two sections, section by section. With two 0.70 m sections, the model gives exactly the same poses
+and "Track layout" on the page). The seat stays on the middle hinge. One or both halves are split
+into two 0.35 m sections, joined by a hinge with its own motor, about 6 kg. The rules are the same
+as for two sections, section by section. With two 0.70 m sections, the model gives exactly the same poses
 as the two-section one, which is how it was checked.
 
 The extra hinge helps only while its half trails: going down for a split front half, going up for
@@ -235,30 +235,31 @@ the same change of slope, so the extra hinge turns at up to 240° per metre, twi
 
 Worst case over the three height settings, with the balancing arm:
 
-| | Two sections | Front half split | Rear half split |
-|---|---|---|---|
-| Lean it can take (up · down) | 10.7° · 8.3° | 10.3° · 18.7° | 17.9° · 10.0° |
-| Stress test (pass · tight · fail) | 17 · 4 · 3 of 24 | 20 · 3 · 3 of 26 | 19 · 4 · 3 of 26 |
-| Extra hinge at 120°/m (up · down) | – | 10.3° · 9.3° | 13.3° · 10.0° |
-| Extra hinge held straight (up · down) | – | 10.3° · 7.7° | 10.0° · 10.0° |
+| | No split | Front half split | Rear half split | Both halves split |
+|---|---|---|---|---|
+| Lean it can take (up · down) | 10.7° · 8.3° | 10.3° · 18.7° | 17.9° · 10.0° | 18.8° · 18.4° |
+| Stress test (pass · tight · fail) | 17 · 4 · 3 of 24 | 20 · 3 · 3 of 26 | 19 · 4 · 3 of 26 | 20 · 3 · 3 of 26 |
+| Extra hinge motors, mass with the casualty | 0, 195 kg | 1, 201 kg | 1, 201 kg | 2, 207 kg |
+| Extra hinge at 120°/m (up · down) | – | 10.3° · 9.3° | 13.3° · 10.0° | 13.2° · 11.0° |
+| Extra hinge held straight (up · down) | – | 10.3° · 7.7° | 10.0° · 10.0° | 9.9° · 8.8° |
 
-- The front split more than doubles the lean the vehicle can take going down, which is where two
-  sections are weakest. Going up it takes 0.4° less, because of the motor's weight.
+- The front split more than doubles the lean the vehicle can take going down, which is where no
+  split is weakest. Going up it takes 0.4° less, because of the motor's weight.
 - The rear split gains going up. Its gain going down comes only from the motor's weight at the
   rear; ballast would do the same.
-- Both fail the same three cases as two sections: a hinge motor at half speed, the seat's hinge
+- Splitting both halves gets both gains, 18.8° up and 18.4° down, for a second extra hinge motor.
+  Going down it takes a little less than the front split (0.3° by default, 0.4–0.5° in the tight
+  cases), because the rear half's motor sits at the downhill end.
+- All three fail the same three cases as no split: a hinge motor at half speed, the seat's hinge
   seizing (a 21 to 23 cm drop), and a 200 kg person lying flat on 35.8° stairs.
-- If the extra hinge seizes straight, the vehicle becomes the two-section one, which passes.
+- If the extra hinges seize straight, the vehicle becomes the one with no split, which passes.
 - A 0.35 m section spans only one gap between nosings, so on a flight its hinge must hold it in
   line.
 - Used the other way round, the extra hinge makes things worse. Bending while its half leads, the
   short end section folds first and the seat's hinge later. Held straight while its half trails,
   there is nothing to gain.
-- Splitting both halves (four 0.35 m sections) took about 18° both ways in a quick run, but it has
-  not been stress tested.
-
-`track_sim/compare.html` runs the front split and the vehicle with no split side by side on the same stairs,
-plots the lean each can take along the trip, and puts every stress case next to each other.
+`track_sim/compare.html` runs all four layouts side by side on the same stairs, plots the lean
+each can take along the trip, and puts every stress case next to each other.
 `node track_sim/compare-test.js` regenerates its per-height numbers (`compare-results.js`).
 
 ### Design rules from the math

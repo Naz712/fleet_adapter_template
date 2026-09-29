@@ -24,6 +24,7 @@ const DESIGNS = [
   // three sections: one half kept whole, the other split in two with its own hinge motor
   { id: 'frontSplit', name: 'Front half split in two', opts: { mastMode: 'balance', sections: [0.7, 0.35, 0.35], mainJoint: 1 }, split: true },
   { id: 'rearSplit', name: 'Rear half split in two', opts: { mastMode: 'balance', sections: [0.35, 0.35, 0.7], mainJoint: 2 }, split: true },
+  { id: 'bothSplit', name: 'Both halves split in two', opts: { mastMode: 'balance', sections: [0.35, 0.35, 0.35, 0.35], mainJoint: 2 }, split: true },
 ];
 
 const COMMON = [

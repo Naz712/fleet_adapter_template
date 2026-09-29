@@ -15,16 +15,51 @@ window.COMPARE_RESULTS = {
     "mainJoint": 1
    },
    "totalMass": 201,
-   "totalLength": 1.5799999999999998
+   "totalLength": 1.5799999999999998,
+   "extraHinges": 1
   },
   {
    "id": "two",
-   "name": "Two sections",
+   "name": "No split",
    "opts": {
     "mastMode": "balance"
    },
    "totalMass": 195,
-   "totalLength": 1.5799999999999998
+   "totalLength": 1.5799999999999998,
+   "extraHinges": 0
+  },
+  {
+   "id": "rearSplit",
+   "name": "Rear half split",
+   "opts": {
+    "mastMode": "balance",
+    "sections": [
+     0.35,
+     0.35,
+     0.7
+    ],
+    "mainJoint": 2
+   },
+   "totalMass": 201,
+   "totalLength": 1.5799999999999998,
+   "extraHinges": 1
+  },
+  {
+   "id": "bothSplit",
+   "name": "Both halves split",
+   "opts": {
+    "mastMode": "balance",
+    "sections": [
+     0.35,
+     0.35,
+     0.35,
+     0.35
+    ],
+    "mainJoint": 2
+   },
+   "totalMass": 207,
+   "totalLength": 1.5799999999999998,
+   "extraHinges": 2
   }
  ],
  "heights": [
@@ -81,6 +116,58 @@ window.COMPARE_RESULTS = {
      "maxOtherHingeDeg": 0,
      "maxPitchChangePer10cmDeg": 8.627698792708511
     }
+   },
+   "rearSplit": {
+    "up": {
+     "minTipAngleDeg": 17.89510961248308,
+     "tipAngleAt": 2.4816442811051513,
+     "tipAngleDir": "downhill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 3.2040387074920877,
+     "minClearance": 0.4859118180271377,
+     "minTrackClearance": 0.3176987567747652,
+     "maxHingeDeg": 39.59999999999989,
+     "maxOtherHingeDeg": 37.559318685668835,
+     "maxPitchChangePer10cmDeg": 7.783443097157748
+    },
+    "down": {
+     "minTipAngleDeg": 10.094171950043537,
+     "tipAngleAt": 7.7905659946178165,
+     "tipAngleDir": "uphill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 3.0029877641405367,
+     "minClearance": 0.47820171633485575,
+     "minTrackClearance": 0.2829014298219775,
+     "maxHingeDeg": 37.753289985997505,
+     "maxOtherHingeDeg": 0,
+     "maxPitchChangePer10cmDeg": 8.627698792708511
+    }
+   },
+   "bothSplit": {
+    "up": {
+     "minTipAngleDeg": 18.771717614078593,
+     "tipAngleAt": 2.4816442811051513,
+     "tipAngleDir": "downhill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 3.2040371384278394,
+     "minClearance": 0.4859118180271377,
+     "minTrackClearance": 0.3203045079385657,
+     "maxHingeDeg": 39.599999999999916,
+     "maxOtherHingeDeg": 37.559318685668835,
+     "maxPitchChangePer10cmDeg": 7.783445500868357
+    },
+    "down": {
+     "minTipAngleDeg": 19.16432349183843,
+     "tipAngleAt": 8.1004360368683,
+     "tipAngleDir": "downhill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 0,
+     "minClearance": 0.47820171633485575,
+     "minTrackClearance": 0.27346311703265136,
+     "maxHingeDeg": 37.75328998599751,
+     "maxOtherHingeDeg": 44.27159828308214,
+     "maxPitchChangePer10cmDeg": 6.941243060630973
+    }
    }
   },
   {
@@ -136,6 +223,58 @@ window.COMPARE_RESULTS = {
      "maxOtherHingeDeg": 0,
      "maxPitchChangePer10cmDeg": 8.627698792708511
     }
+   },
+   "rearSplit": {
+    "up": {
+     "minTipAngleDeg": 17.89510961248308,
+     "tipAngleAt": 2.4816442811051513,
+     "tipAngleDir": "downhill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 3.2040387074920877,
+     "minClearance": 0.4859118180271377,
+     "minTrackClearance": 0.3046700764689393,
+     "maxHingeDeg": 39.760491287752224,
+     "maxOtherHingeDeg": 37.8737233951556,
+     "maxPitchChangePer10cmDeg": 7.8418349911802405
+    },
+    "down": {
+     "minTipAngleDeg": 10.256530460234986,
+     "tipAngleAt": 13.430585778378695,
+     "tipAngleDir": "uphill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 4.97688543999088,
+     "minClearance": 0.44590125914355194,
+     "minTrackClearance": 0.2537389674652971,
+     "maxHingeDeg": 37.91237737109031,
+     "maxOtherHingeDeg": 0,
+     "maxPitchChangePer10cmDeg": 8.627698792708511
+    }
+   },
+   "bothSplit": {
+    "up": {
+     "minTipAngleDeg": 18.771717614078593,
+     "tipAngleAt": 2.4816442811051513,
+     "tipAngleDir": "downhill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 3.2040371384278394,
+     "minClearance": 0.4859118180271377,
+     "minTrackClearance": 0.31204701419996606,
+     "maxHingeDeg": 39.760491287752224,
+     "maxOtherHingeDeg": 37.8737233951556,
+     "maxPitchChangePer10cmDeg": 7.841837399984547
+    },
+    "down": {
+     "minTipAngleDeg": 19.018913510328105,
+     "tipAngleAt": 13.740996714579863,
+     "tipAngleDir": "downhill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 4.8789880913530315,
+     "minClearance": 0.44283000953325935,
+     "minTrackClearance": 0.22387018433466752,
+     "maxHingeDeg": 37.912377371090315,
+     "maxOtherHingeDeg": 44.27159828308214,
+     "maxPitchChangePer10cmDeg": 6.936114655299625
+    }
    }
   },
   {
@@ -190,6 +329,58 @@ window.COMPARE_RESULTS = {
      "maxHingeDeg": 38.105824252223925,
      "maxOtherHingeDeg": 0,
      "maxPitchChangePer10cmDeg": 8.627698792708511
+    }
+   },
+   "rearSplit": {
+    "up": {
+     "minTipAngleDeg": 17.89510961248308,
+     "tipAngleAt": 2.4816442811051513,
+     "tipAngleDir": "downhill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 3.2040387074920877,
+     "minClearance": 0.4859118180271377,
+     "minTrackClearance": 0.3039030455478454,
+     "maxHingeDeg": 39.853504194990855,
+     "maxOtherHingeDeg": 37.948738558841626,
+     "maxPitchChangePer10cmDeg": 7.855609335394892
+    },
+    "down": {
+     "minTipAngleDeg": 9.986459961664403,
+     "tipAngleAt": 18.370026828224635,
+     "tipAngleDir": "uphill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 5.0335557102498605,
+     "minClearance": 0.4463371465111934,
+     "minTrackClearance": 0.2541272727071211,
+     "maxHingeDeg": 38.10582425222391,
+     "maxOtherHingeDeg": 0,
+     "maxPitchChangePer10cmDeg": 8.627698792708511
+    }
+   },
+   "bothSplit": {
+    "up": {
+     "minTipAngleDeg": 18.771717614078593,
+     "tipAngleAt": 2.4816442811051513,
+     "tipAngleDir": "downhill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 3.2040371384278394,
+     "minClearance": 0.4859118180271377,
+     "minTrackClearance": 0.31129959171314936,
+     "maxHingeDeg": 39.853504194990855,
+     "maxOtherHingeDeg": 37.948738558841626,
+     "maxPitchChangePer10cmDeg": 7.855611743001738
+    },
+    "down": {
+     "minTipAngleDeg": 18.372838082612585,
+     "tipAngleAt": 18.670588925425715,
+     "tipAngleDir": "downhill",
+     "maxTipDrop": 0,
+     "maxSeatTiltDeg": 4.937071272770486,
+     "minClearance": 0.44327670613437375,
+     "minTrackClearance": 0.22444396608848702,
+     "maxHingeDeg": 38.105824252223925,
+     "maxOtherHingeDeg": 44.27159828308214,
+     "maxPitchChangePer10cmDeg": 7.023687933365893
     }
    }
   }

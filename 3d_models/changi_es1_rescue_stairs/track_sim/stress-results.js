@@ -4753,6 +4753,897 @@ window.STRESS_RESULTS = {
      "why": "the seat or person hits the tracks or steps"
     }
    ]
+  },
+  {
+   "id": "bothSplit",
+   "name": "Both halves split in two",
+   "opts": {
+    "mastMode": "balance",
+    "sections": [
+     0.35,
+     0.35,
+     0.35,
+     0.35
+    ],
+    "mainJoint": 2
+   },
+   "split": true,
+   "count": {
+    "pass": 20,
+    "warn": 3,
+    "fail": 3
+   },
+   "structure": {
+    "normal": {
+     "members": [
+      {
+       "part": "Columns",
+       "size": "2 × 50 × 50 × 4 mm box tube, 0.4 m apart",
+       "load": "924 N·m bend",
+       "stress": 44166678.91977348,
+       "limit": 355000000,
+       "factor": 8.03773361915754
+      },
+      {
+       "part": "Averaging links",
+       "size": "12 mm rods, a diamond each side",
+       "load": "1.5 kN each",
+       "stress": 13618094.68003839,
+       "limit": 355000000,
+       "factor": 26.06825758968796
+      },
+      {
+       "part": "Cradle rails",
+       "size": "2 × 40 × 40 × 3 mm box tube",
+       "load": "613 N·m bend",
+       "stress": 60071370.95185361,
+       "limit": 355000000,
+       "factor": 5.909637059632411
+      },
+      {
+       "part": "Hinge axle",
+       "size": "40 mm solid bar",
+       "load": "133 N·m bend",
+       "stress": 21233815.887548305,
+       "limit": 355000000,
+       "factor": 16.71861533885556
+      },
+      {
+       "part": "Tilt axle",
+       "size": "30 mm bar, double shear",
+       "load": "2.8 kN",
+       "stress": 2012355.1004539249,
+       "limit": 205000000,
+       "factor": 101.87068870387655
+      }
+     ],
+     "drives": [
+      {
+       "part": "Hinge motor",
+       "need": "1167 N·m",
+       "note": "self-locking; holds a fold with the power off"
+      },
+      {
+       "part": "Arm drive",
+       "need": "924 N·m",
+       "note": "self-locking; leans the arm to keep the weight away from the edges"
+      },
+      {
+       "part": "Seat tilt drives",
+       "need": "478 N·m each",
+       "note": "two, self-locking; either one holds the seat alone"
+      },
+      {
+       "part": "Track drives",
+       "need": "48 N·m, 266 W",
+       "note": "per unit and in total, at 0.25 m/s; spring brakes"
+      }
+     ]
+    },
+    "heavy": {
+     "members": [
+      {
+       "part": "Columns",
+       "size": "2 × 50 × 50 × 4 mm box tube, 0.4 m apart",
+       "load": "1511 N·m bend",
+       "stress": 72242873.29309776,
+       "limit": 355000000,
+       "factor": 4.913979522377572
+      },
+      {
+       "part": "Averaging links",
+       "size": "12 mm rods, a diamond each side",
+       "load": "2.5 kN each",
+       "stress": 22274943.74776205,
+       "limit": 355000000,
+       "factor": 15.937189517511873
+      },
+      {
+       "part": "Cradle rails",
+       "size": "2 × 40 × 40 × 3 mm box tube",
+       "load": "966 N·m bend",
+       "stress": 94748848.62813194,
+       "limit": 355000000,
+       "factor": 3.7467473762482926
+      },
+      {
+       "part": "Hinge axle",
+       "size": "40 mm solid bar",
+       "load": "196 N·m bend",
+       "stress": 31226199.834629864,
+       "limit": 355000000,
+       "factor": 11.36865843042178
+      },
+      {
+       "part": "Tilt axle",
+       "size": "30 mm bar, double shear",
+       "load": "4.4 kN",
+       "stress": 3122619.9834629865,
+       "limit": 205000000,
+       "factor": 65.64999938694267
+      }
+     ],
+     "drives": [
+      {
+       "part": "Hinge motor",
+       "need": "1717 N·m",
+       "note": "self-locking; holds a fold with the power off"
+      },
+      {
+       "part": "Arm drive",
+       "need": "1511 N·m",
+       "note": "self-locking; leans the arm to keep the weight away from the edges"
+      },
+      {
+       "part": "Seat tilt drives",
+       "need": "763 N·m each",
+       "note": "two, self-locking; either one holds the seat alone"
+      },
+      {
+       "part": "Track drives",
+       "need": "66 N·m, 369 W",
+       "note": "per unit and in total, at 0.25 m/s; spring brakes"
+      }
+     ]
+    }
+   },
+   "results": [
+    {
+     "group": "Baseline",
+     "name": "Default design",
+     "what": "120 kg person, half lying, seat 0.5 m up",
+     "opts": {},
+     "tipUp": 18.771717614078593,
+     "tipDown": 18.372838082612585,
+     "drop": 0,
+     "tilt": 4.937071272770486,
+     "steps": 0.44283000953325935,
+     "stepsPart": "backrest",
+     "tracks": 0.22387018433466752,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 25.49038332841601,
+      "tip": -12.651588743991969
+     },
+     "level": "pass",
+     "why": "takes a 18.4° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Load",
+     "name": "200 kg person",
+     "what": "two thirds more than planned",
+     "opts": {
+      "personMass": 200
+     },
+     "tipUp": 17.546170539701777,
+     "tipDown": 17.73141429345868,
+     "drop": 0,
+     "tilt": 4.937071272770486,
+     "steps": 0.41549836428572706,
+     "stepsPart": "backrest",
+     "tracks": 0.21247599320002528,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 25.490383328416016,
+      "tip": -15.272791037525746
+     },
+     "level": "pass",
+     "why": "takes a 17.5° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Load",
+     "name": "40 kg person",
+     "what": "a child or a small adult",
+     "opts": {
+      "personMass": 40
+     },
+     "tipUp": 23.943247972389823,
+     "tipDown": 21.024285457929988,
+     "drop": 0,
+     "tilt": 4.9370712727704875,
+     "steps": 0.4859118180271377,
+     "stepsPart": "leg rest",
+     "tracks": 0.3058609972526741,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.23633325290796003,
+      "tilt": 24.663731694378527,
+      "tip": -10.931041927041855
+     },
+     "level": "pass",
+     "why": "takes a 21.0° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Load",
+     "name": "Slides 10 cm towards the feet",
+     "what": "held by the harness and foot stop",
+     "opts": {
+      "comOffset": -0.1
+     },
+     "tipUp": 16.895618918491262,
+     "tipDown": 15.51444353158877,
+     "drop": 0,
+     "tilt": 4.937071272770486,
+     "steps": 0.37804287902752876,
+     "stepsPart": "backrest",
+     "tracks": 0.14778283612515175,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.23633325290796003,
+      "tilt": 24.663731694378534,
+      "tip": -11.241276863320062
+     },
+     "level": "pass",
+     "why": "takes a 15.5° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Load",
+     "name": "Slides 10 cm towards the head",
+     "what": "held by the harness",
+     "opts": {
+      "comOffset": 0.1
+     },
+     "tipUp": 21.946181827079982,
+     "tipDown": 21.38132831344382,
+     "drop": 0,
+     "tilt": 4.937071272770486,
+     "steps": 0.4583404954177048,
+     "stepsPart": "thigh",
+     "tracks": 0.2572352906904498,
+     "tracksHit": {
+      "part": "thigh",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 25.490383328416,
+      "tip": -11.06264535240602
+     },
+     "level": "pass",
+     "why": "takes a 21.4° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Load",
+     "name": "Slides 25 cm towards the feet",
+     "what": "no harness or foot stop",
+     "opts": {
+      "comOffset": -0.25
+     },
+     "tipUp": 15.476876424912962,
+     "tipDown": 10.721784207786747,
+     "drop": 0,
+     "tilt": 5.434909401787955,
+     "steps": 0.276476818015712,
+     "stepsPart": "backrest",
+     "tracks": 0.03239422465030248,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.3085405800942862,
+      "tilt": 24.66373169437853,
+      "tip": -15.861174106285004
+     },
+     "level": "pass",
+     "why": "takes a 10.7° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Posture",
+     "name": "Sitting up",
+     "what": "15° recline",
+     "opts": {
+      "reclineDeg": 15
+     },
+     "tipUp": 18.55868065496624,
+     "tipDown": 18.281909984254447,
+     "drop": 0,
+     "tilt": 4.937071272770486,
+     "steps": 0.24386747478426943,
+     "stepsPart": "leg rest",
+     "tracks": 0.061795946885154523,
+     "tracksHit": {
+      "part": "leg rest",
+      "unit": "middle"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 25.490383328416016,
+      "tip": -12.906361188278828
+     },
+     "level": "pass",
+     "why": "takes a 18.3° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Posture",
+     "name": "Lying flat",
+     "what": "90° recline",
+     "opts": {
+      "reclineDeg": 90
+     },
+     "tipUp": 21.345734148147038,
+     "tipDown": 20.062189814945572,
+     "drop": 0,
+     "tilt": 4.937071272770486,
+     "steps": 0.11071238043573883,
+     "stepsPart": "backrest",
+     "tracks": 0.030103933447762188,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 24.290383328416002,
+      "tip": -12.485471172342972
+     },
+     "level": "pass",
+     "why": "takes a 20.1° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Posture",
+     "name": "Lying flat and slides 10 cm towards the feet",
+     "what": "the case a single post looks worst for",
+     "opts": {
+      "reclineDeg": 90,
+      "comOffset": -0.1
+     },
+     "tipUp": 17.52992572306342,
+     "tipDown": 16.596540251188333,
+     "drop": 0,
+     "tilt": 4.937071272770486,
+     "steps": 0.06077344977683216,
+     "stepsPart": "backrest",
+     "tracks": 0.030103933447762188,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.23633325290796003,
+      "tilt": 24.663731694378534,
+      "tip": -12.943858464718398
+     },
+     "level": "pass",
+     "why": "takes a 16.6° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Stairs",
+     "name": "Steeper stairs",
+     "what": "250 mm treads, 34.2°",
+     "opts": {
+      "going": 0.25
+     },
+     "tipUp": 15.27212377449954,
+     "tipDown": 11.357131874514817,
+     "drop": 0,
+     "tilt": 4.922451607059491,
+     "steps": 0.3824167498727499,
+     "stepsPart": "backrest",
+     "tracks": 0.1754985235916152,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 41.583519550744924,
+     "extra": 44.82543709050636,
+     "one": {
+      "drop": 0.25777511106843587,
+      "tilt": 27.542354049517492,
+      "tip": -15.538675815731052
+     },
+     "level": "pass",
+     "why": "takes a 11.4° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Stairs",
+     "name": "Steepest stairs",
+     "what": "180 mm rise, 250 mm treads, 35.8°",
+     "opts": {
+      "rise": 0.18,
+      "going": 0.25
+     },
+     "tipUp": 11.89030251408676,
+     "tipDown": 8.835460155640776,
+     "drop": 0,
+     "tilt": 5.736659628956731,
+     "steps": 0.3345804785173353,
+     "stepsPart": "backrest",
+     "tracks": 0.12944885580785395,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 44.69963321697185,
+     "extra": 44.86969151708756,
+     "one": {
+      "drop": 0.28218728012645045,
+      "tilt": 30.353887254436774,
+      "tip": -18.2710332780266
+     },
+     "level": "pass",
+     "why": "takes a 8.8° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Motors",
+     "name": "Hinge motor at three-quarter speed",
+     "what": "90°/m, or driving a third faster",
+     "opts": {
+      "hingeRateDegPerM": 90
+     },
+     "tipUp": 18.54374351012695,
+     "tipDown": 14.764008323688122,
+     "drop": 0,
+     "tilt": 5.036656138068298,
+     "steps": 0.41857254952273415,
+     "stepsPart": "backrest",
+     "tracks": 0.21082373684278385,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 38.66805170676522,
+     "extra": 37.91371953087075,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 25.49038332841601,
+      "tip": -12.651588743991969
+     },
+     "level": "pass",
+     "why": "takes a 14.8° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Motors",
+     "name": "Hinge motor at half speed",
+     "what": "60°/m, or driving twice as fast",
+     "opts": {
+      "hingeRateDegPerM": 60
+     },
+     "tipUp": 11.752010026593684,
+     "tipDown": -10.638594048859737,
+     "drop": 0.1697947609831112,
+     "tilt": 15.127232201750418,
+     "steps": 0.4063228162294803,
+     "stepsPart": "leg rest",
+     "tracks": 0.16273910178038772,
+     "tracksHit": {
+      "part": "leg rest",
+      "unit": "rear"
+     },
+     "hinge": 36.09298458143432,
+     "extra": 28.930071499990383,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 25.49038332841601,
+      "tip": -12.651588743991969
+     },
+     "level": "fail",
+     "why": "rocks over and drops 17 cm"
+    },
+    {
+     "group": "Motors",
+     "name": "Hinge range cut to ±45°",
+     "what": "a smaller hinge motor",
+     "opts": {
+      "hingeLimitDeg": 45
+     },
+     "tipUp": 12.43031311277663,
+     "tipDown": 8.968900347793864,
+     "drop": 0,
+     "tilt": 4.937071277964386,
+     "steps": 0.4383552791487184,
+     "stepsPart": "backrest",
+     "tracks": 0.2470328579853118,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 37.561739608007876,
+     "extra": 41.71656890926383,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 25.49038332841601,
+      "tip": -12.651588743991969
+     },
+     "level": "pass",
+     "why": "takes a 9.0° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Motors",
+     "name": "Hinge motor half as fast again",
+     "what": "180°/m: not a stress, a possible fix",
+     "opts": {
+      "hingeRateDegPerM": 180
+     },
+     "tipUp": 18.771717614078593,
+     "tipDown": 21.896024275117085,
+     "drop": 0,
+     "tilt": 4.283239501513652,
+     "steps": 0.4585992714443742,
+     "stepsPart": "backrest",
+     "tracks": 0.21986331073947304,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 43.22611328571713,
+     "extra": 53.65946763486047,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 25.49038332841601,
+      "tip": -12.651588743991969
+     },
+     "level": "pass",
+     "why": "takes a 18.8° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Motors",
+     "name": "Seat drive at half speed",
+     "what": "75°/m",
+     "opts": {
+      "levelRateDegPerM": 75
+     },
+     "tipUp": 18.771717614078593,
+     "tipDown": 18.372838082612585,
+     "drop": 0,
+     "tilt": 5.960590383835963,
+     "steps": 0.44283000953325935,
+     "stepsPart": "backrest",
+     "tracks": 0.22387018433466752,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 29.362662239355462,
+      "tip": -12.373889768232564
+     },
+     "level": "pass",
+     "why": "takes a 18.4° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Failures",
+     "name": "Arm drive seizes in the middle",
+     "what": "then keeps going",
+     "opts": {
+      "armLockDeg": 0
+     },
+     "tipUp": 18.62320904352771,
+     "tipDown": 15.169496526457383,
+     "drop": 0,
+     "tilt": 4.937071272770486,
+     "steps": 0.4859118180271377,
+     "stepsPart": "leg rest",
+     "tracks": 0.3184304227638417,
+     "tracksHit": {
+      "part": "leg rest",
+      "unit": "rear"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.23633325290796003,
+      "tilt": 22.490383328416005,
+      "tip": -15.437476410629898
+     },
+     "level": "pass",
+     "why": "takes a 15.2° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Failures",
+     "name": "Arm drive seizes leaning 20° uphill",
+     "what": "then keeps going",
+     "opts": {
+      "armLockDeg": -20
+     },
+     "tipUp": 17.407985185686808,
+     "tipDown": 23.812272109746385,
+     "drop": 0,
+     "tilt": 4.937071272770486,
+     "steps": 0.44941718904246997,
+     "stepsPart": "backrest",
+     "tracks": 0.2349409079570219,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.31626574206000946,
+      "tilt": 22.611307757636457,
+      "tip": -20.164944243615594
+     },
+     "level": "pass",
+     "why": "takes a 17.4° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Failures",
+     "name": "Arm drive seizes leaning 20° downhill",
+     "what": "then keeps going",
+     "opts": {
+      "armLockDeg": 20
+     },
+     "tipUp": 10.819411924790385,
+     "tipDown": 6.724747519165893,
+     "drop": 0,
+     "tilt": 12.296308632979043,
+     "steps": 0.3581498910456493,
+     "stepsPart": "leg rest",
+     "tracks": 0.3360457758259686,
+     "tracksHit": {
+      "part": "leg rest",
+      "unit": "rear"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.41145997362521847,
+      "tilt": 22.61130775763646,
+      "tip": -25.769195166382975
+     },
+     "level": "warn",
+     "why": "a hard stop at the wrong moment could rock it (takes 6.7°, needs 7.3°)"
+    },
+    {
+     "group": "Failures",
+     "name": "Seat drive stuck level",
+     "what": "fails on the flat; the arm takes over levelling",
+     "opts": {
+      "levelLockDeg": 0
+     },
+     "tipUp": 15.56643794877315,
+     "tipDown": 19.048772124294736,
+     "drop": 0,
+     "tilt": 5.837071272770488,
+     "steps": 0.4560296661362757,
+     "stepsPart": "backrest",
+     "tracks": 0.2760293849718851,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.3518144864260613,
+      "tilt": 28.011307757636455,
+      "tip": -26.142165322291472
+     },
+     "level": "pass",
+     "why": "takes a 15.6° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Failures",
+     "name": "Seat drive stuck on a flight",
+     "what": "fails at 31.6°; the arm takes over levelling",
+     "opts": {
+      "levelLockDeg": 31.6
+     },
+     "tipUp": 18.54038447799308,
+     "tipDown": 5.654596149794953,
+     "drop": 0,
+     "tilt": 5.837071272770488,
+     "steps": 0.4075683384231332,
+     "stepsPart": "leg rest",
+     "tracks": 0.34290637558400006,
+     "tracksHit": {
+      "part": "leg rest",
+      "unit": "rear"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 44.27159828308214,
+     "one": {
+      "drop": 0.41145997362521847,
+      "tilt": 28.011307757636455,
+      "tip": -31.703001700346334
+     },
+     "level": "warn",
+     "why": "a hard stop at the wrong moment could rock it (takes 5.7°, needs 7.3°)"
+    },
+    {
+     "group": "Motors",
+     "name": "Extra hinge motor at half speed",
+     "what": "120°/m instead of 240°/m; the seat's hinge at full speed",
+     "opts": {
+      "extraHingeRateDegPerM": 120
+     },
+     "tipUp": 13.217142244918902,
+     "tipDown": 11.031717406103173,
+     "drop": 0,
+     "tilt": 4.948722874570999,
+     "steps": 0.4423831706691793,
+     "stepsPart": "backrest",
+     "tracks": 0.25060776570089527,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.853504194990855,
+     "extra": 35.143059653765164,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 25.49038332841601,
+      "tip": -12.651588743991969
+     },
+     "level": "pass",
+     "why": "takes a 11.0° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Failures",
+     "name": "Extra hinge seizes straight",
+     "what": "then keeps going",
+     "opts": {
+      "extraHingeSeized": true
+     },
+     "tipUp": 9.874726265058651,
+     "tipDown": 8.825512380267746,
+     "drop": 0,
+     "tilt": 5.0335557102498605,
+     "steps": 0.4630451861949323,
+     "stepsPart": "backrest",
+     "tracks": 0.26908672486665197,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 39.85350419499082,
+     "extra": 0,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 25.49038332841601,
+      "tip": -12.651588743991969
+     },
+     "level": "pass",
+     "why": "takes a 8.8° lean anywhere; a hard stop needs 7.3°"
+    },
+    {
+     "group": "Failures",
+     "name": "Seat's hinge motor seizes straight",
+     "what": "the extra hinge still works, the tracks keep driving",
+     "opts": {
+      "mainHingeSeized": true
+     },
+     "tipUp": -8.942978168732258,
+     "tipDown": -11.812672890775566,
+     "drop": 0.2142655869046317,
+     "tilt": 25.490383328426827,
+     "steps": 0.4855704151354696,
+     "stepsPart": "leg rest",
+     "tracks": 0.2783488503147383,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 0,
+     "extra": 48.11709948175509,
+     "one": {
+      "drop": 0.22818618387216283,
+      "tilt": 25.49038332841601,
+      "tip": -12.651588743991969
+     },
+     "level": "fail",
+     "why": "the long part rocks over edges and drops 21 cm, so the tracks must stop if the hinge stops"
+    },
+    {
+     "group": "Combined",
+     "name": "Heavy, half lying, steepest stairs",
+     "what": "200 kg, 45°, slid 10 cm to the feet, 35.8° stairs",
+     "opts": {
+      "personMass": 200,
+      "comOffset": -0.1,
+      "rise": 0.18,
+      "going": 0.25
+     },
+     "tipUp": 8.214521428059218,
+     "tipDown": 5.808037217393562,
+     "drop": 0,
+     "tilt": 5.736659628956725,
+     "steps": 0.2416318501190817,
+     "stepsPart": "backrest",
+     "tracks": 0.03354257843474795,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 46.630717287873544,
+     "extra": 44.86969151708756,
+     "one": {
+      "drop": 0.28713986777303013,
+      "tilt": 27.629133819911843,
+      "tip": -21.85010555131527
+     },
+     "level": "warn",
+     "why": "a hard stop at the wrong moment could rock it (takes 5.8°, needs 7.3°)"
+    },
+    {
+     "group": "Combined",
+     "name": "Heavy, lying flat, steepest stairs",
+     "what": "200 kg, 90°, slid 10 cm to the feet, 35.8° stairs",
+     "opts": {
+      "personMass": 200,
+      "reclineDeg": 90,
+      "comOffset": -0.1,
+      "rise": 0.18,
+      "going": 0.25
+     },
+     "tipUp": 12.649290931655328,
+     "tipDown": 5.166264550665364,
+     "drop": 0,
+     "tilt": 5.736659628956727,
+     "steps": -0.03,
+     "stepsPart": "backrest",
+     "tracks": -0.04324613736580607,
+     "tracksHit": {
+      "part": "backrest",
+      "unit": "front"
+     },
+     "hinge": 44.31473328088453,
+     "extra": 44.86969151708756,
+     "one": {
+      "drop": 0.2871398677730297,
+      "tilt": 30.35388725443676,
+      "tip": -20.861689712441297
+     },
+     "level": "fail",
+     "why": "the seat or person hits the tracks or steps"
+    }
+   ]
   }
  ]
 };

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Head-to-head run of the two-section vehicle and the one with its front half split in
-// two, both with the balancing seat arm, at all three height settings and both ways.
+// Head-to-head run of the stair climber with no split, its front half split in two, its
+// rear half split in two, and both halves split, all with the balancing seat arm, at all
+// three height settings and both ways.
 // Writes compare-results.js for compare.html; the case-by-case stress results come
 // from stress-test.js (stress-results.js).
 //
@@ -11,7 +12,9 @@ const TM = require('./track-model.js');
 
 const DESIGNS = [
   { id: 'frontSplit', name: 'Front half split', opts: { mastMode: 'balance', sections: [0.7, 0.35, 0.35], mainJoint: 1 } },
-  { id: 'two', name: 'Two sections', opts: { mastMode: 'balance' } },
+  { id: 'two', name: 'No split', opts: { mastMode: 'balance' } },
+  { id: 'rearSplit', name: 'Rear half split', opts: { mastMode: 'balance', sections: [0.35, 0.35, 0.7], mainJoint: 2 } },
+  { id: 'bothSplit', name: 'Both halves split', opts: { mastMode: 'balance', sections: [0.35, 0.35, 0.35, 0.35], mainJoint: 2 } },
 ];
 const keep = ['minTipAngleDeg', 'tipAngleAt', 'tipAngleDir', 'maxTipDrop', 'maxSeatTiltDeg', 'minClearance', 'minTrackClearance', 'maxHingeDeg', 'maxOtherHingeDeg', 'maxPitchChangePer10cmDeg'];
 const pick = (s) => Object.fromEntries(keep.map((k) => [k, s[k]]));
@@ -29,7 +32,7 @@ for (const h of [3.2, 5.8, 8.4]) {
 const an = Object.fromEntries(DESIGNS.map((d) => [d.id, TM.analyse(d.opts)]));
 const out = {
   generated: new Date().toISOString().slice(0, 10),
-  designs: DESIGNS.map(({ id, name, opts }) => ({ id, name, opts, totalMass: an[id].totalMass, totalLength: an[id].totalLength })),
+  designs: DESIGNS.map(({ id, name, opts }) => ({ id, name, opts, totalMass: an[id].totalMass, totalLength: an[id].totalLength, extraHinges: opts.sections ? opts.sections.length - 2 : 0 })),
   heights: rows,
 };
 fs.writeFileSync(path.join(__dirname, 'compare-results.js'),
