@@ -257,6 +257,10 @@ Worst case over the three height settings, with the balancing arm:
 - Splitting both halves (four 0.35 m sections) took about 18° both ways in a quick run, but it has
   not been stress tested.
 
+`track_sim/compare.html` runs the front split and two sections side by side on the same stairs,
+plots the lean each can take along the trip, and puts every stress case next to each other.
+`node track_sim/compare-test.js` regenerates its per-height numbers (`compare-results.js`).
+
 ### Design rules from the math
 
 1. Each unit must always bridge two step nosings. Nosings are 328 mm apart, so a unit needs at
