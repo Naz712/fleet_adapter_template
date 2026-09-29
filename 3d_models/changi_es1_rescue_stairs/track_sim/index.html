@@ -373,7 +373,7 @@
 
   <section class="card panel" aria-labelledby="mech-h">
     <h2 id="mech-h">How the seat is held up</h2>
-    <p class="sub">The seat support picked under Design, part by part. The side view shows the vehicle folded over the top platform edge on the way down, and the front view is from the foot of the stairs. Both are drawn to scale with the current design.</p>
+    <p class="sub" id="mech-sub">The seat support picked under Design, part by part. The side view shows the vehicle folded over the top platform edge on the way down, and the front view is from the foot of the stairs. Both are drawn to scale with the current design.</p>
     <div class="mech">
       <figure><canvas id="mech-side" aria-label="Side view of the vehicle, post and seat with numbered parts"></canvas><figcaption>Side view. The numbers match the parts list below.</figcaption></figure>
       <figure><canvas id="mech-front" aria-label="Front view of the vehicle, post and seat between the stair side panels"></canvas><figcaption id="front-cap">Front view</figcaption></figure>
@@ -565,14 +565,24 @@
       const sim = TM.simulate(opts);
       sim.an = TM.analyse(opts);
       sim.sEnd = sim.path[sim.path.length - 1].s;
-      const keep = state.sim ? state.idx / Math.max(1, state.sim.path.length - 1) : null;
+      const keep = state.sim && !state.fresh ? state.idx / Math.max(1, state.sim.path.length - 1) : null;
       state.sim = sim;
+      state.fresh = false;
       if (keep === null) {
-        // open on an informative frame: the deepest fold over the first platform edge
-        const seq = seqFor(sim, state.dir), list = sim[state.dir];
-        const k = seq.findIndex((i) => list[i].folded);
-        let best = Math.max(0, k);
-        for (let j = best; k > 0 && j < Math.min(seq.length, k + 150); j++) if (Math.abs(list[seq[j]].beta) > Math.abs(list[seq[best]].beta)) best = j;
+        // open on an informative frame: a split half bending over the top platform edge
+        // while it trails, or else the deepest fold over the first platform edge
+        const seq = seqFor(sim, state.dir), list = sim[state.dir], o = sim.opts;
+        let best = -1;
+        if (o.sections && (o.mainJoint === 1) === (state.dir === 'down')) {
+          const top = sim.profile.edges[sim.profile.edges.length - 1].x;
+          seq.forEach((i, j) => { if (Math.abs(list[i].J.x - top) < 0.6 && (best < 0 || Math.abs(extraBend(list[i])) > Math.abs(extraBend(list[seq[best]])))) best = j; });
+          if (best >= 0 && Math.abs(extraBend(list[seq[best]])) < TM.rad(5)) best = -1;
+        }
+        if (best < 0) {
+          const k = seq.findIndex((i) => list[i].folded);
+          best = Math.max(0, k);
+          for (let j = best; k > 0 && j < Math.min(seq.length, k + 150); j++) if (Math.abs(list[seq[j]].beta) > Math.abs(list[seq[best]].beta)) best = j;
+        }
         state.idx = best;
       } else {
         state.idx = Math.round(keep * (sim.path.length - 1));
@@ -1310,6 +1320,13 @@
   }
   // the pose shown in the side view: folded deepest over the top platform edge, going down
   function mechPose(sim) {
+    const o = sim.opts;
+    if (o.sections) { // the split half bending over the top platform edge, the way it trails
+      const dir = o.mainJoint === 1 ? 'down' : 'up', list = sim[dir], top = sim.profile.edges[sim.profile.edges.length - 1].x;
+      let best = null;
+      for (const p of list) if (Math.abs(p.J.x - top) < 0.6 && (!best || Math.abs(extraBend(p)) > Math.abs(extraBend(best)))) best = p;
+      if (best && Math.abs(extraBend(best)) > TM.rad(5)) return best;
+    }
     const seq = seqFor(sim, 'down'), list = sim.down;
     const k = seq.findIndex((i) => list[i].folded);
     let best = Math.max(0, k);
@@ -1330,6 +1347,9 @@
 
   function drawMechSide() {
     const sim = state.sim, o = sim.opts, prof = sim.profile, rho = o.sprocketRadius;
+    $('mech-sub').textContent = o.sections
+      ? `The seat support picked under Design, part by part. The side view shows the split ${o.mainJoint === 1 ? 'front' : 'rear'} half bending over the top platform edge on the way ${o.mainJoint === 1 ? 'down' : 'up'}, and the front view is from the foot of the stairs. Both are drawn to scale with the current design.`
+      : 'The seat support picked under Design, part by part. The side view shows the vehicle folded over the top platform edge on the way down, and the front view is from the foot of the stairs. Both are drawn to scale with the current design.';
     const { g, W, H } = fitCanvas($('mech-side'));
     const p = mechPose(sim);
     const parts = TM.placeSeat(o, p), joints = p.pts || [p.R, p.J, p.F];
@@ -1469,7 +1489,7 @@
       tracks: o.sections
         ? ['Three track sections', `A ${o.unitLength.toFixed(2)} m ${half === 'front' ? 'rear' : 'front'} unit, and a ${half} half made of two ${short.toFixed(2)} m sections, each with a left and a right rubber track, ${o.vehicleWidth.toFixed(2)} m across. Cleats on the tracks hook the step nosings.`]
         : ['Two track units', `Front and rear, each with a left and a right rubber track, ${o.unitLength.toFixed(2)} m sprocket to sprocket and ${o.vehicleWidth.toFixed(2)} m across. Cleats on the tracks hook the step nosings.`],
-      extraHinge: ['Extra hinge and motor', `Joins the two short sections of the ${half} half: a second self-locking gear motor, about ${o.extraHingeMass} kg with its axle, holding about ${r10(an.hingeTorque / 2)} N·m. It folds the short end section over an edge, or holds it in line with its neighbour. A ${short.toFixed(2)} m section spans only one gap between nosings, so on a flight it must be held straight or it rocks into the gaps.`],
+      extraHinge: ['Extra hinge and motor', `Joins the two short sections of the ${half} half: a second self-locking gear motor, about ${o.extraHingeMass} kg with its axle, holding about ${r10(an.hingeTorque / 2)} N·m. While its half trails (going ${half === 'front' ? 'down' : 'up'}), it lets the end section stay on the stairs as the rest goes over an edge; while its half leads, it holds the two sections in line. It turns at up to ${Math.round((o.hingeRateDegPerM * o.unitLength) / short)}°/m, twice as fast as the seat's hinge, because its sections are half as long. A ${short.toFixed(2)} m section spans only one gap between nosings, so on a flight it must be held in line or it rocks into the gaps.`],
       hinge: ['Hinge axle and hinge motor', `A 40 mm steel axle joins the units. A self-locking gear motor bends the hinge and holds a fold with the power off: about ${r10(an.hingeTorque)} N·m, ${drv['Hinge motor'].need} with bumps. It must turn at least 90° per metre travelled, 23°/s at walking pace.`],
       link: ['Averaging link', `A ${Math.round(TM.LINK_ARM * 1000)} mm arm fixed to each unit and two equal links to a collar on a short post. The four equal sides make a diamond, so that post always points halfway between the two units. ${o.mastMode === 'vArms' ? 'Both arms stand on it' : 'The arm leans from it'}, and it passes their load equally into both units${mem['Averaging links'] ? ': ' + mem['Averaging links'].load : ''}.`],
       armDrive: ['Arm drive', `A self-locking gear motor at the foot of the arm leans it up to ±${o.armLimitDeg}° from halfway, at ${(o.armRateDegPerM * o.speed).toFixed(0)}°/s, to keep the weight away from whichever edge the vehicle is near. It holds up to ${r10(two.maxMastMoment)} N·m, ${r10(2 * two.maxMastMoment)} N·m with bumps.`],
@@ -1503,7 +1523,7 @@
     }[o.mastMode];
     if (o.sections) {
       const d = res(state.layout), b = res('balance');
-      why.unshift([`Splitting the ${half} half.`, `Two ${short.toFixed(2)} m sections let the ${half} half bend in two places, but for the same change of slope a short section has to turn about twice as fast, and it spans only one gap between nosings.` +
+      why.unshift([`Splitting the ${half} half.`, `Going ${half === 'front' ? 'down' : 'up'}, the ${half} half trails. As it comes over an edge, its end section stays flat on the stairs behind while the section next to the seat follows the new slope, so the trailing end keeps holding the vehicle up for longer, just when a straight unit would lift off. Going ${half === 'front' ? 'up' : 'down'}, it leads and is held straight: folding its short end section first would leave less margin.` +
         (d && b ? ` In the stress test this layout passes ${d.count.pass} of ${d.results.length} cases, against ${b.count.pass} of ${b.results.length} for two sections with the same seat support.` : '')]);
     }
     why.push(['Side to side', `the vehicle stands on its left and right tracks. With the seat ${o.seatHeight.toFixed(2)} m up, the centre of mass is ${an.comHeight.toFixed(2)} m off the ground, so a ${o.vehicleWidth.toFixed(2)} m wide vehicle only tips when tilted past ${an.sideTipDeg.toFixed(0)}°. The stairs have no side slope, so that margin is for the person shifting and for bumps. Twin columns 0.4 m apart keep the support from rocking sideways.`]);
@@ -1600,14 +1620,14 @@
     const half = find('Hinge motor at half speed'), seize = find('Hinge motor seizes straight') || find("Seat's hinge motor seizes straight"), flat = find('Heavy, lying flat, steepest stairs');
     const asks = [];
     if (D.split) {
+      const half = D.id === 'frontSplit' ? 'front' : 'rear', trails = half === 'front' ? 'down' : 'up';
       const b0 = D.results[0], bal = Rall.designs.find((d) => d.id === 'balance'), k0 = bal ? bal.results[0] : null;
-      const fast = find('Hinge motor half as fast again'), kFast = bal ? bal.results.find((r) => r.name === 'Hinge motor half as fast again') : null;
+      const slowX = find('Extra hinge motor at half speed'), seizeX = find('Extra hinge seizes straight');
       const lv = (v) => (v < 0 ? null : v.toFixed(1) + '°');
       const pair = (r) => { const u = lv(r.tipUp), d = lv(r.tipDown); return u && d ? `${u} up and ${d} down` : u ? `${u} up but falls going down` : d ? `falls going up and ${d} down` : 'falls both ways'; };
-      if (k0) asks.push(`Keep two sections. Splitting the ${D.id === 'frontSplit' ? 'front' : 'rear'} half adds a second hinge motor and 6 kg but no margin: it takes ${pair(b0)}, against ${pair(k0)} for two sections, and fails ${D.count.fail} cases against ${bal.count.fail}.`);
-      if (b0.level === 'fail' && fast && fast.level !== 'fail') asks.push(`If it is built split anyway, its hinges must turn at least 180° per metre: at 120°/m it ${b0.why}. At 180°/m it takes ${pair(fast)}${kFast ? `, and two sections at 180°/m take ${pair(kFast)}` : ''}.`);
-      else if (D.id === 'frontSplit') asks.push('A split front half folds its short end section over an edge first and the seat\'s hinge later, which leaves less margin going up than folding the whole front unit at once.');
-      asks.push('A short section spans only one gap between nosings, so its hinge must hold it in line on the flights. If that hinge seizes straight the vehicle becomes the two-section one, which is safe.');
+      if (k0) asks.push(`Let the extra hinge bend only while the ${half} half trails (going ${trails}), and hold it straight while it leads. Then the vehicle takes ${pair(b0)}, against ${pair(k0)} for two sections, and passes ${D.count.pass} of ${D.results.length} cases against ${bal.count.pass} of ${bal.results.length}.`);
+      if (slowX) asks.push(`Give the extra hinge twice the speed of the seat's hinge, 240° per metre travelled, because its sections are half as long. At 120°/m it ${slowX.level === 'fail' ? slowX.why : `takes only ${pair(slowX)}`}.`);
+      if (seizeX) asks.push(`A short section spans only one gap between nosings, so on a flight its hinge must hold it in line. If that hinge seizes straight, the vehicle becomes the two-section one and ${seizeX.level === 'fail' ? 'fails' : 'still works'}: ${pair(seizeX)}.`);
     }
     asks.push(
       'Keep the balance arm. It is what carries a person who has slid 25 cm, climbs 35.8° stairs and copes with a smaller hinge; the arm without its drive only just passes the default case.',
@@ -1744,11 +1764,11 @@
   syncLevel();
   $('support').addEventListener('change', (e) => { state.design.mastMode = e.target.value; syncLevel(); rerun(); });
   const lay = document.createElement('div'); lay.className = 'slider';
-  lay.innerHTML = '<div class="slider-top"><label for="layout">Track layout</label></div><select id="layout"></select><div class="hint">Split one half into two shorter sections, each pair joined by a hinge motor of its own. The stress test compares all three.</div>';
+  lay.innerHTML = '<div class="slider-top"><label for="layout">Track layout</label></div><select id="layout"></select><div class="hint">Split one half into two shorter sections joined by a hinge motor of its own. It bends while that half trails and stays straight while it leads. The stress test compares all three.</div>';
   $('grp-vehicle').appendChild(lay);
-  for (const [id, l] of Object.entries(LAYOUTS)) { const op = document.createElement('option'); op.value = id; op.textContent = l.name + (id === 'two' ? ' (recommended)' : ''); $('layout').appendChild(op); }
+  for (const [id, l] of Object.entries(LAYOUTS)) { const op = document.createElement('option'); op.value = id; op.textContent = l.name; $('layout').appendChild(op); }
   $('layout').value = state.layout;
-  $('layout').addEventListener('change', (e) => { state.layout = e.target.value; rerun(); });
+  $('layout').addEventListener('change', (e) => { state.layout = e.target.value; state.fresh = true; rerun(); });
   VEHICLE_SLIDERS.forEach((s) => addSlider(s, $('grp-vehicle')));
   $('reset').addEventListener('click', () => {
     for (const s of SLIDERS) { state.design[s.key] = TM.DEFAULTS[s.key]; const i = $('sl-' + s.key); i.value = TM.DEFAULTS[s.key]; i.dispatchEvent(new Event('input')); }

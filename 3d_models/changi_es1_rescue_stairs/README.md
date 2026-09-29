@@ -222,46 +222,40 @@ person, and at least 3.7 times below for 200 kg. What the stress test asks for:
 
 The model also handles more than two sections (`sections` and `mainJoint` in `track-model.js`,
 and "Track layout" on the page). The seat stays on the middle hinge. One half is split into two
-0.35 m sections, joined by a hinge with its own motor, about 6 kg. The same rules apply, section
-by section:
+0.35 m sections, joined by a hinge with its own motor, about 6 kg. The rules are the same as for
+two sections, section by section. With two 0.70 m sections, the model gives exactly the same poses
+as the two-section one, which is how it was checked.
 
-- each section settles onto the stairs;
-- working out from the seat, the first section reaching over an edge folds down;
-- the seat's hinge stays lifted until the weight is past the edge;
-- every hinge turns at most 120° per metre, with the seat's hinge leading and the extra hinge
-  keeping up with it.
-
-With two 0.70 m sections, this gives exactly the same poses as the two-section model, which is how
-it was checked.
+The extra hinge helps only while its half trails: going down for a split front half, going up for
+a split rear half. As that half comes over a platform edge, its end section stays flat on the
+platform while the section next to the seat follows the new slope. The trailing end keeps holding
+the vehicle up just when a straight unit would lift off and leave it balancing on the edge. While
+its half leads, the extra hinge is held straight. A short section has to turn twice as fast for
+the same change of slope, so the extra hinge turns at up to 240° per metre, twice the seat's hinge.
 
 Worst case over the three height settings, with the balancing arm:
 
 | | Two sections | Front half split | Rear half split |
 |---|---|---|---|
-| Lean it can take (up · down) | 10.7° · 8.3° | 7.2° · 8.7° | 10.0° · falls |
-| Worst drop at an edge | none | none | 5 cm, at the 1 m mid platform going down |
-| Stress test (pass · tight · fail) | 17 · 4 · 3 | 7 · 12 · 7 | 2 · 1 · 23 |
-| Hinges at 180°/m (up · down) | 13.1° · 7.8° | 7.6° · 7.7° | 12.2° · 8.0° |
-| Instant hinges (up · down) | 17.8° · 11.7° | 10.9° · 11.9° | 17.9° · 11.8° |
+| Lean it can take (up · down) | 10.7° · 8.3° | 10.3° · 18.7° | 17.9° · 10.0° |
+| Stress test (pass · tight · fail) | 17 · 4 · 3 of 24 | 20 · 3 · 3 of 26 | 19 · 4 · 3 of 26 |
+| Extra hinge at 120°/m (up · down) | – | 10.3° · 9.3° | 13.3° · 10.0° |
+| Extra hinge held straight (up · down) | – | 10.3° · 7.7° | 10.0° · 10.0° |
 
-Splitting a half does not help:
-
-- For the same change of slope, a short section has to turn about twice as fast. At an edge the
-  hinges fall behind, and while they lag the sections move as one stiff piece that rocks.
-- The one thing a split could do is keep the rear end on the stairs as the vehicle passes an edge.
-  For that, the 0.35 m section has to swing about 30° in 25 cm of travel. Even with instant hinges,
-  the rear split only matches two sections.
-- Split at the front, the vehicle folds the short end section first and its main hinge later. It
-  has less margin going up at every hinge speed, and lying flat, the person hits the tracks.
-- Split at the rear, it tips at the 1 m mid platform going down unless its hinges turn at 180°/m.
-  At that speed, two sections do about as well.
-- A 0.35 m section spans only one gap between nosings. On a flight, its hinge has to hold it in
-  line anyway.
-- It adds a 6 kg motor and one more hinge that can fail:
-  - If the extra hinge seizes straight, the vehicle becomes the two-section one, which passes.
-  - If the seat's hinge seizes, the long stiff part still drops 22 to 23 cm at an edge.
-
-Keep two sections.
+- The front split more than doubles the lean the vehicle can take going down, which is where two
+  sections are weakest. Going up it takes 0.4° less, because of the motor's weight.
+- The rear split gains going up. Its gain going down comes only from the motor's weight at the
+  rear; ballast would do the same.
+- Both fail the same three cases as two sections: a hinge motor at half speed, the seat's hinge
+  seizing (a 21 to 23 cm drop), and a 200 kg person lying flat on 35.8° stairs.
+- If the extra hinge seizes straight, the vehicle becomes the two-section one, which passes.
+- A 0.35 m section spans only one gap between nosings, so on a flight its hinge must hold it in
+  line.
+- Used the other way round, the extra hinge makes things worse. Bending while its half leads, the
+  short end section folds first and the seat's hinge later. Held straight while its half trails,
+  there is nothing to gain.
+- Splitting both halves (four 0.35 m sections) took about 18° both ways in a quick run, but it has
+  not been stress tested.
 
 ### Design rules from the math
 
@@ -280,6 +274,8 @@ Keep two sections.
    seat's offset towards the head give it at least 8.3°.
 7. Half lying (a 45–60° recline) is the most compact posture. Sitting up and lying flat both need
    the 0.5 m arm.
+8. A split half's hinge bends only while that half trails, at twice the seat hinge's speed, and
+   holds its two sections in line while that half leads.
 
 The model is quasi-static (slow speed). At every centimetre it solves how both units rest on the
 real step geometry, then checks support, the gap around the seat and person, and tipping. Tracks

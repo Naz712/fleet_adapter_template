@@ -47,10 +47,11 @@
     sections: null, // section lengths rear to front; null = two sections of unitLength
     mainJoint: 1, // the hinge that carries the seat, counted from the rear
     extraHingeMass: 6, // kg of motor at each extra hinge
-    extraHingeRateDegPerM: null, // how fast the extra hinges bend; null = as fast as the main one
+    extraHingeRateDegPerM: null, // how fast the extra hinges bend; null = the main hinge's rate scaled up for a shorter section (twice as fast for half the length)
     extraHingeSeized: false, // the extra hinges have seized straight (a failure)
     mainHingeSeized: false, // the seat's hinge has seized straight, the others still work (a failure)
-    trailMode: 'nearest', // a split trailing half: 'settle' over edges, 'straight', or 'nearest' (whichever the hinges reach sooner)
+    trailMode: 'wrap', // a split trailing half: 'wrap' (bends over edges, may be held straight while the seat's hinge is lifted), 'settle', 'straight' or 'nearest' (whichever the hinges reach sooner)
+    leadMode: 'straight', // a split leading half: 'straight' (held in line, as one unit) or 'split' (its end section folds first)
     hingeControl: 'lead', // several hinges: 'lead' (the seat's hinge leads, the others keep up), 'together' or 'own'
     // mastMode 'vArms': two arms rising from the hinge in a V, feet on the averaging post
     vArmFoot: 0.06, // each foot this far fore or aft of the hinge, m
@@ -833,7 +834,7 @@
   function chainLift(T, QE, o, M, first, prev, trail) {
     const m = o.mainJoint, lim = rad(o.hingeLimitDeg);
     const fSide = first == null ? 0 : first >= m ? 1 : -1;
-    const kinds = (side) => (side === fSide ? ['fold'] : sideSections(o, side).length < 2 ? ['settle'] : trail === side && o.trailMode !== 'nearest' ? [o.trailMode] : ['settle', 'straight']);
+    const kinds = (side) => (side === fSide ? ['fold'] : sideSections(o, side).length < 2 ? ['settle'] : trail === side && (o.trailMode === 'settle' || o.trailMode === 'straight') ? [o.trailMode] : ['settle', 'straight']);
     const cands = [];
     for (const kb of kinds(-1)) for (const kf of kinds(1)) {
       const t = firstFit((dz) => {
@@ -869,10 +870,23 @@
   function targetChain(T, QE, J0, o, prof, dir, state, prev) {
     const N = o.sections.length, m = o.mainJoint, rho = o.sprocketRadius, lim = rad(o.hingeLimitDeg);
     const up = dir === 'up', sgn = up ? 1 : -1;
+    // a split half that leads is held in line: work the target out with it as one unit
+    const lead = sideSections(o, sgn);
+    if (o.leadMode === 'straight' && lead.length > 1) {
+      const Lm = lead.reduce((u, k) => u + o.sections[k], 0);
+      const om = Object.assign({}, o, up ? { sections: o.sections.slice(0, m).concat([Lm]) } : { sections: [Lm].concat(o.sections.slice(m)), mainJoint: 1 });
+      const toMerged = (a) => (up ? a.slice(0, m + 1) : a.slice(m - 1));
+      const fromMerged = (a) => (up ? a.slice(0, m).concat(lead.map(() => a[m])) : lead.map(() => a[0]).concat(a.slice(1)));
+      const mp = prev && (() => { const a = toMerged(prev.angles); return { angles: a, bends: a.slice(1).map((v, j) => v - a[j]) }; })();
+      const t = targetChain(T, QE, J0, om, prof, dir, state.merged || (state.merged = {}), mp);
+      const q = makeChainPose(o, t.J, fromMerged(t.angles));
+      q.folded = t.folded;
+      return q;
+    }
     let a0 = drapeChain(T, o, J0);
     // a split trailing half settles, or stays in line as one piece if the hinges reach that sooner
     const ks = sideSections(o, -sgn);
-    if (ks.length > 1 && o.trailMode !== 'settle' && (prev || o.trailMode === 'straight')) {
+    if (ks.length > 1 && (o.trailMode === 'nearest' || o.trailMode === 'straight') && (prev || o.trailMode === 'straight')) {
       const Ls = ks.reduce((u, k) => u + o.sections[k], 0);
       const th = up ? -restAngleBack(T, J0.x, J0.z, Ls, rho) : restAngle(T, J0.x, J0.z, Ls, rho);
       const b = a0.slice();
@@ -926,7 +940,7 @@
     // 'lead': the seat's hinge goes as fast as it can and the others keep up with it,
     // never getting further along than it; 'together': all cover the same share, as
     // much as the slowest allows; 'own': each as fast as it can.
-    const extraRate = o.extraHingeRateDegPerM == null ? o.hingeRateDegPerM : o.extraHingeRateDegPerM;
+    const extraRate = o.extraHingeRateDegPerM == null ? (o.hingeRateDegPerM * o.unitLength) / Math.min(...o.sections) : o.extraHingeRateDegPerM;
     const own = want.map((b, j) => {
       const maxStep = rad(j === m - 1 ? o.hingeRateDegPerM : extraRate) * ds, d = prev ? Math.abs(b - prev.bends[j]) : 0;
       return d > maxStep + 1e-9 ? maxStep / d : 1;
@@ -997,7 +1011,8 @@
   // Where one unit (axle segment A-B grown by rho) touches the real stairs.
   // Where a stretch of track touches the stairs, or comes within tol of them. The
   // stretch runs through the points P; P[0] and P[last] are its end sprockets. Hinges
-  // inside it are held by their drives, so they count as track, not as ends.
+  // inside it are held by their drives: in a straight run they count as track, not as
+  // ends, and where the run bends they count as ends only if they actually touch.
   function trackContacts(T, P, rho, tol) {
     const out = [];
     let lo = Infinity, hi = -Infinity;
@@ -1005,6 +1020,11 @@
     lo -= rho + tol; hi += rho + tol;
     const add = (x, z, v) => out.push({ x, z, nosing: !!(v && v.convex) });
     const ends = [P[0], P[P.length - 1]];
+    const kinks = [];
+    for (let k = 1; k + 1 < P.length; k++) {
+      const a1 = Math.atan2(P[k].z - P[k - 1].z, P[k].x - P[k - 1].x), a2 = Math.atan2(P[k + 1].z - P[k].z, P[k + 1].x - P[k].x);
+      if (Math.abs(a2 - a1) > rad(1)) kinks.push(P[k]);
+    }
     for (const e of T.E) {
       if (e.x1 < lo || e.x0 > hi) continue;
       let c = null;
@@ -1018,6 +1038,10 @@
       for (const Q of ends) {
         const q = segPointDist(e.A.x, e.A.z, e.B.x, e.B.z, Q.x, Q.z);
         if (q.d <= rho + tol) add(q.cx, q.cz, null);
+      }
+      for (const Q of kinks) {
+        const q = segPointDist(e.A.x, e.A.z, e.B.x, e.B.z, Q.x, Q.z);
+        if (q.d <= rho + Math.min(tol, SETTLE)) add(q.cx, q.cz, null);
       }
       for (const v of [e.A, e.B]) {
         for (let k = 0; k + 1 < P.length; k++) if (segPointDist(P[k].x, P[k].z, P[k + 1].x, P[k + 1].z, v.x, v.z).d <= rho + tol) { add(v.x, v.z, v); break; }

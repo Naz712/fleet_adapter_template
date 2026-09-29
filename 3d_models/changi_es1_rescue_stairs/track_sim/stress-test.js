@@ -43,9 +43,10 @@ const COMMON = [
   { group: 'Motors', name: 'Hinge range cut to ±45°', what: 'a smaller hinge motor', opts: { hingeLimitDeg: 45 } },
   { group: 'Motors', name: 'Hinge motor half as fast again', what: '180°/m: not a stress, a possible fix', opts: { hingeRateDegPerM: 180 } },
 ];
-// the three-section layouts: the balancing arm's cases, plus their extra hinge
+// the three-section layouts: the balancing arm's cases, plus their extra hinge (it turns
+// twice as fast as the seat's hinge, 240°/m, since its sections are half as long)
 const SPLIT = [
-  { group: 'Motors', name: 'Extra hinge motor at half speed', what: '60°/m; the seat\'s hinge at full speed', opts: { extraHingeRateDegPerM: 60 } },
+  { group: 'Motors', name: 'Extra hinge motor at half speed', what: '120°/m instead of 240°/m; the seat\'s hinge at full speed', opts: { extraHingeRateDegPerM: 120 } },
   { group: 'Failures', name: 'Extra hinge seizes straight', what: 'then keeps going', opts: { extraHingeSeized: true } },
   { group: 'Failures', name: 'Seat\'s hinge motor seizes straight', what: 'the extra hinge still works, the tracks keep driving', opts: { mainHingeSeized: true }, stopTracks: true },
 ];
