@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Front Split vs Two Sections</title>
+<title>Front Split vs No Split</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -205,8 +205,8 @@
 <main class="wrap">
   <header>
     <p class="eyebrow">Changi AES · ES1 rescue stairs · 120 kg casualty, balancing seat arm</p>
-    <h1>Front Split vs Two Sections</h1>
-    <p class="lede">The same stair climber built two ways. The front half split into two 0.35 m sections, whose extra hinge bends while that half trails and stays straight while it leads, against a plain 0.70 m front unit. Both carry the same person on the same balancing seat arm up and down the same stairs.</p>
+    <h1>Front Split vs No Split</h1>
+    <p class="lede">The same stair climber built two ways. With the front half split into two 0.35 m sections, whose extra hinge bends while that half trails and stays straight while it leads, and with no split: one plain 0.70 m front unit and a single hinge in the middle. Both carry the same person on the same balancing seat arm up and down the same stairs.</p>
   </header>
 
   <section class="card verdict" aria-label="Result">
@@ -237,9 +237,9 @@
         </div>
       </div>
       <div class="stage" id="stage-two">
-        <canvas aria-label="Side view of the two-section vehicle"></canvas>
+        <canvas aria-label="Side view of the vehicle with no split: one hinge in the middle"></canvas>
         <div class="hud">
-          <div class="hud-box"><div class="hud-name"><i class="key base"></i>Two sections</div><div class="hud-lean">Lean it can take <b data-f="lean"></b></div></div>
+          <div class="hud-box"><div class="hud-name"><i class="key base"></i>No split</div><div class="hud-lean">Lean it can take <b data-f="lean"></b></div></div>
           <div class="hud-box reads"><dl class="hud-read" data-f="reads"></dl></div>
         </div>
       </div>
@@ -257,10 +257,10 @@
     <h2 id="lean-h">Lean it can take, along the trip</h2>
     <p class="sub">How far a push, a hard stop or a bump can lean the weight before the vehicle falls over an edge. Below the dashed line, a stop from walking pace would tip it. Hover to read both, click to move both vehicles there.</p>
     <div class="chart-head">
-      <div class="legend"><span><i class="key split"></i>Front half split</span><span><i class="key base"></i>Two sections</span></div>
+      <div class="legend"><span><i class="key split"></i>Front half split</span><span><i class="key base"></i>No split</span></div>
       <div class="jumps">Jump to the weakest moment of
         <button type="button" class="btn small" id="jump-split"><i class="key split"></i>Front split</button>
-        <button type="button" class="btn small" id="jump-two"><i class="key base"></i>Two sections</button>
+        <button type="button" class="btn small" id="jump-two"><i class="key base"></i>No split</button>
       </div>
     </div>
     <div class="chart" id="chart-lean"></div>
@@ -273,7 +273,7 @@
       <table>
         <thead>
           <tr class="split-row"><th rowspan="2" style="text-align:left">Setting</th><th colspan="2">Lean going down</th><th colspan="2">Lean going up</th><th colspan="2">Worst casualty tilt</th><th rowspan="2">Extra hinge,<br>largest bend</th></tr>
-          <tr><th><i class="key split"></i>Split</th><th><i class="key base"></i>Two</th><th><i class="key split"></i>Split</th><th><i class="key base"></i>Two</th><th><i class="key split"></i>Split</th><th><i class="key base"></i>Two</th></tr>
+          <tr><th><i class="key split"></i>Split</th><th><i class="key base"></i>No split</th><th><i class="key split"></i>Split</th><th><i class="key base"></i>No split</th><th><i class="key split"></i>Split</th><th><i class="key base"></i>No split</th></tr>
         </thead>
         <tbody id="heights-body"></tbody>
       </table>
@@ -287,7 +287,7 @@
     <div class="table-wrap">
       <table>
         <thead>
-          <tr class="split-row"><th rowspan="2" style="text-align:left">Case</th><th colspan="2"><i class="key split"></i>Front half split</th><th colspan="2"><i class="key base"></i>Two sections</th><th rowspan="2" style="text-align:left">Better</th></tr>
+          <tr class="split-row"><th rowspan="2" style="text-align:left">Case</th><th colspan="2"><i class="key split"></i>Front half split</th><th colspan="2"><i class="key base"></i>No split</th><th rowspan="2" style="text-align:left">Better</th></tr>
           <tr><th>Lean up · down</th><th style="text-align:left">Result</th><th>Lean up · down</th><th style="text-align:left">Result</th></tr>
         </thead>
         <tbody id="cases-body"></tbody>
@@ -308,7 +308,7 @@
   const HARD_STOP = deg(Math.atan(0.25 / 0.2 / 9.81)); // a stop from walking pace in 0.2 s
   const DESIGNS = [
     { id: 'frontSplit', stress: 'frontSplit', name: 'Front half split', color: 'split', opts: { mastMode: 'balance', sections: [0.7, 0.35, 0.35], mainJoint: 1 } },
-    { id: 'two', stress: 'balance', name: 'Two sections', color: 'base', opts: { mastMode: 'balance' } },
+    { id: 'two', stress: 'balance', name: 'No split', color: 'base', opts: { mastMode: 'balance' } },
   ];
   const state = { height: 8.4, dir: 'down', idx: 0, playing: false, speed: 2, lastT: 0, travel: 0, sims: null, cam: null };
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -332,8 +332,8 @@
   function renderResult() {
     const S = stressOf('frontSplit'), B = stressOf('balance'), s0 = S.results[0], b0 = B.results[0];
     const dS = CR.designs.find((d) => d.id === 'frontSplit'), dB = CR.designs.find((d) => d.id === 'two');
-    $('verdict-text').textContent = `Going down, the front half split can take a ${s0.tipDown.toFixed(1)}° lean before it tips, against ${b0.tipDown.toFixed(1)}° for two sections, more than twice as much. `
-      + `That is the direction casualties are carried and where two sections are weakest: as a straight front unit comes over a platform edge, it lifts off and leaves the vehicle balancing on the edge, while the split front half keeps its end section on the platform. `
+    $('verdict-text').textContent = `Going down, the front half split can take a ${s0.tipDown.toFixed(1)}° lean before it tips, against ${b0.tipDown.toFixed(1)}° with no split, more than twice as much. `
+      + `That is the direction casualties are carried and where the vehicle with no split is weakest: as a straight front unit comes over a platform edge, it lifts off and leaves the vehicle balancing on the edge, while the split front half keeps its end section on the platform. `
       + `Going up the two are close (${s0.tipUp.toFixed(1)}° against ${b0.tipUp.toFixed(1)}°), because the split half is held straight and only its motor's weight differs. `
       + `It passes ${S.count.pass} of ${S.results.length} stress tests against ${B.count.pass} of ${B.results.length}.`;
     const tiles = [
@@ -345,7 +345,7 @@
     const box = $('tiles'); box.textContent = '';
     for (const t of tiles) {
       const d = document.createElement('div'); d.className = 'tile';
-      d.innerHTML = `<div class="tile-label"></div><div class="pair"><div class="pair-row"><span class="v"></span><span class="who"><i class="key split"></i>Front split</span></div><div class="pair-row second"><span class="v"></span><span class="who"><i class="key base"></i>Two sections</span></div></div>`;
+      d.innerHTML = `<div class="tile-label"></div><div class="pair"><div class="pair-row"><span class="v"></span><span class="who"><i class="key split"></i>Front split</span></div><div class="pair-row second"><span class="v"></span><span class="who"><i class="key base"></i>No split</span></div></div>`;
       d.querySelector('.tile-label').textContent = t.label;
       const [va, vb] = d.querySelectorAll('.v');
       va.textContent = t.a; va.insertAdjacentHTML('beforeend', `<small>${t.unit}</small>`);
@@ -422,17 +422,17 @@
       const tdB = document.createElement('td'); tdB.className = 'res';
       tdB.innerHTML = !w ? '<span class="better same">only the split has it</span>'
         : w === 'same' ? '<span class="better same">Same</span>'
-        : `<span class="better"><i class="key ${w}"></i>${w === 'split' ? 'Front split' : 'Two sections'}</span>`;
+        : `<span class="better"><i class="key ${w}"></i>${w === 'split' ? 'Front split' : 'No split'}</span>`;
       tr.appendChild(tdB);
       body.appendChild(tr);
     }
     $('cases-sub').textContent = `Every stress case, run at all three height settings in both directions, with the worst moment kept. A case passes if the vehicle never falls and can take a ${HARD_STOP.toFixed(1)}° lean anywhere, the lean of a stop from walking pace in 0.2 s; tight if it stays up but could not take that; fails if it falls or the person hits the tracks or steps.`;
     $('tally').innerHTML = [
       `<div><i class="key split"></i><b>Front half split</b> ${chip('good', `${S.count.pass} pass`)} ${chip('warn', `${S.count.warn} tight`)} ${chip('bad', `${S.count.fail} fail`)}</div>`,
-      `<div><i class="key base"></i><b>Two sections</b> ${chip('good', `${B.count.pass} pass`)} ${chip('warn', `${B.count.warn} tight`)} ${chip('bad', `${B.count.fail} fail`)}</div>`,
-      `<div>Better in <b>${tally.split}</b> cases for the front split, <b>${tally.base}</b> for two sections, the same in <b>${tally.same}</b></div>`,
+      `<div><i class="key base"></i><b>No split</b> ${chip('good', `${B.count.pass} pass`)} ${chip('warn', `${B.count.warn} tight`)} ${chip('bad', `${B.count.fail} fail`)}</div>`,
+      `<div>Better in <b>${tally.split}</b> cases for the front split, <b>${tally.base}</b> for no split, the same in <b>${tally.same}</b></div>`,
     ].join('');
-    $('cases-note').textContent = 'Better: the design with the better result; with the same result, the one that takes at least 0.5° more lean in its worse direction. The two cases without a two-section entry test the split\'s extra hinge. Both designs fail the same three cases: a hinge motor at half speed, the seat\'s hinge seizing while the tracks keep driving, and a 200 kg person lying flat on 35.8° stairs, where the backrest hits.';
+    $('cases-note').textContent = 'Better: the design with the better result; with the same result, the one that takes at least 0.5° more lean in its worse direction. The two cases with no entry for no split test the split\'s extra hinge. Both designs fail the same three cases: a hinge motor at half speed, the seat\'s hinge seizing while the tracks keep driving, and a 200 kg person lying flat on 35.8° stairs, where the backrest hits.';
   }
 
   // ------------------------------------------------------------ simulation
@@ -758,7 +758,7 @@
       const dp = data[nearest(toLocal(ev))];
       tip.hidden = false; tip.textContent = '';
       const head = document.createElement('div'); head.className = 't-head'; head.textContent = `${dp.x.toFixed(2)} m travelled`; tip.appendChild(head);
-      for (const [s, label] of [['split', 'Front half split'], ['base', 'Two sections']]) {
+      for (const [s, label] of [['split', 'Front half split'], ['base', 'No split']]) {
         const row = document.createElement('div'); row.className = 't-row';
         const kk = document.createElement('i'); kk.className = 'key ' + s;
         const b = document.createElement('b'); b.textContent = dp[s] < 0 ? 'falls' : dp[s].toFixed(1) + '°';
