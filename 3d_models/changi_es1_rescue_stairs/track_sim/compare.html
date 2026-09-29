@@ -239,6 +239,7 @@
       <button type="button" class="btn" id="next-bend" aria-label="Jump to the next moment a split half bends over an edge">Next hinge bend</button>
       <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Position along the stairs">
       <label class="speed" for="speed">Speed <select id="speed"><option value="1">1× real</option><option value="2" selected>2×</option><option value="4">4×</option><option value="8">8×</option></select></label>
+      <label class="speed" for="slowmo"><input type="checkbox" id="slowmo" checked> Slow down at hinge bends</label>
     </div>
     <p class="run-note" id="run-note"></p>
   </section>
@@ -622,7 +623,27 @@
       g.fillStyle = C.nosing; g.fill(); g.strokeStyle = C.track; g.lineWidth = 2; g.stroke();
       g.restore();
     }
-    return { capsule, stairs, unit, hinge, seat };
+    // a bending extra hinge: a ring round it and its bend in a tag above, drawn over everything else
+    function bendTags(p, rho) {
+      if (!p.pts || !p.bends) return;
+      const r = rho * 0.4 * scale;
+      for (let j = 1; j < p.pts.length - 1; j++) {
+        const b = p.bends[j - 1];
+        if (j === p.m || Math.abs(b) < TM.rad(3)) continue;
+        const x = SX(p.pts[j].x), y = SY(p.pts[j].z), ly = y - r - 34;
+        g.beginPath(); g.arc(x, y, r + 5, 0, Math.PI * 2);
+        g.strokeStyle = C.ink; g.lineWidth = 2.5; g.stroke();
+        g.beginPath(); g.moveTo(x, y - r - 5); g.lineTo(x, ly + 10); g.lineWidth = 1.2; g.stroke();
+        const txt = `${b > 0 ? '+' : '\u2212'}${(Math.abs(b) * 180 / Math.PI).toFixed(0)}\u00b0`;
+        g.font = `600 12px ${getComputedStyle(document.body).fontFamily}`;
+        const w = g.measureText(txt).width + 14;
+        g.beginPath(); g.roundRect(x - w / 2, ly - 10, w, 20, 6);
+        g.fillStyle = C.ink; g.fill();
+        g.fillStyle = C.surface; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, x, ly + 0.5);
+        g.textAlign = 'start'; g.textBaseline = 'alphabetic';
+      }
+    }
+    return { capsule, stairs, unit, hinge, seat, bendTags };
   }
   const stages = {};
   function setupStages() {
@@ -696,6 +717,7 @@
       st.lean.textContent = lean < 0 ? 'falling' : `${lean.toFixed(1)}°`;
       st.lean.className = leanCls(lean);
     }
+    paint.bendTags(p, rho);
     const signed = (r) => `${deg(r) >= 0 ? '+' : ''}${deg(r).toFixed(1)}°`;
     const rows = [['Casualty tilt', signed(p.phi)], [p.bends ? "Seat's hinge" : 'Hinge', signed(p.beta)]];
     const ex = extraBends(p);
@@ -795,7 +817,9 @@
     if (!state.playing) return;
     const dt = Math.min(0.1, (t - state.lastT) / 1000);
     state.lastT = t;
-    const ds = 0.25 * state.speed * dt, n = nPath() - 1;
+    // a quarter of the speed while any layout's extra hinge is bent
+    const bent = $('slowmo').checked && DESIGNS.some((d) => { const p = poseAt(state.sims[d.id][state.dir], state.idx); return p.bends && p.bends.some((b, j) => j !== p.m - 1 && Math.abs(b) >= TM.rad(3)); });
+    const ds = 0.25 * state.speed * (bent ? 0.25 : 1) * dt, n = nPath() - 1;
     state.idx = Math.min(n, state.idx + ds / 0.01);
     state.travel += ds;
     draw();

@@ -330,8 +330,10 @@
     <div class="transport">
       <button type="button" class="btn primary" id="play" aria-label="Play"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span>Play</span></button>
       <button type="button" class="btn" id="restart" aria-label="Restart from the start"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 2v4h4M2.9 6A4.6 4.6 0 1 1 3 9.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Restart</button>
+      <button type="button" class="btn" id="next-bend" aria-label="Jump to the next moment a split half bends over an edge">Next hinge bend</button>
       <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Position along the stairs">
       <label class="speed" for="speed">Speed <select id="speed"><option value="1">1× real</option><option value="2">2×</option><option value="4" selected>4×</option><option value="8">8×</option></select></label>
+      <label class="speed" for="slowmo"><input type="checkbox" id="slowmo" checked> Slow down at hinge bends</label>
       <span class="pos" id="pos">0.0 / 0.0 m</span>
     </div>
   </section>
@@ -495,13 +497,13 @@
   // Track layouts: two sections with one hinge, or one or both halves split in two,
   // each split half with a hinge motor of its own (the seat stays on the hinge in the middle).
   const LAYOUTS = {
-    two: { name: 'No split: two sections, one hinge', short: 'Two tracks + hinge', sections: null },
+    bothSplit: { name: 'Both halves split in two (recommended)', short: 'Both halves split', sections: (L) => [L / 2, L / 2, L / 2, L / 2], mainJoint: 2 },
     frontSplit: { name: 'Front half split in two', short: 'Front half split', sections: (L) => [L, L / 2, L / 2], mainJoint: 1 },
     rearSplit: { name: 'Rear half split in two', short: 'Rear half split', sections: (L) => [L / 2, L / 2, L], mainJoint: 2 },
-    bothSplit: { name: 'Both halves split in two', short: 'Both halves split', sections: (L) => [L / 2, L / 2, L / 2, L / 2], mainJoint: 2 },
+    two: { name: 'No split: two sections, one hinge', short: 'Two tracks + hinge', sections: null },
   };
   const state = {
-    height: 8.4, dir: 'down', view: 'follow', compare: true, layout: 'two',
+    height: 8.4, dir: 'down', view: 'follow', compare: true, layout: 'bothSplit',
     design: Object.assign(Object.fromEntries(SLIDERS.map((s) => [s.key, TM.DEFAULTS[s.key]])), { levelSeat: TM.DEFAULTS.levelSeat, mastMode: TM.DEFAULTS.mastMode }),
     sim: null, idx: 0, playing: false, speed: 4, lastT: 0, travel: 0,
     cam: null, tableToken: 0,
@@ -824,7 +826,7 @@
     $('legend-one').hidden = !state.compare;
     document.querySelectorAll('.legend-one').forEach((e) => { e.hidden = !state.compare; });
     document.querySelectorAll('.veh-name').forEach((e) => { e.textContent = vehName(); });
-    $('legend-extra').hidden = $('legend-extra2').hidden = !isSplit();
+    $('legend-extra').hidden = $('legend-extra2').hidden = $('next-bend').hidden = !isSplit();
     makeChart('tilt', $('chart-tilt'), { height: 190, y0: -35, y1: 35, ticks: [-30, -15, 0, 15, 30], bands: true, series: ['two', 'one'] });
     makeChart('lean', $('chart-lean'), { height: 170, y0: -20, y1: 40, ticks: [-20, 0, 20, 40], bands: true, series: ['two', 'one'], ref: { y: HARD_STOP, label: `hard stop ${HARD_STOP.toFixed(1)}°` } });
     makeChart('hinge', $('chart-hinge'), { height: 150, y0: -hl, y1: hl, ticks: null, bands: false, series: isSplit() ? ['two', 'extra'] : ['two'], limit: lim });
@@ -956,6 +958,7 @@
   }
   const unitsOf = (p) => p.units || [[p.R, p.J], [p.J, p.F]];
   // bend of the extra hinge (the largest, if more than one) on a split vehicle
+  const bendingNow = (p) => !!(p && p.bends) && p.bends.some((b, j) => j !== p.m - 1 && Math.abs(b) >= TM.rad(3));
   const extraName = () => (state.layout === 'bothSplit' ? 'Extra hinges (larger)' : 'Extra hinge');
   const extraBend = (p) => (!p.bends ? null : p.bends.filter((_, j) => j !== p.m - 1).reduce((u, v) => (Math.abs(v) > Math.abs(u) ? v : u), 0));
   function poseAt(list, k) {
@@ -1185,7 +1188,27 @@
       return { parts, link: lk };
     }
     const rhoPin = (o) => o.sprocketRadius * 0.5;
-    return { capsule, stairs, unit, hinge, seat, line };
+    // a bending extra hinge: a ring round it and its bend in a tag above, drawn over everything else
+    function bendTags(p, rho) {
+      if (!p.pts || !p.bends) return;
+      const r = rho * 0.4 * scale;
+      for (let j = 1; j < p.pts.length - 1; j++) {
+        const b = p.bends[j - 1];
+        if (j === p.m || Math.abs(b) < TM.rad(3)) continue;
+        const x = SX(p.pts[j].x), y = SY(p.pts[j].z), ly = y - r - 34;
+        g.beginPath(); g.arc(x, y, r + 5, 0, Math.PI * 2);
+        g.strokeStyle = C.ink; g.lineWidth = 2.5; g.stroke();
+        g.beginPath(); g.moveTo(x, y - r - 5); g.lineTo(x, ly + 10); g.lineWidth = 1.2; g.stroke();
+        const txt = `${b > 0 ? '+' : '\u2212'}${(Math.abs(b) * 180 / Math.PI).toFixed(0)}\u00b0`;
+        g.font = `600 12px ${getComputedStyle(document.body).fontFamily}`;
+        const w = g.measureText(txt).width + 14;
+        g.beginPath(); g.roundRect(x - w / 2, ly - 10, w, 20, 6);
+        g.fillStyle = C.ink; g.fill();
+        g.fillStyle = C.surface; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, x, ly + 0.5);
+        g.textAlign = 'start'; g.textBaseline = 'alphabetic';
+      }
+    }
+    return { capsule, stairs, unit, hinge, seat, line, bendTags };
   }
 
   function draw() {
@@ -1244,6 +1267,7 @@
     paint.hinge(two, rho);
     paint.seat(o, two, false);
     drawCom(two, false);
+    paint.bendTags(two, rho);
 
     // mini map
     if (state.view === 'follow') drawMini(two);
@@ -1717,7 +1741,9 @@
     if (!state.playing) return;
     const dt = Math.min(0.1, (t - state.lastT) / 1000);
     state.lastT = t;
-    const ds = 0.25 * state.speed * dt; // 1x = 0.25 m/s, walking pace on stairs
+    // 1x = 0.25 m/s, walking pace on stairs; a quarter of that while an extra hinge is bent
+    const slow = $('slowmo').checked && bendingNow(poseAt(state.sim[state.dir], state.idx)) ? 0.25 : 1;
+    const ds = 0.25 * state.speed * slow * dt;
     const n = state.sim.path.length - 1;
     state.idx = Math.min(n, state.idx + ds / 0.01);
     state.travel += ds;
@@ -1726,6 +1752,19 @@
     requestAnimationFrame(tick);
   }
   function seek(k) { state.idx = Math.max(0, Math.min(state.sim.path.length - 1, k)); state.cam = null; draw(); }
+  // the moments an extra hinge bends furthest at an edge, in trip order
+  function bendMoments() {
+    const sim = state.sim, list = sim[state.dir], n = sim.path.length, m = sim.opts.mainJoint, ks = [];
+    if (!sim.opts.sections) return ks;
+    let best = null;
+    for (let k = 0; k < n; k++) {
+      const p = list[sampleIndex(k)];
+      const b = p.bends.reduce((u, v, j) => (j === m - 1 ? u : Math.max(u, Math.abs(v))), 0);
+      if (b >= TM.rad(3)) { if (!best || b > best.b) best = { k, b }; } else if (best) { ks.push(best.k); best = null; }
+    }
+    if (best) ks.push(best.k);
+    return ks;
+  }
 
   // --------------------------------------------------------------- controls
   function segment(id, key, onChange) {
@@ -1750,6 +1789,13 @@
   $('restart').addEventListener('click', () => { state.idx = 0; state.cam = null; draw(); setPlaying(!reduceMotion); });
   $('scrub').addEventListener('input', (e) => { seek(Number(e.target.value)); });
   $('speed').addEventListener('change', (e) => { state.speed = Number(e.target.value); });
+  $('next-bend').addEventListener('click', () => {
+    if (!state.sim) return;
+    const ks = bendMoments(); if (!ks.length) return;
+    setPlaying(false);
+    const k = ks.find((v) => v > state.idx + 1);
+    seek(k === undefined ? ks[0] : k);
+  });
 
   // design controls
   let slTimer = null;
@@ -1792,7 +1838,7 @@
     for (const s of SLIDERS) { state.design[s.key] = TM.DEFAULTS[s.key]; const i = $('sl-' + s.key); i.value = TM.DEFAULTS[s.key]; i.dispatchEvent(new Event('input')); }
     state.design.levelSeat = TM.DEFAULTS.levelSeat; $('level-seat').checked = state.design.levelSeat;
     state.design.mastMode = TM.DEFAULTS.mastMode; $('support').value = state.design.mastMode; syncLevel();
-    state.layout = 'two'; $('layout').value = 'two';
+    state.layout = 'bothSplit'; $('layout').value = 'bothSplit';
   });
 
   // theme + size
