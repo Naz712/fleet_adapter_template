@@ -152,6 +152,7 @@
   #scrub { flex: 1 1 240px; accent-color: var(--front); min-width: 0; }
   select { font: 500 13px var(--sans); color: var(--ink); background: var(--surface-2); border: 1px solid var(--hair-strong); border-radius: 9px; padding: 7px 8px; }
   .speed { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
+  .run-note { margin: 0; padding: 0 16px 14px; font-size: 13px; line-height: 1.5; color: var(--ink-2); max-width: 900px; }
 
   /* lean trace */
   .chart-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; }
@@ -200,7 +201,7 @@
   <header>
     <p class="eyebrow">Changi AES · ES1 rescue stairs · 120 kg casualty, balancing seat arm</p>
     <h1>Stair Climber Track Layouts</h1>
-    <p class="lede">Four ways to lay out the tracks, each carrying the same person on the same balancing seat arm up and down the same stairs. No split has one hinge in the middle under the seat. The split layouts turn one or both 0.70 m halves into two 0.35 m sections joined by an extra hinge motor, which bends while its half trails and holds straight while it leads.</p>
+    <p class="lede">Four ways to lay out the tracks, each carrying the same person on the same balancing seat arm up and down the same stairs. No split has one hinge in the middle under the seat. The split layouts turn one or both 0.70 m halves into two 0.35 m sections joined by an extra hinge motor, which bends at each edge to keep the tracks on the stairs.</p>
   </header>
 
   <section class="card panel" aria-labelledby="score-h">
@@ -235,9 +236,11 @@
     <div class="transport">
       <button type="button" class="btn primary" id="play" aria-label="Play"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span>Play</span></button>
       <button type="button" class="btn" id="restart" aria-label="Restart from the start"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 2v4h4M2.9 6A4.6 4.6 0 1 1 3 9.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Restart</button>
+      <button type="button" class="btn" id="next-bend" aria-label="Jump to the next moment a split half bends over an edge">Next hinge bend</button>
       <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Position along the stairs">
       <label class="speed" for="speed">Speed <select id="speed"><option value="1">1× real</option><option value="2" selected>2×</option><option value="4">4×</option><option value="8">8×</option></select></label>
     </div>
+    <p class="run-note" id="run-note"></p>
   </section>
 
   <section class="card panel" aria-labelledby="lean-h">
@@ -293,7 +296,7 @@
     { id: 'bothSplit', stress: 'bothSplit', name: 'Both halves split', color: 'both', opts: { mastMode: 'balance', sections: [0.35, 0.35, 0.35, 0.35], mainJoint: 2 } },
   ];
   const byId = Object.fromEntries(DESIGNS.map((d) => [d.id, d]));
-  const state = { height: 8.4, dir: 'down', idx: 0, playing: false, speed: 2, lastT: 0, travel: 0, sims: null, cam: null, token: 0 };
+  const state = { height: 8.4, dir: 'down', idx: 0, playing: false, speed: 2, lastT: 0, travel: 0, sims: null, bends: [], cam: null, token: 0 };
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let C = {};
   function readColors() {
@@ -330,7 +333,7 @@
     const f = (v) => leanTxt(v);
     const most = Math.max(...rows.map((r) => r.down));
     $('verdict-text').textContent = `Both halves split is strong both ways: ${f(R.bothSplit.up)} up and ${f(R.bothSplit.down)} down, against ${f(R.two.up)} and ${f(R.two.down)} with no split. `
-      + `Each split half helps only in the direction it trails: the front half going down, when casualties are carried, and the rear half going up. `
+      + `A split half helps most in the direction it goes last, when its hinge keeps the end section on the step behind: the front half going down, when casualties are carried, and the rear half going up. `
       + `With one split, split the front half: ${f(R.frontSplit.down)} going down${R.frontSplit.down >= most ? ', the most of the four,' : ''} against ${f(R.rearSplit.down)} for the rear split. `
       + `Each split half adds a ${(R.frontSplit.mass - R.two.mass).toFixed(0)} kg hinge motor that has to turn twice as fast as the seat's hinge.`;
   }
@@ -406,6 +409,24 @@
     for (let k = 0; k < nPath(); k++) { const v = list[sampleIndex(k)].ev.tipAngle; if (v < bv) { bv = v; best = k; } }
     return best;
   }
+  // the moments a trailing split half bends furthest over an edge, in trip order
+  function bendMoments() {
+    const ks = [];
+    for (const d of DESIGNS) {
+      const sim = state.sims[d.id], o = sim.opts;
+      if (!o.sections) continue;
+      const list = sim[state.dir];
+      let best = null;
+      for (let k = 0; k < nPath(); k++) {
+        const p = list[sampleIndex(k)];
+        const b = p.bends.reduce((u, v, j) => (j === o.mainJoint - 1 ? u : Math.max(u, Math.abs(v))), 0);
+        if (b > TM.rad(2)) { if (!best || b > best.b) best = { k, b }; } else if (best) { ks.push(best.k); best = null; }
+      }
+      if (best) ks.push(best.k);
+    }
+    ks.sort((a, b) => a - b);
+    return ks.filter((k, i) => i === 0 || k - ks[i - 1] > 25);
+  }
   function runSims() {
     const token = ++state.token;
     $('busy').hidden = false;
@@ -428,6 +449,9 @@
         return;
       }
       state.sims = sims;
+      state.bends = bendMoments();
+      const [trail, lead] = state.dir === 'down' ? ['front', 'rear'] : ['rear', 'front'];
+      $('run-note').textContent = `Extra hinges bend at each edge to keep the tracks on the stairs, for up to half a metre of travel each time; Next hinge bend jumps to each one. Going ${state.dir}, the ${trail} half goes last: its hinge keeps the end section on the step behind while the rest goes over. The ${lead} half goes first: it stays in line, but as soon as its hinge is past an edge it lets the end section down onto the next step.`;
       $('scrub').max = String(nPath() - 1);
       state.idx = weakestIndex('two'); // open where the vehicle with no split is weakest
       state.cam = null;
@@ -803,6 +827,11 @@
   $('play').addEventListener('click', () => { if (!state.sims) return; if (!state.playing && state.idx >= nPath() - 1) state.idx = 0; setPlaying(!state.playing); });
   $('restart').addEventListener('click', () => { if (!state.sims) return; state.idx = 0; state.cam = null; draw(); setPlaying(!reduceMotion); });
   $('scrub').addEventListener('input', (e) => { if (state.sims) seek(Number(e.target.value)); });
+  $('next-bend').addEventListener('click', () => {
+    if (!state.sims || !state.bends.length) return;
+    const k = state.bends.find((v) => v > state.idx + 1);
+    seek(k === undefined ? state.bends[0] : k);
+  });
   $('speed').addEventListener('change', (e) => { state.speed = Number(e.target.value); });
   const retheme = () => { readColors(); if (state.sims) { buildChart(); draw(); } };
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', retheme);

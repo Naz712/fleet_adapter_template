@@ -226,38 +226,45 @@ into two 0.35 m sections, joined by a hinge with its own motor, about 6 kg. The 
 as for two sections, section by section. With two 0.70 m sections, the model gives exactly the same poses
 as the two-section one, which is how it was checked.
 
-The extra hinge helps only while its half trails: going down for a split front half, going up for
-a split rear half. As that half comes over a platform edge, its end section stays flat on the
-platform while the section next to the seat follows the new slope. The trailing end keeps holding
-the vehicle up just when a straight unit would lift off and leave it balancing on the edge. While
-its half leads, the extra hinge is held straight. A short section has to turn twice as fast for
-the same change of slope, so the extra hinge turns at up to 240° per metre, twice the seat's hinge.
+Each extra hinge bends at an edge to keep its half's tracks on the stairs. While its half goes
+last (going down for the front half, going up for the rear half), its end section stays flat on
+the step behind while the section next to the seat follows the new slope. The trailing end keeps
+holding the vehicle up just when a straight unit would lift off and leave it balancing on the
+edge; most of the gain comes from this. While its half goes first, the half is held in line, but
+once the extra hinge is past an edge it lets the end section down onto the next step, so the
+tracks touch the stairs while the seat's hinge is still folding the half down. A short section
+has to turn twice as fast for the same change of slope, so the extra hinge turns at up to 240° per
+metre, twice the seat's hinge.
 
 Worst case over the three height settings, with the balancing arm:
 
 | | No split | Front half split | Rear half split | Both halves split |
 |---|---|---|---|---|
-| Lean it can take (up · down) | 10.7° · 8.3° | 10.3° · 18.7° | 17.9° · 10.0° | 18.8° · 18.4° |
-| Stress test (pass · tight · fail) | 17 · 4 · 3 of 24 | 20 · 3 · 3 of 26 | 19 · 4 · 3 of 26 | 20 · 3 · 3 of 26 |
+| Lean it can take (up · down) | 10.7° · 8.3° | 11.2° · 18.7° | 17.9° · 9.5° | 18.8° · 21.5° |
+| Stress test (pass · tight · fail) | 17 · 4 · 3 of 24 | 20 · 3 · 3 of 26 | 22 · 0 · 4 of 26 | 23 · 1 · 2 of 26 |
 | Extra hinge motors, mass with the casualty | 0, 195 kg | 1, 201 kg | 1, 201 kg | 2, 207 kg |
-| Extra hinge at 120°/m (up · down) | – | 10.3° · 9.3° | 13.3° · 10.0° | 13.2° · 11.0° |
-| Extra hinge held straight (up · down) | – | 10.3° · 7.7° | 10.0° · 10.0° | 9.9° · 8.8° |
+| Extra hinge at 120°/m (up · down) | – | 11.2° · 9.3° | 13.3° · 9.4° | 13.7° · 12.3° |
+| Extra hinges seized straight (up · down) | – | 10.3° · 7.7° | 10.0° · 10.0° | 9.9° · 8.8° |
 
+- Splitting both halves is best both ways: 18.8° up and 21.5° down, and 23 of 26 stress cases.
+  It is the only layout that still passes with the seat's hinge motor at half speed, because the
+  leading half's end section reaches the stairs while the seat's hinge is still folding. If the
+  seat's hinge seizes, it drops 12 cm, against 18 to 23 cm for the other layouts.
 - The front split more than doubles the lean the vehicle can take going down, which is where no
-  split is weakest. Going up it takes 0.4° less, because of the motor's weight.
-- The rear split gains going up. Its gain going down comes only from the motor's weight at the
-  rear; ballast would do the same.
-- Splitting both halves gets both gains, 18.8° up and 18.4° down, for a second extra hinge motor.
-  Going down it takes a little less than the front split (0.3° by default, 0.4–0.5° in the tight
-  cases), because the rear half's motor sits at the downhill end.
-- All three fail the same three cases as no split: a hinge motor at half speed, the seat's hinge
-  seizing (a 21 to 23 cm drop), and a 200 kg person lying flat on 35.8° stairs.
+  split is weakest. Going up it takes 0.5° more than no split.
+- The rear split gains going up. Going down it gains only 1.2°, because its front half, which
+  goes last going down, is not split. Lying flat, its backrest comes 4 mm into the front track
+  unit, which fails that case.
+- The failures left: the seat's hinge seizing (a 12 to 21 cm drop), and a 200 kg person lying flat
+  on 35.8° stairs, whose backrest hits the steps. The front and rear splits also still fail with
+  the seat's hinge motor at half speed.
 - If the extra hinges seize straight, the vehicle becomes the one with no split, which passes.
 - A 0.35 m section spans only one gap between nosings, so on a flight its hinge must hold it in
   line.
-- Used the other way round, the extra hinge makes things worse. Bending while its half leads, the
-  short end section folds first and the seat's hinge later. Held straight while its half trails,
-  there is nothing to gain.
+- How the leading half bends matters. Letting its end section down about its own hinge, lifting
+  nothing, is what gains; folding the end section first by lifting the section inside it lifts
+  that section off the edge nosing, and both halves split then takes only 11.9° going down.
+
 `track_sim/compare.html` runs all four layouts side by side on the same stairs, plots the lean
 each can take along the trip, and puts every stress case next to each other.
 `node track_sim/compare-test.js` regenerates its per-height numbers (`compare-results.js`).
@@ -279,8 +286,9 @@ each can take along the trip, and puts every stress case next to each other.
    seat's offset towards the head give it at least 8.3°.
 7. Half lying (a 45–60° recline) is the most compact posture. Sitting up and lying flat both need
    the 0.5 m arm.
-8. A split half's hinge bends only while that half trails, at twice the seat hinge's speed, and
-   holds its two sections in line while that half leads.
+8. A split half's hinge bends at each edge to keep the tracks on the stairs, at twice the seat
+   hinge's speed. Going last, it keeps the end section on the step behind. Going first, it holds
+   the half in line but lets the end section down onto the next step once it is past the edge.
 
 The model is quasi-static (slow speed). At every centimetre it solves how both units rest on the
 real step geometry, then checks support, the gap around the seat and person, and tipping. Tracks

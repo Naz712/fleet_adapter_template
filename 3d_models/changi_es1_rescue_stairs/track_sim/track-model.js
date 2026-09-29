@@ -51,7 +51,7 @@
     extraHingeSeized: false, // the extra hinges have seized straight (a failure)
     mainHingeSeized: false, // the seat's hinge has seized straight, the others still work (a failure)
     trailMode: 'wrap', // a split trailing half: 'wrap' (bends over edges, may be held straight while the seat's hinge is lifted), 'settle', 'straight' or 'nearest' (whichever the hinges reach sooner)
-    leadMode: 'straight', // a split leading half: 'straight' (held in line, as one unit) or 'split' (its end section folds first)
+    leadMode: 'droop', // a split leading half: 'droop' (held in line as one unit, except that its end section is let down onto the stairs about its own hinge to keep contact), 'straight' (held in line) or 'split' (its end section folds first, lifting the section inside it)
     hingeControl: 'lead', // several hinges: 'lead' (the seat's hinge leads, the others keep up), 'together' or 'own'
     // mastMode 'vArms': two arms rising from the hinge in a V, feet on the averaging post
     vArmFoot: 0.06, // each foot this far fore or aft of the hinge, m
@@ -872,7 +872,7 @@
     const up = dir === 'up', sgn = up ? 1 : -1;
     // a split half that leads is held in line: work the target out with it as one unit
     const lead = sideSections(o, sgn);
-    if (o.leadMode === 'straight' && lead.length > 1) {
+    if ((o.leadMode === 'straight' || o.leadMode === 'droop') && lead.length > 1) {
       const Lm = lead.reduce((u, k) => u + o.sections[k], 0);
       const om = Object.assign({}, o, up ? { sections: o.sections.slice(0, m).concat([Lm]) } : { sections: [Lm].concat(o.sections.slice(m)), mainJoint: 1 });
       const toMerged = (a) => (up ? a.slice(0, m + 1) : a.slice(m - 1));
@@ -930,17 +930,41 @@
     }
     return p;
   }
+  // A split leading half keeps its end on the stairs where it can (o.leadMode 'droop'):
+  // its outer section is let down onto the stairs about its own hinge, as far as that
+  // hinge turns in one step, without lifting the rest of the vehicle.
+  function droopLead(T, o, dir, J0, p, prev, ds, rate) {
+    const m = o.mainJoint, up = dir === 'up', lead = sideSections(o, up ? 1 : -1);
+    if (lead.length < 2) return p;
+    const d = settle(T, o, p.J, p.angles, up ? m + 1 : m - 2);
+    // the bend between each outer section and the one inside it
+    const joints = lead.slice(1).map((k) => (up ? k - 1 : k));
+    const betas = p.bends.slice(), maxStep = rad(rate) * ds;
+    let changed = false;
+    for (const j of joints) {
+      let b = d[j + 1] - d[j];
+      if (prev) b = prev.bends[j] + clamp(b - prev.bends[j], -maxStep, maxStep);
+      if (Math.abs(b - betas[j]) > 1e-9) { betas[j] = b; changed = true; }
+    }
+    if (!changed) return p;
+    const q = solveChainBent(T, o, J0.x, J0.z, betas, p.angles[m]);
+    if (!q) return p;
+    q.rateLimited = p.rateLimited;
+    q.folded = p.folded;
+    return q;
+  }
   function solveChainStep(T, QE, J0, o, prof, dir, prev, ds, state) {
     const target = targetChain(T, QE, J0, o, prof, dir, state, prev);
     const m = o.mainJoint, stuck = o.mainHingeSeized;
-    if (!prev && !stuck) return target;
+    const extraRate = o.extraHingeRateDegPerM == null ? (o.hingeRateDegPerM * o.unitLength) / Math.min(...o.sections) : o.extraHingeRateDegPerM;
+    const done = (p) => (o.leadMode === 'droop' ? droopLead(T, o, dir, J0, p, prev, ds, extraRate) : p);
+    if (!prev && !stuck) return done(target);
     // a seized seat's hinge stays straight; the others still go for their targets
     const want = stuck ? target.bends.map((b, j) => (j === m - 1 ? 0 : b)) : target.bends;
     // How far each hinge gets towards its target this step, as a share of the way.
     // 'lead': the seat's hinge goes as fast as it can and the others keep up with it,
     // never getting further along than it; 'together': all cover the same share, as
     // much as the slowest allows; 'own': each as fast as it can.
-    const extraRate = o.extraHingeRateDegPerM == null ? (o.hingeRateDegPerM * o.unitLength) / Math.min(...o.sections) : o.extraHingeRateDegPerM;
     const own = want.map((b, j) => {
       const maxStep = rad(j === m - 1 ? o.hingeRateDegPerM : extraRate) * ds, d = prev ? Math.abs(b - prev.bends[j]) : 0;
       return d > maxStep + 1e-9 ? maxStep / d : 1;
@@ -949,14 +973,14 @@
       : o.hingeControl === 'together' ? own.map(() => Math.min(...own))
       : own.map((sh, j) => (j === m - 1 ? sh : Math.min(sh, own[m - 1])));
     const share = Math.min(...shares);
-    if (share >= 1 && !stuck) return target;
+    if (share >= 1 && !stuck) return done(target);
     const betas = prev ? want.map((b, j) => prev.bends[j] + shares[j] * (b - prev.bends[j])) : want;
     // with room to rock, it may stay where the section behind the seat's hinge was
     const q = solveChainBent(T, o, J0.x, J0.z, betas, prev ? prev.angles[m - 1] + betas[m - 1] : undefined);
-    if (!q) return target;
+    if (!q) return done(target);
     q.rateLimited = share < 1;
     q.folded = target.folded;
-    return q;
+    return done(q);
   }
 
   // One rigid track the same overall length as the two units.

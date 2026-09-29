@@ -2998,18 +2998,18 @@ window.STRESS_RESULTS = {
       {
        "part": "Columns",
        "size": "2 × 50 × 50 × 4 mm box tube, 0.4 m apart",
-       "load": "924 N·m bend",
-       "stress": 44166678.91977348,
+       "load": "972 N·m bend",
+       "stress": 46480370.32708721,
        "limit": 355000000,
-       "factor": 8.03773361915754
+       "factor": 7.637632779210406
       },
       {
        "part": "Averaging links",
        "size": "12 mm rods, a diamond each side",
-       "load": "1.5 kN each",
-       "stress": 13618094.68003839,
+       "load": "1.6 kN each",
+       "stress": 14330775.977307111,
        "limit": 355000000,
-       "factor": 26.06825758968796
+       "factor": 24.771861660676652
       },
       {
        "part": "Cradle rails",
@@ -3044,7 +3044,7 @@ window.STRESS_RESULTS = {
       },
       {
        "part": "Arm drive",
-       "need": "924 N·m",
+       "need": "972 N·m",
        "note": "self-locking; leans the arm to keep the weight away from the edges"
       },
       {
@@ -3064,18 +3064,18 @@ window.STRESS_RESULTS = {
       {
        "part": "Columns",
        "size": "2 × 50 × 50 × 4 mm box tube, 0.4 m apart",
-       "load": "1477 N·m bend",
-       "stress": 70590000.95157962,
+       "load": "1596 N·m bend",
+       "stress": 76283685.22343107,
        "limit": 355000000,
-       "factor": 5.029040872849798
+       "factor": 4.653681831970006
       },
       {
        "part": "Averaging links",
        "size": "12 mm rods, a diamond each side",
-       "load": "2.5 kN each",
-       "stress": 22171031.086441863,
+       "load": "2.7 kN each",
+       "stress": 23519700.810630597,
        "limit": 355000000,
-       "factor": 16.011884996051958
+       "factor": 15.093729416810636
       },
       {
        "part": "Cradle rails",
@@ -3110,7 +3110,7 @@ window.STRESS_RESULTS = {
       },
       {
        "part": "Arm drive",
-       "need": "1477 N·m",
+       "need": "1596 N·m",
        "note": "self-locking; leans the arm to keep the weight away from the edges"
       },
       {
@@ -3132,10 +3132,10 @@ window.STRESS_RESULTS = {
      "name": "Default design",
      "what": "120 kg person, half lying, seat 0.5 m up",
      "opts": {},
-     "tipUp": 10.264574512527721,
+     "tipUp": 11.151596133999636,
      "tipDown": 18.71662888044187,
      "drop": 0,
-     "tilt": 4.975822237685627,
+     "tilt": 4.9758210774429585,
      "steps": 0.44283000953325935,
      "stepsPart": "backrest",
      "tracks": 0.22387018433466752,
@@ -3151,7 +3151,7 @@ window.STRESS_RESULTS = {
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 10.3° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 11.2° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -3160,10 +3160,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "personMass": 200
      },
-     "tipUp": 12.220790799796456,
+     "tipUp": 13.84079807732515,
      "tipDown": 17.953689968536956,
      "drop": 0,
-     "tilt": 4.9758222376856285,
+     "tilt": 4.975821077442959,
      "steps": 0.4140139030908242,
      "stepsPart": "backrest",
      "tracks": 0.2174121776230555,
@@ -3179,7 +3179,7 @@ window.STRESS_RESULTS = {
       "tip": -15.272791037525746
      },
      "level": "pass",
-     "why": "takes a 12.2° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 13.8° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -3188,10 +3188,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "personMass": 40
      },
-     "tipUp": 11.044611548506047,
+     "tipUp": 11.04461499971488,
      "tipDown": 21.59778491632951,
      "drop": 0,
-     "tilt": 5.053139626979238,
+     "tilt": 5.053138566986861,
      "steps": 0.4859118180271377,
      "stepsPart": "leg rest",
      "tracks": 0.3051319392889519,
@@ -3216,10 +3216,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "comOffset": -0.1
      },
-     "tipUp": 10.667255985232204,
+     "tipUp": 11.885100599535495,
      "tipDown": 15.699023392149696,
      "drop": 0,
-     "tilt": 4.97582223768563,
+     "tilt": 4.9758210774429585,
      "steps": 0.37911483317692296,
      "stepsPart": "backrest",
      "tracks": 0.14895575444339187,
@@ -3235,7 +3235,7 @@ window.STRESS_RESULTS = {
       "tip": -11.241276863320062
      },
      "level": "pass",
-     "why": "takes a 10.7° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 11.9° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -3244,10 +3244,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "comOffset": 0.1
      },
-     "tipUp": 12.388572724737967,
+     "tipUp": 13.802588577733777,
      "tipDown": 21.50599204969762,
      "drop": 0,
-     "tilt": 4.9758222376856285,
+     "tilt": 4.9758210774429585,
      "steps": 0.4580072831008371,
      "stepsPart": "thigh",
      "tracks": 0.25685004410000045,
@@ -3263,7 +3263,7 @@ window.STRESS_RESULTS = {
       "tip": -11.06264535240602
      },
      "level": "pass",
-     "why": "takes a 12.4° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 13.8° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -3272,10 +3272,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "comOffset": -0.25
      },
-     "tipUp": 10.899572594551723,
+     "tipUp": 12.140874363451282,
      "tipDown": 11.048292577103723,
      "drop": 0,
-     "tilt": 5.584909401787958,
+     "tilt": 7.47500000000005,
      "steps": 0.2753411161679272,
      "stepsPart": "backrest",
      "tracks": 0.030697777844673257,
@@ -3291,7 +3291,7 @@ window.STRESS_RESULTS = {
       "tip": -15.861174106285004
      },
      "level": "pass",
-     "why": "takes a 10.9° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 11.0° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Posture",
@@ -3300,13 +3300,13 @@ window.STRESS_RESULTS = {
      "opts": {
       "reclineDeg": 15
      },
-     "tipUp": 10.290050673928034,
+     "tipUp": 11.382994450520172,
      "tipDown": 18.463681511521678,
      "drop": 0,
-     "tilt": 4.975822237685627,
-     "steps": 0.24411738536072483,
+     "tilt": 4.9758210774429585,
+     "steps": 0.23811607592481757,
      "stepsPart": "leg rest",
-     "tracks": 0.06203982926879423,
+     "tracks": 0.05811607592481771,
      "tracksHit": {
       "part": "leg rest",
       "unit": "rear"
@@ -3319,7 +3319,7 @@ window.STRESS_RESULTS = {
       "tip": -12.906361188278828
      },
      "level": "pass",
-     "why": "takes a 10.3° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 11.4° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Posture",
@@ -3328,10 +3328,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "reclineDeg": 90
      },
-     "tipUp": 11.677317361743302,
+     "tipUp": 11.677322735786486,
      "tipDown": 20.276863626743232,
      "drop": 0,
-     "tilt": 4.975822237685627,
+     "tilt": 4.9758210774429585,
      "steps": 0.11174909805413888,
      "stepsPart": "backrest",
      "tracks": 0.03010393344776252,
@@ -3357,10 +3357,10 @@ window.STRESS_RESULTS = {
       "reclineDeg": 90,
       "comOffset": -0.1
      },
-     "tipUp": 10.711330728451667,
+     "tipUp": 10.624969596602757,
      "tipDown": 17.00021328405529,
      "drop": 0,
-     "tilt": 5.034839408771837,
+     "tilt": 5.034838312527663,
      "steps": 0.05986148738828488,
      "stepsPart": "backrest",
      "tracks": 0.03010393344776252,
@@ -3376,7 +3376,7 @@ window.STRESS_RESULTS = {
       "tip": -12.943858464718398
      },
      "level": "pass",
-     "why": "takes a 10.7° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 10.6° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Stairs",
@@ -3385,10 +3385,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "going": 0.25
      },
-     "tipUp": 10.550862327728328,
+     "tipUp": 13.415918128448086,
      "tipDown": 11.95326143515921,
      "drop": 0,
-     "tilt": 5.032696579584604,
+     "tilt": 5.032695542133831,
      "steps": 0.3814365009910623,
      "stepsPart": "backrest",
      "tracks": 0.17900229299811918,
@@ -3404,7 +3404,7 @@ window.STRESS_RESULTS = {
       "tip": -15.538675815731052
      },
      "level": "pass",
-     "why": "takes a 10.6° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 12.0° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Stairs",
@@ -3414,10 +3414,10 @@ window.STRESS_RESULTS = {
       "rise": 0.18,
       "going": 0.25
      },
-     "tipUp": 9.454235345481298,
+     "tipUp": 14.10644994189273,
      "tipDown": 9.394155758071296,
      "drop": 0,
-     "tilt": 5.840297669010354,
+     "tilt": 5.8402965954449835,
      "steps": 0.33610782637436154,
      "stepsPart": "backrest",
      "tracks": 0.13945805698394248,
@@ -3442,10 +3442,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "hingeRateDegPerM": 90
      },
-     "tipUp": 9.112457067789672,
+     "tipUp": 10.940216254836004,
      "tipDown": 15.261277576914818,
      "drop": 0,
-     "tilt": 5.036656138068298,
+     "tilt": 5.13867502077081,
      "steps": 0.4210684064150648,
      "stepsPart": "backrest",
      "tracks": 0.21240328258369764,
@@ -3461,7 +3461,7 @@ window.STRESS_RESULTS = {
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 9.1° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 10.9° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -3470,7 +3470,7 @@ window.STRESS_RESULTS = {
      "opts": {
       "hingeRateDegPerM": 60
      },
-     "tipUp": 10.44699919979902,
+     "tipUp": 12.683301533321817,
      "tipDown": -11.38702293424007,
      "drop": 0.2269988243016292,
      "tilt": 15.127229431746658,
@@ -3498,10 +3498,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "hingeLimitDeg": 45
      },
-     "tipUp": 9.210271897851518,
+     "tipUp": 11.151596133999636,
      "tipDown": 9.410529940558542,
      "drop": 0,
-     "tilt": 4.937071277964386,
+     "tilt": 4.9758210774429585,
      "steps": 0.4383552791487184,
      "stepsPart": "backrest",
      "tracks": 0.2470328579853118,
@@ -3517,7 +3517,7 @@ window.STRESS_RESULTS = {
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 9.2° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 9.4° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -3526,10 +3526,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "hingeRateDegPerM": 180
      },
-     "tipUp": 12.451720498631976,
+     "tipUp": 12.414321380755366,
      "tipDown": 21.93294040737171,
      "drop": 0,
-     "tilt": 4.555181952547426,
+     "tilt": 4.555179609580671,
      "steps": 0.45696063302323964,
      "stepsPart": "backrest",
      "tracks": 0.2220685070120287,
@@ -3545,7 +3545,7 @@ window.STRESS_RESULTS = {
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 12.5° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 12.4° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -3554,10 +3554,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "levelRateDegPerM": 75
      },
-     "tipUp": 10.680122638417412,
+     "tipUp": 11.566917068017798,
      "tipDown": 18.71662888044187,
      "drop": 0,
-     "tilt": 6.512896223030973,
+     "tilt": 6.512919166979697,
      "steps": 0.44283000953325935,
      "stepsPart": "backrest",
      "tracks": 0.22387018433466752,
@@ -3573,7 +3573,7 @@ window.STRESS_RESULTS = {
       "tip": -12.373889768232564
      },
      "level": "pass",
-     "why": "takes a 10.7° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 11.6° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Failures",
@@ -3582,10 +3582,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "armLockDeg": 0
      },
-     "tipUp": 8.98570603063134,
+     "tipUp": 8.985710336619334,
      "tipDown": 15.544536174802166,
      "drop": 0,
-     "tilt": 5.053139626979238,
+     "tilt": 5.053138566986861,
      "steps": 0.4859118180271377,
      "stepsPart": "leg rest",
      "tracks": 0.3184304227638417,
@@ -3610,10 +3610,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "armLockDeg": -20
      },
-     "tipUp": 15.295615238453992,
+     "tipUp": 15.29561891407371,
      "tipDown": 23.94683607889266,
      "drop": 0,
-     "tilt": 4.9758222376856285,
+     "tilt": 4.975821077442959,
      "steps": 0.44941718904246997,
      "stepsPart": "backrest",
      "tracks": 0.2349409079570219,
@@ -3638,7 +3638,7 @@ window.STRESS_RESULTS = {
      "opts": {
       "armLockDeg": 20
      },
-     "tipUp": 10.241370776849632,
+     "tipUp": 10.241375559935536,
      "tipDown": 7.13794842574226,
      "drop": 0,
      "tilt": 12.296306735704615,
@@ -3666,7 +3666,7 @@ window.STRESS_RESULTS = {
      "opts": {
       "levelLockDeg": 0
      },
-     "tipUp": 12.386117428100249,
+     "tipUp": 12.38612372427508,
      "tipDown": 19.40923099290421,
      "drop": 0,
      "tilt": 5.837071272770488,
@@ -3694,11 +3694,11 @@ window.STRESS_RESULTS = {
      "opts": {
       "levelLockDeg": 31.6
      },
-     "tipUp": 9.016313690512694,
+     "tipUp": 9.01632237971483,
      "tipDown": 6.073429354507374,
      "drop": 0,
      "tilt": 5.837071272770488,
-     "steps": 0.40756838081531155,
+     "steps": 0.4075683970118895,
      "stepsPart": "leg rest",
      "tracks": 0.34290637558400006,
      "tracksHit": {
@@ -3722,10 +3722,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "extraHingeRateDegPerM": 120
      },
-     "tipUp": 10.264574512527721,
+     "tipUp": 11.151596133999636,
      "tipDown": 9.309175452288397,
      "drop": 0,
-     "tilt": 4.975822237685627,
+     "tilt": 4.9758210774429585,
      "steps": 0.4419361899047749,
      "stepsPart": "backrest",
      "tracks": 0.2502132805614351,
@@ -3778,19 +3778,19 @@ window.STRESS_RESULTS = {
      "opts": {
       "mainHingeSeized": true
      },
-     "tipUp": -9.272649949302053,
+     "tipUp": -0.7286966762002924,
      "tipDown": -12.375988767699951,
      "drop": 0.2142655869046317,
      "tilt": 25.490383328426827,
-     "steps": 0.48695865463770815,
+     "steps": 0.45403969391169885,
      "stepsPart": "leg rest",
-     "tracks": 0.28272162242731136,
+     "tracks": 0.274039693911699,
      "tracksHit": {
-      "part": "backrest",
-      "unit": "front"
+      "part": "leg rest",
+      "unit": "rear"
      },
      "hinge": 0,
-     "extra": 48.11709948175509,
+     "extra": 55,
      "one": {
       "drop": 0.22818618387216283,
       "tilt": 25.49038332841601,
@@ -3809,10 +3809,10 @@ window.STRESS_RESULTS = {
       "rise": 0.18,
       "going": 0.25
      },
-     "tipUp": 7.360067130699494,
+     "tipUp": 15.24741328121396,
      "tipDown": 6.275339890918105,
      "drop": 0,
-     "tilt": 5.840297669010359,
+     "tilt": 5.84029659544498,
      "steps": 0.24007591526411945,
      "stepsPart": "backrest",
      "tracks": 0.03354257843474792,
@@ -3841,10 +3841,10 @@ window.STRESS_RESULTS = {
       "rise": 0.18,
       "going": 0.25
      },
-     "tipUp": 9.696437785965186,
+     "tipUp": 14.919583199366178,
      "tipDown": 5.59950299657334,
      "drop": 0,
-     "tilt": 5.840297669010355,
+     "tilt": 5.8402965954449835,
      "steps": -0.03,
      "stepsPart": "backrest",
      "tracks": -0.027959100229740574,
@@ -3878,9 +3878,9 @@ window.STRESS_RESULTS = {
    },
    "split": true,
    "count": {
-    "pass": 19,
-    "warn": 4,
-    "fail": 3
+    "pass": 22,
+    "warn": 0,
+    "fail": 4
    },
    "structure": {
     "normal": {
@@ -3888,18 +3888,18 @@ window.STRESS_RESULTS = {
       {
        "part": "Columns",
        "size": "2 × 50 × 50 × 4 mm box tube, 0.4 m apart",
-       "load": "999 N·m bend",
-       "stress": 47770598.634597145,
+       "load": "923 N·m bend",
+       "stress": 44120930.62476086,
        "limit": 355000000,
-       "factor": 7.431349201115025
+       "factor": 8.046067817997757
       },
       {
        "part": "Averaging links",
        "size": "12 mm rods, a diamond each side",
-       "load": "1.7 kN each",
-       "stress": 14762816.678163087,
+       "load": "1.5 kN each",
+       "stress": 13634939.253442097,
        "limit": 355000000,
-       "factor": 24.04690160009303
+       "factor": 26.036052922669338
       },
       {
        "part": "Cradle rails",
@@ -3934,7 +3934,7 @@ window.STRESS_RESULTS = {
       },
       {
        "part": "Arm drive",
-       "need": "999 N·m",
+       "need": "923 N·m",
        "note": "self-locking; leans the arm to keep the weight away from the edges"
       },
       {
@@ -3954,18 +3954,18 @@ window.STRESS_RESULTS = {
       {
        "part": "Columns",
        "size": "2 × 50 × 50 × 4 mm box tube, 0.4 m apart",
-       "load": "1720 N·m bend",
-       "stress": 82191385.75257833,
+       "load": "1673 N·m bend",
+       "stress": 79966391.79499896,
        "limit": 355000000,
-       "factor": 4.319187427605376
+       "factor": 4.439364988607645
       },
       {
        "part": "Averaging links",
        "size": "12 mm rods, a diamond each side",
-       "load": "2.9 kN each",
-       "stress": 25400066.046288345,
+       "load": "2.8 kN each",
+       "stress": 24712463.653925274,
        "limit": 355000000,
-       "factor": 13.976341610807557
+       "factor": 14.365220925418036
       },
       {
        "part": "Cradle rails",
@@ -4000,7 +4000,7 @@ window.STRESS_RESULTS = {
       },
       {
        "part": "Arm drive",
-       "need": "1720 N·m",
+       "need": "1673 N·m",
        "note": "self-locking; leans the arm to keep the weight away from the edges"
       },
       {
@@ -4023,12 +4023,12 @@ window.STRESS_RESULTS = {
      "what": "120 kg person, half lying, seat 0.5 m up",
      "opts": {},
      "tipUp": 17.89510961248308,
-     "tipDown": 9.986459961664403,
+     "tipDown": 9.53069042355565,
      "drop": 0,
      "tilt": 5.0335557102498605,
-     "steps": 0.44590125914355194,
+     "steps": 0.4642380072063872,
      "stepsPart": "backrest",
-     "tracks": 0.2537389674652971,
+     "tracks": 0.27016302584597573,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -4041,7 +4041,7 @@ window.STRESS_RESULTS = {
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 10.0° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 9.5° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -4051,12 +4051,12 @@ window.STRESS_RESULTS = {
       "personMass": 200
      },
      "tipUp": 17.71235681359753,
-     "tipDown": 8.568561592817446,
+     "tipDown": 8.919805411035256,
      "drop": 0,
      "tilt": 5.0335557102498605,
-     "steps": 0.42135615334177245,
+     "steps": 0.4299359578781775,
      "stepsPart": "backrest",
-     "tracks": 0.23191008402308863,
+     "tracks": 0.23948699617009003,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -4069,7 +4069,7 @@ window.STRESS_RESULTS = {
       "tip": -15.272791037525746
      },
      "level": "pass",
-     "why": "takes a 8.6° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 8.9° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -4079,15 +4079,15 @@ window.STRESS_RESULTS = {
       "personMass": 40
      },
      "tipUp": 22.430310860549653,
-     "tipDown": 13.659072392804672,
+     "tipDown": 13.763397740677194,
      "drop": 0,
      "tilt": 5.0335557102498605,
      "steps": 0.4859118180271377,
      "stepsPart": "leg rest",
-     "tracks": 0.296808984328657,
+     "tracks": 0.31776819061025996,
      "tracksHit": {
-      "part": "leg rest",
-      "unit": "rear"
+      "part": "backrest",
+      "unit": "front"
      },
      "hinge": 39.853504194990855,
      "extra": 34.83057387352714,
@@ -4097,7 +4097,7 @@ window.STRESS_RESULTS = {
       "tip": -10.931041927041855
      },
      "level": "pass",
-     "why": "takes a 13.7° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 13.8° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -4107,12 +4107,12 @@ window.STRESS_RESULTS = {
       "comOffset": -0.1
      },
      "tipUp": 16.55963977571101,
-     "tipDown": 9.427972420811487,
+     "tipDown": 9.826132788669524,
      "drop": 0,
      "tilt": 5.0335557102498605,
-     "steps": 0.37804287902752876,
+     "steps": 0.3897688976860897,
      "stepsPart": "backrest",
-     "tracks": 0.19385048485598352,
+     "tracks": 0.20419968483430492,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -4125,7 +4125,7 @@ window.STRESS_RESULTS = {
       "tip": -11.241276863320062
      },
      "level": "pass",
-     "why": "takes a 9.4° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 9.8° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -4135,12 +4135,12 @@ window.STRESS_RESULTS = {
       "comOffset": 0.1
      },
      "tipUp": 21.345978877076945,
-     "tipDown": 9.725666388516807,
+     "tipDown": 10.06770637901098,
      "drop": 0,
-     "tilt": 5.0335557102498605,
-     "steps": 0.4623270028858219,
+     "tilt": 5.033555710249861,
+     "steps": 0.4838974630037191,
      "stepsPart": "thigh",
-     "tracks": 0.2806549400311127,
+     "tracks": 0.2990034614811504,
      "tracksHit": {
       "part": "thigh",
       "unit": "front"
@@ -4153,7 +4153,7 @@ window.STRESS_RESULTS = {
       "tip": -11.06264535240602
      },
      "level": "pass",
-     "why": "takes a 9.7° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 10.1° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -4163,12 +4163,12 @@ window.STRESS_RESULTS = {
       "comOffset": -0.25
      },
      "tipUp": 15.824449264978856,
-     "tipDown": 10.192952456625486,
+     "tipDown": 10.919729131759713,
      "drop": 0,
-     "tilt": 7.4764938820703035,
-     "steps": 0.2739852082755002,
+     "tilt": 6.6514938820703104,
+     "steps": 0.2801035033677094,
      "stepsPart": "backrest",
-     "tracks": 0.09362795596193768,
+     "tracks": 0.09990115263843799,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -4181,7 +4181,7 @@ window.STRESS_RESULTS = {
       "tip": -15.861174106285004
      },
      "level": "pass",
-     "why": "takes a 10.2° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 10.9° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Posture",
@@ -4191,12 +4191,12 @@ window.STRESS_RESULTS = {
       "reclineDeg": 15
      },
      "tipUp": 17.687139671237503,
-     "tipDown": 9.576795098691264,
+     "tipDown": 9.371164163926542,
      "drop": 0,
      "tilt": 5.0335557102498605,
-     "steps": 0.24628210528662522,
+     "steps": 0.2555523695414712,
      "stepsPart": "leg rest",
-     "tracks": 0.05813967803528333,
+     "tracks": 0.07344461053270371,
      "tracksHit": {
       "part": "leg rest",
       "unit": "middle"
@@ -4209,7 +4209,7 @@ window.STRESS_RESULTS = {
       "tip": -12.906361188278828
      },
      "level": "pass",
-     "why": "takes a 9.6° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 9.4° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Posture",
@@ -4219,12 +4219,12 @@ window.STRESS_RESULTS = {
       "reclineDeg": 90
      },
      "tipUp": 20.440530644910066,
-     "tipDown": 11.259617671747614,
+     "tipDown": 11.305586222177881,
      "drop": 0,
-     "tilt": 5.0335557102498605,
-     "steps": 0.11009202094915899,
+     "tilt": 5.033555710249861,
+     "steps": 0.12071547612716871,
      "stepsPart": "backrest",
-     "tracks": 0.021130267610286357,
+     "tracks": -0.0041313095459106774,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -4236,8 +4236,8 @@ window.STRESS_RESULTS = {
       "tilt": 24.290383328416002,
       "tip": -12.485471172342972
      },
-     "level": "warn",
-     "why": "fits with only 2 cm to spare"
+     "level": "fail",
+     "why": "the seat or person hits the tracks or steps"
     },
     {
      "group": "Posture",
@@ -4248,10 +4248,10 @@ window.STRESS_RESULTS = {
       "comOffset": -0.1
      },
      "tipUp": 16.504390399138877,
-     "tipDown": 9.854545629172879,
+     "tipDown": 11.230385797106512,
      "drop": 0,
      "tilt": 5.0335557102498605,
-     "steps": 0.058507529695312255,
+     "steps": 0.07537546716318409,
      "stepsPart": "backrest",
      "tracks": 0.0301039334477623,
      "tracksHit": {
@@ -4266,7 +4266,7 @@ window.STRESS_RESULTS = {
       "tip": -12.943858464718398
      },
      "level": "pass",
-     "why": "takes a 9.9° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 11.2° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Stairs",
@@ -4276,17 +4276,17 @@ window.STRESS_RESULTS = {
       "going": 0.25
      },
      "tipUp": 14.645386330107653,
-     "tipDown": 9.560034027578958,
+     "tipDown": 9.745112292768633,
      "drop": 0,
      "tilt": 5.0497355517036615,
-     "steps": 0.37912284188961387,
+     "steps": 0.3891467808455066,
      "stepsPart": "backrest",
-     "tracks": 0.19807766760080467,
+     "tracks": 0.2075762050420263,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
      },
-     "hinge": 42.32299297198411,
+     "hinge": 41.121900350189776,
      "extra": 39.86388339774551,
      "one": {
       "drop": 0.25777511106843587,
@@ -4294,7 +4294,7 @@ window.STRESS_RESULTS = {
       "tip": -15.538675815731052
      },
      "level": "pass",
-     "why": "takes a 9.6° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 9.7° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Stairs",
@@ -4305,17 +4305,17 @@ window.STRESS_RESULTS = {
       "going": 0.25
      },
      "tipUp": 11.29507986074578,
-     "tipDown": 8.33473216114321,
+     "tipDown": 8.022059896998167,
      "drop": 0,
-     "tilt": 4.208255895352068,
-     "steps": 0.3327006801745538,
+     "tilt": 3.9300199624861434,
+     "steps": 0.33524726160319573,
      "stepsPart": "backrest",
-     "tracks": 0.15260029642714373,
+     "tracks": 0.15512601697470707,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
      },
-     "hinge": 45.47105683981243,
+     "hinge": 44.69963321697185,
      "extra": 40.35006057841183,
      "one": {
       "drop": 0.28218728012645045,
@@ -4323,7 +4323,7 @@ window.STRESS_RESULTS = {
       "tip": -18.2710332780266
      },
      "level": "pass",
-     "why": "takes a 8.3° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 8.0° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -4333,17 +4333,17 @@ window.STRESS_RESULTS = {
       "hingeRateDegPerM": 90
      },
      "tipUp": 17.89510961248308,
-     "tipDown": 10.604709621860513,
+     "tipDown": 9.237436911193017,
      "drop": 0,
      "tilt": 5.101710315470173,
-     "steps": 0.42632195323959576,
+     "steps": 0.46105317965675263,
      "stepsPart": "backrest",
-     "tracks": 0.23639872007606064,
+     "tracks": 0.2672785855513077,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
      },
-     "hinge": 39.0088891730695,
+     "hinge": 36.931452237649445,
      "extra": 32.90706204301751,
      "one": {
       "drop": 0.22818618387216283,
@@ -4351,7 +4351,7 @@ window.STRESS_RESULTS = {
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 10.6° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 9.2° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -4361,25 +4361,25 @@ window.STRESS_RESULTS = {
       "hingeRateDegPerM": 60
      },
      "tipUp": 12.513341860489748,
-     "tipDown": -9.906616320929434,
-     "drop": 0.1651668351124318,
-     "tilt": 16.46768349746362,
-     "steps": 0.45056040289294064,
+     "tipDown": 4.899975376579031,
+     "drop": 0.04140277318240715,
+     "tilt": 6.991297618843453,
+     "steps": 0.4502465463391241,
      "stepsPart": "backrest",
-     "tracks": 0.24075156862344413,
+     "tracks": 0.2575908905326445,
      "tracksHit": {
-      "part": "leg rest",
-      "unit": "rear"
+      "part": "backrest",
+      "unit": "front"
      },
      "hinge": 35.41172844726432,
-     "extra": 26.322542942745148,
+     "extra": 41.99986787677266,
      "one": {
       "drop": 0.22818618387216283,
       "tilt": 25.49038332841601,
       "tip": -12.651588743991969
      },
      "level": "fail",
-     "why": "rocks over and drops 17 cm"
+     "why": "rocks over and drops 4 cm"
     },
     {
      "group": "Motors",
@@ -4389,25 +4389,25 @@ window.STRESS_RESULTS = {
       "hingeLimitDeg": 45
      },
      "tipUp": 12.431337766550804,
-     "tipDown": 8.46355104990774,
+     "tipDown": 9.53069042355565,
      "drop": 0,
      "tilt": 5.0335557102498605,
-     "steps": 0.44283000953325935,
+     "steps": 0.4642380072063872,
      "stepsPart": "backrest",
-     "tracks": 0.25100156687316766,
+     "tracks": 0.27016302584597573,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
      },
-     "hinge": 37.561739608007876,
-     "extra": 34.13445835354528,
+     "hinge": 36.26382605546666,
+     "extra": 38.40000000000002,
      "one": {
       "drop": 0.22818618387216283,
       "tilt": 25.49038332841601,
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 8.5° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 9.5° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -4417,7 +4417,7 @@ window.STRESS_RESULTS = {
       "hingeRateDegPerM": 180
      },
      "tipUp": 17.89510961248308,
-     "tipDown": 8.833639676807309,
+     "tipDown": 8.833644277945602,
      "drop": 0,
      "tilt": 4.495115931286631,
      "steps": 0.4642380072063872,
@@ -4445,12 +4445,12 @@ window.STRESS_RESULTS = {
       "levelRateDegPerM": 75
      },
      "tipUp": 17.89510961248308,
-     "tipDown": 10.238741252785337,
+     "tipDown": 9.852573698989854,
      "drop": 0,
-     "tilt": 6.135535916535343,
-     "steps": 0.44590125914355194,
+     "tilt": 5.783555710249861,
+     "steps": 0.4642380072063872,
      "stepsPart": "backrest",
-     "tracks": 0.2537389674652971,
+     "tracks": 0.27016302584597573,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -4463,7 +4463,7 @@ window.STRESS_RESULTS = {
       "tip": -12.373889768232564
      },
      "level": "pass",
-     "why": "takes a 10.2° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 9.9° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Failures",
@@ -4473,12 +4473,12 @@ window.STRESS_RESULTS = {
       "armLockDeg": 0
      },
      "tipUp": 17.740505039165814,
-     "tipDown": 9.201065556479636,
+     "tipDown": 9.201070937954778,
      "drop": 0,
      "tilt": 5.0335557102498605,
      "steps": 0.4859118180271377,
      "stepsPart": "leg rest",
-     "tracks": 0.3033538723102307,
+     "tracks": 0.32556640854257424,
      "tracksHit": {
       "part": "leg rest",
       "unit": "rear"
@@ -4501,7 +4501,7 @@ window.STRESS_RESULTS = {
       "armLockDeg": -20
      },
      "tipUp": 17.6519328263708,
-     "tipDown": 10.693268310219798,
+     "tipDown": 10.69327451374116,
      "drop": 0,
      "tilt": 5.0335557102498605,
      "steps": 0.44941718904246997,
@@ -4529,12 +4529,12 @@ window.STRESS_RESULTS = {
       "armLockDeg": 20
      },
      "tipUp": 9.639531324628528,
-     "tipDown": 3.723430859726047,
+     "tipDown": 9.639531324628564,
      "drop": 0,
      "tilt": 11.611307757635084,
      "steps": 0.3581498910456493,
      "stepsPart": "leg rest",
-     "tracks": 0.33257199460650777,
+     "tracks": 0.3328668758769633,
      "tracksHit": {
       "part": "leg rest",
       "unit": "rear"
@@ -4546,8 +4546,8 @@ window.STRESS_RESULTS = {
       "tilt": 22.61130775763646,
       "tip": -25.769195166382975
      },
-     "level": "warn",
-     "why": "a hard stop at the wrong moment could rock it (takes 3.7°, needs 7.3°)"
+     "level": "pass",
+     "why": "takes a 9.6° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Failures",
@@ -4557,7 +4557,7 @@ window.STRESS_RESULTS = {
       "levelLockDeg": 0
      },
      "tipUp": 15.80608071239394,
-     "tipDown": 8.72532710315032,
+     "tipDown": 8.725336995585893,
      "drop": 0,
      "tilt": 5.933555710249862,
      "steps": 0.4560296661362757,
@@ -4585,9 +4585,9 @@ window.STRESS_RESULTS = {
       "levelLockDeg": 31.6
      },
      "tipUp": 17.65425125219743,
-     "tipDown": 2.861066270623044,
+     "tipDown": 13.78135913785185,
      "drop": 0,
-     "tilt": 5.933555710249858,
+     "tilt": 5.933555710249862,
      "steps": 0.4075683297454653,
      "stepsPart": "leg rest",
      "tracks": 0.34290637558400006,
@@ -4602,8 +4602,8 @@ window.STRESS_RESULTS = {
       "tilt": 28.011307757636455,
       "tip": -31.703001700346334
      },
-     "level": "warn",
-     "why": "a hard stop at the wrong moment could rock it (takes 2.9°, needs 7.3°)"
+     "level": "pass",
+     "why": "takes a 13.8° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -4613,12 +4613,12 @@ window.STRESS_RESULTS = {
       "extraHingeRateDegPerM": 120
      },
      "tipUp": 13.331168526626161,
-     "tipDown": 9.986459961664403,
+     "tipDown": 9.444854656278347,
      "drop": 0,
      "tilt": 5.0335557102498605,
-     "steps": 0.44590125914355194,
+     "steps": 0.46384053326962404,
      "stepsPart": "backrest",
-     "tracks": 0.2537389674652971,
+     "tracks": 0.2698049755090388,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -4631,7 +4631,7 @@ window.STRESS_RESULTS = {
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 10.0° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 9.4° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Failures",
@@ -4669,25 +4669,25 @@ window.STRESS_RESULTS = {
       "mainHingeSeized": true
      },
      "tipUp": -9.328425762158163,
-     "tipDown": -12.12190815175627,
-     "drop": 0.22818618387216283,
-     "tilt": 25.490383328426827,
-     "steps": 0.4798956537229191,
+     "tipDown": -10.978480953468614,
+     "drop": 0.18340770650457383,
+     "tilt": 24.663731694388197,
+     "steps": 0.4891015595279612,
      "stepsPart": "leg rest",
-     "tracks": 0.2861053181412313,
+     "tracks": 0.30910155952796126,
      "tracksHit": {
       "part": "leg rest",
       "unit": "rear"
      },
      "hinge": 0,
-     "extra": 42.708495419365434,
+     "extra": 55,
      "one": {
       "drop": 0.22818618387216283,
       "tilt": 25.49038332841601,
       "tip": -12.651588743991969
      },
      "level": "fail",
-     "why": "the long part rocks over edges and drops 23 cm, so the tracks must stop if the hinge stops"
+     "why": "the long part rocks over edges and drops 18 cm, so the tracks must stop if the hinge stops"
     },
     {
      "group": "Combined",
@@ -4700,7 +4700,7 @@ window.STRESS_RESULTS = {
       "going": 0.25
      },
      "tipUp": 8.178726429275477,
-     "tipDown": 5.713511314265542,
+     "tipDown": 7.553761756750377,
      "drop": 0,
      "tilt": 9.279127947676074,
      "steps": 0.2355070640087081,
@@ -4710,15 +4710,15 @@ window.STRESS_RESULTS = {
       "part": "backrest",
       "unit": "front"
      },
-     "hinge": 47.018021367524256,
+     "hinge": 46.630717287873544,
      "extra": 40.35006057841183,
      "one": {
       "drop": 0.28713986777303013,
       "tilt": 27.629133819911843,
       "tip": -21.85010555131527
      },
-     "level": "warn",
-     "why": "a hard stop at the wrong moment could rock it (takes 5.7°, needs 7.3°)"
+     "level": "pass",
+     "why": "takes a 7.6° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Combined",
@@ -4732,7 +4732,7 @@ window.STRESS_RESULTS = {
       "going": 0.25
      },
      "tipUp": 11.724673352729958,
-     "tipDown": 4.889045072919421,
+     "tipDown": 9.260303501443069,
      "drop": 0,
      "tilt": 3.93001996248614,
      "steps": -0.03,
@@ -4742,7 +4742,7 @@ window.STRESS_RESULTS = {
       "part": "backrest",
       "unit": "front"
      },
-     "hinge": 44.69963321697185,
+     "hinge": 44.31473328088453,
      "extra": 40.35006057841183,
      "one": {
       "drop": 0.2871398677730297,
@@ -4769,9 +4769,9 @@ window.STRESS_RESULTS = {
    },
    "split": true,
    "count": {
-    "pass": 20,
-    "warn": 3,
-    "fail": 3
+    "pass": 23,
+    "warn": 1,
+    "fail": 2
    },
    "structure": {
     "normal": {
@@ -4779,18 +4779,18 @@ window.STRESS_RESULTS = {
       {
        "part": "Columns",
        "size": "2 × 50 × 50 × 4 mm box tube, 0.4 m apart",
-       "load": "924 N·m bend",
-       "stress": 44166678.91977348,
+       "load": "838 N·m bend",
+       "stress": 40066885.98183535,
        "limit": 355000000,
-       "factor": 8.03773361915754
+       "factor": 8.860184446601169
       },
       {
        "part": "Averaging links",
        "size": "12 mm rods, a diamond each side",
-       "load": "1.5 kN each",
-       "stress": 13618094.68003839,
+       "load": "1.4 kN each",
+       "stress": 12353988.576457247,
        "limit": 355000000,
-       "factor": 26.06825758968796
+       "factor": 28.73565875530406
       },
       {
        "part": "Cradle rails",
@@ -4825,7 +4825,7 @@ window.STRESS_RESULTS = {
       },
       {
        "part": "Arm drive",
-       "need": "924 N·m",
+       "need": "838 N·m",
        "note": "self-locking; leans the arm to keep the weight away from the edges"
       },
       {
@@ -4845,18 +4845,18 @@ window.STRESS_RESULTS = {
       {
        "part": "Columns",
        "size": "2 × 50 × 50 × 4 mm box tube, 0.4 m apart",
-       "load": "1511 N·m bend",
-       "stress": 72242873.29309776,
+       "load": "1506 N·m bend",
+       "stress": 71989360.0574261,
        "limit": 355000000,
-       "factor": 4.913979522377572
+       "factor": 4.931284285855793
       },
       {
        "part": "Averaging links",
        "size": "12 mm rods, a diamond each side",
        "load": "2.5 kN each",
-       "stress": 22274943.74776205,
+       "stress": 22196776.96387751,
        "limit": 355000000,
-       "factor": 15.937189517511873
+       "factor": 15.993312929067057
       },
       {
        "part": "Cradle rails",
@@ -4891,7 +4891,7 @@ window.STRESS_RESULTS = {
       },
       {
        "part": "Arm drive",
-       "need": "1511 N·m",
+       "need": "1506 N·m",
        "note": "self-locking; leans the arm to keep the weight away from the edges"
       },
       {
@@ -4914,12 +4914,12 @@ window.STRESS_RESULTS = {
      "what": "120 kg person, half lying, seat 0.5 m up",
      "opts": {},
      "tipUp": 18.771717614078593,
-     "tipDown": 18.372838082612585,
+     "tipDown": 21.547774131148753,
      "drop": 0,
      "tilt": 4.937071272770486,
-     "steps": 0.44283000953325935,
+     "steps": 0.4634429261458408,
      "stepsPart": "backrest",
-     "tracks": 0.22387018433466752,
+     "tracks": 0.25181215616447616,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -4932,7 +4932,7 @@ window.STRESS_RESULTS = {
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 18.4° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 18.8° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -4942,12 +4942,12 @@ window.STRESS_RESULTS = {
       "personMass": 200
      },
      "tipUp": 17.546170539701777,
-     "tipDown": 17.73141429345868,
+     "tipDown": 21.9621728348262,
      "drop": 0,
-     "tilt": 4.937071272770486,
-     "steps": 0.41549836428572706,
+     "tilt": 4.937071272770484,
+     "steps": 0.4198936929576955,
      "stepsPart": "backrest",
-     "tracks": 0.21247599320002528,
+     "tracks": 0.2136327283935425,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -4970,12 +4970,12 @@ window.STRESS_RESULTS = {
       "personMass": 40
      },
      "tipUp": 23.943247972389823,
-     "tipDown": 21.024285457929988,
+     "tipDown": 24.177831084740866,
      "drop": 0,
-     "tilt": 4.9370712727704875,
+     "tilt": 4.937071272770486,
      "steps": 0.4859118180271377,
      "stepsPart": "leg rest",
-     "tracks": 0.3058609972526741,
+     "tracks": 0.3191912091372403,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -4988,7 +4988,7 @@ window.STRESS_RESULTS = {
       "tip": -10.931041927041855
      },
      "level": "pass",
-     "why": "takes a 21.0° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 23.9° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -4998,12 +4998,12 @@ window.STRESS_RESULTS = {
       "comOffset": -0.1
      },
      "tipUp": 16.895618918491262,
-     "tipDown": 15.51444353158877,
+     "tipDown": 22.084450693936915,
      "drop": 0,
-     "tilt": 4.937071272770486,
-     "steps": 0.37804287902752876,
+     "tilt": 4.937071272770489,
+     "steps": 0.3876691133128827,
      "stepsPart": "backrest",
-     "tracks": 0.14778283612515175,
+     "tracks": 0.15832917527858564,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -5016,7 +5016,7 @@ window.STRESS_RESULTS = {
       "tip": -11.241276863320062
      },
      "level": "pass",
-     "why": "takes a 15.5° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 16.9° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -5025,13 +5025,13 @@ window.STRESS_RESULTS = {
      "opts": {
       "comOffset": 0.1
      },
-     "tipUp": 21.946181827079982,
-     "tipDown": 21.38132831344382,
+     "tipUp": 22.12768647445326,
+     "tipDown": 23.243430725249993,
      "drop": 0,
      "tilt": 4.937071272770486,
-     "steps": 0.4583404954177048,
+     "steps": 0.4685926216760638,
      "stepsPart": "thigh",
-     "tracks": 0.2572352906904498,
+     "tracks": 0.2691530422700441,
      "tracksHit": {
       "part": "thigh",
       "unit": "front"
@@ -5044,7 +5044,7 @@ window.STRESS_RESULTS = {
       "tip": -11.06264535240602
      },
      "level": "pass",
-     "why": "takes a 21.4° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 22.1° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Load",
@@ -5054,12 +5054,12 @@ window.STRESS_RESULTS = {
       "comOffset": -0.25
      },
      "tipUp": 15.476876424912962,
-     "tipDown": 10.721784207786747,
+     "tipDown": 19.73667515742247,
      "drop": 0,
-     "tilt": 5.434909401787955,
-     "steps": 0.276476818015712,
+     "tilt": 5.134906537149704,
+     "steps": 0.27874725384381105,
      "stepsPart": "backrest",
-     "tracks": 0.03239422465030248,
+     "tracks": 0.0357894584455071,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -5072,7 +5072,7 @@ window.STRESS_RESULTS = {
       "tip": -15.861174106285004
      },
      "level": "pass",
-     "why": "takes a 10.7° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 15.5° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Posture",
@@ -5082,12 +5082,12 @@ window.STRESS_RESULTS = {
       "reclineDeg": 15
      },
      "tipUp": 18.55868065496624,
-     "tipDown": 18.281909984254447,
+     "tipDown": 21.437905597605496,
      "drop": 0,
      "tilt": 4.937071272770486,
-     "steps": 0.24386747478426943,
+     "steps": 0.2543234896032731,
      "stepsPart": "leg rest",
-     "tracks": 0.061795946885154523,
+     "tracks": 0.07197767514454037,
      "tracksHit": {
       "part": "leg rest",
       "unit": "middle"
@@ -5100,7 +5100,7 @@ window.STRESS_RESULTS = {
       "tip": -12.906361188278828
      },
      "level": "pass",
-     "why": "takes a 18.3° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 18.6° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Posture",
@@ -5110,12 +5110,12 @@ window.STRESS_RESULTS = {
       "reclineDeg": 90
      },
      "tipUp": 21.345734148147038,
-     "tipDown": 20.062189814945572,
+     "tipDown": 22.613014253142232,
      "drop": 0,
      "tilt": 4.937071272770486,
-     "steps": 0.11071238043573883,
+     "steps": 0.12072147673362862,
      "stepsPart": "backrest",
-     "tracks": 0.030103933447762188,
+     "tracks": 0.018903959092688827,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -5127,8 +5127,8 @@ window.STRESS_RESULTS = {
       "tilt": 24.290383328416002,
       "tip": -12.485471172342972
      },
-     "level": "pass",
-     "why": "takes a 20.1° lean anywhere; a hard stop needs 7.3°"
+     "level": "warn",
+     "why": "fits with only 2 cm to spare"
     },
     {
      "group": "Posture",
@@ -5139,10 +5139,10 @@ window.STRESS_RESULTS = {
       "comOffset": -0.1
      },
      "tipUp": 17.52992572306342,
-     "tipDown": 16.596540251188333,
+     "tipDown": 21.051612126764706,
      "drop": 0,
      "tilt": 4.937071272770486,
-     "steps": 0.06077344977683216,
+     "steps": 0.07622897057139812,
      "stepsPart": "backrest",
      "tracks": 0.030103933447762188,
      "tracksHit": {
@@ -5157,7 +5157,7 @@ window.STRESS_RESULTS = {
       "tip": -12.943858464718398
      },
      "level": "pass",
-     "why": "takes a 16.6° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 17.5° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Stairs",
@@ -5166,18 +5166,18 @@ window.STRESS_RESULTS = {
      "opts": {
       "going": 0.25
      },
-     "tipUp": 15.27212377449954,
-     "tipDown": 11.357131874514817,
+     "tipUp": 18.46514206157109,
+     "tipDown": 22.80161988375009,
      "drop": 0,
-     "tilt": 4.922451607059491,
-     "steps": 0.3824167498727499,
+     "tilt": 4.92245160705949,
+     "steps": 0.3900990521745872,
      "stepsPart": "backrest",
-     "tracks": 0.1754985235916152,
+     "tracks": 0.1848343131399551,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
      },
-     "hinge": 41.583519550744924,
+     "hinge": 41.07205262096803,
      "extra": 44.82543709050636,
      "one": {
       "drop": 0.25777511106843587,
@@ -5185,7 +5185,7 @@ window.STRESS_RESULTS = {
       "tip": -15.538675815731052
      },
      "level": "pass",
-     "why": "takes a 11.4° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 18.5° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Stairs",
@@ -5195,18 +5195,18 @@ window.STRESS_RESULTS = {
       "rise": 0.18,
       "going": 0.25
      },
-     "tipUp": 11.89030251408676,
-     "tipDown": 8.835460155640776,
+     "tipUp": 17.685502499342824,
+     "tipDown": 23.012047391773542,
      "drop": 0,
-     "tilt": 5.736659628956731,
-     "steps": 0.3345804785173353,
+     "tilt": 5.736659628956734,
+     "steps": 0.33916045020665064,
      "stepsPart": "backrest",
-     "tracks": 0.12944885580785395,
+     "tracks": 0.1347497583517056,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
      },
-     "hinge": 44.69963321697185,
+     "hinge": 44.31473328088453,
      "extra": 44.86969151708756,
      "one": {
       "drop": 0.28218728012645045,
@@ -5214,7 +5214,7 @@ window.STRESS_RESULTS = {
       "tip": -18.2710332780266
      },
      "level": "pass",
-     "why": "takes a 8.8° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 17.7° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -5223,18 +5223,18 @@ window.STRESS_RESULTS = {
      "opts": {
       "hingeRateDegPerM": 90
      },
-     "tipUp": 18.54374351012695,
-     "tipDown": 14.764008323688122,
+     "tipUp": 18.771717614078593,
+     "tipDown": 21.547774131148753,
      "drop": 0,
-     "tilt": 5.036656138068298,
-     "steps": 0.41857254952273415,
+     "tilt": 5.036656138068299,
+     "steps": 0.4585992714443742,
      "stepsPart": "backrest",
-     "tracks": 0.21082373684278385,
+     "tracks": 0.26508531176119643,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
      },
-     "hinge": 38.66805170676522,
+     "hinge": 36.931452237649445,
      "extra": 37.91371953087075,
      "one": {
       "drop": 0.22818618387216283,
@@ -5242,7 +5242,7 @@ window.STRESS_RESULTS = {
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 14.8° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 18.8° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -5251,26 +5251,26 @@ window.STRESS_RESULTS = {
      "opts": {
       "hingeRateDegPerM": 60
      },
-     "tipUp": 11.752010026593684,
-     "tipDown": -10.638594048859737,
-     "drop": 0.1697947609831112,
-     "tilt": 15.127232201750418,
-     "steps": 0.4063228162294803,
-     "stepsPart": "leg rest",
-     "tracks": 0.16273910178038772,
+     "tipUp": 18.771717614078593,
+     "tipDown": 10.880512425051236,
+     "drop": 0,
+     "tilt": 3.707824161516543,
+     "steps": 0.44104180412938443,
+     "stepsPart": "backrest",
+     "tracks": 0.24942226108588014,
      "tracksHit": {
-      "part": "leg rest",
-      "unit": "rear"
+      "part": "backrest",
+      "unit": "front"
      },
-     "hinge": 36.09298458143432,
-     "extra": 28.930071499990383,
+     "hinge": 32.57833154840042,
+     "extra": 40.79990305293971,
      "one": {
       "drop": 0.22818618387216283,
       "tilt": 25.49038332841601,
       "tip": -12.651588743991969
      },
-     "level": "fail",
-     "why": "rocks over and drops 17 cm"
+     "level": "pass",
+     "why": "takes a 10.9° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -5279,18 +5279,18 @@ window.STRESS_RESULTS = {
      "opts": {
       "hingeLimitDeg": 45
      },
-     "tipUp": 12.43031311277663,
-     "tipDown": 8.968900347793864,
+     "tipUp": 18.771717614078593,
+     "tipDown": 21.547774131148753,
      "drop": 0,
      "tilt": 4.937071277964386,
-     "steps": 0.4383552791487184,
+     "steps": 0.4634429261458408,
      "stepsPart": "backrest",
-     "tracks": 0.2470328579853118,
+     "tracks": 0.2694462083110183,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
      },
-     "hinge": 37.561739608007876,
+     "hinge": 37.25623148579588,
      "extra": 41.71656890926383,
      "one": {
       "drop": 0.22818618387216283,
@@ -5298,7 +5298,7 @@ window.STRESS_RESULTS = {
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 9.0° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 18.8° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -5308,12 +5308,12 @@ window.STRESS_RESULTS = {
       "hingeRateDegPerM": 180
      },
      "tipUp": 18.771717614078593,
-     "tipDown": 21.896024275117085,
+     "tipDown": 21.547774131148753,
      "drop": 0,
-     "tilt": 4.283239501513652,
-     "steps": 0.4585992714443742,
+     "tilt": 4.283241133329011,
+     "steps": 0.4634429261458408,
      "stepsPart": "backrest",
-     "tracks": 0.21986331073947304,
+     "tracks": 0.22647414663353957,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -5336,12 +5336,12 @@ window.STRESS_RESULTS = {
       "levelRateDegPerM": 75
      },
      "tipUp": 18.771717614078593,
-     "tipDown": 18.372838082612585,
+     "tipDown": 21.547774131148753,
      "drop": 0,
-     "tilt": 5.960590383835963,
-     "steps": 0.44283000953325935,
+     "tilt": 5.687071272770487,
+     "steps": 0.4634429261458408,
      "stepsPart": "backrest",
-     "tracks": 0.22387018433466752,
+     "tracks": 0.25181215616447616,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -5354,7 +5354,7 @@ window.STRESS_RESULTS = {
       "tip": -12.373889768232564
      },
      "level": "pass",
-     "why": "takes a 18.4° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 18.8° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Failures",
@@ -5364,12 +5364,12 @@ window.STRESS_RESULTS = {
       "armLockDeg": 0
      },
      "tipUp": 18.62320904352771,
-     "tipDown": 15.169496526457383,
+     "tipDown": 18.623209043527723,
      "drop": 0,
      "tilt": 4.937071272770486,
      "steps": 0.4859118180271377,
      "stepsPart": "leg rest",
-     "tracks": 0.3184304227638417,
+     "tracks": 0.3253727289303331,
      "tracksHit": {
       "part": "leg rest",
       "unit": "rear"
@@ -5382,7 +5382,7 @@ window.STRESS_RESULTS = {
       "tip": -15.437476410629898
      },
      "level": "pass",
-     "why": "takes a 15.2° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 18.6° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Failures",
@@ -5391,10 +5391,10 @@ window.STRESS_RESULTS = {
      "opts": {
       "armLockDeg": -20
      },
-     "tipUp": 17.407985185686808,
-     "tipDown": 23.812272109746385,
+     "tipUp": 23.965909362213637,
+     "tipDown": 23.965909362213687,
      "drop": 0,
-     "tilt": 4.937071272770486,
+     "tilt": 4.937071272770484,
      "steps": 0.44941718904246997,
      "stepsPart": "backrest",
      "tracks": 0.2349409079570219,
@@ -5410,7 +5410,7 @@ window.STRESS_RESULTS = {
       "tip": -20.164944243615594
      },
      "level": "pass",
-     "why": "takes a 17.4° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 24.0° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Failures",
@@ -5420,12 +5420,12 @@ window.STRESS_RESULTS = {
       "armLockDeg": 20
      },
      "tipUp": 10.819411924790385,
-     "tipDown": 6.724747519165893,
+     "tipDown": 10.819411924790419,
      "drop": 0,
-     "tilt": 12.296308632979043,
+     "tilt": 12.296310529314354,
      "steps": 0.3581498910456493,
      "stepsPart": "leg rest",
-     "tracks": 0.3360457758259686,
+     "tracks": 0.33839286007668967,
      "tracksHit": {
       "part": "leg rest",
       "unit": "rear"
@@ -5437,8 +5437,8 @@ window.STRESS_RESULTS = {
       "tilt": 22.61130775763646,
       "tip": -25.769195166382975
      },
-     "level": "warn",
-     "why": "a hard stop at the wrong moment could rock it (takes 6.7°, needs 7.3°)"
+     "level": "pass",
+     "why": "takes a 10.8° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Failures",
@@ -5447,8 +5447,8 @@ window.STRESS_RESULTS = {
      "opts": {
       "levelLockDeg": 0
      },
-     "tipUp": 15.56643794877315,
-     "tipDown": 19.048772124294736,
+     "tipUp": 22.314044316814954,
+     "tipDown": 27.191066957520555,
      "drop": 0,
      "tilt": 5.837071272770488,
      "steps": 0.4560296661362757,
@@ -5466,7 +5466,7 @@ window.STRESS_RESULTS = {
       "tip": -26.142165322291472
      },
      "level": "pass",
-     "why": "takes a 15.6° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 22.3° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Failures",
@@ -5476,10 +5476,10 @@ window.STRESS_RESULTS = {
       "levelLockDeg": 31.6
      },
      "tipUp": 18.54038447799308,
-     "tipDown": 5.654596149794953,
+     "tipDown": 16.732522222709473,
      "drop": 0,
-     "tilt": 5.837071272770488,
-     "steps": 0.4075683384231332,
+     "tilt": 5.837071272770484,
+     "steps": 0.4075683545507579,
      "stepsPart": "leg rest",
      "tracks": 0.34290637558400006,
      "tracksHit": {
@@ -5493,8 +5493,8 @@ window.STRESS_RESULTS = {
       "tilt": 28.011307757636455,
       "tip": -31.703001700346334
      },
-     "level": "warn",
-     "why": "a hard stop at the wrong moment could rock it (takes 5.7°, needs 7.3°)"
+     "level": "pass",
+     "why": "takes a 16.7° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Motors",
@@ -5503,13 +5503,13 @@ window.STRESS_RESULTS = {
      "opts": {
       "extraHingeRateDegPerM": 120
      },
-     "tipUp": 13.217142244918902,
-     "tipDown": 11.031717406103173,
+     "tipUp": 13.687248478638294,
+     "tipDown": 12.273259216385393,
      "drop": 0,
      "tilt": 4.948722874570999,
-     "steps": 0.4423831706691793,
+     "steps": 0.4581898130409373,
      "stepsPart": "backrest",
-     "tracks": 0.25060776570089527,
+     "tracks": 0.26471728175589615,
      "tracksHit": {
       "part": "backrest",
       "unit": "front"
@@ -5522,7 +5522,7 @@ window.STRESS_RESULTS = {
       "tip": -12.651588743991969
      },
      "level": "pass",
-     "why": "takes a 11.0° lean anywhere; a hard stop needs 7.3°"
+     "why": "takes a 12.3° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Failures",
@@ -5559,26 +5559,26 @@ window.STRESS_RESULTS = {
      "opts": {
       "mainHingeSeized": true
      },
-     "tipUp": -8.942978168732258,
-     "tipDown": -11.812672890775566,
-     "drop": 0.2142655869046317,
-     "tilt": 25.490383328426827,
-     "steps": 0.4855704151354696,
+     "tipUp": -1.786824174866366,
+     "tipDown": -10.34189830629053,
+     "drop": 0.11747801959139714,
+     "tilt": 9.505376570533244,
+     "steps": 0.4523120612720277,
      "stepsPart": "leg rest",
-     "tracks": 0.2783488503147383,
+     "tracks": 0.2723120612720279,
      "tracksHit": {
-      "part": "backrest",
-      "unit": "front"
+      "part": "leg rest",
+      "unit": "rear"
      },
      "hinge": 0,
-     "extra": 48.11709948175509,
+     "extra": 55,
      "one": {
       "drop": 0.22818618387216283,
       "tilt": 25.49038332841601,
       "tip": -12.651588743991969
      },
      "level": "fail",
-     "why": "the long part rocks over edges and drops 21 cm, so the tracks must stop if the hinge stops"
+     "why": "the long part rocks over edges and drops 12 cm, so the tracks must stop if the hinge stops"
     },
     {
      "group": "Combined",
@@ -5590,10 +5590,10 @@ window.STRESS_RESULTS = {
       "rise": 0.18,
       "going": 0.25
      },
-     "tipUp": 8.214521428059218,
-     "tipDown": 5.808037217393562,
+     "tipUp": 16.423970658621666,
+     "tipDown": 19.485760071753198,
      "drop": 0,
-     "tilt": 5.736659628956725,
+     "tilt": 5.736659628956731,
      "steps": 0.2416318501190817,
      "stepsPart": "backrest",
      "tracks": 0.03354257843474795,
@@ -5608,8 +5608,8 @@ window.STRESS_RESULTS = {
       "tilt": 27.629133819911843,
       "tip": -21.85010555131527
      },
-     "level": "warn",
-     "why": "a hard stop at the wrong moment could rock it (takes 5.8°, needs 7.3°)"
+     "level": "pass",
+     "why": "takes a 16.4° lean anywhere; a hard stop needs 7.3°"
     },
     {
      "group": "Combined",
@@ -5622,10 +5622,10 @@ window.STRESS_RESULTS = {
       "rise": 0.18,
       "going": 0.25
      },
-     "tipUp": 12.649290931655328,
-     "tipDown": 5.166264550665364,
+     "tipUp": 15.902979871917296,
+     "tipDown": 22.22918802531614,
      "drop": 0,
-     "tilt": 5.736659628956727,
+     "tilt": 5.736659628956734,
      "steps": -0.03,
      "stepsPart": "backrest",
      "tracks": -0.04324613736580607,
@@ -5634,7 +5634,7 @@ window.STRESS_RESULTS = {
       "unit": "front"
      },
      "hinge": 44.31473328088453,
-     "extra": 44.86969151708756,
+     "extra": 47.5160747353462,
      "one": {
       "drop": 0.2871398677730297,
       "tilt": 30.35388725443676,
