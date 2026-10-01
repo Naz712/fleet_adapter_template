@@ -279,6 +279,26 @@ which is exactly 1:10. Its parts list (`blueprint-parts.js`) links each part to 
 the simulator on the test stairs (the `lowerTreads` option in `track-model.js` gives one flight) and
 lists the hinge, arm and seat angles every 5 mm of travel, to replay from the drive motor's encoder.
 
+### Bending test: no bending, 2 parts, 4 parts
+
+`track_sim/bending.html` carries the casualty up and down the ES1 stairs as measured (8.4 m in two
+flights of 175 × 250 mm steps, 35°, a 1 m mid-landing, a 3 m top platform) three ways, in step:
+one stiff track, two track units, and four sections. It uses the team's levelling design: no seat
+arm, the 3-part platform hinged on top of the centre box (`mastMode: 'base'`, 0.32 m above the
+track axles) and kept level by a linear actuator. The box (400 × 400 × 220 mm, 15 kg) is bolted to
+the section behind the middle hinge, and every pose checks its gap to the steps and to the platform.
+The tracks are modelled on HTD 14M timing belts on 36-tooth pulleys (89 mm from axle to grip,
+15 mm cleats every 56 mm), with 1190-14M belts for 4 × 343 mm sections and 1890-14M for 2 × 693 mm.
+
+| Layout | Least lean before tipping, down · up | Where it is weakest |
+|---|---|---|
+| No bending | tips · tips (drops up to 30 cm) | the mid-landing edge and the top edge |
+| 2 parts | 2.1° · 11.1° | the top edge |
+| 4 parts | 22.9° · 22.9° | nowhere below 22° |
+
+The page also lists the tallest box that fits each layout for each length (4 parts: 300 mm long at
+250 mm tall, or 400 mm at 220 mm; 2 parts: 500 mm at 250 mm; no bending: 600 mm at 250 mm).
+
 ### Centre box, tracks and tread
 
 The battery and drive motor go in a box between the tracks, bolted to the section just behind the

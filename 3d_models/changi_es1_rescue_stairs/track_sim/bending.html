@@ -1,0 +1,842 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stair Climber Bending Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Layout: a test-bench sheet, as on the other simulator pages. The verdict for each
+     layout first, then the three running in step, then where the danger is, the lean
+     trace, the box sizes and what was modelled. */
+  :root {
+    color-scheme: light;
+    --bg: #eef1f4;
+    --surface: #fbfcfd;
+    --surface-2: #f3f5f8;
+    --ink: #141920;
+    --ink-2: #48525e;
+    --muted: #76808c;
+    --hair: #dde2e8;
+    --hair-strong: #c2c9d1;
+    --steel: #c9cfd6;
+    --steel-edge: #8e98a3;
+    --nosing: #b3cc16;
+    --rigid: #eb6834;   /* no bending */
+    --two: #2a78d6;     /* 2 parts */
+    --four: #1baf7a;    /* 4 parts */
+    --track: #262b32;
+    --tread: #59616b;
+    --chair: #3a424c;
+    --box: #d9dee4;
+    --box-edge: #7d8792;
+    --person: #e9dccb;
+    --person-edge: #8a765f;
+    --good: #0ca30c;
+    --warn: #fab219;
+    --bad: #d03b3b;
+    --good-ink: #006300;
+    --warn-ink: #7a5200;
+    --bad-ink: #a82323;
+    --warn-tint: rgba(250, 178, 25, 0.13);
+    --bad-tint: rgba(208, 59, 59, 0.1);
+    --shadow: 0 1px 2px rgba(20, 25, 32, 0.06), 0 8px 24px rgba(20, 25, 32, 0.06);
+    --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0e1216; --surface: #161b21; --surface-2: #1c232a; --ink: #e9edf1; --ink-2: #b2bcc6; --muted: #7f8a96;
+      --hair: #283039; --hair-strong: #3a4450; --steel: #3a424c; --steel-edge: #6a7480; --nosing: #9fb514;
+      --rigid: #d95926; --two: #3987e5; --four: #199e70;
+      --track: #0b0e11; --tread: #6f7883; --chair: #aeb8c3; --box: #2b333c; --box-edge: #8792a0; --person: #5b4d3f; --person-edge: #c4ad92;
+      --good-ink: #3fc43f; --warn-ink: #f5c04a; --bad-ink: #f07a7a; --warn-tint: rgba(250, 178, 25, 0.12); --bad-tint: rgba(240, 122, 122, 0.12);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0e1216; --surface: #161b21; --surface-2: #1c232a; --ink: #e9edf1; --ink-2: #b2bcc6; --muted: #7f8a96;
+    --hair: #283039; --hair-strong: #3a4450; --steel: #3a424c; --steel-edge: #6a7480; --nosing: #9fb514;
+    --rigid: #d95926; --two: #3987e5; --four: #199e70;
+    --track: #0b0e11; --tread: #6f7883; --chair: #aeb8c3; --box: #2b333c; --box-edge: #8792a0; --person: #5b4d3f; --person-edge: #c4ad92;
+    --good-ink: #3fc43f; --warn-ink: #f5c04a; --bad-ink: #f07a7a; --warn-tint: rgba(250, 178, 25, 0.12); --bad-tint: rgba(240, 122, 122, 0.12);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; display: grid; gap: 22px; }
+  @media (max-width: 560px) { .wrap { padding-inline: 16px; padding-block: 18px 48px; gap: 18px; } }
+  header { display: grid; gap: 6px; }
+  .eyebrow { margin: 0; font: 600 12px/1.2 var(--sans); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 0; font: 700 clamp(34px, 6vw, 52px)/1 var(--display); letter-spacing: 0.01em; text-wrap: balance; }
+  .lede { margin: 4px 0 0; max-width: 76ch; color: var(--ink-2); }
+  .card { background: var(--surface); border: 1px solid var(--hair); border-radius: 14px; box-shadow: var(--shadow); }
+  .panel { padding: 16px 18px 18px; display: grid; gap: 14px; min-width: 0; }
+  .panel h2 { margin: 0; font: 700 22px/1.1 var(--display); letter-spacing: 0.02em; text-wrap: balance; }
+  .panel .sub { margin: -8px 0 0; font-size: 13.5px; color: var(--ink-2); max-width: 84ch; }
+  .key { display: inline-block; width: 16px; height: 0; border-top: 3px solid; border-radius: 2px; vertical-align: middle; flex: none; }
+  .key.rigid { border-top: 0; height: 3px; background: repeating-linear-gradient(90deg, var(--rigid) 0 5px, transparent 5px 8px); }
+  .key.two { border-color: var(--two); }
+  .key.four { border-color: var(--four); }
+  .name { display: inline-flex; align-items: center; gap: 7px; }
+
+  /* verdicts */
+  .verdicts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 900px) { .verdicts { grid-template-columns: minmax(0, 1fr); } }
+  .verdict { padding: 14px 16px 16px; display: grid; gap: 10px; align-content: start; min-width: 0; border: 1px solid var(--hair); border-radius: 12px; background: var(--surface-2); }
+  .verdict .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .verdict h3 { margin: 0; font: 700 21px/1.1 var(--display); letter-spacing: 0.02em; }
+  .verdict .num { display: flex; align-items: baseline; gap: 8px; }
+  .verdict .num b { font: 600 34px/1 var(--display); font-variant-numeric: tabular-nums; }
+  .verdict .num span { font-size: 13px; color: var(--ink-2); }
+  .verdict ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; font-size: 14px; color: var(--ink-2); }
+  .verdict li b { color: var(--ink); font-weight: 600; }
+  .verdict .boxline { font-size: 13px; color: var(--muted); border-top: 1px solid var(--hair); padding-top: 9px; }
+  .legend-status { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); align-items: center; }
+
+  /* the run */
+  .run { overflow: hidden; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--hair); }
+  .group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .group-label { font-size: 12.5px; color: var(--muted); }
+  .seg { display: inline-flex; border: 1px solid var(--hair-strong); border-radius: 9px; overflow: hidden; background: var(--surface-2); }
+  .seg button { appearance: none; border: 0; background: transparent; color: var(--ink-2); font: 500 13px/1 var(--sans); padding: 8px 11px; cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--hair-strong); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+  .seg button:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible, td.jump:focus-visible { outline: 2px solid var(--two); outline-offset: 2px; }
+  .where { margin-left: auto; font: 12.5px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .stages { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--hair); }
+  @media (max-width: 1000px) { .stages { grid-template-columns: minmax(0, 1fr); } }
+  .stage { position: relative; background: var(--surface); min-width: 0; display: grid; grid-template-rows: auto 1fr auto; }
+  .stage canvas { display: block; width: 100%; height: clamp(230px, 22vw, 290px); touch-action: pan-y; }
+  .stage-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px 0; flex-wrap: wrap; }
+  .stage-name { font: 700 18px/1.1 var(--display); letter-spacing: 0.02em; }
+  .stage-foot { display: grid; gap: 4px; padding: 0 12px 10px; }
+  .stage-msg { margin: 0; font-size: 13px; min-height: 2.6em; color: var(--ink-2); }
+  .stage-msg b { color: var(--ink); }
+  .reads { display: flex; flex-wrap: wrap; gap: 2px 14px; margin: 0; font-size: 12px; color: var(--ink-2); }
+  .reads div { display: inline-flex; gap: 6px; }
+  .reads dd { margin: 0; font: 500 12px var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+  .lean-now { font: 12.5px var(--sans); color: var(--ink-2); }
+  .lean-now b { font: 600 14px var(--mono); font-variant-numeric: tabular-nums; }
+  .ok-t { color: var(--good-ink); } .warn-t { color: var(--warn-ink); } .bad-t { color: var(--bad-ink); }
+  .busy { position: absolute; inset: 0; display: grid; place-items: center; background: color-mix(in srgb, var(--surface) 70%, transparent); font: 500 14px var(--sans); color: var(--ink-2); z-index: 3; }
+  .transport { display: flex; align-items: center; gap: 10px 12px; padding: 12px 16px; border-top: 1px solid var(--hair); flex-wrap: wrap; }
+  .btn { appearance: none; border: 1px solid var(--hair-strong); background: var(--surface-2); color: var(--ink); border-radius: 9px; font: 600 13px/1 var(--sans); padding: 9px 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+  .btn.primary { background: var(--ink); color: var(--surface); border-color: var(--ink); min-width: 92px; justify-content: center; }
+  .btn svg { width: 14px; height: 14px; }
+  .btn.small { padding: 7px 10px; font-size: 12.5px; }
+  #scrub { flex: 1 1 240px; accent-color: var(--two); min-width: 0; }
+  select { font: 500 13px var(--sans); color: var(--ink); background: var(--surface-2); border: 1px solid var(--hair-strong); border-radius: 9px; padding: 7px 8px; }
+  .speed { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
+
+  /* chips */
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px 3px 6px; border-radius: 999px; font: 600 12px/1 var(--sans); border: 1px solid currentColor; white-space: nowrap; }
+  .chip svg { width: 12px; height: 12px; flex: none; }
+  .chip.good { color: var(--good-ink); } .chip.warn { color: var(--warn-ink); } .chip.bad { color: var(--bad-ink); }
+
+  /* tables */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--hair); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--hair); vertical-align: top; }
+  th { font: 600 12px/1.3 var(--sans); color: var(--ink-2); background: var(--surface-2); vertical-align: bottom; }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.spot { font-weight: 600; min-width: 170px; }
+  td.spot .what { font-weight: 400; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  td.jump { cursor: pointer; min-width: 150px; }
+  td.jump:hover { background: var(--surface-2); }
+  td.jump .lean { display: block; margin-top: 5px; font: 12px var(--mono); color: var(--ink-2); }
+  td.num { font-family: var(--mono); text-align: right; white-space: nowrap; }
+  th.num { text-align: right; }
+  td.num.no { color: var(--muted); font-family: var(--sans); font-size: 12.5px; }
+  .note { margin: 0; font-size: 12.5px; color: var(--muted); max-width: 84ch; }
+
+  /* lean trace */
+  .chart-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--ink-2); }
+  .chart { position: relative; }
+  .chart svg { display: block; width: 100%; overflow: visible; cursor: crosshair; }
+  .chart .axis text { font: 11px var(--mono); fill: var(--muted); }
+  .chart .band-label { font: 600 10.5px var(--sans); fill: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .chart .zone-label { font: 600 10.5px var(--sans); letter-spacing: 0.04em; }
+  .tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--hair-strong); border-radius: 8px; padding: 7px 9px; font-size: 12px; box-shadow: var(--shadow); min-width: 190px; z-index: 2; }
+  .tip .t-head { color: var(--muted); font: 11.5px var(--mono); margin-bottom: 3px; }
+  .tip .t-row { display: flex; align-items: center; gap: 7px; }
+  .tip .t-row b { font: 600 13px var(--mono); min-width: 6ch; }
+  .tip .t-row span { color: var(--ink-2); }
+
+  /* box and model notes */
+  .two-col { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
+  .callout { display: grid; gap: 8px; font-size: 14px; color: var(--ink-2); }
+  .callout p { margin: 0; }
+  .callout b { color: var(--ink); }
+  dl.model { margin: 0; display: grid; grid-template-columns: minmax(110px, auto) minmax(0, 1fr); gap: 8px 16px; font-size: 14px; }
+  dl.model dt { font-weight: 600; }
+  dl.model dd { margin: 0; color: var(--ink-2); }
+  @media (max-width: 560px) { dl.model { grid-template-columns: minmax(0, 1fr); gap: 2px; } dl.model dd { margin-bottom: 8px; } }
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow">Part 1 · Simulation · ES1 stairs: 8.4 m high, 35°, 1 m mid-landing</p>
+    <h1>Stair Climber Bending Test</h1>
+    <p class="lede">The same casualty, folded into a chair shape on the 3-part platform, with the platform hinged on top of the battery box and kept level by the linear actuator. It is carried up and down the stairs three ways: on tracks that can't bend, on tracks in 2 parts, and on tracks in 4 parts. Press play, or jump straight to a danger spot.</p>
+  </header>
+
+  <section aria-labelledby="verdict-h" class="panel card">
+    <h2 id="verdict-h">What changes when the tracks bend</h2>
+    <p class="sub" id="verdict-sub">Working out all three runs…</p>
+    <div class="verdicts" id="verdicts"></div>
+    <div class="legend-status" id="legend-status"></div>
+  </section>
+
+  <section class="card run" aria-label="The three layouts running in step">
+    <div class="toolbar">
+      <div class="group"><span class="group-label" id="lbl-dir">Direction</span>
+        <div class="seg" role="group" aria-labelledby="lbl-dir" id="seg-dir">
+          <button type="button" data-v="down" aria-pressed="true">Down the stairs</button><button type="button" data-v="up" aria-pressed="false">Up the stairs</button>
+        </div>
+      </div>
+      <div class="group" id="jump-spots"><span class="group-label">Jump to</span></div>
+      <span class="where" id="where"></span>
+    </div>
+    <div class="stages" id="stages">
+      <div class="busy" id="busy">Working out the three runs…</div>
+    </div>
+    <div class="transport">
+      <button type="button" class="btn primary" id="play" aria-label="Play"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span>Play</span></button>
+      <button type="button" class="btn" id="restart" aria-label="Restart from the start"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 2v4h4M2.9 6A4.6 4.6 0 1 1 3 9.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Restart</button>
+      <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Position along the stairs">
+      <label class="speed" for="speed">Speed <select id="speed"><option value="1">1× real</option><option value="2" selected>2×</option><option value="4">4×</option><option value="8">8×</option></select></label>
+      <label class="speed" for="slowmo"><input type="checkbox" id="slowmo" checked> Slow down at danger spots</label>
+    </div>
+  </section>
+
+  <section class="card panel" aria-labelledby="spots-h">
+    <h2 id="spots-h">Danger spots on the stairs</h2>
+    <p class="sub">The least each layout can lean before it tips, at each part of the stairs, going down and up. Click a result to watch that moment.</p>
+    <div class="table-wrap"><table>
+      <thead><tr id="spots-head"><th>Where</th></tr></thead>
+      <tbody id="spots-body"></tbody>
+    </table></div>
+  </section>
+
+  <section class="card panel" aria-labelledby="lean-h">
+    <div class="chart-head">
+      <h2 id="lean-h">How far it can lean before tipping, all the way</h2>
+      <div class="legend" id="legend"></div>
+    </div>
+    <p class="sub" id="lean-sub"></p>
+    <div class="chart" id="chart-lean"></div>
+  </section>
+
+  <section class="card panel" aria-labelledby="box-h">
+    <div class="chart-head">
+      <h2 id="box-h">How big the box can be</h2>
+      <div class="seg" role="group" aria-label="Units" id="seg-scale">
+        <button type="button" data-v="1" aria-pressed="true">Full size</button><button type="button" data-v="5" aria-pressed="false">1:5 prototype</button>
+      </div>
+    </div>
+    <p class="sub">The box is bolted to the track section just behind the middle hinge, with the platform's hinge on top of it. These are the tallest boxes that still clear the stairs, the moving tracks and the tilting platform at every point of the trip, for each length. Width: up to <span data-mm="400"></span> between the track frames.</p>
+    <div class="two-col">
+      <div class="table-wrap"><table>
+        <thead><tr id="box-head"><th>Box length</th></tr></thead>
+        <tbody id="box-body"></tbody>
+      </table></div>
+      <div class="callout" id="box-callout"></div>
+    </div>
+  </section>
+
+  <section class="card panel" aria-labelledby="model-h">
+    <h2 id="model-h">What the simulation includes</h2>
+    <dl class="model" id="model"></dl>
+  </section>
+</main>
+
+<script src="track-model.js"></script>
+<script>
+(() => {
+  const TM = window.TrackModel;
+  const $ = (id) => document.getElementById(id);
+  const deg = TM.deg, rad = TM.rad;
+  const HARD_STOP = deg(Math.atan(0.25 / 0.2 / 9.81)); // a stop from walking pace in 0.2 s
+
+  // ------------------------------------------------------------ what is simulated
+  // ES1 stairs as measured: 8.4 m in two flights of 24 steps of 175 x 250 mm (35 degrees),
+  // a 1 m mid-landing and a 3 m top platform.
+  const STAIRS = { height: 8.4, rise: 0.175, going: 0.25, lowerTreads: 23, topPlatform: 3.0 };
+  // Tracks modelled on HTD 14M timing belts on 36-tooth pulleys (pitch diameter 160.4 mm),
+  // with a 6 mm rubber cover: 89 mm from the axle to the grip; 15 mm cleats every 4 teeth (56 mm).
+  const TRACK = { radius: 0.089, pulley: 0.0802, cleat: 0.015, cleatPitch: 0.056, sections4: 0.343, unit2: 0.693 };
+  // The box that fits all three layouts (see the box table), and the platform's hinge on top of it.
+  const BOX = { back: 0.28, front: 0.12, floor: 0.04, top: 0.26, width: 0.4 };
+  const BASE = Object.assign({ mastMode: 'base', seatHeight: 0.32, sprocketRadius: TRACK.radius, unitLength: TRACK.unit2, boxMass: 15,
+    box: BOX, boxCom: [(BOX.front - BOX.back) / 2, (BOX.floor + BOX.top) / 2] }, STAIRS);
+  const LAYOUTS = [
+    { id: 'rigid', name: 'No bending', color: 'rigid', what: 'One stiff track, 1.39 m between the end wheels.' },
+    { id: 'two', name: '2 parts', color: 'two', what: 'Two 0.69 m track units with a hinge in the middle.' },
+    { id: 'four', name: '4 parts', color: 'four', what: 'Four 0.34 m sections: each half bends again at an extra hinge.' },
+  ];
+  // Tallest box for each length, mm, full size: [length, height, from, to (along the section, from the middle
+  // hinge), floor, top]; height 0 = no box that long fits. Worked out from every pose of the three runs.
+  const BOX_RANGE = {"rigid":[[300,250,-540,-240,40,290],[400,250,-540,-140,40,290],[500,250,-540,-40,40,290],[600,250,-540,60,40,290],[700,233,-580,120,40,273],[800,188,-620,180,40,228],[1000,188,-620,380,40,228],[1100,188,-620,480,40,228],[1200,188,-620,580,40,228]],"two":[[300,250,-490,-190,40,290],[400,250,-490,-90,40,290],[500,250,-490,10,40,290],[600,243,-500,100,40,283],[700,206,-570,130,40,246],[800,171,-620,180,40,211],[1000,110,-620,380,101,211],[1100,0,null,null,null,null],[1200,0,null,null,null,null]],"four":[[300,250,-280,20,40,290],[400,220,-280,120,40,260],[500,0,null,null,null,null],[600,0,null,null,null,null],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]]};
+  const CURRENT_BASE = [1100, 600, 250]; // the base on the levelling sheet, full size (220 x 120 x 50 mm at 1:5)
+
+  const state = { dir: 'down', idx: 0, playing: false, speed: 2, lastT: 0, travel: 0, sims: null, cam: null, scale: 1, spots: [] };
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let C = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    for (const k of ['surface', 'surface-2', 'ink', 'ink-2', 'muted', 'hair', 'hair-strong', 'steel', 'steel-edge', 'nosing', 'rigid', 'two', 'four', 'track', 'tread', 'chair', 'box', 'box-edge', 'person', 'person-edge', 'good', 'warn', 'bad', 'good-ink', 'warn-ink', 'bad-ink', 'warn-tint', 'bad-tint']) C[k] = cs.getPropertyValue('--' + k).trim();
+  }
+  const icons = {
+    good: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    warn: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5l6 11H2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 7v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="8" cy="11.9" r="0.9" fill="currentColor"/></svg>',
+    bad: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  };
+  const WORD = { good: 'Safe', warn: 'Careful', bad: 'Danger' };
+  const levelOf = (leanDeg) => (leanDeg >= HARD_STOP ? 'good' : leanDeg >= 0 ? 'warn' : 'bad');
+  const chip = (level, text) => `<span class="chip ${level}">${icons[level]}<span>${text || WORD[level]}</span></span>`;
+  const nameHtml = (d) => `<span class="name"><i class="key ${d.color}"></i>${d.name}</span>`;
+  const leanTxt = (v) => (v < 0 ? 'tips' : `${v.toFixed(0)}°`);
+
+  // ------------------------------------------------------------ runs
+  const nPath = () => state.sims.two.path.length;
+  const sampleIndex = (k) => (state.dir === 'up' ? k : nPath() - 1 - k);
+  const dist = (sim, i) => (state.dir === 'up' ? sim.path[i].s : sim.sEnd - sim.path[i].s);
+  const listOf = (id, dir) => state.sims[id][dir || state.dir];
+  function runSims() {
+    $('busy').hidden = false;
+    setTimeout(() => {
+      const two = TM.simulate(Object.assign({ oneTrack: true }, BASE));
+      two.sEnd = two.path[two.path.length - 1].s;
+      $('busy').textContent = 'Working out the 4-part run…';
+      setTimeout(() => {
+        const four = TM.simulate(Object.assign({ oneTrack: false, sections: [TRACK.sections4, TRACK.sections4, TRACK.sections4, TRACK.sections4], mainJoint: 2 }, BASE));
+        four.sEnd = four.path[four.path.length - 1].s;
+        const rigid = { opts: two.opts, profile: two.profile, terrain: two.terrain, path: two.path, sEnd: two.sEnd, up: two.rigidUp, down: two.rigidDown, rigid: true };
+        state.sims = { rigid, two, four };
+        state.spots = makeSpots(two.profile);
+        afterRuns();
+      }, 30);
+    }, 40);
+  }
+
+  // parts of the stairs, by where the middle hinge is
+  function makeSpots(p) {
+    return [
+      { id: 'foot', name: 'Foot of the stairs', what: 'Where the tracks meet the first step', a: -Infinity, b: 0.8, jump: 0 },
+      { id: 'lower', name: 'Lower flight', what: '24 steps at 35°', a: 0.8, b: p.xL0 - 0.8 },
+      { id: 'midEdge', name: 'Mid-landing edge', what: 'Where the lower flight meets the 1 m landing', a: p.xL0 - 0.8, b: p.xL0 + 0.5, jump: p.xL0 },
+      { id: 'mid', name: 'Across the mid-landing', what: 'The landing is shorter than the vehicle', a: p.xL0 + 0.5, b: p.xL1 + 0.8, jump: p.xL1 },
+      { id: 'upper', name: 'Upper flight', what: '24 steps at 35°', a: p.xL1 + 0.8, b: p.xP0 - 0.8 },
+      { id: 'top', name: 'Top edge', what: 'Where the stairs meet the top platform', a: p.xP0 - 0.8, b: p.xP0 + 1.0, jump: p.xP0 },
+      { id: 'platform', name: 'Top platform', what: 'Level floor, 3 m deep', a: p.xP0 + 1.0, b: Infinity },
+    ];
+  }
+  const spotOf = (x) => state.spots.find((s) => x >= s.a && x < s.b) || state.spots[state.spots.length - 1];
+  // the weakest moment of one layout, in one direction, optionally within a part of the stairs
+  function weakest(id, dir, spot) {
+    const list = listOf(id, dir), n = nPath();
+    let best = null;
+    for (let k = 0; k < n; k++) {
+      const i = dir === 'up' ? k : n - 1 - k, p = list[i];
+      if (spot && !(p.J.x >= spot.a && p.J.x < spot.b)) continue;
+      const v = deg(p.ev.tipAngle);
+      if (!best || v < best.v) best = { v, k, x: p.J.x, drop: 0 };
+    }
+    if (!best) return null;
+    for (let k = 0; k < n; k++) { const i = dir === 'up' ? k : n - 1 - k, p = list[i]; if (spot && !(p.J.x >= spot.a && p.J.x < spot.b)) continue; best.drop = Math.max(best.drop, p.ev.tipDrop); }
+    return best;
+  }
+  function worstTilt(id) {
+    let t = { v: 0, x: 0 };
+    for (const dir of ['up', 'down']) for (const p of listOf(id, dir)) { const v = Math.abs(deg(p.phi)); if (v > t.v) t = { v, x: p.J.x }; }
+    return t;
+  }
+
+  // ------------------------------------------------------------ verdicts
+  function renderVerdicts() {
+    const host = $('verdicts'); host.textContent = '';
+    const lower = (s) => s.name.charAt(0).toLowerCase() + s.name.slice(1);
+    const facts = {};
+    for (const d of LAYOUTS) {
+      const w = { down: weakest(d.id, 'down'), up: weakest(d.id, 'up') };
+      const worst = w.down.v <= w.up.v ? { dir: 'down', ...w.down } : { dir: 'up', ...w.up };
+      const drop = Math.max(w.down.drop, w.up.drop), tilt = worstTilt(d.id);
+      facts[d.id] = { w, worst, drop, tilt };
+      const lvl = levelOf(worst.v), items = [];
+      const tipSpots = [];
+      for (const dir of ['down', 'up']) for (const s of state.spots) { const r = weakest(d.id, dir, s); if (r && r.v < 0 && !tipSpots.includes(lower(s))) tipSpots.push(lower(s)); }
+      if (d.id === 'rigid') items.push('One stiff track can’t follow the stairs where the slope changes, so it <b>rocks over each edge like a see-saw</b>.');
+      if (d.id === 'two') items.push('It <b>bends in the middle</b>, so it rolls over the edges instead of rocking.');
+      if (d.id === 'four') items.push('Each half <b>bends again at the edges</b> to keep its tracks on the stairs.');
+      if (lvl === 'bad') items.push(`It tips at the <b>${tipSpots.join(' and the ')}</b>: one end drops about <b>${Math.round(drop * 100)} cm</b>.`);
+      else if (lvl === 'warn') items.push(`At the <b>${lower(spotOf(worst.x))}</b> going ${worst.dir} it can only lean <b>${worst.v.toFixed(0)}°</b> before tipping: a sudden stop or a bump there could tip it.`);
+      else items.push(`It can lean at least <b>${worst.v.toFixed(0)}°</b> before tipping, anywhere, both ways.`);
+      const other = worst.dir === 'down' ? w.up : w.down;
+      if (lvl === 'warn') items.push(`Going ${worst.dir === 'down' ? 'up' : 'down'} it keeps at least ${other.v.toFixed(0)}°.`);
+      items.push(tilt.v > 10 ? `The casualty swings to a <b>${tilt.v.toFixed(0)}° tilt</b> at the ${lower(spotOf(tilt.x))}: the levelling can’t keep up with the rocking.` : `The casualty stays within ${Math.max(1, tilt.v).toFixed(0)}° of level.`);
+      if (d.id === 'four') items.push('Needs three hinge motors instead of one, and a shorter box.');
+      const range = BOX_RANGE[d.id], full = range.filter((r) => r[1] >= 250).pop(), longest = range.filter((r) => r[1] > 0).pop();
+      const el = document.createElement('article'); el.className = 'verdict';
+      el.innerHTML = `<div class="top"><h3>${nameHtml(d)}</h3>${chip(lvl)}</div>`
+        + `<div class="num"><b class="${lvl === 'good' ? 'ok-t' : lvl === 'warn' ? 'warn-t' : 'bad-t'}">${worst.v < 0 ? 'Tips' : worst.v.toFixed(0) + '°'}</b><span>${worst.v < 0 ? `at the ${lower(spotOf(worst.x))} going ${worst.dir}` : `least lean before tipping (going ${worst.dir})`}</span></div>`
+        + `<ul>${items.map((t) => `<li>${t}</li>`).join('')}</ul>`
+        + `<p class="boxline">${d.what} Box: up to <span data-mm="${full[0]}"></span> long at <span data-mm="${full[1]}"></span> tall, or <span data-mm="${longest[0]}"></span> long at <span data-mm="${longest[1]}"></span> tall.</p>`;
+      host.appendChild(el);
+    }
+    const f = facts;
+    $('verdict-sub').textContent = `Every layout is steady on the straight flights. The difference is at the edges, where the slope changes: the mid-landing edge and, worst of all, the top edge. `
+      + `With no bending the vehicle tips there. With 2 parts it stays up, but at the top edge going down it can lean only ${f.two.w.down.v.toFixed(0)}° before tipping. With 4 parts it can lean ${f.four.worst.v.toFixed(0)}° or more everywhere.`;
+    $('legend-status').innerHTML = `${chip('good')} can take a sudden stop (${HARD_STOP.toFixed(1)}° lean or more) ${chip('warn')} stays up, but a sudden stop could tip it ${chip('bad')} tips or rocks over an edge`;
+    updateUnits();
+  }
+
+  // ------------------------------------------------------------ danger spots table
+  function renderSpots() {
+    $('spots-head').innerHTML = '<th>Where</th>' + LAYOUTS.map((d) => `<th>${nameHtml(d)}</th>`).join('');
+    const body = $('spots-body'); body.textContent = '';
+    for (const s of state.spots) {
+      const tr = document.createElement('tr');
+      const th = document.createElement('td'); th.className = 'spot';
+      const a = document.createElement('div'); a.textContent = s.name;
+      const b = document.createElement('div'); b.className = 'what'; b.textContent = s.what;
+      th.append(a, b); tr.appendChild(th);
+      for (const d of LAYOUTS) {
+        const dn = weakest(d.id, 'down', s), up = weakest(d.id, 'up', s);
+        const td = document.createElement('td'); td.className = 'jump'; td.tabIndex = 0;
+        if (!dn || !up) { td.textContent = '–'; tr.appendChild(td); continue; }
+        const v = Math.min(dn.v, up.v), lvl = levelOf(v), drop = Math.max(dn.drop, up.drop);
+        const words = lvl === 'bad' ? (drop > 0.01 ? `Tips · drops ${Math.round(drop * 100)} cm` : 'Tips') : WORD[lvl];
+        td.innerHTML = chip(lvl, words) + `<span class="lean">${leanTxt(dn.v)} down · ${leanTxt(up.v)} up</span>`;
+        td.setAttribute('aria-label', `${d.name}, ${s.name}: ${words}. Watch it.`);
+        const go = () => { const dir = dn.v <= up.v ? 'down' : 'up'; setDir(dir); seek((dir === 'down' ? dn : up).k); document.querySelector('.run').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }); };
+        td.addEventListener('click', go);
+        td.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+        tr.appendChild(td);
+      }
+      body.appendChild(tr);
+    }
+  }
+
+  // ------------------------------------------------------------ box sizes
+  function updateUnits() {
+    const k = state.scale;
+    for (const el of document.querySelectorAll('[data-mm]')) el.textContent = `${Math.round(Number(el.dataset.mm) / k)} mm`;
+  }
+  function renderBox() {
+    const k = state.scale;
+    $('box-head').innerHTML = '<th>Box length</th>' + LAYOUTS.map((d) => `<th class="num">${nameHtml(d)}</th>`).join('');
+    const body = $('box-body'); body.textContent = '';
+    const lengths = BOX_RANGE.rigid.map((r) => r[0]);
+    for (let i = 0; i < lengths.length; i++) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td class="num" style="text-align:left">${Math.round(lengths[i] / k)} mm</td>` + LAYOUTS.map((d) => {
+        const r = BOX_RANGE[d.id][i];
+        return r[1] > 0 ? `<td class="num">up to ${Math.round(r[1] / k)} mm tall</td>` : '<td class="num no">too long</td>';
+      }).join('');
+      body.appendChild(tr);
+    }
+    const [L, W, H] = CURRENT_BASE, mm = (v) => `${Math.round(v / k)} mm`;
+    $('box-callout').innerHTML = `<p><b>Your current base</b>, ${mm(L)} × ${mm(W)} × ${mm(H)}, is too big for all three. It is too long for 2 and 4 parts, too tall to be that long with no bending, and wider than the ${mm(400)} between the track frames.</p>`
+      + `<p><b>A box that fits all three:</b> ${mm((BOX.back + BOX.front) * 1000)} long × ${mm(BOX.width * 1000)} wide × ${mm((BOX.top - BOX.floor) * 1000)} tall. That is the box in the simulation.</p>`
+      + `<p>Its floor sits ${mm(BOX.floor * 1000)} above the track axles, so it clears the middle axle, and ${mm(BOX.floor * 1000 + TRACK.radius * 1000 + TRACK.cleat * 1000)} above flat ground. The platform's hinge stands on top, ${mm(BASE.seatHeight * 1000)} above the axles.</p>`
+      + `<p>The 2-part and 4-part boxes start ${mm(490)} and ${mm(280)} behind the middle hinge. Make a longer box lower: with 4 parts the platform tilts close above it at the ends.</p>`;
+    updateUnits();
+  }
+
+  // ------------------------------------------------------------ model notes
+  function renderModel() {
+    const rows = [
+      ['Stairs', 'ES1 as measured: 8.4 m high in two flights of 24 steps (175 mm rise, 250 mm deep, 35°), a 1 m mid-landing and a 3 m top platform, 1.5 m wide.'],
+      ['Casualty', 'A 120 kg adult on the 3-part platform (2 m × 0.5 m), folded into a chair shape: back 0.9 m, seat 0.5 m, legs 0.5 m, with padding.'],
+      ['Levelling', `The platform turns on pillow-block bearings on top of the box, ${(BASE.seatHeight * 1000).toFixed(0)} mm above the track axles. A worm-gear linear actuator, steered by the IMU, keeps it level: up to ${BASE.levelLimitDeg || 40}° each way, as fast as 150° per metre travelled.`],
+      ['Box', `${((BOX.back + BOX.front) * 1000).toFixed(0)} × ${(BOX.width * 1000).toFixed(0)} × ${((BOX.top - BOX.floor) * 1000).toFixed(0)} mm, 15 kg of battery and drive motor, bolted to the section just behind the middle hinge.`],
+      ['Tracks', `Timing belts used as tracks, sold in both sizes. Full size: HTD 14M belts, 55 mm wide, two side by side on each side, on 36-tooth pulleys (Ø160 mm), with a 6 mm rubber cover and 15 mm cleats every 56 mm: 178 mm tall, 208 mm with cleats. Belts: 1190-14M for each of the 4 parts (sections 343 mm), 1890-14M for each of the 2 parts (693 mm), about 3.3 m for one stiff track. 1:5 prototype: HTD 5M belts, 15 mm wide, on 20-tooth pulleys (Ø31.8 mm): 240-5M for 4 parts, 375-5M for 2 parts.`],
+      ['Weights', 'Track units 2 × 25 kg, platform and levelling 25 kg, box 15 kg; the 4-part tracks add two 6 kg hinge motors.'],
+      ['Hinges', 'The middle hinge bends up to 55° at 120° per metre travelled. The 4-part’s extra hinges bend twice as fast, to keep each end on the stairs.'],
+      ['Tipping', `"Lean before tipping" is how far the whole vehicle could be tilted before its weight passes the last point touching the stairs. A sudden stop from walking pace (0.25 m/s) in 0.2 s needs ${HARD_STOP.toFixed(1)}°.`],
+    ];
+    $('model').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+  }
+
+  // ------------------------------------------------------------ drawing
+  function lerpPose(a, b, t) {
+    const L = (u, v) => u + (v - u) * t;
+    const P = (u, v) => ({ x: L(u.x, v.x), z: L(u.z, v.z) });
+    const q = { R: P(a.R, b.R), J: P(a.J, b.J), F: P(a.F, b.F), P: P(a.P, b.P), pitch: L(a.pitch, b.pitch), beta: L(a.beta, b.beta),
+      phi: L(a.phi, b.phi), a1: L(a.a1, b.a1), a2: L(a.a2, b.a2), lam: L(a.lam, b.lam), ev: t < 0.5 ? a.ev : b.ev };
+    if (a.pts && b.pts) {
+      q.pts = a.pts.map((u, i) => P(u, b.pts[i]));
+      q.units = q.pts.slice(1).map((u, i) => [q.pts[i], u]);
+      q.bends = a.bends.map((u, i) => L(u, b.bends[i]));
+      q.m = a.m;
+    }
+    return q;
+  }
+  function poseAt(list, k) {
+    const n = nPath(), k0 = Math.max(0, Math.min(n - 1, Math.floor(k))), k1 = Math.min(n - 1, k0 + 1), t = k - k0;
+    return lerpPose(list[sampleIndex(k0)], list[sampleIndex(k1)], t);
+  }
+  function painter(g, SX, SY, scale) {
+    const capsule = (ax, az, bx, bz, r) => {
+      const dx = bx - ax, dz = bz - az;
+      g.beginPath();
+      if (Math.hypot(dx, dz) < 1e-6) { g.arc(SX(ax), SY(az), r * scale, 0, Math.PI * 2); return; }
+      const ang = Math.atan2(dz, dx);
+      g.arc(SX(bx), SY(bz), r * scale, -ang - Math.PI / 2, -ang + Math.PI / 2, false);
+      g.arc(SX(ax), SY(az), r * scale, -ang + Math.PI / 2, -ang + 1.5 * Math.PI, false);
+      g.closePath();
+    };
+    const line = (a, b, color, w, cap = 'round') => {
+      g.beginPath(); g.moveTo(SX(a.x), SY(a.z)); g.lineTo(SX(b.x), SY(b.z));
+      g.strokeStyle = color; g.lineWidth = w; g.lineCap = cap; g.stroke();
+    };
+    const font = getComputedStyle(document.body).fontFamily;
+    function stairs(prof, V) {
+      const pts = prof.pts;
+      g.beginPath(); g.moveTo(SX(pts[0][0]), SY(-2));
+      for (const p of pts) g.lineTo(SX(p[0]), SY(p[1]));
+      g.lineTo(SX(pts[pts.length - 1][0]), SY(-2)); g.closePath();
+      g.fillStyle = C.steel; g.fill();
+      g.strokeStyle = C['steel-edge']; g.lineWidth = 1.2;
+      g.beginPath(); g.moveTo(SX(pts[0][0]), SY(pts[0][1])); for (const p of pts) g.lineTo(SX(p[0]), SY(p[1])); g.stroke();
+      const w = Math.max(2, 0.018 * scale);
+      g.strokeStyle = C.nosing; g.lineWidth = w; g.lineCap = 'butt';
+      g.beginPath();
+      for (const v of V) if (v.convex) { g.moveTo(SX(v.x), SY(v.z) + w / 2); g.lineTo(SX(v.x + 0.05), SY(v.z) + w / 2); }
+      g.stroke();
+      g.fillStyle = C.muted; g.font = `600 11px ${font}`;
+      if (prof.nUp) g.fillText(`MID-LANDING · ${prof.zL.toFixed(1)} m`, SX(prof.xL0 + 0.06), SY(prof.zL) + 16);
+      g.fillText(`TOP PLATFORM · ${prof.H.toFixed(1)} m`, SX(prof.xP0 + 0.06), SY(prof.H) + 16);
+    }
+    // one track: the belt round its two end pulleys, cleats on the outside, a frame inside
+    function unit(A, B, r, trav, dirSign, frame) {
+      g.fillStyle = C.track; capsule(A.x, A.z, B.x, B.z, r); g.fill();
+      const dx = B.x - A.x, dz = B.z - A.z, L = Math.hypot(dx, dz), ux = dx / L, uz = dz / L, nx = -uz, nz = ux;
+      const per = 2 * L + 2 * Math.PI * r, gap = TRACK.cleatPitch, ph = ((dirSign * trav) % gap + gap) % gap;
+      g.strokeStyle = C.track; g.lineWidth = Math.max(1.5, 0.014 * scale); g.lineCap = 'butt';
+      g.beginPath();
+      for (let s = ph; s < per; s += gap) {
+        let px, pz, ox, oz;
+        if (s < L) { px = A.x + ux * s + nx * r; pz = A.z + uz * s + nz * r; ox = nx; oz = nz; }
+        else if (s < L + Math.PI * r) { const t = (s - L) / r, c = Math.cos(t), si = Math.sin(t); ox = nx * c + ux * si; oz = nz * c + uz * si; px = B.x + ox * r; pz = B.z + oz * r; }
+        else if (s < 2 * L + Math.PI * r) { const q = s - L - Math.PI * r; px = B.x - ux * q - nx * r; pz = B.z - uz * q - nz * r; ox = -nx; oz = -nz; }
+        else { const t = (s - 2 * L - Math.PI * r) / r, c = Math.cos(t), si = Math.sin(t); ox = -nx * c - ux * si; oz = -nz * c - uz * si; px = A.x + ox * r; pz = A.z + oz * r; }
+        g.moveTo(SX(px), SY(pz)); g.lineTo(SX(px + ox * TRACK.cleat), SY(pz + oz * TRACK.cleat));
+      }
+      g.stroke();
+      const fw = r * 0.5;
+      g.fillStyle = frame;
+      g.beginPath();
+      g.moveTo(SX(A.x + nx * fw), SY(A.z + nz * fw)); g.lineTo(SX(B.x + nx * fw), SY(B.z + nz * fw));
+      g.lineTo(SX(B.x - nx * fw), SY(B.z - nz * fw)); g.lineTo(SX(A.x - nx * fw), SY(A.z - nz * fw)); g.closePath(); g.fill();
+      const pulley = (x, z) => {
+        const pr = TRACK.pulley * scale;
+        g.beginPath(); g.arc(SX(x), SY(z), pr, 0, Math.PI * 2);
+        g.fillStyle = C['ink-2']; g.fill(); g.lineWidth = Math.max(1, 0.008 * scale); g.strokeStyle = C.track; g.stroke();
+        const rot = -(dirSign * trav) / TRACK.pulley;
+        g.beginPath();
+        for (let i = 0; i < 5; i++) { const a = rot + (i * 2 * Math.PI) / 5; g.moveTo(SX(x), SY(z)); g.lineTo(SX(x) + Math.cos(a) * pr * 0.85, SY(z) + Math.sin(a) * pr * 0.85); }
+        g.strokeStyle = C.track; g.stroke();
+      };
+      pulley(A.x, A.z); pulley(B.x, B.z);
+    }
+    function hinges(p, rho, rigid) {
+      if (rigid) return;
+      const dot = (Q, r) => { g.beginPath(); g.arc(SX(Q.x), SY(Q.z), r * scale, 0, Math.PI * 2); g.fillStyle = C.nosing; g.fill(); g.lineWidth = 2; g.strokeStyle = C.track; g.stroke(); };
+      dot(p.J, rho * 0.42);
+      if (p.pts) for (let j = 1; j < p.pts.length - 1; j++) if (j !== p.m) dot(p.pts[j], rho * 0.34);
+    }
+    function box(o, p) {
+      const c = TM.boxCorners(o, p);
+      g.beginPath(); c.forEach((q, i) => (i ? g.lineTo(SX(q.x), SY(q.z)) : g.moveTo(SX(q.x), SY(q.z)))); g.closePath();
+      g.fillStyle = C.box; g.fill(); g.strokeStyle = C['box-edge']; g.lineWidth = 1.5; g.stroke();
+      if (scale > 90) {
+        const mx = (c[0].x + c[2].x) / 2, mz = (c[0].z + c[2].z) / 2;
+        g.save(); g.translate(SX(mx), SY(mz)); g.rotate(-p.a1);
+        g.fillStyle = C.muted; g.font = `600 ${Math.max(9, Math.min(12, 0.07 * scale))}px ${font}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.fillText('BOX', -0.06 * scale, 0.02 * scale); g.restore();
+      }
+    }
+    // the platform: hinged on top of the box, the actuator from the box to the seat, the casualty on it
+    function platform(o, p, frame) {
+      const parts = TM.placeSeat(o, p);
+      const part = (nm) => parts.find((q) => q.name === nm);
+      const chair = parts.filter((q) => q.kind === 'chair');
+      const body = ['thigh', 'shank', 'foot', 'torso', 'head'].map(part);
+      g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+      const a = p.a1, ta = { x: Math.cos(a), z: Math.sin(a) }, na = { x: -Math.sin(a), z: Math.cos(a) };
+      const onBox = (u, v) => ({ x: p.J.x + ta.x * u + na.x * v, z: p.J.z + ta.z * u + na.z * v });
+      // pillow-block post from the box top up to the hinge
+      line(onBox(0, o.box.top), p.P, C.chair, Math.max(5, 0.05 * scale), 'butt');
+      // linear actuator from the box top to the seat board
+      const seatB = part('seat');
+      const S = { x: seatB.ax + (seatB.bx - seatB.ax) * 0.55, z: seatB.az + (seatB.bz - seatB.az) * 0.55 };
+      const Bt = onBox(-0.22, o.box.top);
+      line(Bt, S, C['ink-2'], Math.max(3, 0.028 * scale)); line(Bt, S, C.surface, Math.max(1, 0.008 * scale), 'butt');
+      g.strokeStyle = C.chair; g.lineWidth = Math.max(2.5, 2 * chair[0].r * scale);
+      g.beginPath(); for (const q of chair) { g.moveTo(SX(q.ax), SY(q.az)); g.lineTo(SX(q.bx), SY(q.bz)); } g.stroke();
+      for (const q of body) { capsule(q.ax, q.az, q.bx, q.bz, q.r); g.fillStyle = C.person; g.fill(); g.strokeStyle = C['person-edge']; g.lineWidth = 1.5; g.stroke(); }
+      const t = part('torso');
+      const sx = t.ax + (t.bx - t.ax) * 0.62, sz = t.az + (t.bz - t.az) * 0.62, ux = t.bx - t.ax, uz = t.bz - t.az, ul = Math.hypot(ux, uz) || 1;
+      const hx = (-uz / ul) * t.r, hz = (ux / ul) * t.r;
+      line({ x: sx - hx, z: sz - hz }, { x: sx + hx, z: sz + hz }, frame, Math.max(2, 0.025 * scale), 'butt');
+      g.beginPath(); g.arc(SX(p.P.x), SY(p.P.z), Math.max(4, 0.035 * scale), 0, Math.PI * 2);
+      g.fillStyle = C.nosing; g.fill(); g.strokeStyle = C.track; g.lineWidth = 2; g.stroke();
+      g.restore();
+    }
+    return { capsule, stairs, unit, hinges, box, platform };
+  }
+
+  const stages = {};
+  function setupStages() {
+    const host = $('stages');
+    for (const d of LAYOUTS) {
+      const el = document.createElement('div'); el.className = 'stage';
+      el.innerHTML = `<div class="stage-head"><span class="stage-name">${nameHtml(d)}</span><span data-f="chip"></span></div>`
+        + `<canvas aria-label="Side view: ${d.name}"></canvas>`
+        + `<div class="stage-foot"><div class="lean-now">Can lean <b data-f="lean"></b> before tipping</div><p class="stage-msg" data-f="msg"></p><dl class="reads" data-f="reads"></dl></div>`;
+      host.insertBefore(el, $('busy'));
+      const cv = el.querySelector('canvas');
+      stages[d.id] = { el, cv, g: cv.getContext('2d'), chip: el.querySelector('[data-f="chip"]'), lean: el.querySelector('[data-f="lean"]'), msg: el.querySelector('[data-f="msg"]'), reads: el.querySelector('[data-f="reads"]') };
+    }
+    resize();
+  }
+  function resize() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    for (const id in stages) {
+      const st = stages[id], r = st.cv.getBoundingClientRect();
+      st.W = r.width; st.H = r.height; st.dpr = dpr;
+      st.cv.width = Math.round(r.width * dpr); st.cv.height = Math.round(r.height * dpr);
+    }
+  }
+  function draw() {
+    if (!state.sims) return;
+    const two = state.sims.two, k = state.idx, n = nPath();
+    const k0 = Math.max(0, Math.min(n - 1, Math.round(k))), J0 = two.path[sampleIndex(k0)];
+    const target = { x: J0.x, z: J0.z + 0.42 };
+    if (!state.cam) state.cam = { ...target };
+    const a = state.playing ? 0.12 : 1;
+    state.cam.x += (target.x - state.cam.x) * a; state.cam.z += (target.z - state.cam.z) * a;
+    for (const d of LAYOUTS) drawStage(d);
+    const total = two.sEnd - two.path[0].s;
+    $('where').textContent = `${spotOf(J0.x).name} · ${(k / Math.max(1, n - 1) * total).toFixed(1)} of ${total.toFixed(1)} m`;
+    $('scrub').value = String(Math.round(k));
+    updateChart();
+  }
+  function drawStage(d) {
+    const st = stages[d.id], sim = state.sims[d.id], o = sim.opts, rho = o.sprocketRadius, g = st.g;
+    const p = poseAt(sim[state.dir], state.idx);
+    g.setTransform(st.dpr, 0, 0, st.dpr, 0, 0);
+    g.fillStyle = C.surface; g.fillRect(0, 0, st.W, st.H);
+    const scale = Math.min(st.W / 3.0, st.H / 1.85);
+    const SX = (x) => (x - state.cam.x) * scale + st.W / 2, SY = (z) => st.H / 2 - (z - state.cam.z) * scale;
+    g.strokeStyle = C.hair; g.lineWidth = 1; g.globalAlpha = 0.55; g.beginPath();
+    for (let gx = Math.floor((state.cam.x - st.W / 2 / scale) / 0.5) * 0.5; SX(gx) < st.W; gx += 0.5) { g.moveTo(Math.round(SX(gx)) + 0.5, 0); g.lineTo(Math.round(SX(gx)) + 0.5, st.H); }
+    for (let gz = Math.floor((state.cam.z - st.H / scale) / 0.5) * 0.5; SY(gz) > 0; gz += 0.5) { g.moveTo(0, Math.round(SY(gz)) + 0.5); g.lineTo(st.W, Math.round(SY(gz)) + 0.5); }
+    g.stroke(); g.globalAlpha = 1;
+    const paint = painter(g, SX, SY, scale);
+    paint.stairs(sim.profile, sim.terrain.V);
+    paint.box(o, p);
+    const dirSign = state.dir === 'up' ? 1 : -1;
+    const units = sim.rigid ? [[p.R, p.F]] : (p.units || [[p.R, p.J], [p.J, p.F]]);
+    for (const [A, B] of units) paint.unit(A, B, rho, state.travel, dirSign, C[d.color]);
+    paint.hinges(p, rho, sim.rigid);
+    paint.platform(o, p, C[d.color]);
+    const ev = p.ev;
+    if (ev) {
+      const lean = deg(ev.tipAngle), lvl = levelOf(lean);
+      // the centre of weight and the line straight down from it
+      const x = ev.com.x, z = ev.com.z, r = Math.max(5, 0.035 * scale);
+      g.beginPath(); g.moveTo(SX(x), SY(z)); g.lineTo(SX(x), SY(TM.groundZ(sim.terrain, x)));
+      g.strokeStyle = C.ink; g.lineWidth = 1.5; g.setLineDash([4, 3]); g.stroke(); g.setLineDash([]);
+      g.beginPath(); g.arc(SX(x), SY(z), r, 0, Math.PI * 2); g.fillStyle = C.surface; g.fill();
+      g.fillStyle = C.ink;
+      for (const q of [0, Math.PI]) { g.beginPath(); g.moveTo(SX(x), SY(z)); g.arc(SX(x), SY(z), r, q, q + Math.PI / 2); g.closePath(); g.fill(); }
+      g.beginPath(); g.arc(SX(x), SY(z), r, 0, Math.PI * 2); g.strokeStyle = C.ink; g.lineWidth = 1.5; g.stroke();
+      st.chip.innerHTML = chip(lvl);
+      st.lean.textContent = lean < 0 ? 'nothing' : `${lean.toFixed(0)}°`;
+      st.lean.className = lvl === 'good' ? 'ok-t' : lvl === 'warn' ? 'warn-t' : 'bad-t';
+      const spot = spotOf(p.J.x).name.toLowerCase();
+      st.msg.innerHTML = lvl === 'bad'
+        ? `<b>Tipping over the edge.</b> The weight has passed the last point on the stairs${ev.tipDrop > 0.01 ? `, so one end drops ${Math.round(ev.tipDrop * 100)} cm` : ''}.`
+        : lvl === 'warn' ? `<b>Close to tipping.</b> A sudden stop or a bump here could tip it.`
+        : `Steady on the ${spot}.`;
+    }
+    const signed = (v) => `${deg(v) >= 0 ? '+' : '−'}${Math.abs(deg(v)).toFixed(0)}°`;
+    const rows = [['Casualty tilt', signed(p.phi)]];
+    if (!sim.rigid) rows.push(['Middle hinge', signed(p.beta)]);
+    if (p.bends) { const ex = p.bends.filter((_, j) => j !== p.m - 1); rows.push(['Outer hinges', ex.map(signed).join(' · ')]); }
+    st.reads.innerHTML = rows.map(([kk, v]) => `<div><dt>${kk}</dt><dd>${v}</dd></div>`).join('');
+  }
+
+  // ------------------------------------------------------------ lean trace
+  let chart = null;
+  function sectionBands(sim) {
+    const p = sim.profile, n = sim.path.length;
+    const xs = [0, p.xL0, p.xL1, p.xP0];
+    const names = ['Ground', 'Lower flight', 'Mid-landing', 'Upper flight', 'Top platform'];
+    const cross = xs.map((x) => { let i = 0; while (i < n - 1 && sim.path[i].x < x) i++; return dist(sim, i); });
+    let edges = [dist(sim, 0), ...cross, dist(sim, n - 1)], labels = names.slice();
+    if (state.dir === 'down') { edges = edges.reverse(); labels = labels.reverse(); }
+    return labels.map((name, i) => ({ a: Math.min(edges[i], edges[i + 1]), b: Math.max(edges[i], edges[i + 1]), name }));
+  }
+  function buildChart() {
+    const host = $('chart-lean'), sims = state.sims, n = nPath();
+    const data = [];
+    for (let k = 0; k < n; k++) {
+      const i = sampleIndex(k), row = { x: dist(sims.two, i), k };
+      for (const d of LAYOUTS) row[d.id] = deg(sims[d.id][state.dir][i].ev.tipAngle);
+      data.push(row);
+    }
+    const W = Math.max(280, host.clientWidth), H = 260, m = { l: 38, r: 12, t: 22, b: 24 };
+    const y0 = -20, y1 = 40, xMax = data[data.length - 1].x;
+    const X = (x) => m.l + (x / xMax) * (W - m.l - m.r), Y = (y) => m.t + (1 - (Math.max(y0, Math.min(y1, y)) - y0) / (y1 - y0)) * (H - m.t - m.b);
+    const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('height', H); svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'How far each layout can lean before tipping, along the trip');
+    const el = (tag, attrs, parent = svg) => { const e = document.createElementNS(ns, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
+    sectionBands(sims.two).forEach((b, i) => {
+      if (i % 2 === 1) el('rect', { x: X(b.a), y: m.t, width: Math.max(0, X(b.b) - X(b.a)), height: H - m.t - m.b, fill: C['surface-2'] });
+      const w = X(b.b) - X(b.a), short = b.name.split(' ')[0], fits = (t) => t.length * 7 + 8 <= w;
+      const name = fits(b.name) ? b.name : fits(short) ? short : null;
+      if (name) { const t = el('text', { x: X(b.a) + 4, y: m.t - 7, class: 'band-label' }); t.textContent = name; }
+    });
+    // zones: tips below 0; a sudden stop could tip it below the hard stop
+    el('rect', { x: m.l, y: Y(0), width: W - m.l - m.r, height: Y(y0) - Y(0), fill: C['bad-tint'] });
+    el('rect', { x: m.l, y: Y(HARD_STOP), width: W - m.l - m.r, height: Y(0) - Y(HARD_STOP), fill: C['warn-tint'] });
+    const zl = (y, txt, color) => { const t = el('text', { x: W - m.r - 4, y, 'text-anchor': 'end', class: 'zone-label', fill: color }); t.textContent = txt; };
+    zl(Y(-10) + 4, 'TIPS OVER', C['bad-ink']); zl((Y(0) + Y(HARD_STOP)) / 2 + 4, 'A SUDDEN STOP COULD TIP IT', C['warn-ink']);
+    const ax = el('g', { class: 'axis' });
+    for (const t of [-20, 0, 20, 40]) {
+      el('line', { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: t === 0 ? C['hair-strong'] : C.hair, 'stroke-width': 1 }, ax);
+      const tx = el('text', { x: m.l - 6, y: Y(t) + 4, 'text-anchor': 'end' }, ax); tx.textContent = `${t}°`;
+    }
+    const step = xMax > 14 ? 4 : 2;
+    for (let x = 0; x <= xMax + 1e-9; x += step) { const tx = el('text', { x: X(x), y: H - 6, 'text-anchor': x === 0 ? 'start' : 'middle' }, ax); tx.textContent = x + (x === 0 ? ' m' : ''); }
+    const path = (key) => { let d = ''; const s = Math.max(1, Math.floor(data.length / (W * 1.5))); for (let i = 0; i < data.length; i += s) d += (d ? 'L' : 'M') + X(data[i].x).toFixed(1) + ' ' + Y(data[i][key]).toFixed(1); return d; };
+    for (const d of LAYOUTS) el('path', { d: path(d.id), fill: 'none', stroke: C[d.color], 'stroke-width': d.id === 'rigid' ? 2.5 : 2, 'stroke-dasharray': d.id === 'rigid' ? '7 5' : 'none', 'stroke-linejoin': 'round', 'stroke-linecap': d.id === 'rigid' ? 'butt' : 'round' });
+    const cross = el('line', { y1: m.t, y2: H - m.b, stroke: C.ink, 'stroke-width': 1, opacity: 0.55 });
+    const dots = LAYOUTS.map((d) => el('circle', { r: 4.5, fill: C[d.color], stroke: C.surface, 'stroke-width': 2 }));
+    host.textContent = ''; host.appendChild(svg);
+    const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
+    const nearest = (px) => { const x = ((px - m.l) / (W - m.l - m.r)) * xMax; let lo = 0, hi = data.length - 1; while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (data[mid].x < x) lo = mid; else hi = mid; } return Math.abs(data[lo].x - x) < Math.abs(data[hi].x - x) ? lo : hi; };
+    const toLocal = (ev) => { const r = svg.getBoundingClientRect(); return ((ev.clientX - r.left) / r.width) * W; };
+    svg.addEventListener('pointermove', (ev) => {
+      const dp = data[nearest(toLocal(ev))];
+      tip.hidden = false; tip.textContent = '';
+      const head = document.createElement('div'); head.className = 't-head'; head.textContent = `${dp.x.toFixed(1)} m travelled · ${spotOf(state.sims.two.path[sampleIndex(dp.k)].x).name}`; tip.appendChild(head);
+      for (const d of LAYOUTS) {
+        const row = document.createElement('div'); row.className = 't-row';
+        const kk = document.createElement('i'); kk.className = 'key ' + d.color;
+        const b = document.createElement('b'); b.textContent = dp[d.id] < 0 ? 'tips' : dp[d.id].toFixed(0) + '°';
+        const sp = document.createElement('span'); sp.textContent = d.name;
+        row.append(kk, b, sp); tip.appendChild(row);
+      }
+      const r = svg.getBoundingClientRect(), px = ev.clientX - r.left;
+      tip.style.left = Math.min(r.width - 200, Math.max(0, px + 12)) + 'px'; tip.style.top = '8px';
+    });
+    svg.addEventListener('pointerleave', () => { tip.hidden = true; });
+    svg.addEventListener('click', (ev) => { seek(nearest(toLocal(ev))); });
+    chart = { X, Y, data, cross, dots };
+    $('lean-sub').textContent = `Going ${state.dir} the stairs. The shaded bands are where it would tip, or where a sudden stop could tip it. Hover to read the values; click to watch that moment.`;
+  }
+  function updateChart() {
+    if (!chart) return;
+    const dp = chart.data[Math.min(chart.data.length - 1, Math.round(state.idx))];
+    chart.cross.setAttribute('x1', chart.X(dp.x)); chart.cross.setAttribute('x2', chart.X(dp.x));
+    LAYOUTS.forEach((d, j) => { chart.dots[j].setAttribute('cx', chart.X(dp.x)); chart.dots[j].setAttribute('cy', chart.Y(dp[d.id])); });
+  }
+
+  // ------------------------------------------------------------ playback and controls
+  function setPlaying(on) {
+    state.playing = on;
+    const b = $('play');
+    b.innerHTML = on
+      ? '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5h3v11H3zM8 1.5h3v11H8z" fill="currentColor"/></svg><span>Pause</span>'
+      : '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span>Play</span>';
+    b.setAttribute('aria-label', on ? 'Pause' : 'Play');
+    state.lastT = performance.now();
+    if (on) requestAnimationFrame(tick);
+  }
+  function tick(t) {
+    if (!state.playing) return;
+    const dt = Math.min(0.1, (t - state.lastT) / 1000);
+    state.lastT = t;
+    // a quarter of the speed while any layout is close to tipping
+    const close = $('slowmo').checked && LAYOUTS.some((d) => deg(poseAt(state.sims[d.id][state.dir], state.idx).ev.tipAngle) < HARD_STOP + 4);
+    const ds = 0.25 * state.speed * (close ? 0.25 : 1) * dt, n = nPath() - 1;
+    state.idx = Math.min(n, state.idx + ds / 0.01);
+    state.travel += ds;
+    draw();
+    if (state.idx >= n) { setPlaying(false); return; }
+    requestAnimationFrame(tick);
+  }
+  function seek(k) { setPlaying(false); state.idx = Math.max(0, Math.min(nPath() - 1, k)); state.cam = null; draw(); }
+  function setDir(dir) {
+    if (state.dir === dir) return;
+    const x = state.sims ? state.sims.two.path[sampleIndex(Math.round(state.idx))].x : null;
+    state.dir = dir;
+    $('seg-dir').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === dir)));
+    if (!state.sims) return;
+    // stay at the same place on the stairs
+    const n = nPath(); let best = 0;
+    for (let k = 0; k < n; k++) if (Math.abs(state.sims.two.path[sampleIndex(k)].x - x) < Math.abs(state.sims.two.path[sampleIndex(best)].x - x)) best = k;
+    state.idx = best; state.cam = null;
+    buildChart(); draw();
+  }
+  function indexAtX(x) {
+    const n = nPath(); let best = 0;
+    for (let k = 0; k < n; k++) if (Math.abs(state.sims.two.path[sampleIndex(k)].x - x) < Math.abs(state.sims.two.path[sampleIndex(best)].x - x)) best = k;
+    return best;
+  }
+  function setupJumps() {
+    const host = $('jump-spots');
+    const add = (label, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn small'; b.textContent = label; b.addEventListener('click', () => { if (state.sims) fn(); }); host.appendChild(b); };
+    add('Foot of the stairs', () => seek(indexAtX(-0.2)));
+    add('Mid-landing edge', () => { const s = state.spots.find((q) => q.id === 'midEdge'); seek(weakest('rigid', state.dir, s).k); });
+    add('Top edge', () => { const s = state.spots.find((q) => q.id === 'top'); seek(weakest('rigid', state.dir, s).k); });
+    add('Riskiest moment', () => { let best = null; for (const d of LAYOUTS.slice(1)) { const w = weakest(d.id, state.dir); if (!best || w.v < best.v) best = w; } seek(best.k); });
+  }
+  function afterRuns() {
+    $('busy').hidden = true;
+    $('scrub').max = String(nPath() - 1);
+    renderVerdicts(); renderSpots();
+    const s = state.spots.find((q) => q.id === 'top');
+    state.idx = weakest('two', state.dir, s).k; // open at the top edge, the riskiest place
+    state.cam = null;
+    buildChart(); draw();
+  }
+
+  $('seg-dir').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setDir(b.dataset.v); });
+  $('seg-scale').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    state.scale = Number(b.dataset.v);
+    $('seg-scale').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    renderBox();
+  });
+  $('play').addEventListener('click', () => { if (!state.sims) return; if (!state.playing && state.idx >= nPath() - 1) state.idx = 0; setPlaying(!state.playing); });
+  $('restart').addEventListener('click', () => { if (!state.sims) return; state.idx = 0; state.cam = null; draw(); setPlaying(!reduceMotion); });
+  $('scrub').addEventListener('input', (e) => { if (state.sims) seek(Number(e.target.value)); });
+  $('speed').addEventListener('change', (e) => { state.speed = Number(e.target.value); });
+  const retheme = () => { readColors(); if (state.sims) { buildChart(); draw(); } };
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', retheme);
+  new MutationObserver(retheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  let rsTimer = null;
+  window.addEventListener('resize', () => { clearTimeout(rsTimer); rsTimer = setTimeout(() => { resize(); if (state.sims) { buildChart(); state.cam = null; draw(); } }, 120); });
+
+  readColors();
+  $('legend').innerHTML = LAYOUTS.map((d) => nameHtml(d)).join('');
+  renderBox();
+  renderModel();
+  setupStages();
+  setupJumps();
+  runSims();
+})();
+</script>

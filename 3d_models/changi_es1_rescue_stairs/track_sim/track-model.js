@@ -32,7 +32,9 @@
     comOffset: 0, // person shifted along the seat, m (+ towards the head)
     seatBias: 0.15, // the seat's load centre set this far towards the head from the post, m
     mastMode: 'balance', // 'balance': a drive at the arm's foot leans it to keep the weight
-    // furthest from tipping; 'average': arm held halfway between the units; 'upright': kept vertical
+    // furthest from tipping; 'average': arm held halfway between the units; 'upright': kept vertical;
+    // 'base': no arm, the seat's levelling pivot sits on top of the centre box (seatHeight above the
+    // hinge axle), square to the section the box is bolted to
     armLimitDeg: 50, // balance arm: lean either way from halfway between the units
     armRateDegPerM: 60, // balance arm: how fast its drive turns, per metre travelled
     armLockDeg: null, // balance arm drive seized at this lean from halfway (a failure), or null
@@ -420,14 +422,14 @@
       if (!p.arms) { const off = o._twoArmOff || { dx: 0, dz: o.seatHeight }; p.P = { x: p.J.x + off.dx, z: p.J.z + off.dz }; }
       return;
     }
-    const a = o.mastMode === 'upright' ? p.phi : o.mastMode === 'balance' ? p.pitch + (p.psiRel || 0) : p.pitch;
+    const a = o.mastMode === 'upright' ? p.phi : o.mastMode === 'balance' ? p.pitch + (p.psiRel || 0) : o.mastMode === 'base' ? p.a1 : p.pitch;
     p.P = { x: p.J.x - o.seatHeight * Math.sin(a), z: p.J.z + o.seatHeight * Math.cos(a) };
   }
 
   // The levelling pivot turns the seat back towards level, but only so fast.
   function level(o, p, prevLam, ds) {
     if (o.mastMode === 'twoArm' || o.mastMode === 'vArms') { p.lam = 0; return; } // the two arms level the cradle themselves
-    const lean = p.pitch + (p.psiRel || 0); // what the arm leans, which the seat drive cancels
+    const lean = (o.mastMode === 'base' ? p.a1 : p.pitch) + (p.psiRel || 0); // what the arm leans, which the seat drive cancels
     if (o.levelLockDeg != null) { p.lam = rad(o.levelLockDeg); p.phi = lean - p.lam; placePivot(o, p); return; }
     if (!o.levelSeat) { p.lam = 0; p.phi = lean; placePivot(o, p); return; }
     const lim = rad(o.levelLimitDeg), target = clamp(lean, -lim, lim);
@@ -1014,7 +1016,7 @@
     const avg = (p.a1 + p.a2) / 2; // pitch-averaging mast
     // seat tilt if the levelling drive keeps up (the travel loop applies its speed limit)
     const psiRel = o.mastMode === 'balance' ? o._psiRel || 0 : 0; // balance arm: its last lean
-    const lean = avg + psiRel;
+    const lean = (o.mastMode === 'base' ? p.a1 : avg) + psiRel;
     const lam = o.levelLockDeg != null ? rad(o.levelLockDeg) : o.levelSeat ? clamp(lean, -rad(o.levelLimitDeg), rad(o.levelLimitDeg)) : 0;
     Object.assign(p, { pitch: avg, psiRel, lam, phi: lean - lam });
     placePivot(o, p);
@@ -1093,6 +1095,12 @@
   const contactsOf = (T, p, rho, tol) => halvesOf(p).flatMap((P) => trackContacts(T, P, rho, tol));
 
   // T: real steps. TR: nosing line the tracks ride on (support and stability).
+  // The centre box's outline in the world: bolted to the section just behind the seat's hinge.
+  function boxCorners(o, p) {
+    const b = o.box, a = p.a1, c = Math.cos(a), s = Math.sin(a);
+    return [[-b.back, b.floor], [b.front, b.floor], [b.front, b.top], [-b.back, b.top]].map(([u, v]) => ({ x: p.J.x + u * c - v * s, z: p.J.z + u * s + v * c }));
+  }
+
   function evaluate(T, TR, o, p) {
     const rho = o.sprocketRadius, tol = 0.004;
     const us = unitsOf(p), N = us.length, [hr, hf] = halvesOf(p);
@@ -1130,8 +1138,19 @@
         if (dt < trackClearance) { trackClearance = dt; trackHit = { part: q.name, unit }; }
       }
     }
+    // centre box: gap to the steps, and to the seat and casualty above it
+    let boxClearance = null, boxSeat = null;
+    if (o.box) {
+      const bc = boxCorners(o, p), seat = placeSeat(o, p);
+      boxClearance = Infinity; boxSeat = Infinity;
+      for (let k = 0; k < 4; k++) {
+        const A = bc[k], B = bc[(k + 1) % 4];
+        boxClearance = Math.min(boxClearance, segTerrainDist(T, A.x, A.z, B.x, B.z));
+        for (const q of seat) boxSeat = Math.min(boxSeat, segSegDist(q.ax, q.az, q.bx, q.bz, A.x, A.z, B.x, B.z) - q.r);
+      }
+    }
     return {
-      rear, front,
+      rear, front, boxClearance, boxSeat,
       rearNosings: p.units ? null : realNosings(p.R, p.J),
       frontNosings: p.units ? null : realNosings(p.J, p.F),
       com, support: [minX, maxX], margin, tipDrop, clearance, closest: hit, trackClearance, trackHit, tipAngle, tipDir,
@@ -1233,6 +1252,7 @@
     let maxHinge = 0, maxPitch = 0, minMargin = Infinity, minClear = Infinity, maxJump = 0, jumpAt = null, minNosings = Infinity;
     let maxDrop = 0, dropAt = null, maxTilt = 0, maxTiltJump = 0, maxLevel = 0, minTrack = Infinity, closest = null, trackHit = null;
     let maxMast = 0, maxLevelM = 0, minTip = Infinity, tipAt = null, tipDir = null, maxLink = 0, maxArmT = 0, maxOther = 0;
+    let minBox = Infinity, minBoxSeat = Infinity;
     const win = Math.max(1, Math.round(0.1 / step)); // samples in 10 cm of travel
     for (let i = 0; i < poses.length; i++) {
       const p = poses[i];
@@ -1244,6 +1264,7 @@
       if (p.ev.trackClearance < minTrack) { minTrack = p.ev.trackClearance; trackHit = p.ev.trackHit; }
       maxTilt = Math.max(maxTilt, Math.abs(p.phi));
       maxMast = Math.max(maxMast, Math.abs(p.ev.mastMoment));
+      if (p.ev.boxClearance != null) { minBox = Math.min(minBox, p.ev.boxClearance); minBoxSeat = Math.min(minBoxSeat, p.ev.boxSeat); }
       if (p.bends) p.bends.forEach((b, j) => { if (j !== o.mainJoint - 1) maxOther = Math.max(maxOther, Math.abs(b)); });
       if (p.ev.armTorques) maxArmT = Math.max(maxArmT, Math.abs(p.ev.armTorques[0]), Math.abs(p.ev.armTorques[1]));
       // the averaging diamond opens to 90 degrees minus the bend: link force M / (2 arm cos(bend))
@@ -1273,6 +1294,7 @@
       maxMastMoment: maxMast, maxLevelMoment: maxLevelM,
       minTipAngleDeg: deg(minTip), tipAngleAt: tipAt, tipAngleDir: tipDir, maxLinkForce: maxLink, maxArmTorque: maxArmT, maxOtherHingeDeg: deg(maxOther),
       minNosingsOnFlight: minNosings === Infinity ? null : minNosings,
+      minBoxClearance: minBox === Infinity ? null : minBox, minBoxSeat: minBoxSeat === Infinity ? null : minBoxSeat,
     };
   }
 
@@ -1397,6 +1419,6 @@
     };
   }
 
-  return { STAIRS, DEFAULTS, SUPPORT, LINK_ARM, armFeet, stairProfile, makeTerrain, groundZ, clearanceZ, restAngle, restAngleBack,
+  return { STAIRS, DEFAULTS, SUPPORT, LINK_ARM, armFeet, boxCorners, stairProfile, makeTerrain, groundZ, clearanceZ, restAngle, restAngleBack,
     sprocketPath, solveHinged, solveRigid, evaluate, simulate, analyse, structure, seatModel, placeSeat, deg, rad };
 });
