@@ -31,6 +31,7 @@
     --box-edge: #7d8792;
     --person: #e9dccb;
     --person-edge: #8a765f;
+    --laser: #c21ba0;
     --good: #0ca30c;
     --warn: #fab219;
     --bad: #d03b3b;
@@ -50,7 +51,7 @@
       --bg: #0e1216; --surface: #161b21; --surface-2: #1c232a; --ink: #e9edf1; --ink-2: #b2bcc6; --muted: #7f8a96;
       --hair: #283039; --hair-strong: #3a4450; --steel: #3a424c; --steel-edge: #6a7480; --nosing: #9fb514;
       --rigid: #d95926; --two: #3987e5; --four: #199e70;
-      --track: #0b0e11; --tread: #6f7883; --chair: #aeb8c3; --box: #2b333c; --box-edge: #8792a0; --person: #5b4d3f; --person-edge: #c4ad92;
+      --track: #0b0e11; --tread: #6f7883; --chair: #aeb8c3; --box: #2b333c; --box-edge: #8792a0; --person: #5b4d3f; --person-edge: #c4ad92; --laser: #f062c8;
       --good-ink: #3fc43f; --warn-ink: #f5c04a; --bad-ink: #f07a7a; --warn-tint: rgba(250, 178, 25, 0.12); --bad-tint: rgba(240, 122, 122, 0.12);
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
     }
@@ -60,7 +61,7 @@
     --bg: #0e1216; --surface: #161b21; --surface-2: #1c232a; --ink: #e9edf1; --ink-2: #b2bcc6; --muted: #7f8a96;
     --hair: #283039; --hair-strong: #3a4450; --steel: #3a424c; --steel-edge: #6a7480; --nosing: #9fb514;
     --rigid: #d95926; --two: #3987e5; --four: #199e70;
-    --track: #0b0e11; --tread: #6f7883; --chair: #aeb8c3; --box: #2b333c; --box-edge: #8792a0; --person: #5b4d3f; --person-edge: #c4ad92;
+    --track: #0b0e11; --tread: #6f7883; --chair: #aeb8c3; --box: #2b333c; --box-edge: #8792a0; --person: #5b4d3f; --person-edge: #c4ad92; --laser: #f062c8;
     --good-ink: #3fc43f; --warn-ink: #f5c04a; --bad-ink: #f07a7a; --warn-tint: rgba(250, 178, 25, 0.12); --bad-tint: rgba(240, 122, 122, 0.12);
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
   }
@@ -186,7 +187,7 @@
   <header>
     <p class="eyebrow">Part 1 · Simulation · ES1 stairs: 8.4 m high, 35°, 1 m mid-landing</p>
     <h1>Stair Climber Bending Test</h1>
-    <p class="lede">The same casualty, folded into a chair shape on the 3-part platform, with the platform hinged on top of the battery box and kept level by the linear actuator. It is carried up and down the stairs three ways: on tracks that can't bend, on tracks in 2 parts, and on tracks in 4 parts. Press play, or jump straight to a danger spot.</p>
+    <p class="lede">The same casualty, folded into a chair shape on the 3-part platform, with the platform hinged on top of the battery box and kept level by the linear actuator. It is carried up and down the stairs three ways: on tracks that can't bend, on tracks in 2 parts, and on tracks in 4 parts. The bending tracks stop at each edge when a laser at the front sees the drop, bend until they touch the stairs, then drive on. Press play, or jump straight to a danger spot.</p>
   </header>
 
   <section aria-labelledby="verdict-h" class="panel card">
@@ -198,6 +199,14 @@
 
   <section class="card run" aria-label="The three layouts running in step">
     <div class="toolbar">
+      <div class="group"><span class="group-label" id="lbl-ctl">How it bends</span>
+        <div class="seg" role="group" aria-labelledby="lbl-ctl" id="seg-ctl">
+          <button type="button" data-v="stopGo" aria-pressed="true">Stop, bend, then go</button><button type="button" data-v="moving" aria-pressed="false">Bend while moving</button>
+        </div>
+      </div>
+      <label class="group" id="laser-group" for="laser"><span class="group-label">Laser stops it at a drop of</span>
+        <select id="laser"></select>
+      </label>
       <div class="group"><span class="group-label" id="lbl-dir">Direction</span>
         <div class="seg" role="group" aria-labelledby="lbl-dir" id="seg-dir">
           <button type="button" data-v="down" aria-pressed="true">Down the stairs</button><button type="button" data-v="up" aria-pressed="false">Up the stairs</button>
@@ -236,6 +245,15 @@
     <div class="chart" id="chart-lean"></div>
   </section>
 
+  <section class="card panel" aria-labelledby="laser-h">
+    <h2 id="laser-h">Where should the laser stop it?</h2>
+    <p class="sub" id="laser-sub"></p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Laser stops it at a drop of</th><th id="laser-th-two"></th><th id="laser-th-four"></th><th class="num">Slowest trip</th><th>What happens</th></tr></thead>
+      <tbody id="laser-body"></tbody>
+    </table></div>
+  </section>
+
   <section class="card panel" aria-labelledby="box-h">
     <div class="chart-head">
       <h2 id="box-h">How big the box can be</h2>
@@ -243,7 +261,7 @@
         <button type="button" data-v="1" aria-pressed="true">Full size</button><button type="button" data-v="5" aria-pressed="false">1:5 prototype</button>
       </div>
     </div>
-    <p class="sub">The box is bolted to the track section just behind the middle hinge, with the platform's hinge on top of it. These are the tallest boxes that still clear the stairs, the moving tracks and the tilting platform at every point of the trip, for each length. Width: up to <span data-mm="400"></span> between the track frames.</p>
+    <p class="sub">The box is bolted to the track section just behind the middle hinge, with the platform's hinge on top of it. These are the tallest boxes that still clear the stairs, the moving tracks and the tilting platform at every point of the trip, for each length, whether it stops to bend or bends while moving. Width: up to <span data-mm="400"></span> between the track frames.</p>
     <div class="two-col">
       <div class="table-wrap"><table>
         <thead><tr id="box-head"><th>Box length</th></tr></thead>
@@ -257,7 +275,7 @@
     <h2 id="sweep-h">Would a shorter 2-part track help?</h2>
     <p class="sub" id="sweep-sub"></p>
     <div class="table-wrap"><table>
-      <thead><tr><th>Each half</th><th class="num">Whole vehicle</th><th>Going down</th><th>Going up</th><th>What happens at the top edge</th></tr></thead>
+      <thead><tr><th>Each half</th><th class="num">Whole vehicle</th><th>Going down</th><th>Going up</th><th>What happens</th></tr></thead>
       <tbody id="sweep-body"></tbody>
     </table></div>
   </section>
@@ -311,14 +329,41 @@
   // resting on a single step edge.
   const SWEEP = [[0.5, null, 14.0, 10, true], [0.55, null, 13.9, 8, true], [0.6, null, 12.7, 8, false], [0.65, 0.5, 11.5, 5, false], [0.693, 2.3, 11.4, 0, false],
     [0.76, 4.6, 9.6, 0, false], [0.8, 5.7, 9.7, 0, false], [0.85, 4.2, 10.4, 0, false], [0.9, null, 9.2, 7, false]];
+  // The same, stopping to bend with the laser at 1 1/4 risers.
+  const SWEEP_STOPGO = [[0.5, 8.4, 14.0, 5, true], [0.55, 8.4, 16.7, 5, true], [0.6, 8.3, 18.9, 6, false], [0.65, 8.5, 21.1, 5, false], [0.693, 22.6, 22.6, 0, false],
+    [0.76, 25.0, 25.0, 0, false], [0.8, 25.1, 25.0, 0, false], [0.85, 25.1, 25.0, 0, false], [0.9, 25.1, 25.0, 0, false]];
   const CURRENT_BASE = [1100, 600, 250]; // the base on the levelling sheet, full size (220 x 120 x 50 mm at 1:5)
+  // Stop, bend, then go: it drives at 0.25 m/s and stops wherever a hinge or the levelling has to turn
+  // further than it can on the move. The middle hinge turns 30 degrees a second (120 per metre on the move),
+  // the end hinges as much faster as their sections are shorter, the levelling 37.5 a second (150 per metre).
+  // A hinge only turns as far as still leaves this much lean before tipping; otherwise it holds its bend.
+  const CONTROL = { drive: 0.25, hinge: 30, end: (30 * TRACK.unit2) / TRACK.sections4, level: 37.5, safeDeg: 25 };
+  // Laser settings: how much further than on flat ground it must read before the vehicle stops to bend.
+  // On the flights the steps alone make it read up to 1.1 risers further.
+  const FLIGHT_READ = 1.1;
+  const LASERS = [[1, '1 riser'], [1.25, '1¼ risers'], [1.5, '1½ risers'], [2, '2 risers'], [3, '3 risers']];
+  // Each setting run in full: least lean before tipping (degrees), biggest drop (cm) and trip time (s, of it
+  // stopped) for 2 parts then 4 parts: [risers, two: down, up, drop, down s, stopped, up s, stopped, four: the same].
+  const LASER_TABLE = [[1, 25.0, 25.0, 0, 83.7, 9.5, 79.4, 5.2, 24.4, 24.4, 0, 86.6, 12.4, 80.3, 6.1],
+    [1.25, 25.0, 25.0, 0, 80.9, 6.7, 79.5, 5.3, 24.4, 24.4, 0, 83.5, 9.3, 80.3, 6.2],
+    [1.5, 10.8, 25.0, 0, 80.9, 6.8, 79.5, 5.3, 10.1, 24.4, 0, 83.8, 9.6, 80.5, 6.3],
+    [2, 10.8, 25.0, 0, 81.0, 6.8, 79.9, 5.7, 10.1, 21.8, 0, 84.0, 9.9, 80.7, 6.5],
+    [3, 10.8, -7.8, 28, 80.8, 6.7, 76.0, 1.8, 10.1, -8.0, 26, 83.4, 9.3, 81.7, 7.6]];
+  const LASER_WHAT = {
+    1: `Just as safe, but the steps alone can read ${FLIGHT_READ} risers, so it would also stop on every step of the flights.`,
+    1.25: 'Best: as safe as stopping in exactly the right spot, and no false stops on the flights.',
+    1.5: 'Late going down at the mid-landing: it can lean only 11° there (10° with 4 parts).',
+    2: 'Late going down at the mid-landing (11°, 10° with 4 parts), and the 4 parts keep only 22° going up.',
+    3: 'Too late going up: it tips at the mid-landing edge and the top edge, one end dropping 28 cm. Going down, the platform knocks its own tracks.',
+  };
 
-  const state = { dir: 'down', idx: 0, playing: false, speed: 2, lastT: 0, travel: 0, sims: null, cam: null, scale: 1, spots: [] };
+  const state = { dir: 'down', idx: 0, playing: false, speed: 2, lastT: 0, travel: 0, sims: null, cam: null, scale: 1, spots: [], ctl: 'stopGo', laser: 1.25 };
+  const cache = {};
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let C = {};
   function readColors() {
     const cs = getComputedStyle(document.documentElement);
-    for (const k of ['surface', 'surface-2', 'ink', 'ink-2', 'muted', 'hair', 'hair-strong', 'steel', 'steel-edge', 'nosing', 'rigid', 'two', 'four', 'track', 'tread', 'chair', 'box', 'box-edge', 'person', 'person-edge', 'good', 'warn', 'bad', 'good-ink', 'warn-ink', 'bad-ink', 'warn-tint', 'bad-tint']) C[k] = cs.getPropertyValue('--' + k).trim();
+    for (const k of ['surface', 'surface-2', 'ink', 'ink-2', 'muted', 'hair', 'hair-strong', 'steel', 'steel-edge', 'nosing', 'rigid', 'two', 'four', 'track', 'tread', 'chair', 'box', 'box-edge', 'person', 'person-edge', 'laser', 'good', 'warn', 'bad', 'good-ink', 'warn-ink', 'bad-ink', 'warn-tint', 'bad-tint']) C[k] = cs.getPropertyValue('--' + k).trim();
   }
   const icons = {
     good: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -336,22 +381,76 @@
   const sampleIndex = (k) => (state.dir === 'up' ? k : nPath() - 1 - k);
   const dist = (sim, i) => (state.dir === 'up' ? sim.path[i].s : sim.sEnd - sim.path[i].s);
   const listOf = (id, dir) => state.sims[id][dir || state.dir];
+  const stopGo = () => state.ctl === 'stopGo';
+  const keyNow = () => (stopGo() ? `stopGo ${state.laser}` : 'moving');
+  const optsNow = () => Object.assign({}, BASE, stopGo() ? { bendMode: 'stopGo', stopGoSafeDeg: CONTROL.safeDeg, laserRisers: state.laser } : { bendMode: 'moving' });
+  const laserName = (r) => (LASERS.find((l) => l[0] === r) || [r, `${r} risers`])[1];
+  // Work out the three runs for the chosen way of bending (once each: switching back is instant).
   function runSims() {
-    $('busy').hidden = false;
+    const key = keyNow();
+    if (cache[key]) { useSims(cache[key]); return; }
+    setPlaying(false);
+    const busy = $('busy');
+    busy.hidden = false; busy.textContent = 'Working out the 2-part run…';
     setTimeout(() => {
-      const two = TM.simulate(Object.assign({ oneTrack: true }, BASE));
+      const o = optsNow();
+      const two = TM.simulate(Object.assign({ oneTrack: true }, o));
       two.sEnd = two.path[two.path.length - 1].s;
-      $('busy').textContent = 'Working out the 4-part run…';
+      busy.textContent = 'Working out the 4-part run…';
       setTimeout(() => {
-        const four = TM.simulate(Object.assign({ oneTrack: false, sections: [TRACK.sections4, TRACK.sections4, TRACK.sections4, TRACK.sections4], mainJoint: 2 }, BASE));
+        const four = TM.simulate(Object.assign({ oneTrack: false, sections: [TRACK.sections4, TRACK.sections4, TRACK.sections4, TRACK.sections4], mainJoint: 2 }, o));
         four.sEnd = four.path[four.path.length - 1].s;
         const rigid = { opts: two.opts, profile: two.profile, terrain: two.terrain, path: two.path, sEnd: two.sEnd, up: two.rigidUp, down: two.rigidDown, rigid: true };
-        state.sims = { rigid, two, four };
-        state.spots = makeSpots(two.profile);
-        afterRuns();
+        const sims = { rigid, two, four };
+        addTiming(sims);
+        cache[key] = sims;
+        if (keyNow() === key) useSims(sims); else runSims(); // the choice changed while it worked
       }, 30);
     }, 40);
   }
+  function useSims(sims) {
+    const first = !state.sims;
+    state.sims = sims;
+    state.spots = makeSpots(sims.two.profile);
+    afterRuns(first);
+  }
+
+  // ------------------------------------------------------------ time
+  // How long each 1 cm step takes, in the order it is driven (k). Driving takes 1 cm / 0.25 m/s.
+  // Where a hinge or the levelling has to turn further than it can in that time, the step takes
+  // as long as the turn: stop, bend, then go. Bending while moving, the turns always fit.
+  function timing(list, dir, rigid) {
+    const n = list.length, need = new Float64Array(n), cum = new Float64Array(n), stopCum = new Float64Array(n), why = new Array(n).fill(''), moving = new Array(n).fill('');
+    for (let k = 1; k < n; k++) {
+      const a = list[dir === 'up' ? k - 1 : n - k], b = list[dir === 'up' ? k : n - 1 - k];
+      const drive = Math.abs(b.s - a.s) / CONTROL.drive;
+      let turn = Math.abs(deg(b.lam - a.lam)) / CONTROL.level, w = 'level';
+      const hinge = (x, y, rate, name) => { const t = Math.abs(deg(y - x)) / rate; if (t > turn) { turn = t; w = (Math.abs(y) > Math.abs(x) ? 'bend ' : 'ease ') + name; } };
+      if (b.bends) b.bends.forEach((v, j) => hinge(a.bends[j], v, j === b.m - 1 ? CONTROL.hinge : CONTROL.end, j === b.m - 1 ? 'main' : 'end'));
+      else if (!rigid) hinge(a.beta, b.beta, CONTROL.hinge, 'main');
+      need[k] = Math.max(drive, turn);
+      cum[k] = cum[k - 1] + need[k];
+      const stop = turn > drive * 1.5;
+      stopCum[k] = stopCum[k - 1] + (stop ? turn - drive : 0);
+      if (stop) why[k] = w;
+      else if (turn > drive * 0.3 && w !== 'level') moving[k] = w; // a hinge turning as it drives
+    }
+    return { need, cum, stopCum, why, moving, total: cum[n - 1], stopped: stopCum[n - 1] };
+  }
+  // The three are shown side by side: each step lasts as long as the slowest of them needs.
+  function addTiming(sims) {
+    sims.step = {};
+    for (const dir of ['up', 'down']) {
+      for (const d of LAYOUTS) (sims[d.id].time = sims[d.id].time || {})[dir] = timing(sims[d.id][dir], dir, d.id === 'rigid');
+      const n = sims.two.path.length, step = new Float64Array(n);
+      for (let k = 1; k < n; k++) step[k] = Math.max(...LAYOUTS.map((d) => sims[d.id].time[dir].need[k]));
+      sims.step[dir] = step;
+    }
+  }
+  const timeOf = (id, dir) => state.sims[id].time[dir || state.dir];
+  // the step being driven at playback position k (or the one just finished, when stopped on a sample)
+  const stepAt = (k) => Math.min(nPath() - 1, Math.floor(k) + (k % 1 > 1e-6 ? 1 : 0));
+  const clockAt = (arr, k) => { const k0 = Math.floor(k), k1 = Math.min(arr.length - 1, k0 + 1); return arr[k0] + (arr[k1] - arr[k0]) * (k - k0); };
 
   // parts of the stairs, by where the middle hinge is
   function makeSpots(p) {
@@ -387,27 +486,41 @@
   }
 
   // ------------------------------------------------------------ verdicts
+  const lower = (s) => s.name.charAt(0).toLowerCase() + s.name.slice(1);
+  // closest the platform and casualty come to the vehicle's own tracks (below 0: they knock)
+  function trackHit(id) {
+    let best = null;
+    for (const dir of ['down', 'up']) for (const p of listOf(id, dir)) if (!best || p.ev.trackClearance < best.v) best = { v: p.ev.trackClearance, x: p.J.x, dir };
+    return best;
+  }
   function renderVerdicts() {
     const host = $('verdicts'); host.textContent = '';
-    const lower = (s) => s.name.charAt(0).toLowerCase() + s.name.slice(1);
     const facts = {};
     for (const d of LAYOUTS) {
       const w = { down: weakest(d.id, 'down'), up: weakest(d.id, 'up') };
       const worst = w.down.v <= w.up.v ? { dir: 'down', ...w.down } : { dir: 'up', ...w.up };
-      const drop = Math.max(w.down.drop, w.up.drop), tilt = worstTilt(d.id);
-      facts[d.id] = { w, worst, drop, tilt };
-      const lvl = levelOf(worst.v), items = [];
+      const drop = Math.max(w.down.drop, w.up.drop), tilt = worstTilt(d.id), hit = trackHit(d.id);
+      const tm = { down: timeOf(d.id, 'down'), up: timeOf(d.id, 'up') };
       const tipSpots = [];
-      for (const dir of ['down', 'up']) for (const s of state.spots) { const r = weakest(d.id, dir, s); if (r && r.v < 0 && !tipSpots.includes(lower(s))) tipSpots.push(lower(s)); }
-      if (d.id === 'rigid') items.push('One stiff track can’t follow the stairs where the slope changes, so it <b>rocks over each edge like a see-saw</b>.');
-      if (d.id === 'two') items.push('It <b>bends in the middle</b>, so it rolls over the edges instead of rocking.');
-      if (d.id === 'four') items.push('Each half <b>bends again at the edges</b> to keep its tracks on the stairs.');
-      if (lvl === 'bad') items.push(`It tips at the <b>${tipSpots.join(' and the ')}</b>: one end drops about <b>${Math.round(drop * 100)} cm</b>.`);
-      else if (lvl === 'warn') items.push(`At the <b>${lower(spotOf(worst.x))}</b> going ${worst.dir} it can only lean <b>${worst.v.toFixed(0)}°</b> before tipping: a sudden stop or a bump there could tip it.`);
+      for (const s of state.spots) for (const dir of ['down', 'up']) { const r = weakest(d.id, dir, s); if (r && r.v < 0 && !tipSpots.includes(lower(s))) tipSpots.push(lower(s)); }
+      facts[d.id] = { w, worst, drop, tilt, hit, tm, tipSpots };
+      let lvl = levelOf(worst.v);
+      if (hit.v < 0 && lvl === 'good') lvl = 'warn';
+      const items = [];
+      if (d.id === 'rigid') items.push('One stiff track can’t follow the stairs where the slope changes, so it <b>rocks over each edge like a see-saw</b>.' + (stopGo() ? ' Stopping can’t help: it has no hinge to bend.' : ''));
+      if (d.id === 'two') items.push(stopGo() ? 'At each edge it <b>stops, bends until its front half touches the stairs</b>, then drives on while the back half follows.' : 'It <b>bends in the middle</b> as it drives, so it rolls over the edges instead of rocking.');
+      if (d.id === 'four') items.push(stopGo() ? 'At each edge it <b>stops to bend, one hinge at a time</b>, and a hinge <b>stays bent until more track is on the stairs</b>.' : 'Each half <b>bends again at the edges</b> to keep its tracks on the stairs.');
+      if (worst.v < 0) items.push(`It tips at the <b>${tipSpots.join(' and the ')}</b>: one end drops about <b>${Math.round(drop * 100)} cm</b>.`);
+      else if (worst.v < HARD_STOP) items.push(`At the <b>${lower(spotOf(worst.x))}</b> going ${worst.dir} it can only lean <b>${worst.v.toFixed(0)}°</b> before tipping: a sudden stop or a bump there could tip it.`);
       else items.push(`It can lean at least <b>${worst.v.toFixed(0)}°</b> before tipping, anywhere, both ways.`);
       const other = worst.dir === 'down' ? w.up : w.down;
-      if (lvl === 'warn') items.push(`Going ${worst.dir === 'down' ? 'up' : 'down'} it keeps at least ${other.v.toFixed(0)}°.`);
+      if (worst.v >= 0 && worst.v < HARD_STOP) items.push(`Going ${worst.dir === 'down' ? 'up' : 'down'} it keeps at least ${other.v.toFixed(0)}°.`);
+      if (hit.v < 0) items.push(`The platform <b>knocks its own tracks</b> at the ${lower(spotOf(hit.x))} going ${hit.dir}.`);
       items.push(tilt.v > 10 ? `The casualty swings to a <b>${tilt.v.toFixed(0)}° tilt</b> at the ${lower(spotOf(tilt.x))}: the levelling can’t keep up with the rocking.` : `The casualty stays within ${Math.max(1, tilt.v).toFixed(0)}° of level.`);
+      const stops = tm.down.stopped + tm.up.stopped;
+      items.push(stops > 0.5
+        ? `The trip takes <b>${tm.down.total.toFixed(0)} s down and ${tm.up.total.toFixed(0)} s up</b>, ${tm.down.stopped.toFixed(0)} s and ${tm.up.stopped.toFixed(0)} s of it stopped to bend.`
+        : `The trip takes <b>${Math.max(tm.down.total, tm.up.total).toFixed(0)} s</b> each way, without stopping.`);
       if (d.id === 'four') items.push('Needs three hinge motors instead of one, and a shorter box.');
       const range = BOX_RANGE[d.id], full = range.filter((r) => r[1] >= 250).pop(), longest = range.filter((r) => r[1] > 0).pop();
       const el = document.createElement('article'); el.className = 'verdict';
@@ -417,9 +530,18 @@
         + `<p class="boxline">${d.what} Box: up to <span data-mm="${full[0]}"></span> long at <span data-mm="${full[1]}"></span> tall, or <span data-mm="${longest[0]}"></span> long at <span data-mm="${longest[1]}"></span> tall.</p>`;
       host.appendChild(el);
     }
-    const f = facts;
-    $('verdict-sub').textContent = `Every layout is steady on the straight flights. The difference is at the edges, where the slope changes: the mid-landing edge and, worst of all, the top edge. `
-      + `With no bending the vehicle tips there. With 2 parts it stays up, but at the top edge going down it can lean only ${f.two.w.down.v.toFixed(0)}° before tipping. With 4 parts it can lean ${f.four.worst.v.toFixed(0)}° or more everywhere.`;
+    // the summary line, from the results
+    const say = (d) => {
+      const f = facts[d.id], w = f.worst, who = d.id === 'rigid' ? 'With no bending' : `With ${d.name.toLowerCase()}`;
+      if (w.v < 0) return `${who} it tips at the ${f.tipSpots.join(' and the ')}${f.drop > 0.01 ? `, one end dropping up to ${Math.round(f.drop * 100)} cm` : ''}.`;
+      return `${who} it can always lean at least ${w.v.toFixed(0)}° before tipping${w.v < HARD_STOP ? `, too little for a sudden stop at the ${lower(spotOf(w.x))} going ${w.dir}` : ''}.`;
+    };
+    const bent = LAYOUTS.filter((d) => d.id !== 'rigid').map((d) => facts[d.id].tm);
+    const lo = Math.min(...bent.map((t) => Math.min(t.down.stopped, t.up.stopped))), hi = Math.max(...bent.map((t) => Math.max(t.down.stopped, t.up.stopped)));
+    const base = Math.min(...LAYOUTS.map((d) => Math.min(facts[d.id].tm.down.total, facts[d.id].tm.up.total)));
+    $('verdict-sub').textContent = 'Every layout is steady on the straight flights; the danger is at the edges, where the slope changes. '
+      + LAYOUTS.map(say).join(' ')
+      + (stopGo() ? ` Stopping to bend adds ${lo.toFixed(0)} to ${hi.toFixed(0)} s to a ${base.toFixed(0)} s trip.` : ' Here the hinges bend as it drives, without stopping.');
     $('legend-status').innerHTML = `${chip('good')} can take a sudden stop (${HARD_STOP.toFixed(1)}° lean or more) ${chip('warn')} stays up, but a sudden stop could tip it ${chip('bad')} tips or rocks over an edge`;
     updateUnits();
   }
@@ -479,16 +601,51 @@
 
   // ------------------------------------------------------------ shorter or longer 2-part track
   function renderSweep() {
-    const best = SWEEP.reduce((a, r) => (r[1] != null && (a == null || r[1] > a[1]) ? r : a), null);
-    $('sweep-sub').textContent = `No. Going down over the top edge, a shorter track has less of itself on the stairs, so the weight passes the last point of contact sooner and it tips. Below about 0.6 m a half can also end up resting on a single step edge and rock from step to step. Much longer is no good either: the front half reaches out too far past the edge. The best is about ${best[0].toFixed(2)} m a half, and even that can only lean ${best[1].toFixed(0)}° at the top edge, short of the ${HARD_STOP.toFixed(1)}° a sudden stop needs. The trouble is the single hinge, not the length: the 4-part track's extra hinges keep both ends on the stairs at the edge.`;
+    const rows = stopGo() ? SWEEP_STOPGO : SWEEP;
+    const best = rows.reduce((a, r) => (r[1] != null && (a == null || r[1] > a[1]) ? r : a), null);
+    const at = (L) => rows.find((r) => Math.abs(r[0] - L) < 1e-6), short = rows.filter((r) => r[0] < 0.69);
+    const shortLean = Math.min(...short.map((r) => r[1])), drops = short.map((r) => r[3]);
+    $('sweep-sub').textContent = stopGo()
+      ? `No. Stopping to bend (laser at 1¼ risers), halves of ${TRACK.unit2.toFixed(2)} m or longer keep ${at(TRACK.unit2)[1].toFixed(0)}° of lean both ways. A shorter half has less of itself on the stairs at an edge: at ${(0.693).toFixed(2)} m it keeps ${at(0.693)[1].toFixed(0)}°, and shorter still only ${shortLean.toFixed(0)}°, with one end rocking down ${Math.min(...drops)} to ${Math.max(...drops)} cm. Below about 0.6 m a half can also rest on a single step edge and rock from step to step. Longer halves are no safer, only longer and heavier.`
+      : `No. Going down over the top edge, a shorter track has less of itself on the stairs, so the weight passes the last point of contact sooner and it tips. Below about 0.6 m a half can also end up resting on a single step edge and rock from step to step. Much longer is no good either: the front half reaches out too far past the edge. The best is about ${best[0].toFixed(2)} m a half, and even that can only lean ${best[1].toFixed(0)}° at the top edge, short of the ${HARD_STOP.toFixed(1)}° a sudden stop needs. The trouble is bending while it drives: stopping to bend, or the 4-part track's extra hinges, keep both ends on the stairs at the edge.`;
     const body = $('sweep-body'); body.textContent = '';
-    const cell = (v) => (v == null ? chip('bad', 'Tips') : `${chip(levelOf(v), `${v.toFixed(1)}°`)}`);
-    for (const [L, dn, up, drop, one] of SWEEP) {
+    const cell = (v) => (v == null || v < 0 ? chip('bad', 'Tips') : `${chip(levelOf(v), `${v.toFixed(1)}°`)}`);
+    for (const [L, dn, up, drop, one] of rows) {
       const tr = document.createElement('tr');
-      const lvl = dn == null ? 'bad' : levelOf(dn);
-      const what = dn == null ? `Tips over the edge, one end drops ${drop} cm${one ? '; a half can rest on a single step edge' : ''}` : lvl === 'warn' ? 'Stays up, but a sudden stop could tip it' : 'Steady';
+      const tips = dn == null || up == null, lvl = tips ? 'bad' : levelOf(Math.min(dn, up));
+      const what = (tips ? `Tips over the edge, one end drops ${drop} cm`
+        : [drop > 0 ? `Rocks at an edge, one end drops ${drop} cm` : '', lvl === 'warn' ? 'a sudden stop could tip it' : ''].filter(Boolean).join('; ') || 'Steady')
+        + (one ? '; a half can rest on a single step edge' : '');
       tr.innerHTML = `<td class="num" style="text-align:left">${L.toFixed(2)} m${Math.abs(L - TRACK.unit2) < 0.005 ? ' (shown above)' : ''}</td><td class="num">${(2 * L + 2 * TRACK.radius).toFixed(2)} m</td><td>${cell(dn)}</td><td>${cell(up)}</td><td></td>`;
-      tr.lastChild.textContent = what;
+      tr.lastChild.textContent = what.charAt(0).toUpperCase() + what.slice(1);
+      body.appendChild(tr);
+    }
+  }
+
+  // ------------------------------------------------------------ laser setting
+  function renderLaser() {
+    const two = LAYOUTS[1], four = LAYOUTS[2];
+    $('laser-th-two').innerHTML = nameHtml(two);
+    $('laser-th-four').innerHTML = nameHtml(four);
+    const mm = (r) => Math.round(r * STAIRS.rise * 1000);
+    $('laser-sub').textContent = `The laser sits at the leading end of the track and looks straight down. On flat ground it reads the same all the time. On the flights the steps alone make it read up to ${FLIGHT_READ} risers further, so it must not stop below that. At an edge the reading jumps: the sooner it stops to bend, the more of the track is still on the stairs. Each setting below was run up and down in full. Click one to watch it.`;
+    const body = $('laser-body'); body.textContent = '';
+    const pair = (dn, up) => `${chip(levelOf(Math.min(dn, up)), Math.min(dn, up) < 0 ? 'Tips' : WORD[levelOf(Math.min(dn, up))])}<span class="lean">${leanTxt(dn)} down · ${leanTxt(up)} up</span>`;
+    for (const r of LASER_TABLE) {
+      const [risers, tDn, tUp, , tDnSec, , tUpSec, , fDn, fUp, , fDnSec, , fUpSec] = r;
+      const tr = document.createElement('tr');
+      const on = stopGo() && state.laser === risers;
+      tr.innerHTML = `<td class="jump spot"><div>${laserName(risers)}${on ? ' (shown above)' : ''}</div><div class="what">${mm(risers)} mm further than on flat ground; ${Math.round(mm(risers) / 5)} mm at 1:5</div></td>`
+        + `<td class="jump">${pair(tDn, tUp)}</td><td class="jump">${pair(fDn, fUp)}</td>`
+        + `<td class="num"><span class="name"><i class="key two"></i>${Math.max(tDnSec, tUpSec).toFixed(0)} s</span><br><span class="name"><i class="key four"></i>${Math.max(fDnSec, fUpSec).toFixed(0)} s</span></td><td></td>`;
+      tr.lastChild.textContent = LASER_WHAT[risers];
+      const go = () => { setLaser(risers); document.querySelector('.run').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }); };
+      tr.querySelectorAll('td.jump').forEach((td) => {
+        td.tabIndex = 0;
+        td.setAttribute('aria-label', `Watch the laser at ${laserName(risers)}`);
+        td.addEventListener('click', go);
+        td.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+      });
       body.appendChild(tr);
     }
   }
@@ -510,33 +667,45 @@
     const rows = [
       ['Stairs', 'ES1 as measured: 8.4 m high in two flights of 24 steps (175 mm rise, 250 mm deep, 35°), a 1 m mid-landing and a 3 m top platform, 1.5 m wide.'],
       ['Casualty', 'A 120 kg adult on the 3-part platform (2 m × 0.5 m), folded into a chair shape: back 0.9 m, seat 0.5 m, legs 0.5 m, with padding.'],
-      ['Levelling', `The platform turns on pillow-block bearings on top of the box, ${(BASE.seatHeight * 1000).toFixed(0)} mm above the track axles. A worm-gear linear actuator, steered by the IMU, keeps it level: up to ${BASE.levelLimitDeg || 40}° each way, as fast as 150° per metre travelled.`],
+      ['Levelling', `The platform turns on pillow-block bearings on top of the box, ${(BASE.seatHeight * 1000).toFixed(0)} mm above the track axles. A worm-gear linear actuator, steered by the IMU, keeps it level: up to ${BASE.levelLimitDeg || 40}° each way, turning ${CONTROL.level}° a second (150° per metre at ${CONTROL.drive} m/s).`],
       ['Box', `${((BOX.back + BOX.front) * 1000).toFixed(0)} × ${(BOX.width * 1000).toFixed(0)} × ${((BOX.top - BOX.floor) * 1000).toFixed(0)} mm, 15 kg of battery and drive motor, bolted to the section just behind the middle hinge.`],
       ['Tracks', `Timing belts used as tracks, from parts MISUMI Singapore stocks (see Track parts in Singapore). Full size: HTD 8M belts, 40 mm wide, two side by side on each side, on 60-tooth pulleys (Ø153 mm), with a 6 mm rubber cover and 15 mm cleats every 56 mm: 170 mm tall, 200 mm with cleats. 1200 mm belts for each of the 4 parts (sections 360 mm), 2000 mm belts for each of the 2 parts (760 mm), about 3.5 m for one stiff track.`],
       ['Weights', 'Track units 2 × 25 kg, platform and levelling 25 kg, box 15 kg; the 4-part tracks add two 6 kg hinge motors.'],
-      ['Hinges', 'The middle hinge bends up to 55° at 120° per metre travelled. The 4-part’s extra hinges bend twice as fast, to keep each end on the stairs.'],
+      ['How it bends', stopGo()
+        ? `Stop, bend, then go. It drives at ${CONTROL.drive} m/s. Wherever a hinge or the levelling has to turn further than it can on the move, it stops until they have: the middle hinge turns ${CONTROL.hinge}° a second, the 4-part’s end hinges ${CONTROL.end.toFixed(0)}°, the levelling ${CONTROL.level}°. A hinge only turns as far as still leaves ${CONTROL.safeDeg}° of lean before tipping; otherwise it holds its bend until more track is on the stairs. Hinges bend up to 55°. When one layout stops, the others wait, so the three stay side by side.`
+        : `Bend while moving: the hinges and the levelling turn as it drives at ${CONTROL.drive} m/s, without stopping. The middle hinge bends up to 55° at 120° per metre travelled (${CONTROL.hinge}° a second); the 4-part’s end hinges about twice as fast, to keep each end on the stairs.`],
+      ...(stopGo() ? [['Laser', `A laser at the leading end of the track (the front going up, the back going down) points straight down. Near a platform edge the hinges stay locked as it drives on, until the laser reads ${laserName(state.laser)} (${Math.round(state.laser * STAIRS.rise * 1000)} mm) further than on flat ground; then it stops and bends. On the flights the steps alone make it read up to ${FLIGHT_READ} risers further, so it can’t be set lower than that.`]] : []),
       ['Tipping', `"Lean before tipping" is how far the whole vehicle could be tilted before its weight passes the last point touching the stairs. A sudden stop from walking pace (0.25 m/s) in 0.2 s needs ${HARD_STOP.toFixed(1)}°.`],
     ];
     $('model').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
   }
 
   // ------------------------------------------------------------ drawing
-  function lerpPose(a, b, t) {
-    const L = (u, v) => u + (v - u) * t;
+  // Between two samples. A hinge can turn a long way in one sample while the vehicle is stopped,
+  // so the tracks are rebuilt from the hinge and their angles: they turn, rather than shrink.
+  function lerpPose(a, b, t, sim) {
+    const o = sim.opts, L = (u, v) => u + (v - u) * t;
     const P = (u, v) => ({ x: L(u.x, v.x), z: L(u.z, v.z) });
+    const near = t < 0.5 ? a : b;
     const q = { R: P(a.R, b.R), J: P(a.J, b.J), F: P(a.F, b.F), P: P(a.P, b.P), pitch: L(a.pitch, b.pitch), beta: L(a.beta, b.beta),
-      phi: L(a.phi, b.phi), a1: L(a.a1, b.a1), a2: L(a.a2, b.a2), lam: L(a.lam, b.lam), ev: t < 0.5 ? a.ev : b.ev };
+      phi: L(a.phi, b.phi), a1: L(a.a1, b.a1), a2: L(a.a2, b.a2), lam: L(a.lam, b.lam), ev: near.ev, held: near.held, waiting: near.waiting, edgeSeen: near.edgeSeen };
+    const along = (Q, len, ang, sgn) => ({ x: Q.x + sgn * len * Math.cos(ang), z: Q.z + sgn * len * Math.sin(ang) });
     if (a.pts && b.pts) {
-      q.pts = a.pts.map((u, i) => P(u, b.pts[i]));
-      q.units = q.pts.slice(1).map((u, i) => [q.pts[i], u]);
-      q.bends = a.bends.map((u, i) => L(u, b.bends[i]));
-      q.m = a.m;
+      const ang = a.angles.map((u, i) => L(u, b.angles[i])), m = a.m, N = ang.length, pts = new Array(N + 1);
+      pts[m] = q.J;
+      for (let k = m; k < N; k++) pts[k + 1] = along(pts[k], o.sections[k], ang[k], 1);
+      for (let k = m - 1; k >= 0; k--) pts[k] = along(pts[k + 1], o.sections[k], ang[k], -1);
+      Object.assign(q, { pts, units: pts.slice(1).map((u, i) => [pts[i], u]), R: pts[0], F: pts[N], angles: ang, m, bends: a.bends.map((u, i) => L(u, b.bends[i])) });
+    } else if (!sim.rigid) {
+      q.R = along(q.J, Math.hypot(a.J.x - a.R.x, a.J.z - a.R.z), q.a1, -1);
+      q.F = along(q.J, Math.hypot(a.F.x - a.J.x, a.F.z - a.J.z), q.a2, 1);
     }
+    if (!sim.rigid && o.mastMode === 'base') q.P = { x: q.J.x - o.seatHeight * Math.sin(q.a1), z: q.J.z + o.seatHeight * Math.cos(q.a1) };
     return q;
   }
-  function poseAt(list, k) {
-    const n = nPath(), k0 = Math.max(0, Math.min(n - 1, Math.floor(k))), k1 = Math.min(n - 1, k0 + 1), t = k - k0;
-    return lerpPose(list[sampleIndex(k0)], list[sampleIndex(k1)], t);
+  function poseAt(sim, k) {
+    const list = sim[state.dir], n = nPath(), k0 = Math.max(0, Math.min(n - 1, Math.floor(k))), k1 = Math.min(n - 1, k0 + 1), t = k - k0;
+    return lerpPose(list[sampleIndex(k0)], list[sampleIndex(k1)], t, sim);
   }
   function painter(g, SX, SY, scale) {
     const capsule = (ax, az, bx, bz, r) => {
@@ -646,7 +815,23 @@
       g.fillStyle = C.nosing; g.fill(); g.strokeStyle = C.track; g.lineWidth = 2; g.stroke();
       g.restore();
     }
-    return { capsule, stairs, unit, hinges, box, platform };
+    // the laser: a beam from the leading axle straight down, a spot where it lands, and a mark
+    // at the depth the stairs must drop to before it stops to bend
+    function laser(L, zStop, fired, side) {
+      const x = SX(L.lead.x), top = SY(L.lead.z), bottom = SY(L.ground), mark = SY(zStop);
+      g.save();
+      g.strokeStyle = C.laser; g.fillStyle = C.laser; g.lineCap = 'butt';
+      g.lineWidth = fired ? 2.5 : 1.5;
+      g.beginPath(); g.moveTo(x, top); g.lineTo(x, bottom); g.stroke();
+      g.beginPath(); g.arc(x, bottom, fired ? 4.5 : 3, 0, Math.PI * 2); g.fill();
+      g.fillRect(x - 4, top - 4, 8, 8);
+      g.lineWidth = 1.5; g.setLineDash([3, 2]);
+      g.beginPath(); g.moveTo(x - 9, mark); g.lineTo(x + 9, mark); g.stroke(); g.setLineDash([]);
+      g.font = `600 10.5px ${font}`; g.textAlign = side > 0 ? 'left' : 'right'; g.textBaseline = 'middle';
+      g.fillText(laserName(state.laser), x + side * 12, mark);
+      g.restore();
+    }
+    return { capsule, stairs, unit, hinges, box, platform, laser };
   }
 
   const stages = {};
@@ -685,9 +870,29 @@
     $('scrub').value = String(Math.round(k));
     updateChart();
   }
+  const SHORT = { rigid: 'the stiff track', two: 'the 2-part track', four: 'the 4-part track' };
+  const STOP_MSG = {
+    'bend main': '<b>Stopped to bend.</b> The middle hinge turns until the track touches the stairs.',
+    'ease main': '<b>Stopped to straighten.</b> The middle hinge eases back as more track gets onto the stairs.',
+    'bend end': '<b>Stopped to bend.</b> An end hinge turns until its end of the track touches the stairs.',
+    'ease end': '<b>Stopped to straighten</b> an end hinge.',
+    level: '<b>Stopped to re-level</b> the platform.',
+  };
+  const MOVE_MSG = {
+    'bend main': '<b>Driving on</b> as the middle hinge bends to keep the track on the stairs.',
+    'ease main': '<b>Driving on</b> as the middle hinge eases back and the other half follows.',
+    'bend end': '<b>Driving on</b> as an end hinge bends to keep its end on the stairs.',
+    'ease end': '<b>Driving on</b> as an end hinge eases back.',
+  };
+  const PART = { backrest: 'platform’s backrest', seat: 'platform’s seat', 'leg rest': 'platform’s leg rest', thigh: 'casualty’s legs', shank: 'casualty’s legs', foot: 'casualty’s feet', torso: 'casualty’s back', head: 'casualty’s head' };
+  // the laser at the leading end: how much further than on flat ground it reads, in risers
+  function laserRead(sim, p) {
+    const lead = state.dir === 'up' ? p.F : p.R, ground = TM.groundZ(sim.terrain, lead.x);
+    return { lead, ground, risers: (lead.z - ground - sim.opts.sprocketRadius) / sim.opts.rise };
+  }
   function drawStage(d) {
     const st = stages[d.id], sim = state.sims[d.id], o = sim.opts, rho = o.sprocketRadius, g = st.g;
-    const p = poseAt(sim[state.dir], state.idx);
+    const p = poseAt(sim, state.idx);
     g.setTransform(st.dpr, 0, 0, st.dpr, 0, 0);
     g.fillStyle = C.surface; g.fillRect(0, 0, st.W, st.H);
     const scale = Math.min(st.W / 3.0, st.H / 1.85);
@@ -703,10 +908,14 @@
     const units = sim.rigid ? [[p.R, p.F]] : (p.units || [[p.R, p.J], [p.J, p.F]]);
     for (const [A, B] of units) paint.unit(A, B, rho, state.travel, dirSign, C[d.color]);
     paint.hinges(p, rho, sim.rigid);
+    const laser = stopGo() && !sim.rigid ? laserRead(sim, p) : null;
+    if (laser) paint.laser(laser, laser.lead.z - rho - state.laser * o.rise, laser.risers >= state.laser - 0.02, dirSign);
     paint.platform(o, p, C[d.color]);
-    const ev = p.ev;
+    const ev = p.ev, tm = timeOf(d.id), ks = stepAt(state.idx);
     if (ev) {
-      const lean = deg(ev.tipAngle), lvl = levelOf(lean);
+      const lean = deg(ev.tipAngle), hit = ev.trackClearance < 0;
+      let lvl = levelOf(lean);
+      if (hit && lvl === 'good') lvl = 'warn';
       // the centre of weight and the line straight down from it
       const x = ev.com.x, z = ev.com.z, r = Math.max(5, 0.035 * scale);
       g.beginPath(); g.moveTo(SX(x), SY(z)); g.lineTo(SX(x), SY(TM.groundZ(sim.terrain, x)));
@@ -717,17 +926,29 @@
       g.beginPath(); g.arc(SX(x), SY(z), r, 0, Math.PI * 2); g.strokeStyle = C.ink; g.lineWidth = 1.5; g.stroke();
       st.chip.innerHTML = chip(lvl);
       st.lean.textContent = lean < 0 ? 'nothing' : `${lean.toFixed(0)}°`;
-      st.lean.className = lvl === 'good' ? 'ok-t' : lvl === 'warn' ? 'warn-t' : 'bad-t';
-      const spot = spotOf(p.J.x).name.toLowerCase();
-      st.msg.innerHTML = lvl === 'bad'
+      st.lean.className = lean >= HARD_STOP ? 'ok-t' : lean >= 0 ? 'warn-t' : 'bad-t';
+      // what it is doing, the most important first
+      const spot = spotOf(p.J.x).name.toLowerCase(), why = tm.why[ks];
+      const others = LAYOUTS.filter((e) => e.id !== d.id && timeOf(e.id).why[ks]);
+      st.msg.innerHTML = lean < 0
         ? `<b>Tipping over the edge.</b> The weight has passed the last point on the stairs${ev.tipDrop > 0.01 ? `, so one end drops ${Math.round(ev.tipDrop * 100)} cm` : ''}.`
-        : lvl === 'warn' ? `<b>Close to tipping.</b> A sudden stop or a bump here could tip it.`
+        : hit ? `<b>Knocking its own track.</b> The ${PART[ev.trackHit.part] || 'platform'} hits the ${ev.trackHit.unit} track.`
+        : why ? STOP_MSG[why.startsWith('level') ? 'level' : why]
+        : lean < HARD_STOP ? '<b>Close to tipping.</b> A sudden stop or a bump here could tip it.'
+        : others.length ? `<b>Waiting</b> while ${others.length > 1 ? 'the others stop' : `${SHORT[others[0].id]} stops`}, so the three stay side by side.`
+        : p.waiting ? `<b>Hinges locked.</b> Driving on until the laser sees a drop of ${laserName(state.laser)}.`
+        : p.edgeSeen && (p.bends || [p.beta]).every((b) => Math.abs(deg(b)) < 1) ? '<b>The laser sees the drop.</b> Driving on until the hinge is close enough to the edge to bend.'
+        : p.held ? '<b>Holding the bend</b> until more of the track is on the stairs.'
+        : tm.moving[ks] ? MOVE_MSG[tm.moving[ks]]
         : `Steady on the ${spot}.`;
     }
     const signed = (v) => `${deg(v) >= 0 ? '+' : '−'}${Math.abs(deg(v)).toFixed(0)}°`;
     const rows = [['Casualty tilt', signed(p.phi)]];
     if (!sim.rigid) rows.push(['Middle hinge', signed(p.beta)]);
-    if (p.bends) { const ex = p.bends.filter((_, j) => j !== p.m - 1); rows.push(['Outer hinges', ex.map(signed).join(' · ')]); }
+    if (p.bends) { const ex = p.bends.filter((_, j) => j !== p.m - 1); rows.push(['End hinges', ex.map(signed).join(' · ')]); }
+    if (laser) rows.push(['Laser', `${Math.max(0, laser.risers).toFixed(1)} risers`]);
+    const t = clockAt(tm.cum, state.idx), ts = clockAt(tm.stopCum, state.idx);
+    rows.push(['Time', `${t.toFixed(0)} s${ts >= 0.5 ? ` · ${ts.toFixed(0)} s stopped` : ''}`]);
     st.reads.innerHTML = rows.map(([kk, v]) => `<div><dt>${kk}</dt><dd>${v}</dd></div>`).join('');
   }
 
@@ -777,6 +998,13 @@
     for (let x = 0; x <= xMax + 1e-9; x += step) { const tx = el('text', { x: X(x), y: H - 6, 'text-anchor': x === 0 ? 'start' : 'middle' }, ax); tx.textContent = x + (x === 0 ? ' m' : ''); }
     const path = (key) => { let d = ''; const s = Math.max(1, Math.floor(data.length / (W * 1.5))); for (let i = 0; i < data.length; i += s) d += (d ? 'L' : 'M') + X(data[i].x).toFixed(1) + ' ' + Y(data[i][key]).toFixed(1); return d; };
     for (const d of LAYOUTS) el('path', { d: path(d.id), fill: 'none', stroke: C[d.color], 'stroke-width': d.id === 'rigid' ? 2.5 : 2, 'stroke-dasharray': d.id === 'rigid' ? '7 5' : 'none', 'stroke-linejoin': 'round', 'stroke-linecap': d.id === 'rigid' ? 'butt' : 'round' });
+    // where each stops to bend: a diamond on its line at the start of each stop
+    const stopsOf = (id) => { const why = timeOf(id).why, ks = []; for (let k = 1; k < n; k++) if (why[k] && !(ks.length && k - ks[ks.length - 1].last <= 5)) ks.push({ k, last: k }); else if (why[k]) ks[ks.length - 1].last = k; return ks; };
+    const stops = {};
+    for (const d of LAYOUTS) {
+      stops[d.id] = stopGo() && d.id !== 'rigid' ? stopsOf(d.id) : [];
+      for (const q of stops[d.id]) { const cx = X(data[q.k].x), cy = Y(data[q.k][d.id]); el('path', { d: `M${cx} ${cy - 5.5}L${cx + 5.5} ${cy}L${cx} ${cy + 5.5}L${cx - 5.5} ${cy}Z`, fill: C[d.color], stroke: C.surface, 'stroke-width': 1.5 }); }
+    }
     const cross = el('line', { y1: m.t, y2: H - m.b, stroke: C.ink, 'stroke-width': 1, opacity: 0.55 });
     const dots = LAYOUTS.map((d) => el('circle', { r: 4.5, fill: C[d.color], stroke: C.surface, 'stroke-width': 2 }));
     host.textContent = ''; host.appendChild(svg);
@@ -791,7 +1019,7 @@
         const row = document.createElement('div'); row.className = 't-row';
         const kk = document.createElement('i'); kk.className = 'key ' + d.color;
         const b = document.createElement('b'); b.textContent = dp[d.id] < 0 ? 'tips' : dp[d.id].toFixed(0) + '°';
-        const sp = document.createElement('span'); sp.textContent = d.name;
+        const sp = document.createElement('span'); sp.textContent = d.name + (stops[d.id].some((q) => dp.k >= q.k - 3 && dp.k <= q.last + 3) ? ' · stops to bend' : '');
         row.append(kk, b, sp); tip.appendChild(row);
       }
       const r = svg.getBoundingClientRect(), px = ev.clientX - r.left;
@@ -800,7 +1028,8 @@
     svg.addEventListener('pointerleave', () => { tip.hidden = true; });
     svg.addEventListener('click', (ev) => { seek(nearest(toLocal(ev))); });
     chart = { X, Y, data, cross, dots };
-    $('lean-sub').textContent = `Going ${state.dir} the stairs. The shaded bands are where it would tip, or where a sudden stop could tip it. Hover to read the values; click to watch that moment.`;
+    $('lean-sub').textContent = `Going ${state.dir} the stairs${stopGo() ? `, stopping to bend (laser at ${laserName(state.laser)})` : ', bending while moving'}. The shaded bands are where it would tip, or where a sudden stop could tip it.${stopGo() ? ' Diamonds mark where each stops to bend.' : ''} Hover to read the values; click to watch that moment.`;
+    $('legend').innerHTML = LAYOUTS.map((d) => nameHtml(d)).join('') + (stopGo() ? '<span class="name"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 0.5L11.5 6L6 11.5L0.5 6Z" fill="currentColor"/></svg>stops to bend</span>' : '');
   }
   function updateChart() {
     if (!chart) return;
@@ -825,10 +1054,16 @@
     const dt = Math.min(0.1, (t - state.lastT) / 1000);
     state.lastT = t;
     // a quarter of the speed while any layout is close to tipping
-    const close = $('slowmo').checked && LAYOUTS.some((d) => deg(poseAt(state.sims[d.id][state.dir], state.idx).ev.tipAngle) < HARD_STOP + 4);
-    const ds = 0.25 * state.speed * (close ? 0.25 : 1) * dt, n = nPath() - 1;
-    state.idx = Math.min(n, state.idx + ds / 0.01);
-    state.travel += ds;
+    const close = $('slowmo').checked && LAYOUTS.some((d) => deg(poseAt(state.sims[d.id], state.idx).ev.tipAngle) < HARD_STOP + 4);
+    // play this many seconds of the trip; a step lasts as long as the slowest layout needs, so all
+    // three wait while one stops to bend
+    let budget = state.speed * (close ? 0.25 : 1) * dt;
+    const need = state.sims.step[state.dir], n = nPath() - 1, from = state.idx;
+    while (budget > 1e-9 && state.idx < n) {
+      const k = Math.floor(state.idx), len = Math.max(1e-6, need[k + 1]), left = (k + 1 - state.idx) * len;
+      if (budget >= left) { state.idx = k + 1; budget -= left; } else { state.idx += budget / len; budget = 0; }
+    }
+    state.travel += (state.idx - from) * 0.01;
     draw();
     if (state.idx >= n) { setPlaying(false); return; }
     requestAnimationFrame(tick);
@@ -853,23 +1088,46 @@
   }
   function setupJumps() {
     const host = $('jump-spots');
-    const add = (label, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn small'; b.textContent = label; b.addEventListener('click', () => { if (state.sims) fn(); }); host.appendChild(b); };
+    const add = (label, fn, id) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn small'; b.textContent = label; if (id) b.id = id; b.addEventListener('click', () => { if (state.sims) fn(); }); host.appendChild(b); };
     add('Foot of the stairs', () => seek(indexAtX(-0.2)));
     add('Mid-landing edge', () => { const s = state.spots.find((q) => q.id === 'midEdge'); seek(weakest('rigid', state.dir, s).k); });
     add('Top edge', () => { const s = state.spots.find((q) => q.id === 'top'); seek(weakest('rigid', state.dir, s).k); });
     add('Riskiest moment', () => { let best = null; for (const d of LAYOUTS.slice(1)) { const w = weakest(d.id, state.dir); if (!best || w.v < best.v) best = w; } seek(best.k); });
+    // just before the next place either bending track stops to bend
+    add('Next stop', () => {
+      const n = nPath(), from = Math.floor(state.idx) + 36;
+      for (let k = from; k < n; k++) if (timeOf('two').why[k] || timeOf('four').why[k]) { seek(Math.max(0, k - 30)); return; }
+      seek(0);
+    }, 'jump-next');
   }
-  function afterRuns() {
+  function afterRuns(first) {
     $('busy').hidden = true;
     $('scrub').max = String(nPath() - 1);
-    renderVerdicts(); renderSpots();
-    const s = state.spots.find((q) => q.id === 'top');
-    state.idx = weakest('two', state.dir, s).k; // open at the top edge, the riskiest place
+    renderVerdicts(); renderSpots(); renderSweep(); renderLaser(); renderModel();
+    $('jump-next').hidden = !stopGo();
+    if (first) {
+      // open at the top edge, the riskiest place: stopping to bend, just before the 2-part track stops there
+      const s = state.spots.find((q) => q.id === 'top'), why = timeOf('two').why;
+      let k = weakest('two', state.dir, s).k;
+      if (stopGo()) for (let j = 1; j < nPath(); j++) if (why[j] && s.a <= state.sims.two.path[sampleIndex(j)].x && state.sims.two.path[sampleIndex(j)].x < s.b) { k = Math.max(0, j - 50); break; }
+      state.idx = k;
+    }
     state.cam = null;
     buildChart(); draw();
   }
+  // how it bends, and the laser setting
+  function showControls() {
+    $('seg-ctl').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === state.ctl)));
+    $('laser-group').hidden = !stopGo();
+    $('laser').value = String(state.laser);
+  }
+  function setControl(ctl) { if (state.ctl === ctl) return; state.ctl = ctl; showControls(); runSims(); }
+  function setLaser(r) { state.ctl = 'stopGo'; state.laser = r; showControls(); runSims(); }
 
   $('seg-dir').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setDir(b.dataset.v); });
+  $('seg-ctl').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setControl(b.dataset.v); });
+  $('laser').innerHTML = LASERS.map(([r, name]) => `<option value="${r}">${name} (${Math.round(r * STAIRS.rise * 1000)} mm)</option>`).join('');
+  $('laser').addEventListener('change', (e) => setLaser(Number(e.target.value)));
   $('seg-scale').addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return;
     state.scale = Number(b.dataset.v);
@@ -887,9 +1145,10 @@
   window.addEventListener('resize', () => { clearTimeout(rsTimer); rsTimer = setTimeout(() => { resize(); if (state.sims) { buildChart(); state.cam = null; draw(); } }, 120); });
 
   readColors();
-  $('legend').innerHTML = LAYOUTS.map((d) => nameHtml(d)).join('');
+  showControls();
   renderBox();
   renderSweep();
+  renderLaser();
   renderBuy();
   renderModel();
   setupStages();

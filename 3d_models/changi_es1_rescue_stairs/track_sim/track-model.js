@@ -28,6 +28,17 @@
     levelRateDegPerM: 150, // how fast the pivot can re-level, per metre travelled
     hingeLimitDeg: 55,
     hingeRateDegPerM: 120, // how fast the hinge actuator can bend, per metre travelled
+    // 'moving': the hinges bend while the vehicle drives, each only so fast per metre travelled.
+    // 'stopGo': the vehicle stops wherever the hinges (or the levelling) need to move, so they reach
+    // any shape on the spot; a hinge then moves towards the shape that keeps every section on the
+    // stairs only as far as leaves the vehicle a safe lean, and otherwise holds its bend until more
+    // track is on the stairs.
+    bendMode: 'moving',
+    stopGoSafeDeg: 10, // stopGo: a hinge move must leave at least this lean (or no less than holding still)
+    // stopGo: a laser at the leading end of the track looks straight down. While a platform edge lies
+    // between the seat's hinge and that end, the vehicle drives on with its hinges held until the
+    // laser sees the stairs this many risers lower than usual; then it stops and bends. null: no laser.
+    laserRisers: null,
     speed: 0.25, // m/s: only used to turn rates per metre into rates per second
     comOffset: 0, // person shifted along the seat, m (+ towards the head)
     seatBias: 0.15, // the seat's load centre set this far towards the head from the post, m
@@ -635,8 +646,67 @@
     return p;
   }
 
+  // How far the vehicle could lean before it tips (the same measure as evaluate's tipAngle).
+  function leanMargin(T, o, p) {
+    const wide = contactsOf(T, p, o.sprocketRadius, FALL), com = centreOfMass(o, p);
+    let lo = null, hi = null;
+    for (const c of wide) { if (!lo || c.x < lo.x) lo = c; if (!hi || c.x > hi.x) hi = c; }
+    if (!lo) return -Math.PI / 2;
+    return Math.min(Math.atan2(com.x - lo.x, Math.max(1e-6, com.z - lo.z)), Math.atan2(hi.x - com.x, Math.max(1e-6, com.z - hi.z)));
+  }
+  // stopGo: makers of candidate shapes from the target (first) back to holding the last bends
+  // (last), each made only when needed. Take the one furthest towards the target that leaves a
+  // safe lean, or at least as much as holding.
+  function guardedMove(T, o, makers) {
+    const safe = rad(o.stopGoSafeDeg), qs = [], ms = [];
+    const get = (i) => { if (!(i in qs)) { qs[i] = makers[i]() || null; ms[i] = qs[i] ? leanMargin(T, o, qs[i]) : null; } return qs[i]; };
+    if (get(0) && ms[0] >= safe - 1e-9) return qs[0];
+    let h = makers.length - 1;
+    while (h > 0 && !get(h)) h--;
+    const need = Math.min(safe, ms[h]) - 1e-9;
+    for (let i = 0; i < h; i++) if (get(i) && ms[i] >= need) { if (i) qs[i].held = true; return qs[i]; }
+    if (h) qs[h].held = true;
+    return qs[h];
+  }
+
+  // The leading-end laser: how much lower than usual it sees the stairs, m, looking straight down
+  // from the end axle (on flat ground it reads the axle height).
+  function laserDrop(Treal, o, p, dir) {
+    const lead = dir === 'up' ? p.F : p.R;
+    return lead.z - groundZ(Treal, lead.x) - o.sprocketRadius;
+  }
+  // stopGo with a laser: hold the hinges while an edge lies between the seat's hinge and the leading
+  // end, until the laser sees the drop. Returns true while the vehicle should drive on, held.
+  // Once it has seen the drop, the pose is marked edgeSeen until that edge is behind the hinge.
+  function laserWait(o, prof, dir, p, state) {
+    if (o.laserRisers == null) return false;
+    const sgn = dir === 'up' ? 1 : -1, lead = dir === 'up' ? p.F : p.R;
+    const edge = prof.edges.find((c) => sgn * (c.x - p.J.x) > 0 && sgn * (lead.x - c.x) > 0);
+    p.laser = laserDrop(state.T, o, p, dir);
+    if (!edge) { state.laser = null; return false; }
+    if (state.laser === edge) { p.edgeSeen = true; return false; }
+    if (p.laser >= o.laserRisers * o.rise - 0.005) { state.laser = edge; p.laserFired = p.edgeSeen = true; return false; }
+    return true;
+  }
+
   // Follow the target, but the hinge can only bend so fast per metre travelled.
   function solveHinged(T, QE, J0, o, prof, dir, prev, ds, state) {
+    if (o.bendMode === 'stopGo' && prev) {
+      const hold = solveBent(T, J0.x, J0.z, prev.beta, o, prev.a1);
+      hold.folded = prev.folded;
+      if (laserWait(o, prof, dir, hold, state)) { hold.held = true; hold.waiting = true; return hold; }
+      const target = targetHinged(T, QE, J0, o, prof, dir, state);
+      const toward = (t) => () => {
+        const q = solveBent(T, J0.x, J0.z, prev.beta + t * (target.beta - prev.beta), o, prev.a1);
+        q.folded = target.folded;
+        return q;
+      };
+      const q = guardedMove(T, o, [() => target, toward(0.75), toward(0.5), toward(0.25), () => hold]);
+      if (hold.laserFired) q.laserFired = true;
+      if (hold.edgeSeen) q.edgeSeen = true;
+      q.laser = hold.laser;
+      return q;
+    }
     const target = targetHinged(T, QE, J0, o, prof, dir, state);
     if (!prev) return target;
     const maxStep = rad(o.hingeRateDegPerM) * ds;
@@ -969,11 +1039,29 @@
     return q;
   }
   function solveChainStep(T, QE, J0, o, prof, dir, prev, ds, state) {
+    let seen = false;
+    if (o.bendMode === 'stopGo' && prev && !o.mainHingeSeized && o.laserRisers != null) {
+      const hold = solveChainBent(T, o, J0.x, J0.z, prev.bends, prev.angles[o.mainJoint - 1]);
+      if (hold) { hold.folded = prev.folded; if (laserWait(o, prof, dir, hold, state)) { hold.held = true; hold.waiting = true; return hold; } seen = !!hold.edgeSeen; }
+    }
     const target = targetChain(T, QE, J0, o, prof, dir, state, prev);
     const m = o.mainJoint, stuck = o.mainHingeSeized;
     const extraRate = o.extraHingeRateDegPerM == null ? (o.hingeRateDegPerM * o.unitLength) / Math.min(...o.sections) : o.extraHingeRateDegPerM;
     const done = (p) => (o.leadMode === 'droop' ? droopLead(T, o, dir, J0, p, prev, ds, extraRate) : p);
     if (!prev && !stuck) return done(target);
+    if (o.bendMode === 'stopGo' && !stuck) {
+      const full = done(target);
+      const toward = (t) => () => {
+        const betas = prev.bends.map((b, j) => b + t * (full.bends[j] - b));
+        const q = solveChainBent(T, o, J0.x, J0.z, betas, prev.angles[m - 1] + betas[m - 1]);
+        if (q) q.folded = target.folded;
+        return q;
+      };
+      const q = guardedMove(T, o, [() => full, toward(0.75), toward(0.5), toward(0.25), toward(0)]);
+      if (o.laserRisers != null) q.laser = laserDrop(state.T, o, q, dir);
+      if (seen) q.edgeSeen = true;
+      return q;
+    }
     // a seized seat's hinge stays straight; the others still go for their targets
     const want = stuck ? target.bends.map((b, j) => (j === m - 1 ? 0 : b)) : target.bends;
     // How far each hinge gets towards its target this step, as a share of the way.
@@ -1169,6 +1257,14 @@
   // ----------------------------------------------------------- whole trip
   function simulate(opts, step = 0.01) {
     const o = Object.assign({}, DEFAULTS, opts);
+    // stopGo: the vehicle waits while the hinges and the levelling move, so per metre they are
+    // unlimited. A track that can't bend has nothing to stop for: it rocks over the edges as it
+    // drives, so its levelling keeps the rate it has on the move.
+    let oOne = o;
+    if (o.bendMode === 'stopGo') {
+      oOne = Object.assign({}, o);
+      Object.assign(o, { hingeRateDegPerM: 1e6, extraHingeRateDegPerM: 1e6, levelRateDegPerM: 1e6 });
+    }
     const prof = stairProfile(o.height, stairsOf(o));
     const T = makeTerrain(prof); // the real steps: payload clearance, nosing count
     const TR = makeTerrain({ pts: prof.ride }); // nosing line with real floors and first risers
@@ -1199,7 +1295,7 @@
     for (const dir of ['up', 'down']) {
       const seq = dir === 'up' ? path.map((_, i) => i) : path.map((_, i) => path.length - 1 - i);
       const res = new Array(path.length);
-      const state = { folding: null };
+      const state = { folding: null, T };
       let last = null, lam = null, psi = null, arms = null;
       o._psiRel = 0; o._twoArmOff = null;
       for (const i of seq) {
@@ -1231,7 +1327,7 @@
         delete q.arms;
         if (o.mastMode === 'balance') { balanceArm(T, TR, o, q, psi, step); psi = q.psiRel; }
         if (o.mastMode === 'twoArm' || o.mastMode === 'vArms') { twoArms(T, TR, o, q, arms, step); arms = q.arms; }
-        level(o, q, lam, step);
+        level(oOne, q, lam, step);
         lam = q.lam;
         q.ev = evaluate(T, TR, o, q);
         one[i] = q;

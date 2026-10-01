@@ -291,15 +291,42 @@ The tracks are modelled on parts MISUMI stocks in Singapore: HTD 8M timing belts
 60-tooth pulleys (85 mm from axle to grip, 15 mm cleats every 56 mm). 1200 mm belts give 0.36 m
 sections, 2000 mm belts 0.76 m units; the prototype uses HTD 5M belts on 20-tooth pulleys.
 
-| Layout | Least lean before tipping, down · up | Where it is weakest |
-|---|---|---|
-| No bending (1.52 m) | tips · tips (drops up to 36 cm) | the mid-landing edge and the top edge |
-| 2 parts (2 × 0.76 m) | 4.6° · 9.6° | the top edge |
-| 4 parts (4 × 0.36 m) | 24.4° · 24.4° | nowhere below 24° |
+It compares two ways of bending. **Stop, bend, then go** (`bendMode: 'stopGo'`, the page's
+default): the vehicle drives at 0.25 m/s and stops wherever a hinge or the levelling has to turn
+further than it can on the move (the middle hinge 30° a second, the end hinges 63°, the levelling
+37.5°). A hinge only turns as far as still leaves 25° of lean before tipping (`stopGoSafeDeg`);
+otherwise it holds its bend until more track is on the stairs. A laser at the leading end of the
+track looks straight down (`laserRisers`): near a platform edge the hinges stay locked until it
+reads 1¼ risers (219 mm) further than on flat ground, then the vehicle stops and bends. **Bend while
+moving** (`bendMode: 'moving'`): the hinges turn as it drives, the middle one up to 120° per metre.
 
-Shortening the 2-part track makes it worse: with halves of 0.6 m or less it tips going down over
-the top edge, and below about 0.6 m a half can rest on a single step edge. The best length, about
-0.8 m a half, still keeps only 5.7° there. The page also lists the tallest box for each length
+| Layout | Least lean before tipping, down · up: stop, bend, then go | Bending while moving | Trip down · up (of it stopped) |
+|---|---|---|---|
+| No bending (1.52 m) | tips · tips (drops up to 36 cm) | the same | 74 s · 74 s |
+| 2 parts (2 × 0.76 m) | 25.0° · 25.0° | 4.6° · 9.6° (the top edge) | 81 s (7 s) · 79 s (5 s) |
+| 4 parts (4 × 0.36 m) | 24.4° · 24.4° | 24.4° · 24.4° | 83 s (9 s) · 80 s (6 s) |
+
+Stopping to bend makes the 2-part track as safe as the 4-part one, for 5 to 9 s of stops a trip.
+The track that can't bend tips at the edges either way: it has no hinge to bend. The casualty stays
+within 3° of level on the bending tracks.
+
+Where the laser stops it matters. On the flights the steps alone make it read up to 1.1 risers
+further than on flat ground, so it must stop above that; any later and more of the track is past
+the edge before it bends:
+
+| Laser stops it at | 2 parts, down · up | 4 parts, down · up | |
+|---|---|---|---|
+| 1 riser (175 mm) | 25° · 25° | 24° · 24° | would also stop on every step of the flights |
+| 1¼ risers (219 mm) | 25° · 25° | 24° · 24° | best |
+| 1½ risers (263 mm) | 11° · 25° | 10° · 24° | late going down at the mid-landing |
+| 2 risers (350 mm) | 11° · 25° | 10° · 22° | late at the mid-landing |
+| 3 risers (525 mm) | 11° · tips | 10° · tips | tips going up at the mid-landing edge and the top edge (drops up to 28 cm); going down the platform knocks its own tracks |
+
+Shortening the 2-part track makes it worse either way. Bending while moving, halves of 0.6 m or
+less tip going down over the top edge, and the best length, about 0.8 m a half, still keeps only
+5.7° there. Stopping to bend, halves of 0.76 m or more keep 25°, 0.69 m keeps 23°, and 0.65 m or
+less only 8°, with one end rocking down 5 to 6 cm. Below about 0.6 m a half can rest on a single
+step edge. The page also lists the tallest box for each length, the same for both ways of bending
 (4 parts: 300 mm long at 250 mm tall, or 400 mm at 243 mm; 2 parts: 500 mm at 250 mm; no bending:
 600 mm at 250 mm).
 
