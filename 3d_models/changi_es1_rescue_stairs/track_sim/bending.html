@@ -320,11 +320,15 @@
   </section>
 
   <section class="card panel" aria-labelledby="build-h">
-    <h2 id="build-h">How it is built: 2 parts, 0.70 m units</h2>
+    <h2 id="build-h">How it is built: 2 parts, and the 4-part version</h2>
     <p class="sub">Two track units joined at the middle axle, which is both the hinge and the driven axle. The drawings are full size, in mm; the 1:5 prototype is the same with every size divided by 5.</p>
     <figure class="draw">
       <div class="scroll"><svg class="bp" id="bp-top" role="img" aria-label="Top view of the 2-part vehicle with the platform removed: two 700 mm track units joined at the middle axle, the box between the rear unit's side plates, the platform pivot right above the middle axle, and a laser at each end."></svg></div>
       <figcaption>Top view, platform removed. The rear unit (left) carries the box; its belts run in the outer lane and the front unit's in the inner lane, so both fit on the shared middle axle. Dashed: inside the box.</figcaption>
+    </figure>
+    <figure class="draw">
+      <div class="scroll"><svg class="bp" id="bp-top4" role="img" aria-label="Top view of the 4-part version: four 360 mm track sections on five axles, with a hinge at each of the three inner axles. The middle hinge motor is in the box; each end hinge has its own motor on the end section."></svg></div>
+      <figcaption>The 4-part version, for comparison: the same box, platform and lasers on four 360 mm sections, with three hinges. The middle hinge works as above; each end hinge has its own motor on the end section, turning a toothed sector on the next section. Neighbouring sections run in alternate lanes so each pair shares an axle, and one drive motor turns all four tracks through those shared axles.</figcaption>
     </figure>
     <figure class="draw">
       <div class="scroll"><svg class="bp" id="bp-hinge" role="img" aria-label="Side view of the middle hinge: a worm gear motor in the box turns a small gear that meshes with a toothed sector on the front unit's side plates, swinging the front unit up to 55 degrees up or down about the middle axle, while the drive motor turns the middle axle through a chain."></svg></div>
@@ -819,94 +823,125 @@
     sv('text', a, g, text);
   }
 
-  function drawTop() {
-    const svg = $('bp-top'); svg.textContent = '';
+  // A top view of a layout with the platform removed. cfg.sections: track lengths, m, rear to front;
+  // cfg.mainJoint: the axle the platform pivots over (the box sits on the section behind it);
+  // cfg.hinges: { j: axle, sector: the section carrying the toothed sector, pin: +1 if the motor's
+  // gear is ahead of the axle, -1 behind }; cfg.labels(X, Y, at): the labelled parts.
+  function drawTop(id, cfg) {
+    const svg = $(id); svg.textContent = '';
     const W = 1000, H = 580, k = 0.5, X = (x) => 160 + x * k, Y = (y) => 300 + y * k;
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    arrowDefs(svg, 'bp-ar-top');
-    const g = sv('g', {}, svg), B = BUILD, U = Math.round(TRACK.unit2 * 1000), R = Math.round(TRACK.radius * 1000);
+    const A = `${id}-arrow`;
+    arrowDefs(svg, A);
+    const g = sv('g', {}, svg), B = BUILD, R = Math.round(TRACK.radius * 1000), C = Math.round(TRACK.cleat * 1000);
+    const secs = cfg.sections.map((L) => Math.round(L * 1000)), n = secs.length, ax = [0];
+    for (const L of secs) ax.push(ax[ax.length - 1] + L);
+    const end = ax[n], M = ax[cfg.mainJoint], carrier = cfg.mainJoint - 1;
+    // neighbours alternate: the box's section (and every second one) inside, in the outer lane
+    const inner = (i) => Math.abs(i - carrier) % 2 === 0;
+    const plateOf = (i) => (inner(i) ? B.plateR : B.plateF), laneOf = (i) => (inner(i) ? B.laneA : B.laneB);
     const rect = (x0, y0, x1, y1, cls, rx) => sv('rect', { x: X(Math.min(x0, x1)), y: Y(Math.min(y0, y1)), width: Math.abs(x1 - x0) * k, height: Math.abs(y1 - y0) * k, rx: rx || 0, class: cls }, g);
     const both = (f) => { f(1); f(-1); };
     const band = (sd, [a, b]) => (sd > 0 ? [a, b] : [-b, -a]);
-    const bx0 = U - BOX.back * 1000, bx1 = U + BOX.front * 1000, bw = BOX.width * 500;
-    const pin = U + B.pinion.dist * Math.cos(rad(B.pinion.at));
+    const bx0 = M - BOX.back * 1000, bx1 = M + BOX.front * 1000, bw = BOX.width * 500;
+    const dp = B.pinion.dist * Math.cos(rad(B.pinion.at)), pinX = (h) => ax[h.j] + h.pin * dp;
     // centre lines
-    sv('line', { x1: X(-B.laser - 18), y1: Y(0), x2: X(2 * U + B.laser + 18), y2: Y(0), class: 'ctr' }, g);
-    for (const a of [0, U, 2 * U]) sv('line', { x1: X(a), y1: Y(-362), x2: X(a), y2: Y(362), class: 'ctr' }, g);
-    // axles (the rear and middle ones carry lane A, the middle and front ones lane B)
-    rect(-15, -B.axleEnd, 15, B.axleEnd, 'axle');
-    rect(U - 20, -B.axleEnd, U + 20, B.axleEnd, 'axle');
-    rect(2 * U - 15, -B.laneB[1] - 10, 2 * U + 15, B.laneB[1] + 10, 'axle');
-    // side plates: the rear unit's inside, the front unit's just outside, each on bearings on its two axles
-    both((sd) => { const [a, b] = band(sd, B.plateR); rect(-60, a, U + 60, b, 'plate', 1.5); });
-    both((sd) => { const [a, b] = band(sd, B.plateF); rect(U - 65, a, 2 * U + 60, b, 'plate', 1.5); rect(U - 65, a, U + B.sector, b, 'hinge', 1.5); });
-    // cross bars: one at the back of the rear unit (the box ties its front), two on the front unit
-    rect(60, -bw, 100, bw, 'plate', 1.5);
-    rect(U + 260, -B.plateF[0], U + 300, B.plateF[0], 'plate', 1.5);
-    rect(2 * U - 100, -B.plateF[0], 2 * U - 60, B.plateF[0], 'plate', 1.5);
-    // pulleys under the belts: the flanges show either side
-    const pulley = (a, lane) => both((sd) => { const [p, q] = band(sd, lane); rect(a - 80, p, a + 80, q, 'pulley', 3); });
-    pulley(0, B.laneA); pulley(U, B.laneA); pulley(U, B.laneB); pulley(2 * U, B.laneB);
-    // belts with their cleats
-    const belt = (a, lane) => both((sd) => {
-      const [p, q] = band(sd, lane);
-      rect(a - R, p + 5, a + U + R, q - 5, 'belt', 6);
-      for (let x = a + 20; x < a + U - 10; x += 56) sv('line', { x1: X(x), y1: Y(p + 5), x2: X(x), y2: Y(q - 5), class: 'cleat' }, g);
+    sv('line', { x1: X(-B.laser - 18), y1: Y(0), x2: X(end + B.laser + 18), y2: Y(0), class: 'ctr' }, g);
+    for (const a of ax) sv('line', { x1: X(a), y1: Y(-362), x2: X(a), y2: Y(362), class: 'ctr' }, g);
+    // axles, out to the outer lane where one of their sections runs in it
+    const axleEnd = (j) => ([j - 1, j].some((i) => i >= 0 && i < n && inner(i)) ? B.axleEnd : B.laneB[1] + 10);
+    ax.forEach((a, j) => { const r = j === 0 || j === n ? 15 : 20; rect(a - r, -axleEnd(j), a + r, axleEnd(j), 'axle'); });
+    // side plates, each on bearings on its section's two axles
+    for (let i = 0; i < n; i++) both((sd) => { const [p, q] = band(sd, plateOf(i)); rect(ax[i] - 60, p, ax[i + 1] + 60, q, 'plate', 1.5); });
+    // hinge gears: a toothed sector on one section's plates, and the motor's gear that turns it
+    for (const h of cfg.hinges) both((sd) => {
+      const a = ax[h.j], [p, q] = band(sd, plateOf(h.sector)), x = pinX(h);
+      rect(h.pin > 0 ? a - 65 : a - B.sector, p, h.pin > 0 ? a + B.sector : a + 65, q, 'hinge', 1.5);
+      rect(x - B.pinion.r, p - 1, x + B.pinion.r, q + 1, 'hinge', 1);
     });
-    belt(0, B.laneA); belt(U, B.laneB);
+    // cross bars: at the outer end of each end section, and on the section ahead of the box, clear of it
+    const bar = (i, x) => { const w = plateOf(i)[0]; rect(x - 20, -w, x + 20, w, 'plate', 1.5); };
+    bar(0, 80); bar(n - 1, end - 80);
+    if (cfg.mainJoint < n - 1 || n === 2) bar(cfg.mainJoint, M + 280);
+    // pulleys under the belts (the flanges show either side), then the belts with their cleats
+    for (let i = 0; i < n; i++) for (const a of [ax[i], ax[i + 1]]) both((sd) => { const [p, q] = band(sd, laneOf(i)); rect(a - 80, p, a + 80, q, 'pulley', 3); });
+    for (let i = 0; i < n; i++) both((sd) => {
+      const [p, q] = band(sd, laneOf(i)), a = ax[i];
+      rect(a - R, p + 5, ax[i + 1] + R, q - 5, 'belt', 6);
+      for (let x = a + 20; x < ax[i + 1] - 10; x += 56) sv('line', { x1: X(x), y1: Y(p + 5), x2: X(x), y2: Y(q - 5), class: 'cleat' }, g);
+    });
+    // the other hinges' motors, on their own sections and seen from above, with their cross shafts
+    for (const h of cfg.hinges) if (h.j !== cfg.mainJoint) {
+      const x = pinX(h);
+      sv('line', { x1: X(x), y1: Y(-plateOf(h.sector)[1]), x2: X(x), y2: Y(plateOf(h.sector)[1]), class: 'obj' }, g);
+      rect(h.pin > 0 ? x - 20 : x - 100, -150, h.pin > 0 ? x + 100 : x + 20, -40, 'pulley', 4); // the gearbox stays on its own section
+    }
     // the box, and what is inside it (dashed)
+    const mid = cfg.hinges.find((h) => h.j === cfg.mainJoint), pin = pinX(mid);
     rect(bx0, -bw, bx1, bw, 'boxf', 2);
     rect(bx0 + 20, -180, bx0 + 180, -60, 'hid', 4);                         // drive motor
-    sv('line', { x1: X(bx0 + 180), y1: Y(-120), x2: X(U), y2: Y(-120), class: 'hid' }, g); // its chain down to the middle axle
+    sv('line', { x1: X(bx0 + 180), y1: Y(-120), x2: X(M), y2: Y(-120), class: 'hid' }, g); // its chain down to the middle axle
     rect(bx0 + 20, 40, bx0 + 180, 180, 'hid', 4);                           // battery
     rect(pin - 58, -60, pin + 58, 60, 'hid', 4);                            // hinge motor, a worm gearbox on the cross shaft
     for (const sd of [1, -1]) sv('line', { x1: X(pin), y1: Y(sd * 60), x2: X(pin), y2: Y(sd * B.plateF[0]), class: 'hid' }, g); // the cross shaft
-    both((sd) => { const [a, b] = band(sd, B.plateF); rect(pin - B.pinion.r, a - 1, pin + B.pinion.r, b + 1, 'hinge', 1); });
     const intext = (x, y, lines, anchor) => lines.forEach((l, i) => sv('text', { x: X(x), y: Y(y) + i * 13, class: 'intext', 'text-anchor': anchor || 'start' }, g, l));
     intext(bx0 + 30, -150, ['DRIVE', 'MOTOR']);
     intext(bx0 + 30, 72, ['BATTERY']);
     intext(pin, -12, ['HINGE', 'MOTOR'], 'middle');
     intext(bx1 - 12, 186, ['BOX'], 'end');
     // on top of the box: the platform's pivot in two pillow blocks, and the levelling actuator
-    both((sd) => { const [a, b] = band(sd, [128, 172]); rect(U - 28, a, U + 28, b, 'pulley', 3); });
+    both((sd) => { const [a, b] = band(sd, [128, 172]); rect(M - 28, a, M + 28, b, 'pulley', 3); });
     rect(bx0 + 50, -16, bx0 + 170, 16, 'pulley', 6);
-    rect(bx0 + 170, -7, U - 55, 7, 'axle');
+    rect(bx0 + 170, -7, M - 55, 7, 'axle');
     // lasers, one at each end, looking straight down
-    rect(-B.laser, -6, 60, 6, 'plate');
-    rect(2 * U - 60, -6, 2 * U + B.laser, 6, 'plate');
-    for (const x of [-B.laser, 2 * U + B.laser]) rect(x - 18, -14, x + 18, 14, 'laserf', 3);
+    rect(-B.laser, -6, 80, 6, 'plate');
+    rect(end - 80, -6, end + B.laser, 6, 'plate');
+    for (const x of [-B.laser, end + B.laser]) rect(x - 18, -14, x + 18, 14, 'laserf', 3);
     sv('text', { x: X(-B.laser - 26), y: Y(0) + 4, class: 'intext', 'text-anchor': 'end' }, g, 'LASER');
-    sv('text', { x: X(2 * U + B.laser + 26), y: Y(0) + 4, class: 'intext' }, g, 'LASER');
+    sv('text', { x: X(end + B.laser + 26), y: Y(0) + 4, class: 'intext' }, g, 'LASER');
     // dimensions: width on the left, axle spacing and length below
-    const A = 'bp-ar-top';
     for (const y of [-B.axleEnd, B.axleEnd]) sv('line', { x1: X(-22), y1: Y(y), x2: 26, y2: Y(y), class: 'ext' }, g);
-    bpDim(g, 32, Y(-B.axleEnd), 32, Y(B.axleEnd), '700', A, 25, Y(0), true);
+    bpDim(g, 32, Y(-B.axleEnd), 32, Y(B.axleEnd), `${2 * B.axleEnd + 4}`, A, 25, Y(0), true);
     for (const y of [-bw, bw]) sv('line', { x1: X(-64), y1: Y(y), x2: 56, y2: Y(y), class: 'ext' }, g);
     bpDim(g, 62, Y(-bw), 62, Y(bw), `${Math.round(bw * 2)}`, A, 55, Y(0), true);
-    for (const [a, y] of [[0, B.axleEnd], [U, B.axleEnd], [2 * U, B.laneB[1] + 10]]) sv('line', { x1: X(a), y1: Y(y) + 3, x2: X(a), y2: 522, class: 'ext' }, g);
-    bpDim(g, X(0), 516, X(U), 516, `${U}`, A, X(U / 2), 510);
-    bpDim(g, X(U), 516, X(2 * U), 516, `${U}`, A, X(1.5 * U), 510);
-    sv('line', { x1: X(-R), y1: Y(B.laneA[1] - 5) + 3, x2: X(-R), y2: 558, class: 'ext' }, g);
-    sv('line', { x1: X(2 * U + R), y1: Y(B.laneB[1] - 5) + 3, x2: X(2 * U + R), y2: 558, class: 'ext' }, g);
-    const C = Math.round(TRACK.cleat * 1000);
-    bpDim(g, X(-R), 552, X(2 * U + R), 552, `${2 * U + 2 * R} over the tracks, ${2 * U + 2 * R + 2 * C} over the cleats`, A, X(U), 546);
+    ax.forEach((a, j) => sv('line', { x1: X(a), y1: Y(axleEnd(j)) + 3, x2: X(a), y2: 522, class: 'ext' }, g));
+    for (let i = 0; i < n; i++) bpDim(g, X(ax[i]), 516, X(ax[i + 1]), 516, cfg.span(i, secs[i]), A, X((ax[i] + ax[i + 1]) / 2), 510);
+    sv('line', { x1: X(-R), y1: Y(laneOf(0)[1] - 5) + 3, x2: X(-R), y2: 558, class: 'ext' }, g);
+    sv('line', { x1: X(end + R), y1: Y(laneOf(n - 1)[1] - 5) + 3, x2: X(end + R), y2: 558, class: 'ext' }, g);
+    bpDim(g, X(-R), 552, X(end + R), 552, `${end + 2 * R} over the tracks, ${end + 2 * R + 2 * C} over the cleats`, A, X(end / 2), 546);
     // the axles' names, beside their extension lines
-    const tag = (x, t) => sv('text', { x: X(x) + 6, y: 494, class: 'intext' }, g, t);
-    tag(0, 'REAR AXLE'); tag(U, 'MIDDLE AXLE = HINGE'); tag(2 * U, 'FRONT AXLE');
+    ax.forEach((a, j) => sv('text', { x: X(a) + 6, y: 494, class: 'intext' }, g, cfg.axles[j]));
     // which way is which
     sv('text', { x: 14, y: 22, class: 'intext' }, g, '◀ REAR, LEADS GOING DOWN');
     sv('text', { x: W - 14, y: 22, class: 'intext', 'text-anchor': 'end' }, g, 'FRONT, LEADS GOING UP ▶');
     // labels, all on the top half (the drawing is the same both sides)
-    const labels = [
-      { t: 'Side plates', s: 'rear inside, front outside', x: 300, y: 44, to: [X(330), Y(-205)] },
-      { t: 'Hinge gears', s: 'sector + motor’s gear', x: 490, y: 44, to: [X(U - 40), Y(-219)] },
-      { t: 'Platform pivot', s: 'on two pillow blocks', x: 676, y: 44, to: [X(U), Y(-172)] },
-      { t: 'Rear track unit', s: 'belt in the outer lane', x: 205, y: 92, to: [X(250), Y(-B.laneA[1] + 10)] },
-      { t: 'Levelling actuator', s: 'under the platform', x: 400, y: 92, to: [X(bx0 + 190), Y(-7)] },
-      { t: 'Front track unit', s: 'belt in the inner lane', x: 760, y: 92, to: [X(1100), Y(-B.laneB[1] + 10)] },
-    ];
-    for (const L of labels) bpLabel(g, L, A);
+    for (const L of cfg.labels(X, Y, { M, bx0, ax, pinX })) bpLabel(g, L, A);
   }
+  const TOP2 = {
+    sections: [TRACK.unit2, TRACK.unit2], mainJoint: 1, hinges: [{ j: 1, sector: 1, pin: 1 }],
+    axles: ['REAR AXLE', 'MIDDLE AXLE = HINGE', 'FRONT AXLE'], span: (i, L) => `${L}`,
+    labels: (X, Y, at) => [
+      { t: 'Side plates', s: 'rear inside, front outside', x: 300, y: 44, to: [X(330), Y(-205)] },
+      { t: 'Hinge gears', s: 'sector + motor’s gear', x: 490, y: 44, to: [X(at.M - 40), Y(-219)] },
+      { t: 'Platform pivot', s: 'on two pillow blocks', x: 676, y: 44, to: [X(at.M), Y(-172)] },
+      { t: 'Rear track unit', s: 'belt in the outer lane', x: 205, y: 92, to: [X(250), Y(-BUILD.laneA[1] + 10)] },
+      { t: 'Levelling actuator', s: 'under the platform', x: 400, y: 92, to: [X(at.bx0 + 190), Y(-7)] },
+      { t: 'Front track unit', s: 'belt in the inner lane', x: 760, y: 92, to: [X(1100), Y(-BUILD.laneB[1] + 10)] },
+    ],
+  };
+  const TOP4 = {
+    sections: [TRACK.sections4, TRACK.sections4, TRACK.sections4, TRACK.sections4], mainJoint: 2,
+    hinges: [{ j: 1, sector: 1, pin: -1 }, { j: 2, sector: 2, pin: 1 }, { j: 3, sector: 2, pin: 1 }],
+    axles: ['REAR AXLE', 'END HINGE', 'MIDDLE HINGE', 'END HINGE', 'FRONT AXLE'], span: (i, L) => `section ${i + 1}: ${L}`,
+    labels: (X, Y, at) => [
+      { t: 'Side plates', s: 'inside and outside, alternating', x: 200, y: 44, to: [X(180), Y(-219)] },
+      { t: 'End hinge', s: 'motor on section 1', x: 375, y: 44, to: [X(at.pinX({ j: 1, pin: -1 })), Y(-150)] },
+      { t: 'Levelling actuator', s: 'under the platform', x: 440, y: 92, to: [X(at.bx0 + 190), Y(-7)] },
+      { t: 'Middle hinge', s: 'motor in the box', x: 600, y: 92, to: [X(at.M - 30), Y(-219)] },
+      { t: 'Platform pivot', s: 'pillow blocks', x: 760, y: 92, to: [X(at.M), Y(-172)] },
+      { t: 'End hinge', s: 'motor on section 4', x: 905, y: 92, to: [X(at.pinX({ j: 3, pin: 1 })), Y(-150)] },
+    ],
+  };
 
   function drawHinge() {
     const svg = $('bp-hinge'); svg.textContent = '';
@@ -1024,7 +1059,7 @@
     const tot = (k) => PARTS.reduce((a, r) => a + r[1] * r[k], 0);
     $('parts-body').innerHTML = PARTS.map((r) => `<tr><td class="spot">${r[0]}</td><td class="num">${r[1]}</td><td>${r[2]}</td><td class="num">${money(r[1] * r[3])}</td><td>${r[4]}</td><td class="num">${money(r[1] * r[5])}</td><td>${r[6]}</td></tr>`).join('')
       + `<tr><td class="spot">Total</td><td></td><td></td><td class="num"><b>≈ ${money(tot(3))}</b></td><td></td><td class="num"><b>≈ ${money(tot(5))}</b></td><td></td></tr>`;
-    $('parts-note').textContent = 'Rough prices in Singapore dollars, October 2026, for one vehicle: RS Singapore and Mouser as listed, the rest from online listings at about S$1.30 to the US dollar. The full-size motors, gears and plates are estimates. Check stock and prices before ordering. The prototype is cheaper by about S$120 with a second servo in place of the Actuonix actuator.';
+    $('parts-note').textContent = 'Rough prices in Singapore dollars, October 2026, for one vehicle: RS Singapore and Mouser as listed, the rest from online listings at about S$1.30 to the US dollar. The full-size motors, gears and plates are estimates. Check stock and prices before ordering. The prototype is cheaper by about S$120 with a second servo in place of the Actuonix actuator. The 4-part version needs 8 shorter belts (1200 mm, 150 teeth; about 245 mm at 1:5), 16 pulleys, 5 axles, 16 bearings and three hinge motors with their gears: about S$800 at 1:5 and S$8,800 at full size.';
     $('parts-sub').textContent = `The 2-part vehicle with ${(U / 1000).toFixed(2)} m units, as drawn above.`;
   }
 
@@ -1512,7 +1547,8 @@
   renderLengths();
   renderLaser();
   renderParts();
-  drawTop();
+  drawTop('bp-top', TOP2);
+  drawTop('bp-top4', TOP4);
   drawHinge();
   setupStages();
   setupJumps();

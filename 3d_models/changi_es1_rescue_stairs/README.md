@@ -382,6 +382,11 @@ about S$530 for the 1:5 prototype (S$410 with a second servo for the levelling) 
 full size. RS Singapore and Mouser prices are as listed; the rest come from online listings, and the
 full-size motors, gears and plates are estimates. Check stock and prices before ordering.
 
+A second top view draws the 4-part version for comparison: four 360 mm sections on five axles, with
+the same box, platform and lasers. Its middle hinge works as above; each end hinge has its own motor
+on the end section, turning a toothed sector on the next section. It needs 8 shorter belts (1200 mm),
+16 pulleys, 5 axles, 16 bearings and three hinge motors: about S$800 at 1:5 and S$8,800 at full size.
+
 ### Centre box, tracks and tread
 
 The battery and drive motor go in a box between the tracks, bolted to the section just behind the
