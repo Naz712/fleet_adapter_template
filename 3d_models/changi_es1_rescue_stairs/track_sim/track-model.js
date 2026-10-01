@@ -47,6 +47,12 @@
     sections: null, // section lengths rear to front; null = two sections of unitLength
     mainJoint: 1, // the hinge that carries the seat, counted from the rear
     extraHingeMass: 6, // kg of motor at each extra hinge
+    // centre box for the battery and drive motor, bolted to the section just behind the seat's hinge (both
+    // halves split): m from the seat's hinge axle, along that section and square to it. It clears the stairs,
+    // the seat, the person and the other sections at every pose of the four-section chain (blueprint sheet C).
+    box: { back: 0.29, front: 0.21, floor: 0.04, top: 0.29, width: 0.3 },
+    boxMass: 0, // kg in the centre box
+    boxCom: [-0.04, 0.165], // m from the seat's hinge axle to the box's centre of mass, along and square to that section
     extraHingeRateDegPerM: null, // how fast the extra hinges bend; null = the main hinge's rate scaled up for a shorter section (twice as fast for half the length)
     extraHingeSeized: false, // the extra hinges have seized straight (a failure)
     mainHingeSeized: false, // the seat's hinge has seized straight, the others still work (a failure)
@@ -398,6 +404,10 @@
       M += mk; sx += (mk * (A.x + B.x)) / 2; sz += (mk * (A.z + B.z)) / 2;
     }
     if (p.pts) for (let j = 1; j < p.pts.length - 1; j++) if (j !== o.mainJoint) { M += o.extraHingeMass; sx += o.extraHingeMass * p.pts[j].x; sz += o.extraHingeMass * p.pts[j].z; }
+    if (o.boxMass) {
+      const a = p.angles ? p.angles[o.mainJoint - 1] : p.a1, [u, v] = o.boxCom;
+      M += o.boxMass; sx += o.boxMass * (p.J.x + u * Math.cos(a) - v * Math.sin(a)); sz += o.boxMass * (p.J.z + u * Math.sin(a) + v * Math.cos(a));
+    }
     return { x: sx / M, z: sz / M, load: { x: lx, z: lz } };
   }
 
@@ -1338,7 +1348,7 @@
     const L = o.unitLength, rho = o.sprocketRadius;
     const seat = seatModel(o);
     const extraMass = o.sections ? (o.sections.length - 2) * o.extraHingeMass : 0; // motors at the extra hinges
-    const M = seat.mass + 2 * o.unitMass + extraMass;
+    const M = seat.mass + 2 * o.unitMass + extraMass + (o.boxMass || 0);
     // On a slope the centre of mass slides downhill by (its height above the track) x
     // sin(pitch). A level seat keeps its own centre of mass over the pivot, so only the
     // mast height counts; a fixed seat leans with the vehicle and its full height counts.

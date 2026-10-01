@@ -1261,6 +1261,14 @@
       ctx.restore();
     }
 
+    // centre box (both halves split): bolted to the section behind the seat's hinge, between the tracks
+    if (two.units && two.units.length === 4 && o.box) {
+      const [A, B] = two.units[o.mainJoint - 1], a = Math.atan2(B.z - A.z, B.x - A.x), c = Math.cos(a), s = Math.sin(a), b = o.box;
+      const pts = [[-b.back, b.floor], [b.front, b.floor], [b.front, b.top], [-b.back, b.top]].map(([u, v]) => [SX(two.J.x + u * c - v * s), SY(two.J.z + u * s + v * c)]);
+      ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
+      ctx.fillStyle = C['surface-2']; ctx.fill(); ctx.strokeStyle = C['steel-edge']; ctx.lineWidth = 1.5; ctx.stroke();
+    }
+
     // two tracks
     const dirSign = state.dir === 'up' ? 1 : -1;
     for (const [A, B] of unitsOf(two)) paint.unit(A, B, rho, state.travel, dirSign);

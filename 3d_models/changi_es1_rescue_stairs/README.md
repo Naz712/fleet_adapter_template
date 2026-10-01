@@ -273,11 +273,46 @@ each can take along the trip, and puts every stress case next to each other.
 
 `track_sim/blueprint.html` is a build sheet for a model of the layout with both halves split,
 made from parts sold in Singapore. Pick the GT2 pulley and closed belt loop you buy, and it redraws
-the side view, the top view, a hinge joint and the wiring to scale, and sizes the test stairs to
-match. 20-tooth pulleys with 110 mm loops, both stocked in Singapore, put the axles 35 mm apart,
+the side view, the top view, the centre box space, the tread, the seat's hinge and the wiring to
+scale, and sizes the test stairs to match. 20-tooth pulleys with 110 mm loops, both stocked in Singapore, put the axles 35 mm apart,
 which is exactly 1:10. Its parts list (`blueprint-parts.js`) links each part to a shop. It also runs
 the simulator on the test stairs (the `lowerTreads` option in `track-model.js` gives one flight) and
 lists the hinge, arm and seat angles every 5 mm of travel, to replay from the drive motor's encoder.
+
+### Centre box, tracks and tread
+
+The battery and drive motor go in a box between the tracks, bolted to the section just behind the
+seat's hinge (T2). Bolting it to one section needs no extra linkage, and it is nearly as big as a box
+held halfway between the two middle sections (93% of the side area). The space was found by
+running every pose of the four-section chain (3.2, 5.8 and 8.4 m flights and the steepest stairs,
+both ways) in that section's frame. Blueprint sheet C draws it.
+
+| Centre box | Full size | 1:10 model |
+|---|---|---|
+| Length | 500 mm: 290 behind the seat's hinge axle, 210 in front | 50 mm: 29 behind, 21 in front |
+| Height | 250 mm: floor 40 and top 290 above the axle | 25 mm: floor 4, top 29 |
+| Width | up to 300 mm, inside the seat arm's two columns | 38 mm, between T2's side plates |
+| Limits | the next section's axle (70 mm clear), the stairs below, the seat above | the same, 7 mm clear |
+
+Only the hinge axle passes under the box; a gear on it reaches up through a slot to the motor. At
+1:10 the seat's hinge servo (S2) and the arm servo (S4) also sit in it, with the motor and a small
+battery. Weight in the box steadies the vehicle a little: with 40 kg the worst lean it can take is
+19.8° going up and 21.7° going down (18.8° and 21.5° without). `boxMass` in `track-model.js` tries
+other weights.
+
+Each section's track is a loop around two axles 350 mm apart (35 mm at 1:10), 150 mm wide per side
+in two lanes, and 180 mm high (Ø180 sprockets). Neighbouring sections run in alternate lanes so
+they share an axle. Pulleys are clamped to the axles and the section frames turn on bearings: the
+motor turns the seat's hinge axle, which drives the middle two sections, which turn the next axles
+and the end sections. One motor drives every track at the same speed. A full-size vehicle that
+steers splits each axle into left and right halves, with one motor per side.
+
+The tread is soft rubber (about 60 Shore A) with straight cleats across it: 15 mm tall, 20 mm wide
+at the root and 10 mm at the tip, every 60 mm, offset by half a pitch between the two lanes. On
+stairs the tracks only touch the step edges. A cleat just behind an edge drops onto the tread
+within 1.9 times its height of the edge and catches there, so the tracks can't slide down even on
+dusty or wet steps. Without cleats the rubber needs a friction of at least 0.62 to hold on these
+stairs. Taller or sharper cleats jolt over each edge and wear the nosings.
 
 ### Design rules from the math
 

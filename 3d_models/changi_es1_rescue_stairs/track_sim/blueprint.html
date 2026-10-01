@@ -90,6 +90,9 @@
   svg .box { fill: var(--sheet-2); stroke: var(--line); stroke-width: 0.45; }
   svg .wire { fill: none; stroke: var(--line-2); stroke-width: 0.45; }
   svg .wire.pwr { stroke: var(--mark); }
+  svg .keep { fill: rgba(255, 207, 92, 0.1); stroke: var(--mark); stroke-width: 0.6; }
+  svg .env { fill: none; stroke: var(--line); stroke-width: 0.45; }
+  svg .zone { fill: rgba(233, 242, 252, 0.06); stroke: none; }
 
   /* parts and steps */
   .table-wrap { overflow-x: auto; border: 1px solid var(--line-3); border-radius: 3px; }
@@ -122,6 +125,13 @@
   .prog-wrap td { padding: 4px 10px; text-align: right; }
   .prog-wrap th { text-align: right; }
   .prog-wrap tr.bend td { color: var(--mark); }
+  table.sizes { min-width: 0; font-size: 13.5px; }
+  table.sizes caption { caption-side: top; text-align: left; padding: 9px 10px; font: 600 12px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--line-2); background: var(--sheet-2); border-bottom: 1px solid var(--line-3); }
+  table.sizes td { font-variant-numeric: tabular-nums; }
+  table.sizes td:first-child { color: var(--line-2); }
+  table.sizes td + td { font: 500 13px/1.4 var(--mono); }
+  .explain { display: grid; gap: 6px; align-content: start; }
+  .explain p { color: var(--line-2); font-size: 14px; max-width: 70ch; }
   .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
   @media (max-width: 860px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
   @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
@@ -131,7 +141,7 @@
   <header>
     <p class="eyebrow">Changi AES · ES1 rescue stairs · model build</p>
     <h1>Stair Climber Blueprint</h1>
-    <p class="lede">The layout with both halves split, built at about 1:10 from parts you can buy. Pick the pulley and belt you actually get, and every drawing, dimension and stair size below follows them.</p>
+    <p class="lede">The layout with both halves split, built at about 1:10 from parts you can buy. Pick the pulley and belt you actually get, and every drawing, dimension and stair size below follows them. Sheet C is the space for the centre box that holds the battery and drive motor.</p>
   </header>
 
   <section class="panel" aria-labelledby="parts-h">
@@ -154,21 +164,42 @@
     </section>
     <section class="sheet wide" aria-labelledby="sb-h">
       <div class="draw"><svg id="top" role="img" aria-labelledby="sb-h"></svg></div>
-      <div class="tb"><div><span class="k">Sheet</span><span class="v">B</span></div><div><span class="ttl" id="sb-h">Top view, seat removed</span><span class="k">Belts run in two lanes per side so the neighbours overlap on the shared axles</span></div><div><span class="k">Scale</span><span class="v" id="sb-scale"></span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
+      <div class="tb"><div><span class="k">Sheet</span><span class="v">B</span></div><div><span class="ttl" id="sb-h">Top view, seat removed</span><span class="k">Belts run in two lanes per side so the neighbours overlap on the shared axles; the side plates sit inside the belts</span></div><div><span class="k">Scale</span><span class="v" id="sb-scale"></span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
+    </section>
+    <section class="sheet wide" aria-labelledby="sx-h">
+      <div class="draw"><svg id="boxspace" role="img" aria-labelledby="sx-h"></svg></div>
+      <div class="legend"><span><i style="border-top-color: var(--mark)"></i>centre box, largest size</span><span><i class="hid"></i>parts that move, at their limits</span><span><i class="ph"></i>suggested layout inside</span></div>
+      <div class="tb"><div><span class="k">Sheet</span><span class="v">C</span></div><div><span class="ttl" id="sx-h">Centre box space</span><span class="k" id="sx-sub"></span></div><div><span class="k">Scale</span><span class="v" id="sx-scale"></span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
+    </section>
+    <section class="sheet wide" aria-labelledby="sg-h">
+      <div class="draw"><svg id="tread" role="img" aria-labelledby="sg-h"></svg></div>
+      <div class="tb"><div><span class="k">Sheet</span><span class="v">D</span></div><div><span class="ttl" id="sg-h">Track and tread</span><span class="k">Cleats across the grip; the two lanes are offset by half a pitch</span></div><div><span class="k">Scale</span><span class="v">as marked</span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
     </section>
     <section class="sheet" aria-labelledby="sc-h">
       <div class="draw"><svg id="joint" role="img" aria-labelledby="sc-h"></svg></div>
-      <div class="tb"><div><span class="k">Sheet</span><span class="v">C</span></div><div><span class="ttl" id="sc-h">Hinge joint</span><span class="k">Section through one side of a joint axle, and the servo link</span></div><div><span class="k">Scale</span><span class="v">2:1</span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
+      <div class="tb"><div><span class="k">Sheet</span><span class="v">E</span></div><div><span class="ttl" id="sc-h">Seat's hinge, H2</span><span class="k">Section through one side of the H2 axle, and S2's link</span></div><div><span class="k">Scale</span><span class="v">2:1</span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
     </section>
     <section class="sheet" aria-labelledby="sd-h">
       <div class="draw"><svg id="wiring" role="img" aria-labelledby="sd-h"></svg></div>
-      <div class="tb"><div><span class="k">Sheet</span><span class="v">D</span></div><div><span class="ttl" id="sd-h">Wiring</span><span class="k">Everything shares one ground</span></div><div><span class="k">Scale</span><span class="v">none</span></div><div><span class="k">Units</span><span class="v">–</span></div></div>
+      <div class="tb"><div><span class="k">Sheet</span><span class="v">F</span></div><div><span class="ttl" id="sd-h">Wiring</span><span class="k">Everything shares one ground</span></div><div><span class="k">Scale</span><span class="v">none</span></div><div><span class="k">Units</span><span class="v">–</span></div></div>
     </section>
     <section class="sheet wide" aria-labelledby="se-h">
       <div class="draw"><svg id="stairs" role="img" aria-labelledby="se-h"></svg></div>
-      <div class="tb"><div><span class="k">Sheet</span><span class="v">E</span></div><div><span class="ttl" id="se-h">Test stairs to match</span><span class="k" id="se-sub"></span></div><div><span class="k">Scale</span><span class="v" id="se-scale"></span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
+      <div class="tb"><div><span class="k">Sheet</span><span class="v">G</span></div><div><span class="ttl" id="se-h">Test stairs to match</span><span class="k" id="se-sub"></span></div><div><span class="k">Scale</span><span class="v" id="se-scale"></span></div><div><span class="k">Units</span><span class="v">mm</span></div></div>
     </section>
   </div>
+
+  <section class="panel" aria-labelledby="sizes-h">
+    <div class="head"><h2 id="sizes-h">Box and track sizes</h2><p class="note">Full size from the simulator. The model column follows your parts.</p></div>
+    <div class="two-col">
+      <div class="table-wrap"><table class="sizes"><caption>Centre box, bolted to T2 (sheet C)</caption><thead><tr><th></th><th>Full size</th><th>Model</th></tr></thead><tbody id="box-sizes"></tbody></table></div>
+      <div class="table-wrap"><table class="sizes"><caption>Tracks (sheets A, B and D)</caption><thead><tr><th></th><th>Full size</th><th>Model</th></tr></thead><tbody id="track-sizes"></tbody></table></div>
+    </div>
+    <div class="two-col">
+      <div class="explain"><h3>How the tracks are driven</h3><p id="drive-text"></p></div>
+      <div class="explain"><h3>Track surface</h3><p id="tread-text"></p></div>
+    </div>
+  </section>
 
   <section class="panel" aria-labelledby="prog-h">
     <div class="head"><h2 id="prog-h">Hinge program</h2><p class="note">From the simulator, run on your test stairs. Replay it by distance travelled, read from the drive motor's encoder.</p></div>
@@ -221,7 +252,18 @@
     [140, false], [142, false], [144, false], [146, false], [150, false], [152, false], [154, false], [156, false], [158, true]];
   const DEF = { teeth: 20, loop: 110 };
   // the full-size design (metres) this model scales
-  const FULL = { section: 0.35, sprocketD: 0.18, width: 0.75, track: 0.15, arm: 0.5, rise: 0.17, going: 0.28, midPlatform: 1.0, cols: 0.4 };
+  const FULL = { section: 0.35, sprocketD: 0.18, width: 0.75, track: 0.15, arm: 0.5, rise: 0.17, going: 0.28, midPlatform: 1.0, cols: 0.4,
+    // centre box bolted to T2, metres from the H2 axle along and square to T2 (sheet C)
+    box: Object.assign({ back: 0.29, front: 0.21, floor: 0.04, top: 0.29, width: 0.3 }, (window.TrackModel || window.TM || { DEFAULTS: {} }).DEFAULTS.box, { keep: 0.07 }),
+    cleat: { h: 0.015, root: 0.02, tip: 0.01, pitch: 0.06 } };
+  // The space around H2 in T2's frame over every pose of the simulator (3.2, 5.8 and 8.4 m flights
+  // and the steepest stairs, up and down): how high the stairs ever reach and how low the seat and
+  // person ever come, full-size mm, every 10 mm from 450 mm behind the H2 axle to 450 mm in front.
+  const ENV = {
+    x0: -450, dx: 10, bendMin: -43.5, bendMax: 35.7, armMin: 42.5, armMax: 107.9,
+    stairs: [-37, -44, -52, -58, -64, -72, -78, -83, -87, -89, -90, -90, -90, -90, -90, -90, -90, -90, -90, -90, -90, -90, -90, -90, -90, -90, -90, -89, -89, -89, -89, -89, -89, -89, -89, -89, -89, -89, -89, -89, -89, -89, -89, -90, -90, -90, -89, -87, -83, -79, -75, -71, -66, -62, -57, -52, -46, -41, -36, -29, -23, -17, -5, 2, 8, 15, 22, 36, 43, 50, 58, 73, 81, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 97, 104, 112, 120, 137, 147, 156],
+    seat: [339, 344, 348, 355, 360, 364, 369, 375, 380, 384, 389, 396, 400, 405, 409, 414, 421, 425, 430, 434, 441, 445, 450, 454, 460, 426, 426, 426, 426, 426, 426, 426, 426, 426, 426, 426, 429, 432, 434, 437, 439, 441, 443, 444, 446, 447, 446, 444, 443, 441, 439, 437, 434, 431, 429, 425, 422, 418, 415, 411, 406, 402, 397, 391, 386, 380, 374, 368, 361, 354, 346, 339, 331, 322, 312, 303, 293, 288, 288, 288, 288, 288, 288, 288, 288, 288, 288, 288, 325, 318, 311],
+  };
   // the stretcher-chair and person at a 45 degree recline, metres from the seat's tilt axle (u forward, v up)
   const CHAIR = [[[0.187, 0.08], [0.819, 0.712]], [[0.187, 0.08], [-0.286, 0.163]], [[-0.286, 0.163], [-0.735, -0.056]]];
   const BODY = [[[0.207, 0.193], [-0.266, 0.277], 0.085], [[-0.265, 0.274], [-0.739, 0.043], 0.06], [[-0.739, 0.043], [-0.809, 0.186], 0.045], [[0.14, 0.26], [0.494, 0.613], 0.13], [[0.635, 0.712], [0.635, 0.712], 0.1]];
@@ -254,11 +296,22 @@
     const s = C / (FULL.section * 1000);            // model mm per full-size mm
     const belt = 1.4, grip = 1.2;                    // GT2 belt and grip covering thickness
     const R = pd / 2 + belt + grip;                  // track radius at each axle, to the grip surface
-    const gap = 3;                                   // between the two lanes of one track
-    const trackW = 2 * bw + gap;
-    const W = Math.max(FULL.width * 1000 * s, 2 * trackW + 40); // across the tracks, leaving room for the servos
+    const cleat = FULL.cleat.h * 1000 * s;           // tread cleats stand this far off the grip (sheet D)
+    // across one side, from the middle out (sheet B): centre box, T2/T4 side plate, arm plate,
+    // T1/T3 side plate, then the two pulleys, lane B with its hub inward and lane A with its hub outward
+    const cl = 0.5, plate = 4, armT = 2;             // clearance; side plates hold 4 mm bearings
+    const flange = 0.8, hub = 7, pulW = bw + 1 + 2 * flange; // a stock GT2 pulley: teeth between two flanges, and a hub
+    const boxW = 38;                                 // room for an N20 with its encoder lying across
+    const yPlateIn = boxW / 2 + cl, yArm = yPlateIn + plate + cl, yPlateOut = yArm + armT + cl;
+    const yPulB = yPlateOut + plate + cl + hub, yPulA = yPulB + pulW + cl;   // inner flange of each pulley
+    const half = yPulA + pulW + hub, W = 2 * half;
+    const laneB = yPulB + pulW / 2, laneA = yPulA + pulW / 2;                // belt centre lines
+    const gap = laneA - laneB - bw, trackW = 2 * bw + gap;
+    const k = 1000 * s, B = FULL.box;
     return {
-      teeth, loop, bw, rpm, steps, pd, C, s, belt, grip, R, gap, trackW, W,
+      teeth, loop, bw, rpm, steps, pd, C, s, belt, grip, R, cleat, gap, trackW, W, half,
+      lat: { cl, plate, armT, flange, hub, pulW, boxW, yPlateIn, yArm, yPlateOut, yPulB, yPulA, laneA, laneB },
+      box: { back: B.back * k, front: B.front * k, floor: B.floor * k, top: B.top * k, width: boxW, keep: B.keep * k },
       L: 4 * C + 2 * R,                              // overall length
       arm: FULL.arm * 1000 * s,                      // seat's hinge axle to the seat's tilt axle
       rise: FULL.rise * 1000 * s, going: FULL.going * 1000 * s,
@@ -317,29 +370,49 @@
   }
 
   // ------------------------------------------------------------------ sheet A: side view
+  // cleats along a straight run of track from a to b, standing off the grip at height z, pointing up (dir 1) or down (-1)
+  function cleatRun(g, P, a, b, z, dir) {
+    const pitch = FULL.cleat.pitch * 1000 * P.s, root = FULL.cleat.root * 1000 * P.s, tip = FULL.cleat.tip * 1000 * P.s, h = P.cleat;
+    for (let x = a + pitch / 2; x <= b - pitch / 2 + 1e-9; x += pitch) {
+      el('path', { d: `M${x - root / 2} ${-z} L${x - tip / 2} ${-(z + dir * h)} L${x + tip / 2} ${-(z + dir * h)} L${x + root / 2} ${-z}`, class: 'grip' }, g);
+    }
+  }
+  // the parts inside the centre box, as a suggestion (model mm, from the H2 axle along and square to T2)
+  function boxLayout(P) {
+    const B = P.box, wall = 1.2, sv = { l: 22.8, h: 12.2 };
+    const zIn = B.floor + wall, zTop = B.top - wall;
+    const motor = { x: -6, z: zIn, w: 12, h: 10, len: 34 };                // N20 with encoder lying across, above the axle
+    const shaft = { x: 0, z: zIn + 5 };                                     // its output, geared 1:1 to the H2 axle
+    const s2 = { x: B.front - wall - sv.l, z: zTop - sv.h, w: sv.l, h: sv.h, sx: B.front - wall - 5.9 };
+    const s4 = { x: -B.back + wall, z: zTop - sv.h, w: sv.l, h: sv.h, sx: -B.back + wall + sv.l - 5.9 };
+    const bat = { x: -B.back + wall, z: zIn, w: B.back - wall - 8, h: Math.min(9, s4.z - zIn - 0.5) };
+    return { wall, motor, shaft, gearR: shaft.z / 2, s2, s4, bat, pinT3: 14 * 10 * P.s, pinArm: 15 * 10 * P.s };
+  }
   function drawSide(P) {
-    const svg = $('side'), hz = P.R; // axle height above the ground
+    const svg = $('side'), hz = P.R + P.cleat; // axle height above the ground, standing on the cleats
     const top = hz + P.arm + 0.82 * 1000 * P.s + 12;
     const x0 = -P.R - 26, x1 = 4 * P.C + P.R + 30;
     const g = setup(svg, x0, -top, x1 - x0, top + 26);
-    const Y = (z) => -z;
+    const Y = (z) => -z, X2 = 2 * P.C, B = P.box, Lb = boxLayout(P);
     // ground
     el('rect', { x: x0 + 4, y: 0, width: x1 - x0 - 8, height: 3, class: 'hatch' }, g);
     el('line', { x1: x0 + 4, y1: 0, x2: x1 - 4, y2: 0, class: 'ground' }, g);
-    // hidden parts between the tracks: the drive motor and the hinge servos, lying flat on the section trays
-    const sv = { l: 22.8, h: 12.2 }, floor = 4.5;
-    const servoX = (j) => (j === 1 ? j * P.C - 3 - sv.l : j * P.C + 3);  // S1 on T1, S2 on T3, S3 on T4
-    el('rect', { x: 2 * P.C - 16, y: Y(floor + 10), width: 12, height: 10, rx: 1, class: 'hid' }, g); // N20 end-on, on T2
-    el('circle', { cx: 2 * P.C - 10, cy: Y(floor + 5), r: 4.6, class: 'hid' }, g);          // its gear
-    el('circle', { cx: 2 * P.C, cy: Y(hz), r: 5.4, class: 'hid' }, g);                         // gear on the seat's hinge axle
-    for (const j of [1, 2, 3]) el('rect', { x: servoX(j), y: Y(floor + sv.h), width: sv.l, height: sv.h, rx: 0.8, class: 'hid' }, g);
+    // centre box, bolted to T2 between its side plates, and what could go in it (hidden)
+    el('rect', { x: X2 - B.back, y: Y(hz + B.top), width: B.back + B.front, height: B.top - B.floor, rx: 1, class: 'box' }, g);
+    const hb = (r, rx) => el('rect', { x: X2 + r.x, y: Y(hz + r.z + r.h), width: r.w, height: r.h, rx: rx || 0.8, class: 'hid' }, g);
+    hb(Lb.motor, 1); hb(Lb.s2); hb(Lb.s4); hb(Lb.bat, 1);
+    el('circle', { cx: X2, cy: Y(hz + Lb.shaft.z), r: Lb.gearR, class: 'hid' }, g);
+    el('circle', { cx: X2, cy: Y(hz), r: Lb.gearR, class: 'hid' }, g);
+    txt(g, X2 - B.back + 2, Y(hz + B.top + 1.4), 'CENTRE BOX', 'sm');
+    // hinge servos lying flat on the end trays: S1 on T1, S3 on T4 (hidden behind the near track)
+    const sv = { l: 22.8, h: 12.2 };
+    const servoX = (j) => (j === 1 ? j * P.C - 3 - sv.l : j * P.C + 3);
+    for (const j of [1, 3]) el('rect', { x: servoX(j), y: Y(hz + 7.7), width: sv.l, height: sv.h, rx: 0.8, class: 'hid' }, g);
     // belts: lane A (sections 1 and 3) nearest, lane B behind them where they overlap
-    const secs = [0, 1, 2, 3];
-    for (const k of secs) {
+    for (const k of [0, 1, 2, 3]) {
       const a = k * P.C, b = (k + 1) * P.C, near = k % 2 === 0;
       el('path', { d: stadium(a, b, Y(hz), P.pd / 2 + P.belt), class: near ? 'obj' : 'hid' }, g);
-      if (near) el('path', { d: stadium(a, b, Y(hz), P.R), class: 'grip' }, g);
-      if (near) for (let x = a + 3; x < b; x += 6) el('line', { x1: x, y1: Y(hz - P.R), x2: x, y2: Y(hz - P.R - 1.2), class: 'grip' }, g);
+      if (near) { el('path', { d: stadium(a, b, Y(hz), P.R), class: 'grip' }, g); cleatRun(g, P, a, b, hz - P.R, -1); cleatRun(g, P, a, b, hz + P.R, 1); }
     }
     // pulleys and axles
     for (let k = 0; k <= 4; k++) {
@@ -350,174 +423,305 @@
       el('line', { x1: x - P.pd / 2 - 3, y1: Y(hz), x2: x + P.pd / 2 + 3, y2: Y(hz), class: 'ctr' }, g);
       el('line', { x1: x, y1: Y(hz - P.pd / 2 - 3), x2: x, y2: Y(hz + P.pd / 2 + 3), class: 'ctr' }, g);
     }
-    // arm servo S4 on a bracket above the drive motor; the arm rides on its horn, just behind
-    // and above the H2 axle. Seat tilt servo S5 at the top; stretcher-chair upright on level ground.
-    const s4 = { x: 2 * P.C - 3 - sv.l, z: 2 * P.R + 1 }, ax4 = { x: 2 * P.C - 7, z: s4.z + sv.h / 2 };
-    el('rect', { x: s4.x, y: Y(s4.z + sv.h), width: sv.l, height: sv.h, rx: 0.8, class: 'box' }, g);
-    el('line', { x1: s4.x + 4, y1: Y(s4.z), x2: s4.x + 4, y2: Y(floor + 10), class: 'thin' }, g);
-    el('line', { x1: s4.x + sv.l - 3, y1: Y(s4.z), x2: s4.x + sv.l - 3, y2: Y(floor + 10), class: 'thin' }, g);
-    const Px = ax4.x, Pz = hz + P.arm, m = 1000 * P.s;
-    capsule(g, [Px, Y(ax4.z)], [Px, Y(Pz)], 2.4, 'fillobj');
+    // S2 works T3 through a rod to a pin on T3; S4 leans the arm through a rod to a pin on the arm (other side)
+    const s2h = { x: X2 + Lb.s2.sx, z: hz + Lb.s2.z + sv.h / 2 }, s4h = { x: X2 + Lb.s4.sx, z: hz + Lb.s4.z + sv.h / 2 };
+    const pin3 = { x: X2 + Lb.pinT3, z: hz }, pinA = { x: X2 - 2.4, z: hz + Lb.pinArm };
+    el('line', { x1: s2h.x, y1: Y(s2h.z), x2: s2h.x + 5, y2: Y(s2h.z - 3), class: 'hid' }, g);
+    el('line', { x1: s2h.x + 5, y1: Y(s2h.z - 3), x2: pin3.x, y2: Y(pin3.z), class: 'hid' }, g);
+    el('circle', { cx: pin3.x, cy: Y(pin3.z), r: 0.9, class: 'fillobj' }, g);
+    el('line', { x1: s4h.x, y1: Y(s4h.z), x2: s4h.x + 3, y2: Y(s4h.z - 5), class: 'hid' }, g);
+    el('line', { x1: s4h.x + 3, y1: Y(s4h.z - 5), x2: pinA.x, y2: Y(pinA.z), class: 'hid' }, g);
+    // seat arm on the H2 axle, outside T2's side plates; seat tilt servo S5 at the top; stretcher-chair upright
+    const Px = X2, Pz = hz + P.arm, m = 1000 * P.s;
+    capsule(g, [Px, Y(hz)], [Px, Y(Pz)], 2.4, 'fillobj');
     el('circle', { cx: Px, cy: Y(Pz), r: 2.2, class: 'fillobj' }, g);
-    el('circle', { cx: Px, cy: Y(ax4.z), r: 2.2, class: 'obj' }, g);
-    for (const [A, B] of CHAIR) capsule(g, [Px + A[0] * m, Y(Pz + A[1] * m)], [Px + B[0] * m, Y(Pz + B[1] * m)], 0.03 * m, 'fillobj');
-    for (const [A, B, r] of BODY) capsule(g, [Px + A[0] * m, Y(Pz + A[1] * m)], [Px + B[0] * m, Y(Pz + B[1] * m)], r * m, 'ph');
+    el('circle', { cx: Px, cy: Y(hz), r: 2.5, class: 'obj' }, g);
+    el('circle', { cx: pinA.x, cy: Y(pinA.z), r: 0.9, class: 'fillobj' }, g);
+    for (const [A, C2] of CHAIR) capsule(g, [Px + A[0] * m, Y(Pz + A[1] * m)], [Px + C2[0] * m, Y(Pz + C2[1] * m)], 0.03 * m, 'fillobj');
+    for (const [A, C2, r] of BODY) capsule(g, [Px + A[0] * m, Y(Pz + A[1] * m)], [Px + C2[0] * m, Y(Pz + C2[1] * m)], r * m, 'ph');
     // callouts
     leader(g, 0, Y(hz), -P.R - 12, Y(hz + 12), 'P');
-    leader(g, 0.5 * P.C, Y(hz + P.pd / 2 + P.belt), 0.5 * P.C - 6, Y(hz + P.pd / 2 + 14), 'B');
-    leader(g, 1.5 * P.C, Y(hz - P.R + 0.6), 1.5 * P.C + 6, Y(-7), 'G');
-    leader(g, servoX(1) + sv.l / 2, Y(floor + sv.h), servoX(1) + sv.l / 2 - 4, Y(hz + P.pd / 2 + 16), 'S1');
-    leader(g, servoX(2) + sv.l / 2, Y(floor + sv.h), servoX(2) + sv.l / 2 + 4, Y(hz + P.pd / 2 + 16), 'S2');
-    leader(g, servoX(3) + sv.l / 2, Y(floor + sv.h), servoX(3) + sv.l / 2 + 2, Y(hz + P.pd / 2 + 16), 'S3');
-    leader(g, 2 * P.C - 10, Y(floor + 9), 2 * P.C - 20, Y(hz + P.pd / 2 + 20), 'M');
-    leader(g, Px, Y((ax4.z + Pz) / 2), Px + 12, Y((ax4.z + Pz) / 2), 'A');
-    leader(g, s4.x + 6, Y(s4.z + sv.h / 2), s4.x - 8, Y(s4.z + sv.h + 6), 'S4');
+    leader(g, 0.5 * P.C, Y(hz + P.pd / 2 + P.belt), 0.5 * P.C - 14, Y(hz + P.pd / 2 + 10), 'B');
+    leader(g, 1.5 * P.C, Y(hz - P.R - P.cleat + 0.4), 1.5 * P.C + 6, Y(-7), 'G');
+    leader(g, servoX(1) + sv.l / 2, Y(hz + 7.7), servoX(1) + sv.l / 2 - 4, Y(hz + P.pd / 2 + 16), 'S1');
+    leader(g, servoX(3) + sv.l / 2, Y(hz + 7.7), servoX(3) + sv.l / 2 + 2, Y(hz + P.pd / 2 + 16), 'S3');
+    tag(g, X2 + Lb.s2.x + Lb.s2.w - 6, Y(hz + Lb.s2.z + Lb.s2.h / 2), 'S2');
+    tag(g, X2 + Lb.s4.x + 6, Y(hz + Lb.s4.z + Lb.s4.h / 2), 'S4');
+    tag(g, X2 + Lb.bat.x + 7, Y(hz + Lb.bat.z + Lb.bat.h / 2), 'BAT');
+    leader(g, X2 + 4, Y(hz + Lb.motor.z + 3), X2 + B.front + 9, Y(hz + B.floor + 4), 'M');
+    leader(g, Px, Y(hz + B.top + 6), Px + 12, Y(hz + B.top + 6), 'A');
     leader(g, Px, Y(Pz), Px - 14, Y(Pz + 6), 'S5');
     // joint names
-    txt(g, P.C, Y(-8), 'H1', 'lab', 'middle'); txt(g, 2 * P.C, Y(-8), 'H2 seat', 'lab', 'middle'); txt(g, 3 * P.C, Y(-8), 'H3', 'lab', 'middle');
+    txt(g, P.C, Y(-8), 'H1', 'lab', 'middle'); txt(g, X2, Y(-8), 'H2 seat', 'lab', 'middle'); txt(g, 3 * P.C, Y(-8), 'H3', 'lab', 'middle');
     // dimensions
     dimX(g, 'side', -P.R, 4 * P.C + P.R, Y(-15), 1.5, `${f1(P.L)} overall`, true);
-    dimX(g, 'side', 0, P.C, Y(hz + P.pd / 2 + 34), Y(hz + 3), `${f1(P.C)}`);
-    dimX(g, 'side', P.C, 2 * P.C, Y(hz + P.pd / 2 + 34), Y(hz + 3), `${f1(P.C)}`);
-    dimX(g, 'side', 2 * P.C, 3 * P.C, Y(hz + P.pd / 2 + 34), Y(hz + 3), `${f1(P.C)}`);
-    dimX(g, 'side', 3 * P.C, 4 * P.C, Y(hz + P.pd / 2 + 34), Y(hz + 3), `${f1(P.C)}`);
+    for (let k = 0; k < 4; k++) dimX(g, 'side', k * P.C, (k + 1) * P.C, Y(hz + P.pd / 2 + 34), Y(hz + 3), `${f1(P.C)}`);
     dimY(g, 'side', Y(hz), Y(Pz), 4 * P.C + P.R + 16, Px + 3, `${f1(P.arm)} to seat axle`);
     dimY(g, 'side', 0, Y(hz), 4 * P.C + P.R + 8, 4 * P.C + 3, `${f1(hz)}`);
     txt(g, -P.R - 22, Y(hz + 20), `Ø${f1(P.pd)} pitch`, 'sm');
     $('sa-scale').textContent = `1:${f1(1 / P.s)}`;
-    $('sa-sub').textContent = `${P.teeth}T GT2 pulleys, ${P.loop} mm loops, axles ${f1(P.C)} mm apart`;
+    $('sa-sub').textContent = `${P.teeth}T GT2 pulleys, ${P.loop} mm loops, axles ${f1(P.C)} mm apart. The centre box is drawn on sheet C.`;
   }
 
   // ------------------------------------------------------------------ sheet B: top view
   function drawTop(P) {
-    const svg = $('top'), half = P.W / 2;
-    const x0 = -P.R - 24, x1 = 4 * P.C + P.R + 34, y0 = -half - 14, h = P.W + 36;
+    const svg = $('top'), half = P.half, T = P.lat, X2 = 2 * P.C, B = P.box, Lb = boxLayout(P);
+    const x0 = -P.R - 26, x1 = 4 * P.C + P.R + 34, y0 = -half - 14, h = P.W + 36;
     const g = setup(svg, x0, y0, x1 - x0, h);
-    // lanes: A outside, B inside; sections 1 and 3 in lane A, 2 and 4 in lane B
-    const lane = (side, L) => {
-      const outer = side * half, inner = side * (half - P.bw);
-      const bOuter = side * (half - P.bw - P.gap), bInner = side * (half - 2 * P.bw - P.gap);
-      return L === 'A' ? [Math.min(outer, inner), Math.abs(outer - inner)] : [Math.min(bOuter, bInner), Math.abs(bOuter - bInner)];
-    };
-    const inner = half - P.trackW;             // inner edge of each track
-    // section trays between the tracks, with a knuckle where each meets an axle
-    for (let k = 0; k < 4; k++) {
-      const a = k * P.C, b = (k + 1) * P.C, inset = 3.2;
-      el('rect', { x: a + inset, y: -inner + 1.5, width: P.C - 2 * inset, height: 2 * inner - 3, rx: 1.2, class: 'thin' }, g);
-      for (const side of [-1, 1]) for (const [x, off] of [[a, k % 2 ? 5.5 : 1.5], [b, k % 2 ? 1.5 : 5.5]]) {
-        const y = side > 0 ? inner - off - 3 : -inner + off;
-        el('rect', { x: x - 3.2, y, width: 6.4, height: 3, rx: 0.6, class: 'fillobj' }, g);
-      }
+    const both = (f) => { for (const side of [-1, 1]) f(side); };
+    const band = (side, yIn, w) => (side > 0 ? [yIn, w] : [-yIn - w, w]); // [y, height] of a band from yIn outward
+    // centre box between T2's side plates, and a suggested layout inside it (hidden)
+    el('rect', { x: X2 - B.back, y: -B.width / 2, width: B.back + B.front, height: B.width, rx: 1, class: 'box' }, g);
+    const iw = B.width / 2 - Lb.wall;
+    el('rect', { x: X2 - 6, y: -Lb.motor.len / 2, width: 12, height: Lb.motor.len, rx: 1, class: 'hid' }, g);
+    el('rect', { x: X2 + Lb.s2.x, y: iw - 22.5, width: Lb.s2.w, height: 22.5, rx: 0.8, class: 'hid' }, g);
+    el('rect', { x: X2 + Lb.s4.x, y: -iw, width: Lb.s4.w, height: 22.5, rx: 0.8, class: 'hid' }, g);
+    el('rect', { x: X2 + Lb.bat.x, y: -iw + 3, width: Lb.bat.w, height: 2 * iw - 6, rx: 1, class: 'ph' }, g);
+    tag(g, X2 + Lb.s2.x + Lb.s2.w / 2 + 2, iw - 6, 'S2'); tag(g, X2 + Lb.s4.x + Lb.s4.w / 2 - 2, -iw + 6, 'S4'); tag(g, X2, 0, 'M');
+    tag(g, X2 + Lb.bat.x + 7, iw - 6, 'BAT');
+    txt(g, X2 - B.back + 2, -B.width / 2 + 3.6, 'CENTRE BOX', 'sm');
+    // side plates: T2 and T4 innermost, then the seat arm at H2, then T1 and T3; each holds a bearing on its two axles
+    const plateRun = (a, b, yIn, w) => both((side) => { const [y, hh] = band(side, yIn, w); el('rect', { x: a, y, width: b - a, height: hh, rx: 1.2, class: 'fillobj' }, g); });
+    plateRun(P.C - 6, X2 + 6, T.yPlateIn, T.plate); plateRun(3 * P.C - 6, 4 * P.C + 6, T.yPlateIn, T.plate);
+    plateRun(-6, P.C + 6, T.yPlateOut, T.plate); plateRun(X2 - 6, 3 * P.C + 6, T.yPlateOut, T.plate);
+    plateRun(X2 - 3, X2 + 3, T.yArm, T.armT);
+    // trays across the end sections for S1 and S3
+    el('rect', { x: 3, y: -T.yPlateOut, width: P.C - 11, height: 2 * T.yPlateOut, rx: 1.2, class: 'thin' }, g);
+    el('rect', { x: 3 * P.C + 8, y: -T.yPlateIn, width: P.C - 11, height: 2 * T.yPlateIn, rx: 1.2, class: 'thin' }, g);
+    const sv = { l: 22.8, d: 28.5 };
+    for (const j of [1, 3]) {
+      const x = j === 1 ? j * P.C - 3 - sv.l : j * P.C + 3, y = -sv.d / 2;
+      el('rect', { x, y, width: sv.l, height: sv.d, rx: 1, class: 'box' }, g);
+      tag(g, x + sv.l / 2, y + 6, 'S' + j);
     }
-    // belts in their lanes, with the grip covering along the outside
+    // the pins S2 and S4 push on: on T3 (right side) and on the arm (left side)
+    el('line', { x1: X2 + Lb.pinT3, y1: T.yPlateIn + 1, x2: X2 + Lb.pinT3, y2: T.yPlateOut, class: 'obj' }, g);
+    el('circle', { cx: X2 + Lb.pinT3, cy: T.yPlateIn + 1, r: 0.9, class: 'fillobj' }, g);
+    el('line', { x1: X2 - 2.4, y1: -T.yPlateIn - 1, x2: X2 - 2.4, y2: -T.yArm, class: 'obj' }, g);
+    el('circle', { cx: X2 - 2.4, cy: -T.yPlateIn - 1, r: 0.9, class: 'fillobj' }, g);
+    // belts in their lanes, with the grip covering along the middle
     for (let k = 0; k < 4; k++) {
-      const L = k % 2 === 0 ? 'A' : 'B';
-      for (const side of [-1, 1]) {
-        const [y, w] = lane(side, L);
-        el('rect', { x: k * P.C - P.R, y, width: P.C + 2 * P.R, height: w, rx: 1.5, class: 'obj' }, g);
-        el('line', { x1: k * P.C, y1: y + w / 2, x2: (k + 1) * P.C, y2: y + w / 2, class: 'grip', 'stroke-dasharray': '1.2 1.8' }, g);
-      }
+      const yc = k % 2 === 0 ? T.laneA : T.laneB;
+      both((side) => {
+        const y = side * yc - P.bw / 2;
+        el('rect', { x: k * P.C - P.R, y, width: P.C + 2 * P.R, height: P.bw, rx: 1.5, class: 'obj' }, g);
+        el('line', { x1: k * P.C, y1: side * yc, x2: (k + 1) * P.C, y2: side * yc, class: 'grip', 'stroke-dasharray': '1.2 1.8' }, g);
+      });
     }
-    // axles, pulleys (both lanes at the joints), collars
+    // axles; pulleys with their hubs (lane B hub inward, lane A hub outward)
     for (let k = 0; k <= 4; k++) {
       const x = k * P.C;
       el('line', { x1: x, y1: -half - 3, x2: x, y2: half + 3, class: 'ctr' }, g);
-      el('rect', { x: x - 2.5, y: -half + 0.5, width: 5, height: P.W - 1, class: 'thin' }, g);
-      for (const side of [-1, 1]) for (const L of ['A', 'B']) {
-        if ((k === 0 && L === 'B') || (k === 4 && L === 'A')) continue;
-        const [y, w] = lane(side, L);
-        el('rect', { x: x - P.pd / 2, y: y - 0.6, width: P.pd, height: w + 1.2, class: 'fillobj' }, g);
-      }
-      for (const side of [-1, 1]) el('rect', { x: x - 3, y: side > 0 ? half + 0.2 : -half - 2.2, width: 6, height: 2, rx: 0.5, class: 'fillobj' }, g);
+      const ya = k === 4 ? T.yPulB + T.pulW + 2 : half;
+      el('rect', { x: x - 2.5, y: -ya, width: 5, height: 2 * ya, class: 'thin' }, g);
+      if (k === 4) both((side) => { const [y, hh] = band(side, T.yPulB + T.pulW, 2); el('rect', { x: x - 3, y, width: 6, height: hh, rx: 0.5, class: 'fillobj' }, g); });
+      both((side) => {
+        if (k > 0) { const [y, hh] = band(side, T.yPulB - T.hub, T.hub); el('rect', { x: x - 6.25, y, width: 12.5, height: hh, class: 'fillobj' }, g); }
+        if (k > 0) { const [y, hh] = band(side, T.yPulB, T.pulW); el('rect', { x: x - P.pd / 2 - 1.6, y, width: P.pd + 3.2, height: hh, class: 'fillobj' }, g); }
+        if (k < 4) { const [y, hh] = band(side, T.yPulA, T.pulW); el('rect', { x: x - P.pd / 2 - 1.6, y, width: P.pd + 3.2, height: hh, class: 'fillobj' }, g); }
+        if (k < 4) { const [y, hh] = band(side, T.yPulA + T.pulW, T.hub); el('rect', { x: x - 6.25, y, width: 12.5, height: hh, class: 'fillobj' }, g); }
+      });
     }
-    // hinge servos lying on their sides, output shafts across the vehicle; each horn drives a
-    // link to a lever on the neighbouring tray. S1 on T1, S2 on T3, S3 on T4.
-    const sv = { l: 22.8, d: 28.5 };
-    for (const j of [1, 2, 3]) {
-      const x = j === 1 ? j * P.C - 3 - sv.l : j * P.C + 3, y = -sv.d / 2;
-      el('rect', { x, y, width: sv.l, height: sv.d, rx: 1, class: 'box' }, g);
-      const hx = j === 1 ? x + sv.l - 5 : x + 5;                  // output shaft, near the joint
-      el('rect', { x: hx - 2.4, y: y + sv.d, width: 4.8, height: 2.5, class: 'fillobj' }, g);
-      el('line', { x1: hx, y1: y + sv.d + 2.5, x2: j * P.C + (j === 1 ? 7 : -7), y2: y + sv.d + 2.5, class: 'obj' }, g);
-      el('circle', { cx: j * P.C + (j === 1 ? 7 : -7), cy: y + sv.d + 2.5, r: 0.9, class: 'fillobj' }, g);
-      tag(g, x + sv.l / 2, y + 6, 'S' + j);
-    }
-    // drive motor on T2, shaft across the vehicle, geared to the seat's hinge axle
-    const mx = 2 * P.C - 16;
-    el('rect', { x: mx, y: -17, width: 12, height: 34, rx: 1, class: 'box' }, g);
-    el('rect', { x: mx + 1.5, y: 17, width: 9, height: 2.6, class: 'fillobj' }, g);
-    el('rect', { x: 2 * P.C - 2.6, y: 17, width: 5.2, height: 2.6, class: 'fillobj' }, g);
-    tag(g, mx + 6, -10, 'M');
-    el('rect', { x: 2 * P.C - 3 - 22.8, y: -14.25, width: 22.8, height: 28.5, rx: 1, class: 'hid' }, g);
-    txt(g, 2 * P.C - 3 - 11.4, 12, 'S4 above', 'sm', 'middle');
-    // seat arm foot beside the seat's hinge axle
-    el('rect', { x: 2 * P.C - 3, y: -inner + 2, width: 6, height: 7, rx: 1, class: 'fillobj' }, g);
-    tag(g, 2 * P.C, -inner - 3.5, 'A');
     // labels
-    txt(g, -P.R - 20, -half + P.bw / 2 + 1, 'lane A', 'sm'); txt(g, -P.R - 20, -half + P.bw + P.gap + P.bw / 2 + 1, 'lane B', 'sm');
+    txt(g, -P.R - 24, -T.laneA + 1, 'lane A', 'sm'); txt(g, -P.R - 24, -T.laneB + 1, 'lane B', 'sm');
     for (let k = 0; k < 4; k++) txt(g, k * P.C + P.C / 2, -half - 5, `T${k + 1}`, 'lab', 'middle');
+    leader(g, X2 + 2, -T.yArm - T.armT / 2, X2 + 8, -half - 7, 'A');
     // dimensions
-    dimY(g, 'top', -half, half, 4 * P.C + P.R + 14, 4 * P.C + 3, `${f1(P.W)} wide`);
-    dimY(g, 'top', half - P.trackW, half, 4 * P.C + P.R + 6, 4 * P.C + P.R + 1, `${f1(P.trackW)}`);
+    dimY(g, 'top', -half, half, 4 * P.C + P.R + 22, 4 * P.C + 3, `${f1(P.W)} wide`);
+    dimY(g, 'top', T.laneB - P.bw / 2, T.laneA + P.bw / 2, 4 * P.C + P.R + 12, 4 * P.C + P.R + 1, `${f1(P.trackW)}`);
+    dimY(g, 'top', -B.width / 2, B.width / 2, X2 - B.back - 4, X2 - B.back - 1, `${f1(B.width)} box`);
     dimX(g, 'top', -P.R, 4 * P.C + P.R, half + 12, half + 3, `${f1(P.L)}`, true);
     $('sb-scale').textContent = `1:${f1(1 / P.s)}`;
   }
 
-  // ------------------------------------------------------------------ sheet C: joint section and servo link
+  // ------------------------------------------------------------------ sheet E: the seat's hinge, H2
   function drawJoint(P) {
-    const svg = $('joint'), k = 2; // drawn at 2:1
-    const g = setup(svg, -4, -4, 136, 86);
-    const outer = 6, ax = 26;          // axle centre line height in the section
-    const w = P.bw * k, gp = P.gap * k, pr = (P.pd / 2) * k;
-    // axle
-    el('rect', { x: outer - 2, y: ax - 5, width: 72, height: 10, class: 'fillobj' }, g);
-    el('line', { x1: outer - 6, y1: ax, x2: outer + 76, y2: ax, class: 'ctr' }, g);
-    // collar, pulley A, pulley B
-    el('rect', { x: outer - 2, y: ax - 8, width: 4, height: 16, rx: 0.8, class: 'fillobj' }, g);
-    const pa = outer + 3, pb = pa + w + gp;
-    for (const [x, L] of [[pa, 'A'], [pb, 'B']]) {
-      el('rect', { x, y: ax - pr, width: w, height: 2 * pr, class: 'fillobj' }, g);
-      el('rect', { x: x - 1, y: ax - pr - 1.2, width: w + 2, height: 1.2, class: 'fillobj' }, g);
-      el('rect', { x: x - 1, y: ax + pr, width: w + 2, height: 1.2, class: 'fillobj' }, g);
-      el('rect', { x, y: ax - pr - 1.2 - P.belt * k, width: w, height: P.belt * k, class: 'obj' }, g);
-      el('rect', { x, y: ax + pr + 1.2, width: w, height: P.belt * k, class: 'obj' }, g);
-      el('rect', { x, y: ax + pr + 1.2 + P.belt * k, width: w, height: P.grip * k, class: 'grip' }, g);
-      el('circle', { cx: x + w / 2, cy: ax - pr + 3, r: 1.1, class: 'thin' }, g);
-      txt(g, x + w / 2, ax - pr - 1.2 - P.belt * k - 2, 'lane ' + L, 'sm', 'middle');
-    }
-    // knuckles of the two trays, each with a bearing
-    const k1 = pb + w + 3, k2 = k1 + 10;
-    for (const [x, name, dy] of [[k1, 'next tray', 18], [k2, 'this tray', 22]]) {
-      el('rect', { x, y: ax - 13, width: 8, height: 26, rx: 1, class: 'box' }, g);
-      el('rect', { x: x + 1, y: ax - 8, width: 6, height: 16, class: 'hatch' }, g);
-      el('rect', { x: x + 1, y: ax - 8, width: 6, height: 16, class: 'thin' }, g);
-      el('line', { x1: x + 4, y1: ax + 13, x2: x + 4, y2: ax + dy - 2.4, class: 'dim' }, g);
-      txt(g, x + 4, ax + dy, name, 'sm', 'middle');
-    }
-    txt(g, outer + 74, ax + 1, '→ centre', 'sm', 'end');
-    leader(g, outer, ax - 8, outer - 1, ax - 16, 'C');
-    leader(g, pa + w / 2, ax - pr, pa + w / 2 - 4, 6, 'P');
-    leader(g, k1 + 4, ax - 6, k1 + 10, 4, 'BR');
-    leader(g, pa + w / 2, ax + pr + 1.2 + P.belt * k + P.grip * k, pa + w / 2 + 2, ax + pr + 12, 'G');
-    // the servo link, side on: servo on this tray, horn and rod to a lever on the next tray
-    const y0 = 70, jx = 96;
-    el('line', { x1: 58, y1: y0 + 6, x2: jx, y2: y0 + 6, class: 'obj' }, g);
-    el('line', { x1: jx, y1: y0 + 6, x2: jx + 26 * Math.cos(-0.5), y2: y0 + 6 + 26 * Math.sin(-0.5), class: 'obj' }, g);
-    el('line', { x1: jx, y1: y0 + 6, x2: jx + 26, y2: y0 + 6, class: 'hid' }, g);
-    el('circle', { cx: jx, cy: y0 + 6, r: 2, class: 'fillobj' }, g);
-    el('rect', { x: 62, y: y0 - 6, width: 20, height: 9, rx: 1, class: 'box' }, g);
-    el('circle', { cx: 78, cy: y0 - 1.5, r: 1.5, class: 'obj' }, g);
-    el('line', { x1: 78, y1: y0 - 1.5, x2: 78 + 6 * Math.cos(-1.2), y2: y0 - 1.5 + 6 * Math.sin(-1.2), class: 'obj' }, g);
-    const lx = jx + 9 * Math.cos(-0.5 - 1.2), ly = y0 + 6 + 9 * Math.sin(-0.5 - 1.2);
-    el('line', { x1: jx, y1: y0 + 6, x2: lx, y2: ly, class: 'obj' }, g);
-    el('line', { x1: 78 + 6 * Math.cos(-1.2), y1: y0 - 1.5 + 6 * Math.sin(-1.2), x2: lx, y2: ly, class: 'obj' }, g);
-    el('path', { d: `M${jx + 14} ${y0 + 6} A14 14 0 0 0 ${jx + 14 * Math.cos(-0.5)} ${y0 + 6 + 14 * Math.sin(-0.5)}`, class: 'dim', 'marker-end': 'url(#joint-ar)' }, g);
-    txt(g, jx + 15, y0 - 4, 'up to ±55°', 'sm');
-    txt(g, 60, y0 + 11, 'this tray', 'sm'); txt(g, jx + 6, y0 - 12, 'next tray', 'sm');
-    tag(g, 68, y0 - 1.5, 'S');
+    const svg = $('joint'), k = 2, T = P.lat, B = P.box, Lb = boxLayout(P); // section drawn at 2:1
+    const g = setup(svg, -4, -4, 140, 126);
+    const ax = 30, X = (y) => 6 + (P.half - y) * k;                     // y: mm out from the middle
+    const box = (x, y, w, h, cls) => el('rect', { x, y, width: w, height: h, class: cls }, g);
+    // axle, from the outer end to the middle
+    box(X(P.half), ax - 2.5 * k, X(0) - X(P.half) + 4, 5 * k, 'fillobj');
+    el('line', { x1: X(P.half) - 4, y1: ax, x2: X(0) + 4, y2: ax, class: 'ctr' }, g);
+    // pulleys: lane A (T3's belt) with its hub outward, lane B (T2's belt) with its hub inward
+    const pr = (P.pd / 2) * k, fr = (P.pd / 2 + 1.6) * k, hr = 6.25 * k;
+    const pulley = (yIn, L, name) => {
+      const xo = X(yIn + T.pulW), w = T.pulW * k, fw = T.flange * k;
+      box(xo, ax - pr, w, 2 * pr, 'fillobj');
+      for (const xf of [xo, xo + w - fw]) box(xf, ax - fr, fw, 2 * fr, 'fillobj');
+      const bx = xo + fw + (w - 2 * fw - P.bw * k) / 2;
+      box(bx, ax - pr - P.belt * k, P.bw * k, P.belt * k, 'obj');
+      box(bx, ax + pr, P.bw * k, P.belt * k, 'obj');
+      box(bx, ax + pr + P.belt * k, P.bw * k, P.grip * k, 'grip');
+      box(bx + 1, ax + pr + (P.belt + P.grip) * k, P.bw * k - 2, P.cleat * k, 'grip');
+      txt(g, xo + w / 2, ax - fr - 2, `lane ${L}`, 'sm', 'middle');
+      txt(g, xo + w / 2, ax + pr + (P.belt + P.grip + P.cleat) * k + 4.5, name, 'sm', 'middle');
+    };
+    pulley(T.yPulA, 'A', 'T3'); pulley(T.yPulB, 'B', 'T2');
+    box(X(T.yPulA + T.pulW + T.hub), ax - hr, T.hub * k, 2 * hr, 'fillobj');
+    box(X(T.yPulB), ax - hr, T.hub * k, 2 * hr, 'fillobj');
+    // side plates and the arm plate, each on a bearing; the box bolts to T2's plate
+    const plate = (yIn, w, top, name) => {
+      const x = X(yIn + w);
+      box(x, top, w * k, ax + 7 * k - top, 'box');
+      box(x + 0.4, ax - 5 * k, w * k - 0.8, 10 * k, 'hatch'); box(x + 0.4, ax - 5 * k, w * k - 0.8, 10 * k, 'thin');
+      txt(g, x + (w * k) / 2, ax + 7 * k + 4.5, name, 'sm', 'middle');
+    };
+    plate(T.yPlateOut, T.plate, ax - 7 * k, 'T3');
+    plate(T.yArm, T.armT, 2, 'arm');
+    plate(T.yPlateIn, T.plate, ax - 7 * k, 'T2');
+    // the box: wall and floor, bolted to T2's plate just above the axle
+    const bw = Lb.wall * k, bx = X(B.width / 2), fl = ax - B.floor * k;
+    el('path', { d: `M${bx} 2 L${bx} ${fl} L${X(0) + 4} ${fl}`, class: 'obj' }, g);
+    el('path', { d: `M${bx + bw} 2 L${bx + bw} ${fl - bw} L${X(0) + 4} ${fl - bw}`, class: 'thin' }, g);
+    const by = ax - (B.floor + 1.5) * k;
+    el('line', { x1: X(T.yPlateIn + T.plate) - 1, y1: by, x2: bx + bw + 2, y2: by, class: 'obj' }, g);
+    // drive gear on the axle, under the middle of the box, reaching up through a slot in its floor
+    box(X(2), ax - Lb.gearR * k, 4 * k, 2 * Lb.gearR * k, 'box');
+    txt(g, X(0), 4, 'middle →', 'sm', 'end');
+    leader(g, X(T.yPulA + T.pulW + T.hub / 2), ax - hr, X(T.yPulA + T.pulW + T.hub / 2) - 2, ax - hr - 9, 'P');
+    leader(g, X(T.yArm + 1.5), ax - 4 * k, X(T.yArm + 1.5) + 8, ax - 8 * k - 6, 'BR');
+    leader(g, X(1), ax + Lb.gearR * k, X(1) - 6, ax + 24, 'GR');
+    leader(g, (bx + X(T.yPlateIn + T.plate)) / 2, by, (bx + X(T.yPlateIn + T.plate)) / 2 + 10, ax + 24, 'bolt');
+    txt(g, bx + 5, 9, 'centre box', 'sm');
+    // S2's link, side on, 1:1: S2 in the box works T3 through a rod to a pin 14 mm out along T3
+    const hx = 46, hy = 112, s = 1, Rm = 35;
+    el('rect', { x: hx - B.back, y: hy - B.top, width: B.back + B.front, height: B.top - B.floor, rx: 1, class: 'box' }, g);
+    el('line', { x1: hx - Rm, y1: hy, x2: hx, y2: hy, class: 'obj' }, g);
+    txt(g, hx - Rm, hy + 4.5, 'T2', 'sm');
+    const bend = (d) => (d * Math.PI) / 180;
+    for (const [d, cls] of [[0, 'obj'], [ENV.bendMin, 'hid'], [ENV.bendMax, 'hid']]) el('line', { x1: hx, y1: hy, x2: hx + Rm * Math.cos(bend(d)), y2: hy - Rm * Math.sin(bend(d)), class: cls }, g);
+    txt(g, hx + Rm + 1, hy + 1, 'T3', 'sm');
+    const pr3 = Lb.pinT3 * s;
+    el('path', { d: `M${hx + pr3 * Math.cos(bend(ENV.bendMin))} ${hy - pr3 * Math.sin(bend(ENV.bendMin))} A${pr3} ${pr3} 0 0 0 ${hx + pr3 * Math.cos(bend(ENV.bendMax))} ${hy - pr3 * Math.sin(bend(ENV.bendMax))}`, class: 'dim' }, g);
+    el('circle', { cx: hx, cy: hy, r: 2, class: 'fillobj' }, g);
+    const s2 = { x: hx + Lb.s2.x, y: hy - Lb.s2.z - Lb.s2.h }, sh = { x: hx + Lb.s2.sx, y: hy - Lb.s2.z - Lb.s2.h / 2 };
+    el('rect', { x: s2.x, y: s2.y, width: Lb.s2.w, height: Lb.s2.h, rx: 0.8, class: 'thin' }, g);
+    el('circle', { cx: sh.x, cy: sh.y, r: 1.4, class: 'obj' }, g);
+    const tip = { x: sh.x + 6, y: sh.y + 3 }, pin = { x: hx + pr3, y: hy };
+    el('line', { x1: sh.x, y1: sh.y, x2: tip.x, y2: tip.y, class: 'obj' }, g);
+    el('line', { x1: tip.x, y1: tip.y, x2: pin.x, y2: pin.y, class: 'obj' }, g);
+    el('circle', { cx: pin.x, cy: pin.y, r: 1, class: 'fillobj' }, g);
+    tag(g, s2.x + 5, s2.y + Lb.s2.h / 2, 'S2');
+    txt(g, hx + B.front + 4, hy - Rm * 0.62 - 3, `T3 swings ${f0(ENV.bendMin)}° to +${f0(ENV.bendMax)}°`, 'sm');
+    txt(g, pin.x + 2, hy + 4.5, `pin ${f0(Lb.pinT3)} mm out`, 'sm');
   }
 
-  // ------------------------------------------------------------------ sheet D: wiring
+  // ------------------------------------------------------------------ sheet C: centre box space
+  // Drawn in T2's frame, so the box stands still and everything else moves around it.
+  function drawBoxSpace(P) {
+    const svg = $('boxspace'), k = 1000 * P.s, B = P.box, Lb = boxLayout(P), Rm = P.C;
+    const xa = -46 * 10 * P.s, xb = 46 * 10 * P.s, za = -36 * 10 * P.s, zb = 50 * 10 * P.s;
+    const pad = 6, g = setup(svg, xa - pad, -zb - 9, xb - xa + 2 * pad + 66, zb - za + 22);
+    const Y = (z) => -z, rad = (d) => (d * Math.PI) / 180;
+    const pts = (arr) => arr.map((v, i) => [(ENV.x0 + i * ENV.dx) * P.s, v * P.s]);
+    // how high the stairs ever reach, hatched below; how low the seat ever comes, hatched above
+    const st = pts(ENV.stairs), se = pts(ENV.seat);
+    el('polygon', { points: st.map(([x, z]) => `${x},${Y(z)}`).concat([`${st[st.length - 1][0]},${Y(za)}`, `${st[0][0]},${Y(za)}`]).join(' '), class: 'hatch' }, g);
+    el('polyline', { points: st.map(([x, z]) => `${x},${Y(z)}`).join(' '), class: 'env' }, g);
+    el('polygon', { points: se.map(([x, z]) => `${x},${Y(z)}`).concat([`${se[se.length - 1][0]},${Y(zb)}`, `${se[0][0]},${Y(zb)}`]).join(' '), class: 'hatch' }, g);
+    el('polyline', { points: se.map(([x, z]) => `${x},${Y(z)}`).join(' '), class: 'env' }, g);
+    txt(g, xa, Y(zb) - 2.5, 'Hatched above: the lowest the seat and the person ever come', 'sm');
+    txt(g, xa, Y(za) + 6, 'Hatched below: the highest the stairs ever reach', 'sm');
+    txt(g, xa, Y(za) + 10.5, `The tracks and side plates run beside the box, not under it; only the H2 axle passes under its floor. Keep ${f1(B.keep)} clear of the H1 and H3 axles.`, 'sm');
+    // T2 (fixed in this frame) and T3 at both ends of its swing, with H3's path
+    el('path', { d: stadium(-Rm, 0, 0, P.R), class: 'obj' }, g);
+    for (const d of [ENV.bendMin, ENV.bendMax]) {
+      const t = rad(-d);
+      el('path', { d: stadium(0, Rm, 0, P.R), class: 'hid', transform: `rotate(${(t * 180) / Math.PI})` }, g);
+    }
+    el('path', { d: `M${Rm * Math.cos(rad(ENV.bendMin))} ${Y(Rm * Math.sin(rad(ENV.bendMin)))} A${Rm} ${Rm} 0 0 0 ${Rm * Math.cos(rad(ENV.bendMax))} ${Y(Rm * Math.sin(rad(ENV.bendMax)))}`, class: 'dim' }, g);
+    // keep-out round the H1 axle and along H3's path
+    el('circle', { cx: -Rm, cy: 0, r: B.keep, class: 'zone' }, g);
+    el('path', { d: `M${(Rm - B.keep) * Math.cos(rad(ENV.bendMin))} ${Y((Rm - B.keep) * Math.sin(rad(ENV.bendMin)))} A${Rm - B.keep} ${Rm - B.keep} 0 0 0 ${(Rm - B.keep) * Math.cos(rad(ENV.bendMax))} ${Y((Rm - B.keep) * Math.sin(rad(ENV.bendMax)))}`, class: 'hid' }, g);
+    for (const [x, z] of [[-Rm, 0], [Rm * Math.cos(rad(ENV.bendMin)), Rm * Math.sin(rad(ENV.bendMin))], [Rm, 0], [Rm * Math.cos(rad(ENV.bendMax)), Rm * Math.sin(rad(ENV.bendMax))]]) el('circle', { cx: x, cy: Y(z), r: 2.5, class: 'fillobj' }, g);
+    // the seat arm at both ends of its lean (outside the box walls)
+    for (const d of [ENV.armMin, ENV.armMax]) capsule(g, [0, 0], [P.arm * Math.cos(rad(d)), Y(P.arm * Math.sin(rad(d)))], 2.4, 'hid');
+    // the box, and a suggested layout inside it
+    el('rect', { x: -B.back, y: Y(B.top), width: B.back + B.front, height: B.top - B.floor, rx: 1, class: 'keep' }, g);
+    const ph = (r) => el('rect', { x: r.x, y: Y(r.z + r.h), width: r.w, height: r.h, rx: 0.8, class: 'ph' }, g);
+    ph(Lb.motor); ph(Lb.s2); ph(Lb.s4); ph(Lb.bat);
+    el('circle', { cx: 0, cy: Y(Lb.shaft.z), r: Lb.gearR, class: 'ph' }, g);
+    el('circle', { cx: 0, cy: 0, r: Lb.gearR, class: 'ph' }, g);
+    txt(g, Lb.motor.x + 6, Y(Lb.motor.z + 6.5), 'M', 'sm', 'middle');
+    txt(g, Lb.s2.x + Lb.s2.w / 2, Y(Lb.s2.z + 5), 'S2', 'sm', 'middle');
+    txt(g, Lb.s4.x + Lb.s4.w / 2, Y(Lb.s4.z + 5), 'S4', 'sm', 'middle');
+    txt(g, Lb.bat.x + Lb.bat.w / 2, Y(Lb.bat.z + 3.5), 'battery', 'sm', 'middle');
+    el('circle', { cx: 0, cy: 0, r: 2.5, class: 'fillobj' }, g);
+    el('line', { x1: xa, y1: 0, x2: xb, y2: 0, class: 'ctr' }, g);
+    el('line', { x1: 0, y1: Y(za), x2: 0, y2: Y(zb), class: 'ctr' }, g);
+    txt(g, 1.5, 6.5, 'H2', 'lab'); txt(g, -Rm, 6.5, 'H1', 'lab', 'middle'); 
+    txt(g, -Rm / 2, 1, 'T2', 'sm', 'middle');
+    txt(g, Rm * Math.cos(rad(ENV.bendMin)) + 4, Y(Rm * Math.sin(rad(ENV.bendMin))) + 1, `T3 at ${f1(ENV.bendMin)}°`, 'sm');
+    txt(g, Rm * Math.cos(rad(ENV.bendMax)) + 4, Y(Rm * Math.sin(rad(ENV.bendMax))) + 5, `T3 at +${f1(ENV.bendMax)}°`, 'sm');
+    const am = [P.arm * Math.cos(rad(ENV.armMin)), P.arm * Math.sin(rad(ENV.armMin))];
+    txt(g, am[0] + 3, Y(am[1]) + 1, 'seat arm, outside', 'sm'); txt(g, am[0] + 3, Y(am[1]) + 4.5, 'the box walls', 'sm');
+    // dimensions
+    dimX(g, 'boxspace', -B.back, 0, Y(B.top) - 6, Y(B.top) - 1, `${f1(B.back)}`);
+    dimX(g, 'boxspace', 0, B.front, Y(B.top) - 6, Y(B.top) - 1, `${f1(B.front)}`);
+    dimY(g, 'boxspace', 0, Y(B.floor), xb + 8, B.front + 1, `${f1(B.floor)}`);
+    dimY(g, 'boxspace', Y(B.floor), Y(B.top), xb + 16, B.front + 1, `${f1(B.top - B.floor)} tall`);
+    dimY(g, 'boxspace', 0, Y(B.top), xb + 24, B.front + 1, `${f1(B.top)}`);
+    txt(g, xb + 30, Y(B.top) + 2, `${f1(B.width)} wide`, 'dimt');
+    txt(g, xb + 30, Y(B.top) + 6, 'between T2’s', 'sm');
+    txt(g, xb + 30, Y(B.top) + 9.5, 'side plates', 'sm');
+    $('sx-scale').textContent = `1:${f1(1 / P.s)}`;
+    $('sx-sub').textContent = `Drawn as if T2 stood still, over every pose in the simulator. Full size: multiply by ${f1(1 / P.s)}.`;
+  }
+
+  // ------------------------------------------------------------------ sheet D: track and tread
+  function drawTread(P) {
+    const svg = $('tread'), C = FULL.cleat, m = 1000 * P.s;
+    const h = P.cleat, pitch = C.pitch * m, root = C.root * m, tipW = C.tip * m;
+    const g = setup(svg, 0, 0, 232, 110);
+    const poly = (pts, cls) => el('polygon', { points: pts.map((p) => p.join(',')).join(' '), class: cls }, g);
+    const cleat = (b, u, n, sc) => {                      // base centre b, along u, out along n
+      const f = (s, d) => [b[0] + u[0] * s + n[0] * d, b[1] + u[1] * s + n[1] * d];
+      poly([f((-root * sc) / 2, 0), f((-tipW * sc) / 2, h * sc), f((tipW * sc) / 2, h * sc), f((root * sc) / 2, 0)], 'grip');
+    };
+    // 1. profile at 5:1: belt, grip, cleats
+    const q = 5, x0 = 10, yb = 16, L = 4 * pitch;
+    el('rect', { x: x0, y: yb, width: L * q, height: P.belt * q, class: 'fillobj' }, g);
+    el('rect', { x: x0, y: yb + P.belt * q, width: L * q, height: P.grip * q, class: 'grip' }, g);
+    const yc = yb + (P.belt + P.grip) * q;
+    for (let i = 0; i < 4; i++) cleat([x0 + (i + 0.5) * pitch * q, yc], [1, 0], [0, 1], q);
+    txt(g, x0, yb - 3, 'belt, grip and cleats, side on (5:1)', 'sm');
+    const c1 = x0 + 0.5 * pitch * q, c2 = c1 + pitch * q;
+    dimX(g, 'tread', c1, c2, yc + h * q + 7, yc + h * q + 1, `${f1(pitch)} pitch`, true);
+    dimX(g, 'tread', c2 + pitch * q - (root * q) / 2, c2 + pitch * q + (root * q) / 2, yb - 10, yc - 1, `${f1(root)} root`);
+    dimY(g, 'tread', yc, yc + h * q, x0 + L * q + 7, x0 + L * q - (pitch * q) / 2 + 3, `${f1(h)}`);
+    txt(g, x0 + L * q + 10, yc + h * q + 1, `tip ${f1(tipW)}, rounded`, 'sm');
+    // 2. on the stairs at 2:1: the track lies on the step edges; the cleat just behind an edge reaches the tread
+    const sc = 2, a = Math.atan2(FULL.rise, FULL.going), nose = [178, 50];
+    const xl = 140, xr = 230, rise = P.rise * sc, going = P.going * sc;
+    el('polyline', { points: [[xl, nose[1] + rise], [nose[0], nose[1] + rise], [nose[0], nose[1]], [xr, nose[1]]].map((p) => p.join(',')).join(' '), class: 'ground' }, g);
+    el('rect', { x: nose[0], y: nose[1], width: xr - nose[0], height: 3, class: 'hatch' }, g);
+    el('rect', { x: xl, y: nose[1] + rise, width: nose[0] - xl, height: 3, class: 'hatch' }, g);
+    const u = [Math.cos(a), -Math.sin(a)], n = [Math.sin(a), Math.cos(a)];      // up the pitch line; towards the stairs
+    const along = (t, d) => [nose[0] + u[0] * t + n[0] * d, nose[1] + u[1] * t + n[1] * d];
+    const tA = -(nose[0] - xl) / Math.cos(a) * 0.62, tB = (xr - nose[0]) / Math.cos(a) * 0.98, tb = (P.belt + P.grip) * sc;
+    poly([along(tA, 0), along(tB, 0), along(tB, -tb), along(tA, -tb)], 'fillobj');
+    el('line', { x1: along(tA, 0)[0], y1: along(tA, 0)[1], x2: along(tB, 0)[0], y2: along(tB, 0)[1], class: 'grip' }, g);
+    const first = (h * Math.cos(a)) / Math.sin(a);                               // along the line from the edge, model mm
+    for (let i = -2; i <= 4; i++) { const t = (first + i * pitch) * sc; if (t > tA + 3 && t < tB - 3 && Math.abs(t) > 4) cleat(along(t, 0), u, n, sc); }
+    const touch = along(first * sc, h * sc);
+    leader(g, touch[0], touch[1], touch[0] + 8, touch[1] + 14, 'K');
+    txt(g, touch[0] + 13, touch[1] + 15, `${f1(1.91 * h)} behind the edge`, 'sm');
+    txt(g, xl, 12, `on ${f1(P.rise)} × ${f1(P.going)} steps (2:1)`, 'sm');
+    txt(g, xl, 17, 'the track only touches the step edges', 'sm');
+    // 3. the two lanes from below at 2.5:1, cleats offset by half a pitch
+    const r = 2.5, lx = 10, ly = 66, lw = P.bw * r;
+    for (const [i, shift, name] of [[0, 0, 'lane A'], [1, pitch / 2, 'lane B']]) {
+      const y = ly + i * (lw + P.gap * r);
+      el('rect', { x: lx, y, width: L * r * 1.5, height: lw, rx: 1, class: 'obj' }, g);
+      for (let j = 0; j < 6; j++) { const c = lx + (shift + (j + 0.25) * pitch) * r; if (c + root * r < lx + L * r * 1.5) el('rect', { x: c, y: y + 0.6, width: root * r, height: lw - 1.2, class: 'grip' }, g); }
+      txt(g, lx + L * r * 1.5 + 3, y + lw / 2 + 1, name, 'sm');
+    }
+    dimX(g, 'tread', lx + 0.25 * pitch * r, lx + (0.25 + 0.5) * pitch * r, ly - 3, ly - 0.5, `${f1(pitch / 2)}`);
+    txt(g, lx, ly - 9, 'from below (2.5:1)', 'sm');
+  }
+
+  // ------------------------------------------------------------------ sheet F: wiring
   function drawWiring() {
     const svg = $('wiring');
     const g = setup(svg, 0, 0, 142, 88);
@@ -546,7 +750,7 @@
     txt(g, 2, 83.5, 'The servos take power from the buck converter, not from the Nano.', 'sm');
   }
 
-  // ------------------------------------------------------------------ sheet E: test stairs
+  // ------------------------------------------------------------------ sheet G: test stairs
   function drawStairs(P) {
     const svg = $('stairs'), n = P.steps, r = P.rise, gng = P.going;
     const run0 = RUN_OUT * 1000 * P.s, top = TOP * 1000 * P.s;   // as in the simulator
@@ -584,11 +788,43 @@
       ['Pulley', `Ø${f1(P.pd)}`, `ideal Ø${f1(P.ideal)} at this scale`],
       ['Vehicle', `${f0(P.L)} × ${f0(P.W)}`, 'mm, long × wide'],
       ['Seat arm', `${f1(P.arm)} mm`, 'hinge axle to seat axle'],
+      ['Centre box', `${f0(P.box.back + P.box.front)} × ${f0(P.box.width)} × ${f0(P.box.top - P.box.floor)}`, 'mm, long × wide × tall'],
       ['Stairs', `${f1(P.rise)} × ${f1(P.going)}`, 'mm, rise × going'],
       ['Track speed', `${f0(P.speed)} mm/s`, `at ${P.rpm} rpm`],
     ];
     const host = $('kpis'); host.textContent = '';
     for (const [a, b, c] of k) { const d = document.createElement('div'); d.className = 'kpi'; d.innerHTML = `<span class="k"></span><span class="v"></span><span class="s"></span>`; d.children[0].textContent = a; d.children[1].textContent = b; d.children[2].textContent = c; host.appendChild(d); }
+  }
+
+  // ------------------------------------------------------------------ box and track sizes
+  function drawSizes(P) {
+    const B = P.box, F = FULL.box, mm = (v) => f0(v * 1000), C = FULL.cleat, m = 1000 * P.s, hz = P.R + P.cleat;
+    const hzF = FULL.sprocketD / 2 + C.h;
+    const fill = (id, rows) => {
+      const body = $(id); body.textContent = '';
+      for (const r of rows) { const tr = document.createElement('tr'); for (const v of r) { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); } body.appendChild(tr); }
+    };
+    fill('box-sizes', [
+      ['Length', `${mm(F.back + F.front)}: ${mm(F.back)} behind the H2 axle, ${mm(F.front)} in front`, `${f1(B.back + B.front)}: ${f1(B.back)} behind, ${f1(B.front)} in front`],
+      ['Height', `${mm(F.top - F.floor)}: floor ${mm(F.floor)}, top ${mm(F.top)} above the axle`, `${f1(B.top - B.floor)}: floor ${f1(B.floor)}, top ${f1(B.top)} above`],
+      ['Width', `up to ${mm(F.width)}, inside the seat arm\u2019s two columns`, `${f1(B.width)}, between T2\u2019s side plates`],
+      ['Above level ground', `${mm(hzF + F.floor)} to ${mm(hzF + F.top)}`, `${f1(hz + B.floor)} to ${f1(hz + B.top)}`],
+      ['Keep clear of H1, H3', `${mm(F.keep)}`, `${f1(B.keep)}`],
+      ['Fixed to', 'T2, the section just behind the seat’s hinge', 'T2’s side plates, two bolts a side'],
+      ['Holds', 'drive motors, battery, hinge and arm drives', 'N20 and gear, battery, S2, S4'],
+      ['Weight', 'tried up to 40 kg: it steadies the vehicle (19.8° lean up, 21.7° down; 18.8° and 21.5° without)', 'keep it light'],
+    ]);
+    fill('track-sizes', [
+      ['Sections', `4, axles ${mm(FULL.section)} apart`, `4, axles ${f1(P.C)} apart`],
+      ['Track per section', `loop about ${f0(2 * FULL.section * 1000 + Math.PI * FULL.sprocketD * 1000)} long`, `${P.loop} GT2 closed belt`],
+      ['Width per side', `${mm(FULL.track)}: two lanes of ${f0(FULL.track * 1000 * P.bw / P.trackW)}`, `${f1(P.trackW)}: two ${P.bw} belts, ${f1(P.gap)} apart`],
+      ['Height', `${mm(FULL.sprocketD)}, ${mm(FULL.sprocketD + 2 * C.h)} with cleats`, `${f1(2 * P.R)}, ${f1(2 * hz)} with cleats`],
+      ['Overall', `${mm(4 * FULL.section + FULL.sprocketD)} × ${mm(FULL.width)}`, `${f0(P.L)} × ${f0(P.W)}`],
+      ['Wheels', `Ø${mm(FULL.sprocketD)} sprockets, ${f0(0.25 * 60 / (Math.PI * FULL.sprocketD))} rpm for 0.25 m/s`, `${P.teeth}T pulleys, Ø${f1(P.pd)}, ${P.rpm} rpm for ${f0(P.speed)} mm/s`],
+      ['Cleats', `${mm(C.h)} tall, ${mm(C.root)} to ${mm(C.tip)} wide, every ${mm(C.pitch)}`, `${f1(C.h * m)} tall, ${f1(C.root * m)} to ${f1(C.tip * m)} wide, every ${f1(C.pitch * m)}`],
+    ]);
+    $('drive-text').textContent = 'The motor in the box turns the H2 axle through two gears. The pulleys are clamped to the axles and the side plates turn on bearings, so the axles keep turning while the sections bend. H2 drives the belts of T2 and T3; they turn the H1 and H3 axles, which drive T1 and T4. One motor moves all eight belts at the same speed. Full size works the same way with sprockets and rubber tracks, plus a slide or small rollers under each lower run. Split each axle into left and right halves, with a motor for each side, so it can steer.';
+    $('tread-text').textContent = `Soft rubber, about 60 Shore A, with straight cleats across each belt (sheet D). On stairs the tracks only touch the step edges. A cleat just behind an edge drops onto the tread and catches it, so the tracks can’t slide down even on dusty or wet steps. The two lanes are offset by half a pitch so a cleat is always near each edge. Keep the cleats low and rounded: tall or sharp ones jolt over every edge and chew the nosings. Without cleats the rubber needs a friction of at least 0.62 to hold on these stairs. Model: glue ${f1(C.root * m)} mm strips of ${f1(C.h * m)} mm rubber across the grip every ${f1(C.pitch * m)} mm, or print grip and cleats in one piece from TPU.`;
   }
 
   // ------------------------------------------------------------------ parts list, steps, guides
@@ -698,7 +934,7 @@
   function render() {
     const P = params();
     try { localStorage.setItem('blueprint-parts', JSON.stringify({ teeth: P.teeth, loop: P.loop, width: P.bw, rpm: P.rpm, steps: P.steps })); } catch (e) { /* storage unavailable */ }
-    drawKpis(P); drawSide(P); drawTop(P); drawJoint(P); drawWiring(); drawStairs(P); renderBom(P); runProgram(P);
+    drawKpis(P); drawSide(P); drawTop(P); drawBoxSpace(P); drawTread(P); drawJoint(P); drawWiring(); drawStairs(P); drawSizes(P); renderBom(P); runProgram(P);
   }
   $('in-teeth').addEventListener('change', () => { fillLoops(null); render(); });
   for (const id of ['in-loop', 'in-width', 'in-rpm', 'in-steps']) $(id).addEventListener('change', render);

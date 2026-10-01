@@ -46,24 +46,24 @@
         { ref: 'X', part: '5 mm silver steel rod', qty: '5 axles', links: [
           L('Kuriosity, motor shaft 2–8 mm', 'https://kuriosity.sg/products/motor-shaft-4mm-6mm-8mm', SG),
           L('MISUMI SG, cut-to-length shaft', 'https://sg.misumi-ec.com/vona2/detail/110302490360/', SG)],
-          fit: (P) => `Cut each to about ${Math.round(P.W + 10)} mm.` },
-        { ref: 'BR', part: 'Ball bearing MR105ZZ, 5 × 10 × 4 mm', qty: '16', links: [
+          fit: (P) => `Cut each to about ${Math.round(P.W)} mm.` },
+        { ref: 'BR', part: 'Ball bearing MR105ZZ, 5 × 10 × 4 mm', qty: '18', links: [
           L('MISUMI SG, MR105ZZ', 'https://sg.misumi-ec.com/vona2/detail/221000531116/?HissuCode=MR105ZZ', SG)],
-          fit: 'Four per tray, in the knuckles. Printed bushes also work at this speed.' },
+          fit: 'One in each boss of the eight side plates, and one in each arm plate. Printed bushes also work at this speed.' },
         { ref: 'C', part: 'Shaft collar, 5 mm, set screw', qty: '10', links: [
           L('RS Singapore, steel', 'https://sg.rs-online.com/web/p/shaft-collars/8236935', SG),
           L('Kuriosity, flange 4–8 mm', 'https://kuriosity.sg/products/flange-4mm-5mm-6mm-8mm', SG)],
-          fit: 'Two per axle, on the ends.' },
+          fit: 'One inside the innermost plate on each side of each axle, to hold the plates in place.' },
         { ref: 'M', part: 'N20 gear motor with encoder, 6 V, 100–150 rpm', qty: '1', links: [
           L('Kuriosity, N20 with encoder', 'https://kuriosity.sg/products/n20-high-torque-motor-with-encoder', SG, 'pick the 100–150 rpm variant'),
           L('Cytron SG, 6 V 85 rpm (no encoder)', 'https://sg.cytron.io/p-6v-85rpm-dc-micro-metal-gearmotor', SG),
           L('DFRobot, 6 V 105 rpm with encoder', 'https://www.dfrobot.com/product-1434.html', false, 'ships from China')],
-          fit: (P) => `Drives the H2 axle through two printed gears, and every belt through the shared axles: ${Math.round(P.speed)} mm/s at ${P.rpm} rpm.` },
+          fit: (P) => `In the centre box, geared 1:1 to the H2 axle; every belt follows through the shared axles: ${Math.round(P.speed)} mm/s at ${P.rpm} rpm.` },
       ] },
       { name: 'Grip covering', items: [
         { ref: 'G', part: 'Neoprene rubber sheet, 1 mm, Shore 60A', qty: '1 sheet', links: [
           L('Shopee SG', 'https://shopee.sg/Neoprene-Rubber-Sheet-1mm-thick-Black-Color-hardness-60-shoreA-i.203737814.29403577492', SG, 'seller location not checked')],
-          fit: (P) => `Cut 8 strips ${P.bw} mm wide and ${P.loop} mm long, and glue one to the back of each belt.` },
+          fit: (P) => `Cut 8 strips ${P.bw} mm wide and ${P.loop} mm long, and glue one to the back of each belt. Cleats: 2 mm strips of 1.5 mm rubber across each grip strip every 6 mm (sheet D).` },
         { ref: 'GL', part: 'Selleys Kwik Grip contact adhesive', qty: '1', links: [
           L('Horme', 'https://www.horme.com.sg/product.aspx?id=3708', SG), L('Selffix', 'https://www.selffix.com/selleys-kwik-grip-15ml/', SG)],
           fit: 'Bonds neoprene to the rubber of the belts.' },
@@ -71,15 +71,15 @@
           L('Decathlon, 16" bicycle inner tube', 'https://www.decathlon.sg/p/bicycle-inner-tube-16-x-1-5-1-9-inch-schrader-black-decathlon-8602104.html', SG, 'cut rings and stretch them over the belts'),
           L('Daiso, 15 mm non-slip tape', 'https://shop.daisosingapore.com.sg/products/4580707591163', SG, 'gritty; may crack round small pulleys'),
           L('Maker Supplies, eSUN TPU 95A', 'https://makersupplies.sg/products/esun-etpu-95a-1-75mm-1kg-3d-printer-filament', SG, 'print tread strips with ridges')],
-          fit: 'Whatever you use must not slide on your stair material tilted to 37°.' },
+          fit: 'Whatever you use must not slide on your stair material tilted to 37°. With TPU, print the grip and cleats in one strip.' },
       ] },
       { name: 'Hinges and seat', items: [
         { ref: 'S1–S3', part: 'MG90S metal-gear micro servo, 180°', qty: '3', links: [
           L('Cytron SG, MG90S', 'https://sg.cytron.io/p-mg90s-metal-gear-micro-servo', SG),
           L('Kuriosity, MG90S / SG92R', 'https://kuriosity.sg/products/servo-motor-sg92r-180-360-sg90-upgrade', SG, 'choose 180°, not 360°')],
-          fit: 'The three hinges. About 2.8 kg·cm at 6 V; keep the whole model under about 300 g.' },
+          fit: 'The three hinges: S1 on T1\'s tray, S2 in the centre box, S3 on T4\'s tray. About 2.8 kg·cm at 6 V; keep the whole model under about 300 g.' },
         { ref: 'S4–S5', part: 'SG90 micro servo', qty: '2', links: [L('Cytron SG, SG90', 'https://sg.cytron.io/p-sg90-micro-servo', SG)],
-          fit: 'Arm lean (S4) and seat tilt (S5).' },
+          fit: 'S4 in the centre box leans the arm; S5 at the top of the arm tilts the seat.' },
       ] },
       { name: 'Control and power', items: [
         { ref: 'U', part: 'Arduino Nano V3 (CH340)', qty: '1', links: [
@@ -98,7 +98,7 @@
           L('Cytron SG, LiPo batteries and chargers', 'https://sg.cytron.io/c-lipo-rechargeable-battery-and-charger', SG),
           L('Cytron SG, 2S USB balance charger', 'https://sg.cytron.io/p-2s-7.4v-lipo-battery-usb-5v-1a-fast-balance-charger', SG),
           L('Kuriosity, 2 × 18650 holder with switch', 'https://kuriosity.sg/products/2x-18650-battery-holder-with-switch', SG, 'heavier option, with 18650 cells')],
-          fit: 'On the seat cradle with the Nano: together they stand in for the person\'s weight.' },
+          fit: 'In the centre box with the drive motor (sheet C). At 1:10 that leaves about 20 × 35 × 9 mm, so pick a small pack, or put it on the seat cradle.' },
         { ref: 'V', part: 'Step-down converter to 5–6 V, 3 A or more', qty: '1', links: [
           L('Kuriosity, 5 V 3 A buck', 'https://kuriosity.sg/products/dc-dc-step-down-buck-converter-3-3v-5v-12v-3a', SG),
           L('Cytron SG, XL4005 5 A adjustable', 'https://sg.cytron.io/p-xl4005-smps-adjustable-5a-buck-converter', SG, 'set to 5.5–6 V')],
@@ -110,10 +110,10 @@
           L('Kuriosity, M3/M4/M5 kit', 'https://kuriosity.sg/products/screw-nut-m3-m4-m5-kit', SG),
           L('Kuriosity, heat-set inserts', 'https://kuriosity.sg/products/brass-inserts-m2-m3-m4-m5-185pcs', SG)],
           fit: 'Servos, trays, arm and cradle.' },
-        { ref: 'PR', part: 'Printed parts: trays T1–T4, arm, cradle, chair, two gears, three levers', qty: '1 set', links: [
+        { ref: 'PR', part: 'Printed parts: 8 side plates, trays for T1 and T4, 2 arm plates, cradle, chair, two gears, three levers; the centre box', qty: '1 set', links: [
           L('3D Print Singapore', 'https://3dprintsingapore.com/', SG, 'PLA, PETG and TPU'),
           L('ZELTA3D', 'https://www.zelta3d.com/', SG)],
-          fit: 'PLA or PETG. Or print them yourself.' },
+          fit: 'PLA or PETG. Or print them yourself. The centre box is drawn on sheet C.' },
       ] },
       { name: 'Test stairs', items: [
         { ref: 'ST', part: '3 mm MDF or plywood, laser cut', qty: '1 set', links: [
@@ -126,16 +126,16 @@
     ],
     steps: [
       ['Choose your belt and pulley.', 'Set them under Your parts. Every size on this page follows from them. 20 teeth with 110 mm loops, both sold in Singapore, gives exactly 1:10.'],
-      ['Print the parts.', (P) => `Four section trays T1 to T4 with bearing knuckles ${P.C.toFixed(1)} mm apart, the seat arm, the seat cradle and chair, two drive gears and three hinge levers, in PLA or PETG.`],
-      ['Make the tracks.', (P) => `Glue a ${P.bw} mm strip of neoprene to the smooth back of each belt. First check the grip: a strip laid on your stair material must not slide when the board is tilted to 37°. If it slides, add small ridges every 6 to 8 mm.`],
-      ['Build the chain.', 'Press the bearings into the tray knuckles, slide the five axles through, then fit the pulleys: lane A on the outside, lane B inside. Tighten the grub screws and fit collars on the axle ends. Each tray must swing freely on its axles.'],
+      ['Print the parts.', (P) => `Eight side plates, two per section, with bearing bosses ${P.C.toFixed(1)} mm apart; trays for T1 and T4; two arm plates; the seat cradle and chair; two drive gears and three hinge levers, in PLA or PETG. The centre box is drawn on sheet C.`],
+      ['Make the tracks.', (P) => `Glue a ${P.bw} mm strip of neoprene to the smooth back of each belt, then glue cleats across it: 2 mm wide, 1.5 mm tall, every 6 mm, offset by 3 mm between the two lanes (sheet D). First check the grip: a strip on your stair material must not slide when the board is tilted to 37°.`],
+      ['Build the chain.', 'Press the bearings into the side plates. On each side, from the middle out: the T2 and T4 plates, the arm plate at H2, then the T1 and T3 plates (sheet B). Slide the five axles through, fit a collar inside the innermost plate, then fit the pulleys outside the plates: lane B with its hub inward, lane A with its hub outward. Tighten the grub screws. Each section must swing freely.'],
       ['Fit the belts.', 'T1 and T3 run in lane A, T2 and T4 in lane B, on both sides. Neighbouring belts then share an axle, so one axle turns them all.'],
-      ['Fit the drive.', 'Mount the N20 on T2 so its gear meshes with the gear on the H2 axle. Turn it by hand: all eight belts should move together.'],
-      ['Fit the hinge servos.', 'S1 goes on T1 for hinge H1, S2 on T3 for H2, S3 on T4 for H3. Centre each servo with the chain straight, then join its link to the lever on the next tray. Check that each hinge swings ±55° without binding.'],
-      ['Build the seat.', 'Mount S4 on a bracket on T2, above the motor, and fix the arm to its horn. S5 at the top of the arm tilts the seat cradle. Put the chair, the Nano, the motor driver, the tilt sensor and the battery on the cradle.'],
-      ['Wire it.', 'Follow sheet D. Test each servo and the drive motor on their own, at low speed.'],
+      ['Fit the centre box.', 'Bolt it between T2\'s side plates, two bolts a side (sheet C). The gear on the H2 axle reaches up through a slot in its floor and meshes with the motor\'s gear. Turn it by hand: all eight belts should move together.'],
+      ['Fit the hinge servos.', 'S1 on T1\'s tray works H1 through a rod to a lever on T2; S3 on T4\'s tray works H3 through a lever on T3. S2 in the box works H2 through a rod to a pin on T3, 14 mm out from the axle (sheet E). Centre each servo with the chain straight, then check each hinge bends ±45° without binding.'],
+      ['Build the seat.', 'The arm plates turn on the H2 axle just outside T2\'s side plates. S4 in the box leans them through a rod to a pin on the arm, on the side away from S2\'s rod. S5 at the top of the arm tilts the seat cradle. Put the chair, the tilt sensor and the Nano on the cradle.'],
+      ['Wire it.', 'Follow sheet F. Test each servo and the drive motor on their own, at low speed.'],
       ['Program it.', 'Drive slowly and zero the encoder at the start mark. For each distance, set the servos from the hinge program above, and trim the seat level with the tilt sensor.'],
-      ['Build the test stairs and try it.', 'Build them to sheet E. Run it up and down with a hand ready to catch it.'],
+      ['Build the test stairs and try it.', 'Build them to sheet G. Run it up and down with a hand ready to catch it.'],
     ],
     guides: [
       { title: 'Making robot tank treads from timing belts', url: 'https://www.instructables.com/Making-Timing-Belts-Robot-Tank-Treads-Using-Scarf-/', note: 'Instructables' },
