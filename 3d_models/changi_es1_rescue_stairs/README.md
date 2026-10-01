@@ -289,7 +289,7 @@ track axles) and kept level by a linear actuator. The box (400 × 400 × 220 mm,
 the section behind the middle hinge, and every pose checks its gap to the steps and to the platform.
 The tracks are modelled on parts MISUMI stocks in Singapore: HTD 8M timing belts, 40 mm wide, on
 60-tooth pulleys (85 mm from axle to grip, 15 mm cleats every 56 mm). 1200 mm belts give 0.36 m
-sections, 2000 mm belts 0.76 m units; the prototype uses HTD 5M belts on 20-tooth pulleys.
+sections and 1880 mm belts the 0.70 m units; the prototype uses HTD 5M belts on 20-tooth pulleys.
 
 A hinge only pushes its track down onto the stairs (`reach: 'lie'`): to put a track end down it may
 lift the vehicle off them by 5 cm at most (`maxLift`). It never stands the vehicle on its two ends
@@ -299,7 +299,7 @@ still allows it, for the older pages.)
 
 It compares two ways of bending. **Stop, bend, then go** (`bendMode: 'stopGo'`, the page's
 default): the vehicle drives at 0.25 m/s and stops wherever a hinge or the levelling has to turn
-further than it can on the move (the middle hinge 30° a second, the end hinges 63°, the levelling
+further than it can on the move (the middle hinge 30° a second, the end hinges 58°, the levelling
 37.5°). A hinge only turns as far as still leaves 25° of lean before tipping (`stopGoSafeDeg`);
 otherwise it holds its bend until more track is on the stairs. A laser at the leading end of the
 track looks straight down (`laserRisers`): near a platform edge the hinges stay locked until it
@@ -319,10 +319,10 @@ own layout). The split matters: with the prototype's proportions (0.92 m and 0.6
 
 | Layout | Least lean before tipping, down · up: stop, bend, then go | Bending while moving | Trip down · up, stop, bend, then go (of it stopped) |
 |---|---|---|---|
-| No bending (1.52 m) | tips · tips (drops up to 36 cm) | the same | 74 s · 74 s |
-| 2 parts (2 × 0.76 m) | 14.5° · 17.5° | tips (drops up to 31 cm) | 80 s (6 s) · 79 s (5 s) |
-| 4 parts (4 × 0.36 m) | 24.4° · 24.4° | tips (drops up to 8 cm) | 89 s (14 s) · 84 s (9 s) |
-| Front arms (0.80 m + 0.72 m arms) | 25.9° · 14.0° | 8.7° · 8.0° | 80 s (6 s) · 82 s (8 s) |
+| No bending (1.40 m) | tips · tips (drops up to 33 cm) | the same | 74 s · 74 s |
+| 2 parts (2 × 0.70 m) | 14.5° · 17.5° | tips (drops up to 29 cm) | 79 s (5 s) · 79 s (5 s) |
+| 4 parts (4 × 0.36 m) | 24.4° · 24.4° | tips (drops up to 8 cm) | 89 s (15 s) · 83 s (10 s) |
+| Front arms (0.80 m + 0.72 m arms) | 25.9° · 14.0° | 8.7° · 8.0° | 80 s (6 s) · 81 s (8 s) |
 
 Stopping to bend is what keeps the hinged tracks up: bending while moving, the hinges can't fold a
 track end down in time at an edge without lifting the vehicle. The front arms are the exception:
@@ -341,15 +341,46 @@ the edge before it bends:
 | 1¼ risers (219 mm) | 15° · 18° | 24° · 24° | 26° · 14° | best: the same as stopping in exactly the right spot |
 | 1½ risers (263 mm) | 11° · 18° | 10° · 24° | 19° · 14° | late going down at the mid-landing |
 | 2 risers (350 mm) | 11° · 18° | 10° · 22° | 19° · 14° | late at the mid-landing; the 4-part platform brushes its tracks |
-| 3 risers (525 mm) | 11° · tips | 10° · tips | 19° · 14° | 2 and 4 parts tip going up at the mid-landing edge and the top edge (drops up to 28 cm), and going down their platforms knock their own tracks |
+| 3 risers (525 mm) | 11° · tips | 10° · tips | 19° · 14° | 2 and 4 parts tip going up at the mid-landing edge and the top edge (drops up to 26 cm), and going down their platforms knock their own tracks |
 
-Changing the 2-part track's length doesn't help. Bending while moving, every length from 0.5 to
-0.9 m a half tips at an edge. Stopping to bend, halves of 0.69 m or more all keep about 15° going
-down and 18° going up; shorter halves keep only 8° going down, with one end rocking down 4 to 6 cm,
-and below about 0.6 m a half can rest on a single step edge. The page also lists the tallest box
+The 2-part units are 0.70 m from axle to axle. Stopping to bend, that is as steady as 0.76 m
+(15° going down, 18° going up), 12 cm shorter overall (1.57 m), and it takes a stock 1880 mm HTD 8M
+belt (235 teeth). At 0.69 m one end rocks down 5 cm at an edge going down, leaving 8.5°, and its belt
+would need 232½ teeth. Bending while moving, every length tips at an edge. At 1:5 the units are
+140 mm on 380 mm HTD 5M belts (76 teeth). The page also lists the tallest box
 for each length, the stricter of the two ways of bending (4 parts: 300 mm long at 250 mm tall, or
 400 mm at 244 mm; 2 parts: 500 mm at 250 mm; front arms: 400 mm at 250 mm; no bending: 600 mm at
 250 mm). The 400 × 400 × 220 mm box fits all four.
+
+### How the 2-part vehicle is built
+
+The page's "How it is built" section draws the 2-part vehicle with 0.70 m units at full size: a top
+view with the platform removed, and a side view of the hinge. Its "Track parts and dimensions"
+section lists the sizes, full size and 1:5.
+
+- **Two units on one axle.** The rear and front units both turn on the middle axle, on bearings in
+  their side plates: the rear unit's plates inside, the front unit's just outside them. Each unit has
+  one 40 mm belt per side. The rear unit's belts run in the outer lane and the front unit's in the
+  inner lane, so both fit on the middle axle. Overall 1570 × 700 mm (1600 mm over the cleats),
+  170 mm tall (200 mm with cleats), 400 mm between the side plates.
+- **Hinge.** A self-locking worm gear motor in the box turns a cross shaft with a small gear at each
+  end. Each gear meshes with a toothed sector on one of the front unit's side plates, so the front
+  unit swings up to 55° either way about the middle axle, at 30° a second. These stairs need 35° up
+  at the foot of a flight and 39° down over an edge. A worm can't be back-driven, so the bend holds
+  with the power off.
+- **Drive.** The drive motor in the box turns the middle axle through a chain. Both units' pulleys are
+  clamped to it, and bending about it doesn't stretch or slacken the belts, so both tracks drive at
+  any bend. The end axles turn freely.
+- **Box and platform.** The 400 × 400 × 220 mm box holds the battery, the drive motor and the hinge
+  motor. It sits between the rear unit's side plates, from 280 mm behind to 120 mm in front of the
+  middle axle. The platform pivots on two pillow blocks on top of it, 320 mm above the middle axle,
+  and the levelling actuator keeps it level.
+- **Lasers.** One at each end, 45 mm beyond the end axle, looking straight down between the tracks.
+
+The page also lists the parts for one vehicle with rough prices in Singapore dollars (October 2026):
+about S$530 for the 1:5 prototype (S$410 with a second servo for the levelling) and about S$5,100 at
+full size. RS Singapore and Mouser prices are as listed; the rest come from online listings, and the
+full-size motors, gears and plates are estimates. Check stock and prices before ordering.
 
 ### Centre box, tracks and tread
 

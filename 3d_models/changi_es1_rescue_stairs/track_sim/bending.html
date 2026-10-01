@@ -7,7 +7,7 @@
 <style>
   /* Layout: a test-bench sheet, as on the other simulator pages. The verdict for each
      layout first, then the four running in step, then where the danger is, the lean
-     trace, the box sizes and what was modelled. */
+     trace, the laser, the box sizes, the unit length, how it is built and its parts. */
   :root {
     color-scheme: light;
     --bg: #eef1f4;
@@ -174,16 +174,52 @@
   .tip .t-row b { font: 600 13px var(--mono); min-width: 6ch; }
   .tip .t-row span { color: var(--ink-2); }
 
-  /* box and model notes */
+  /* box */
   .two-col { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 18px; align-items: start; }
   @media (max-width: 900px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
   .callout { display: grid; gap: 8px; font-size: 14px; color: var(--ink-2); }
   .callout p { margin: 0; }
   .callout b { color: var(--ink); }
-  dl.model { margin: 0; display: grid; grid-template-columns: minmax(110px, auto) minmax(0, 1fr); gap: 8px 16px; font-size: 14px; }
-  dl.model dt { font-weight: 600; }
-  dl.model dd { margin: 0; color: var(--ink-2); }
-  @media (max-width: 560px) { dl.model { grid-template-columns: minmax(0, 1fr); gap: 2px; } dl.model dd { margin-bottom: 8px; } }
+  tr.pick td { background: color-mix(in srgb, var(--two) 8%, transparent); }
+
+  /* how it is built: drawings in the page's colours, so they follow light and dark */
+  .draw { margin: 0; display: grid; gap: 8px; min-width: 0; }
+  .draw .scroll { overflow-x: auto; border: 1px solid var(--hair); border-radius: 10px; background: var(--surface); }
+  .draw svg { display: block; width: 100%; min-width: 780px; height: auto; }
+  .draw figcaption { font-size: 13px; color: var(--ink-2); max-width: 90ch; }
+  .bp text { font-family: var(--sans); }
+  .bp .lab { font-size: 14px; font-weight: 600; fill: var(--ink); }
+  .bp .labsub { font-size: 12px; fill: var(--ink-2); }
+  .bp .intext { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; fill: var(--ink-2); }
+  .bp .dimtxt { font: 500 12.5px var(--mono); fill: var(--ink-2); }
+  .bp .lead { stroke: var(--ink-2); stroke-width: 1.1; fill: none; }
+  .bp .arrowhead { fill: var(--ink-2); }
+  .bp .dim { stroke: var(--muted); stroke-width: 0.9; fill: none; }
+  .bp .ext { stroke: var(--muted); stroke-width: 0.7; fill: none; }
+  .bp .ctr { stroke: var(--muted); stroke-width: 0.8; fill: none; stroke-dasharray: 14 4 3 4; }
+  .bp .belt { fill: var(--tread); }
+  .bp .beltline { fill: none; stroke: var(--tread); }
+  .bp .cleat { stroke: var(--surface); stroke-width: 1.3; }
+  .bp .cleatside { fill: var(--tread); }
+  .bp .pulley { fill: var(--surface-2); stroke: var(--ink-2); stroke-width: 1; }
+  .bp .axle { fill: var(--steel); stroke: var(--steel-edge); stroke-width: 1; }
+  .bp .plate { fill: var(--steel); stroke: var(--steel-edge); stroke-width: 1; }
+  .bp .plateo { fill: none; stroke: var(--steel-edge); stroke-width: 1.2; }
+  .bp .boxf { fill: var(--box); stroke: var(--box-edge); stroke-width: 1.2; }
+  .bp .hid { fill: none; stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 5 3; }
+  .bp .hinge { fill: color-mix(in srgb, var(--two) 20%, var(--surface)); stroke: var(--two); stroke-width: 1.4; }
+  .bp .hingeline { fill: none; stroke: var(--two); stroke-width: 1.6; }
+  .bp .ghost { fill: none; stroke: var(--ink-2); stroke-width: 1.1; stroke-dasharray: 7 4; }
+  .bp .obj { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+  .bp .solid { fill: var(--ink-2); }
+  .bp .laserf { fill: var(--laser); }
+  .bp .beam { stroke: var(--laser); stroke-width: 1.3; stroke-dasharray: 3 3; }
+  .how { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 26px; }
+  @media (max-width: 900px) { .how { grid-template-columns: minmax(0, 1fr); } }
+  .how h3 { margin: 0 0 8px; font: 700 19px/1.15 var(--display); letter-spacing: 0.02em; }
+  .how ol { margin: 0; padding-left: 20px; display: grid; gap: 7px; font-size: 14px; color: var(--ink-2); }
+  .how li b { color: var(--ink); font-weight: 600; }
+  caption.tcap { caption-side: top; text-align: left; padding: 9px 12px; font: 600 13.5px var(--sans); color: var(--ink); border-bottom: 1px solid var(--hair); }
 </style>
 
 <main class="wrap">
@@ -274,29 +310,65 @@
     </div>
   </section>
 
-  <section class="card panel" aria-labelledby="sweep-h">
-    <h2 id="sweep-h">Would a shorter 2-part track help?</h2>
-    <p class="sub" id="sweep-sub"></p>
+  <section class="card panel" aria-labelledby="len-h">
+    <h2 id="len-h">How long to make each 2-part unit</h2>
+    <p class="sub" id="len-sub"></p>
     <div class="table-wrap"><table>
-      <thead><tr><th>Each half</th><th class="num">Whole vehicle</th><th>Going down</th><th>Going up</th><th>What happens</th></tr></thead>
-      <tbody id="sweep-body"></tbody>
+      <thead><tr><th>Each unit, axle to axle</th><th class="num">Whole vehicle</th><th>HTD 8M belt it needs</th><th>Going down</th><th>Going up</th><th>What happens</th></tr></thead>
+      <tbody id="len-body"></tbody>
     </table></div>
   </section>
 
-  <section class="card panel" aria-labelledby="buy-h">
-    <h2 id="buy-h">Track parts in Singapore</h2>
-    <p class="sub">The tracks are timing belts on toothed pulleys, with a rubber cover and cleats glued on. MISUMI keeps both sizes in its Singapore warehouse and delivers in Singapore, usually the next working day. Check stock and prices on the site before ordering.</p>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Part</th><th>Full size (4 parts)</th><th>1:5 prototype (4 parts)</th><th class="num">Qty</th><th>Where</th></tr></thead>
-      <tbody id="buy-body"></tbody>
-    </table></div>
-    <p class="note" id="buy-note"></p>
+  <section class="card panel" aria-labelledby="build-h">
+    <h2 id="build-h">How it is built: 2 parts, 0.70 m units</h2>
+    <p class="sub">Two track units joined at the middle axle, which is both the hinge and the driven axle. The drawings are full size, in mm; the 1:5 prototype is the same with every size divided by 5.</p>
+    <figure class="draw">
+      <div class="scroll"><svg class="bp" id="bp-top" role="img" aria-label="Top view of the 2-part vehicle with the platform removed: two 700 mm track units joined at the middle axle, the box between the rear unit's side plates, the platform pivot right above the middle axle, and a laser at each end."></svg></div>
+      <figcaption>Top view, platform removed. The rear unit (left) carries the box; its belts run in the outer lane and the front unit's in the inner lane, so both fit on the shared middle axle. Dashed: inside the box.</figcaption>
+    </figure>
+    <figure class="draw">
+      <div class="scroll"><svg class="bp" id="bp-hinge" role="img" aria-label="Side view of the middle hinge: a worm gear motor in the box turns a small gear that meshes with a toothed sector on the front unit's side plates, swinging the front unit up to 55 degrees up or down about the middle axle, while the drive motor turns the middle axle through a chain."></svg></div>
+      <figcaption>Side view of the hinge, seen through the side plates. The front unit is drawn straight, and dashed where these stairs bend it: 35° up at the foot of a flight, 39° down over an edge. It can bend 55° either way.</figcaption>
+    </figure>
+    <div class="how">
+      <div>
+        <h3>How the hinge works</h3>
+        <ol>
+          <li><b>One axle, two units.</b> The rear and front units both turn on the middle axle, on bearings in their side plates: the rear unit’s plates inside, the front unit’s just outside them.</li>
+          <li><b>The hinge motor swings the front unit.</b> A self-locking worm gear motor in the box turns a cross shaft with a small gear at each end. Each gear meshes with a toothed sector on one of the front unit’s side plates, so the front unit swings up or down about the middle axle, up to 55°, at 30° a second.</li>
+          <li><b>It holds with the power off.</b> A worm can’t be turned backwards by the load, so the bend stays where the motor left it.</li>
+          <li><b>The tracks drive at any bend.</b> The drive motor turns the middle axle through a chain. Both units’ belts run on pulleys clamped to that axle, and bending about it doesn’t stretch or slacken them, so both tracks keep driving whatever the bend. The end axles turn freely.</li>
+          <li><b>The casualty stays level.</b> The platform pivots on pillow blocks right above the middle axle, and the levelling actuator, steered by the IMU, keeps it level as the units tilt.</li>
+        </ol>
+      </div>
+      <div>
+        <h3>When it bends: stop, bend, then go</h3>
+        <ol>
+          <li><b>Drive with the hinge locked.</b> The laser at the leading end looks straight down at the stairs.</li>
+          <li><b>See the edge, stop.</b> When the laser reads 1¼ risers (219 mm) further down than on flat ground, the vehicle stops.</li>
+          <li><b>Bend until it touches.</b> The hinge motor folds the leading unit down over an edge, or up at the foot of a flight, until it touches the stairs. It only pushes the track onto the stairs, lifting the vehicle 5 cm at most.</li>
+          <li><b>Drive on.</b> The other unit follows over the edge and the hinge straightens as it goes, stopping again only if it would have to turn faster than 30° a second.</li>
+        </ol>
+      </div>
+    </div>
   </section>
 
-  <section class="card panel" aria-labelledby="model-h">
-    <h2 id="model-h">What the simulation includes</h2>
-    <dl class="model" id="model"></dl>
+  <section class="card panel" aria-labelledby="parts-h">
+    <h2 id="parts-h">Track parts and dimensions</h2>
+    <p class="sub" id="parts-sub"></p>
+    <div class="table-wrap"><table>
+      <caption class="tcap">Main dimensions</caption>
+      <thead><tr><th></th><th>Full size</th><th>1:5 prototype</th></tr></thead>
+      <tbody id="dims-body"></tbody>
+    </table></div>
+    <div class="table-wrap"><table>
+      <caption class="tcap">Parts for one vehicle</caption>
+      <thead><tr><th>Part</th><th class="num">Qty</th><th>1:5 prototype</th><th class="num">≈ S$</th><th>Full size</th><th class="num">≈ S$</th><th>Where</th></tr></thead>
+      <tbody id="parts-body"></tbody>
+    </table></div>
+    <p class="note" id="parts-note"></p>
   </section>
+
 </main>
 
 <script src="track-model.js"></script>
@@ -313,8 +385,8 @@
   const STAIRS = { height: 8.4, rise: 0.175, going: 0.25, lowerTreads: 23, topPlatform: 3.0 };
   // Tracks modelled on parts MISUMI Singapore stocks: HTD 8M timing belts, 40 mm wide, on 60-tooth
   // pulleys (pitch diameter 152.8 mm), with a 6 mm rubber cover: 85 mm from the axle to the grip;
-  // 15 mm cleats every 7 teeth (56 mm). 1200 mm belts give 0.36 m sections, 2000 mm belts 0.76 m units.
-  const TRACK = { radius: 0.085, pulley: 0.0764, cleat: 0.015, cleatPitch: 0.056, sections4: 0.36, unit2: 0.76, armsMain: 0.8, armsArm: 0.72 };
+  // 15 mm cleats every 7 teeth (56 mm). 1200 mm belts give 0.36 m sections, 1880 mm belts 0.70 m units.
+  const TRACK = { radius: 0.085, pulley: 0.0764, cleat: 0.015, cleatPitch: 0.056, sections4: 0.36, unit2: 0.70, armsMain: 0.8, armsArm: 0.72 };
   // The box that fits all four layouts (see the box table), and the platform's hinge on top of it.
   const BOX = { back: 0.28, front: 0.12, floor: 0.04, top: 0.26, width: 0.4 };
   // A hinge only pushes its track down onto the stairs: it may lift the vehicle off them by at most
@@ -323,8 +395,8 @@
   const BASE = Object.assign({ mastMode: 'base', seatHeight: 0.32, sprocketRadius: TRACK.radius, unitLength: TRACK.unit2, boxMass: 15,
     box: BOX, boxCom: [(BOX.front - BOX.back) / 2, (BOX.floor + BOX.top) / 2], reach: 'lie', maxLift: MAX_LIFT }, STAIRS);
   const LAYOUTS = [
-    { id: 'rigid', name: 'No bending', color: 'rigid', what: 'One stiff track, 1.52 m between the end pulleys.' },
-    { id: 'two', name: '2 parts', color: 'two', what: 'Two 0.76 m track units with a hinge in the middle.' },
+    { id: 'rigid', name: 'No bending', color: 'rigid', what: `One stiff track, ${(2 * TRACK.unit2).toFixed(2)} m between the end pulleys.` },
+    { id: 'two', name: '2 parts', color: 'two', what: `Two ${TRACK.unit2.toFixed(2)} m track units with a hinge in the middle.` },
     { id: 'four', name: '4 parts', color: 'four', what: 'Four 0.36 m sections: each half bends again at an extra hinge.' },
     { id: 'arms', name: 'Front arms', color: 'arms', what: 'A stiff 0.80 m main track with 0.72 m track arms on its front axle that swing up and down.' },
   ];
@@ -339,15 +411,33 @@
   // Tallest box for each length, mm, full size: [length, height, from, to (along the section, from the middle
   // hinge), floor, top]; height 0 = no box that long fits. Worked out from every pose of the runs, both
   // stopping to bend and bending while moving (the stricter of the two).
-  const BOX_RANGE = {"rigid":[[300,250,-540,-240,40,290],[400,250,-540,-140,40,290],[500,250,-540,-40,40,290],[600,250,-540,60,40,290],[700,233,-580,120,40,273],[800,200,-650,150,40,240],[1000,188,-670,330,40,228],[1100,188,-670,430,40,228],[1200,188,-670,530,40,228]],"two":[[300,250,-460,-160,40,290],[400,250,-460,-60,40,290],[500,250,-460,40,40,290],[600,233,-490,110,40,273],[700,195,-560,140,40,235],[800,169,-600,200,40,209],[1000,87,-630,370,105,192],[1100,0,null,null,null,null],[1200,0,null,null,null,null]],"four":[[300,250,-300,0,40,290],[400,244,-300,100,40,284],[500,171,-300,200,40,211],[600,0,null,null,null,null],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]],"arms":[[300,250,-330,-30,40,290],[400,250,-330,70,40,290],[500,182,-330,170,40,222],[600,182,-330,270,40,222],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]]};
-  // 2 parts with longer or shorter units (same stairs, box and platform): least lean before tipping
-  // going down and up, degrees (null = it tips), the biggest drop in cm, and whether a unit can end up
-  // resting on a single step edge.
-  const SWEEP = [[0.5, null, null, 20, true], [0.55, null, null, 23, true], [0.6, null, null, 25, false], [0.65, null, null, 27, false], [0.693, null, null, 29, false],
-    [0.76, null, null, 31, false], [0.8, null, null, 33, false], [0.85, null, null, 40, false], [0.9, null, null, 43, false]];
-  // The same, stopping to bend with the laser at 1 1/4 risers.
-  const SWEEP_STOPGO = [[0.5, 8.4, 14, 5, true], [0.55, 8.4, 16.7, 5, true], [0.6, 8.3, 17.5, 6, false], [0.65, 8.5, 17.5, 4, false], [0.693, 14.3, 17.8, 0, false],
-    [0.76, 14.5, 17.5, 0, false], [0.8, 14.5, 17.5, 0, false], [0.85, 14.5, 17.5, 0, false], [0.9, 14.5, 17.5, 0, false]];
+  const BOX_RANGE = {"rigid":[[300,250,-540,-240,40,290],[400,250,-540,-140,40,290],[500,250,-540,-40,40,290],[600,250,-540,60,40,290],[700,233,-580,120,40,273],[800,188,-630,170,40,228],[1000,188,-630,370,40,228],[1100,188,-630,470,40,228],[1200,188,-630,570,40,228]],"two":[[300,250,-450,-150,40,290],[400,250,-450,-50,40,290],[500,250,-450,50,40,290],[600,231,-490,110,40,271],[700,190,-560,140,40,230],[800,166,-590,210,45,211],[1000,79,-600,400,125,204],[1100,0,null,null,null,null],[1200,0,null,null,null,null]],"four":[[300,250,-300,0,40,290],[400,244,-300,100,40,284],[500,171,-300,200,40,211],[600,0,null,null,null,null],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]],"arms":[[300,250,-330,-30,40,290],[400,250,-330,70,40,290],[500,182,-330,170,40,222],[600,182,-330,270,40,222],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]]};
+  // The three lengths worth building for the 2-part units (same stairs, box and platform): [length, then
+  // stopping to bend with the laser at 1 1/4 risers: least lean before tipping going down and up (degrees)
+  // and the biggest drop (cm), then the same bending while moving (null = it tips)], and the HTD 8M belt
+  // each needs (2 x length + 480 mm round a 60-tooth pulley): 0.69 m would need half a tooth.
+  const LENGTHS = [[0.69, 8.5, 17.5, 5, null, null, 28], [0.7, 14.5, 17.5, 0, null, null, 29], [0.76, 14.5, 17.5, 0, null, null, 31]];
+  // Parts for one 2-part vehicle: [part, how many, 1:5 prototype, its price each, full size, its price each,
+  // where]. Prices are rough, in Singapore dollars (October 2026): RS Singapore and Mouser as listed, the rest
+  // from online listings at about S$1.30 to the US dollar; the full-size motors, gears and plates are estimates.
+  const MISUMI = (id, label) => `<a href="https://sg.misumi-ec.com/vona2/detail/${id}/" target="_blank" rel="noopener">${label}</a>`;
+  const LINK = (url, label) => `<a href="${url}" target="_blank" rel="noopener">${label}</a>`;
+  const PARTS = [
+    ['Timing belt', 4, 'HTD 5M, 15 mm wide, 380 mm (76 teeth)', 10, 'HTD 8M, 40 mm wide, 1880 mm (235 teeth)', 80, MISUMI('110310527489', 'MISUMI SG 5M') + ', ' + MISUMI('110310527399', '8M') + '; ' + LINK('https://sg.rs-online.com/web/p/timing-belts/4750484', 'RS SG') + ' (5M-15 belts from S$29); AliExpress'],
+    ['Timing pulley', 8, 'HTD 5M, 20 teeth (Ø31.8 mm), 8 mm bore', 13, 'HTD 8M, 60 teeth (Ø152.8 mm), for 40 mm belt', 120, MISUMI('110310532889', 'MISUMI SG 5M') + ', ' + MISUMI('110310574739', '8M') + '; AliExpress'],
+    ['Axle', 3, '8 mm steel rod, 150 mm', 4, '40 mm steel bar, 700 mm', 40, 'Shopee or AliExpress (rod); a steel stockist (bar)'],
+    ['Axle bearing', 8, 'flanged, 8 mm (KFL08)', 3, 'flange unit, 40 mm (UCFL208)', 85, LINK('https://sg.rs-online.com/web/p/bearing-units/1741440', 'RS SG: FAG UCFL208, S$85') + '; generic ones cost far less'],
+    ['Platform pivot', 2, 'pillow block, 8 mm (KP08)', 3, 'pillow block, 25 mm (UCP205)', 25, 'Shopee or AliExpress; RS SG'],
+    ['Hinge motor', 1, '35 kg·cm metal-gear servo (DS3235)', 35, 'self-locking worm gearbox (NMRV090) + 24 V motor, ~600 N·m', 520, 'AliExpress (servo US$20–33; NMRV090 with motor about US$400)'],
+    ['Hinge gears', 1, '3D-printed sector + 2 pinions', 5, 'steel sector + 2 pinions, machined', 300, '3D printer; a machine shop quote at full size'],
+    ['Drive motor + chain', 1, '12 V gear motor, 100 rpm (JGB37-520) + belt', 20, '24 V geared motor, ~400 W, + 08B chain and sprockets', 400, 'AliExpress or Shopee'],
+    ['Levelling actuator', 1, '12 V micro linear actuator, 50 mm (Actuonix L16)', 153, '24 V linear actuator, ~6000 N', 200, LINK('https://sg.rs-online.com/web/p/electric-linear-actuators/2020761', 'RS SG: Actuonix L16-50, S$152.95') + '; AliExpress'],
+    ['Laser sensor', 2, 'VL53L1X time-of-flight', 16, 'TFmini Plus lidar (12 m, IP65)', 90, 'Waveshare via LCSC (US$12); ' + LINK('https://www.mouser.sg/new/benewake/benewake-tfmini-plus/', 'Mouser SG') + ' (US$69)'],
+    ['IMU, controller, drivers', 1, 'MPU6050 + ESP32 + TB6612 driver', 25, 'BNO055 + controller + 2 Cytron MDDS30', 300, 'Cytron or RobotShop (MDDS30 US$79 each)'],
+    ['Battery', 1, '3S LiPo, 2200 mAh', 30, '24 V LiFePO4, 20 Ah, with charger', 530, 'hobby shops; Bioenno (US$410 with charger)'],
+    ['Rubber cover + cleats', 4, '1.5 mm neoprene, 3 mm cleats', 4, '6 mm rubber, 15 mm cleats', 25, 'Horme or Selffix: neoprene sheet and contact cement'],
+    ['Side plates + box', 1, '3 mm acrylic or aluminium, laser-cut', 30, '10 mm aluminium plates, box', 400, 'a laser-cutting shop'],
+  ];
   const CURRENT_BASE = [1100, 600, 250]; // the base on the levelling sheet, full size (220 x 120 x 50 mm at 1:5)
   // Stop, bend, then go: it drives at 0.25 m/s and stops wherever a hinge or the levelling has to turn
   // further than it can on the move. The middle hinge turns 30 degrees a second (120 per metre on the move),
@@ -360,17 +450,17 @@
   const LASERS = [[1, '1 riser'], [1.25, '1¼ risers'], [1.5, '1½ risers'], [2, '2 risers'], [3, '3 risers']];
   // Each setting run in full: least lean before tipping (degrees), biggest drop (cm) and trip time (s, of it
   // stopped) for 2 parts, 4 parts and front arms: [risers, two: down, up, drop, down s, stopped, up s, stopped, four: the same, arms: the same].
-  const LASER_TABLE = [[1,  14.5,  17.5,  0,  79.5,  5.3,  79.4,  5.2,  24.4,  24.4,  0,  88.3,  14.2,  83.8,  9.6,  25.9,  14,  0,  80,  5.9,  81.9,  7.6],
-    [1.25,  14.5,  17.5,  0,  79.6,  5.5,  79.4,  5.2,  24.4,  24.4,  0,  88.6,  14.4,  83.6,  9.4,  25.9,  14,  0,  80.1,  5.9,  81.9,  7.6],
-    [1.5,  10.8,  17.5,  0,  79.7,  5.6,  79.4,  5.2,  10.1,  24.4,  0,  88.7,  14.6,  83.8,  9.7,  19.1,  14,  0,  80.2,  6,  81.9,  7.6],
-    [2,  10.8,  17.5,  0,  79.7,  5.6,  79.4,  5.2,  10.1,  21.8,  0,  88.3,  14.2,  84.2,  10,  19.1,  14,  0,  80.3,  6.2,  81.9,  7.6],
-    [3,  10.8,  -7.8,  28,  79.9,  5.8,  76,  1.8,  10.1,  -8,  26,  87.7,  13.6,  80.8,  6.7,  19.1,  14,  0,  80.4,  6.3,  82.7,  8.4]];
+  const LASER_TABLE = [[1,  14.5,  17.5,  0,  79,  5.4,  78.9,  5.3,  24.4,  24.4,  0,  88.4,  14.8,  83.7,  10,  25.9,  14,  0,  79.5,  5.9,  81.4,  7.6],
+    [1.25,  14.5,  17.5,  0,  79.1,  5.5,  78.9,  5.3,  24.4,  24.4,  0,  88.7,  15,  83.5,  9.8,  25.9,  14,  0,  79.6,  5.9,  81.4,  7.6],
+    [1.5,  10.6,  17.5,  0,  79.3,  5.6,  78.9,  5.3,  10.1,  24.4,  0,  88.8,  15.1,  83.7,  10.1,  19.1,  14,  0,  79.7,  6,  81.4,  7.6],
+    [2,  10.6,  17.5,  0,  79.5,  5.8,  78.9,  5.3,  10.1,  21.8,  0,  88.3,  14.6,  84.1,  10.4,  19.1,  14,  0,  79.8,  6.2,  81.4,  7.6],
+    [3,  10.6,  -7.8,  26,  79.5,  5.8,  75.6,  1.9,  10.1,  -8,  26,  87.6,  14,  80.8,  7.1,  19.1,  14,  0,  79.9,  6.3,  82.2,  8.4]];
   const LASER_WHAT = {
     1: `Just as safe, but the steps alone can read ${FLIGHT_READ} risers, so it would also stop on every step of the flights.`,
     1.25: 'Best: as safe as stopping in exactly the right spot, and no false stops on the flights.',
     1.5: 'Late going down at the mid-landing: 2 parts can lean only 11° there, 4 parts 10°, front arms 19°.',
     2: 'Late going down at the mid-landing (11°, 10° and 19°); the 4 parts keep only 22° going up, and its platform brushes its own tracks.',
-    3: 'Too late going up: 2 and 4 parts tip at the mid-landing edge and the top edge, one end dropping 28 cm, and going down their platforms knock their own tracks. The front arms still keep 14°.',
+    3: 'Too late going up: 2 and 4 parts tip at the mid-landing edge and the top edge, one end dropping 26 cm, and going down their platforms knock their own tracks. The front arms still keep 14°.',
   };
 
   const state = { dir: 'down', idx: 0, playing: false, speed: 2, lastT: 0, travel: 0, sims: null, cam: null, scale: 1, spots: [], ctl: 'stopGo', laser: 1.25 };
@@ -627,30 +717,30 @@
     updateUnits();
   }
 
-  // ------------------------------------------------------------ shorter or longer 2-part track
-  function renderSweep() {
-    const rows = stopGo() ? SWEEP_STOPGO : SWEEP;
-    const best = rows.reduce((a, r) => (r[1] != null && (a == null || r[1] > a[1]) ? r : a), null);
-    const at = (L) => rows.find((r) => Math.abs(r[0] - L) < 1e-6), short = rows.filter((r) => r[0] < 0.69);
-    const tips = (r) => r[1] == null || r[2] == null;
-    if (stopGo()) {
-      const shortLean = Math.min(...short.map((r) => r[1])), drops = short.map((r) => r[3]), unit = at(TRACK.unit2);
-      $('sweep-sub').textContent = `No. Stopping to bend (laser at 1¼ risers), halves of 0.69 m or longer all keep about ${Math.round(unit[1])}° of lean going down and ${Math.round(unit[2])}° going up. A shorter half has less of itself on the stairs at an edge: it keeps only ${shortLean.toFixed(0)}° going down, with one end rocking down ${Math.min(...drops)} to ${Math.max(...drops)} cm, and below about 0.6 m a half can also rest on a single step edge and rock from step to step. Longer halves are no safer, only longer and heavier.`;
-    } else if (rows.every(tips)) {
-      $('sweep-sub').textContent = `No. Bending while it drives, a 2-part track of any length tips at an edge: its hinge can’t fold the front half down in time without lifting the vehicle off the stairs. Longer halves only drop further when it tips: ${rows[0][3]} cm at ${rows[0][0].toFixed(2)} m, ${rows[rows.length - 1][3]} cm at ${rows[rows.length - 1][0].toFixed(2)} m. Stopping to bend is what keeps it up.`;
-    } else {
-      $('sweep-sub').textContent = `Bending while it drives, the best is about ${best[0].toFixed(2)} m a half, keeping ${best[1].toFixed(0)}° of lean.`;
-    }
-    const body = $('sweep-body'); body.textContent = '';
-    const cell = (v) => (v == null || v < 0 ? chip('bad', 'Tips') : `${chip(levelOf(v), `${v.toFixed(1)}°`)}`);
-    for (const [L, dn, up, drop, one] of rows) {
+  // ------------------------------------------------------------ how long the 2-part units should be
+  // An HTD 8M belt round two 60-tooth pulleys is twice the axle spacing plus 480 mm, 8 mm a tooth.
+  const beltMM = (L) => 2 * Math.round(L * 1000) + 480;
+  function renderLengths() {
+    const sg = stopGo(), use = LENGTHS.find((r) => Math.abs(r[0] - TRACK.unit2) < 1e-6), short = LENGTHS[0], long = LENGTHS[LENGTHS.length - 1];
+    const teeth = (L) => { const t = beltMM(L) / 8; return Number.isInteger(t) ? `${t} teeth` : `${Math.floor(t)}½ teeth`; };
+    const shorter = Math.round(2 * (long[0] - use[0]) * 100), proto = Math.round(use[0] * 200);
+    $('len-sub').textContent = (sg ? '' : `Bending while it drives, all three tip at an edge, one end dropping ${short[6]} to ${long[6]} cm; stopping to bend is what keeps them up. `)
+      + `Use ${use[0].toFixed(2)} m. Stopping to bend, it is as steady as ${long[0].toFixed(2)} m (${Math.round(use[1])}° of lean before tipping going down, ${Math.round(use[2])}° going up), the vehicle is ${shorter} cm shorter, and it takes a stock ${beltMM(use[0])} mm belt (${teeth(use[0])}). `
+      + `At ${short[0].toFixed(2)} m one end rocks down ${short[3]} cm at an edge going down, leaving ${short[1]}°, and its belt would need ${teeth(short[0])}. `
+      + `At 1:5 the units are ${proto} mm, on ${2 * proto + 100} mm HTD 5M belts (${(2 * proto + 100) / 5} teeth).`;
+    const body = $('len-body'); body.textContent = '';
+    const cell = (v) => (v == null || v < 0 ? chip('bad', 'Tips') : chip(levelOf(v), `${v.toFixed(1)}°`));
+    for (const r of LENGTHS) {
+      const L = r[0], dn = sg ? r[1] : r[4], up = sg ? r[2] : r[5], drop = sg ? r[3] : r[6], tips = dn == null || up == null, isUse = r === use;
+      const made = Number.isInteger(beltMM(L) / 8);
+      const what = tips ? `Tips over an edge, one end drops ${drop} cm`
+        : drop > 0 ? `Rocks at an edge going down: one end drops ${drop} cm`
+        : isUse ? 'Steady. Use this length' : `Steady, but ${Math.round(2 * (L - use[0]) * 100)} cm longer and heavier`;
       const tr = document.createElement('tr');
-      const tips = dn == null || up == null, lvl = tips ? 'bad' : levelOf(Math.min(dn, up));
-      const what = (tips ? `Tips over the edge, one end drops ${drop} cm`
-        : [drop > 0 ? `Rocks at an edge, one end drops ${drop} cm` : '', lvl === 'warn' ? 'a sudden stop could tip it' : ''].filter(Boolean).join('; ') || 'Steady')
-        + (one ? '; a half can rest on a single step edge' : '');
-      tr.innerHTML = `<td class="num" style="text-align:left">${L.toFixed(2)} m${Math.abs(L - TRACK.unit2) < 0.005 ? ' (shown above)' : ''}</td><td class="num">${(2 * L + 2 * TRACK.radius).toFixed(2)} m</td><td>${cell(dn)}</td><td>${cell(up)}</td><td></td>`;
-      tr.lastChild.textContent = what.charAt(0).toUpperCase() + what.slice(1);
+      if (isUse) tr.className = 'pick';
+      tr.innerHTML = `<td class="num" style="text-align:left">${isUse ? '<b>' : ''}${L.toFixed(2)} m${isUse ? '</b>' : ''}</td><td class="num">${(2 * L + 2 * TRACK.radius).toFixed(2)} m</td>`
+        + `<td>${beltMM(L)} mm, ${teeth(L)}${made ? '' : ': not made'}</td><td>${cell(dn)}</td><td>${cell(up)}</td><td></td>`;
+      tr.lastChild.textContent = what;
       body.appendChild(tr);
     }
   }
@@ -682,36 +772,260 @@
     }
   }
 
-  // ------------------------------------------------------------ parts in Singapore
-  function renderBuy() {
-    const M = (id, label) => `<a href="https://sg.misumi-ec.com/vona2/detail/${id}/" target="_blank" rel="noopener">${label}</a>`;
-    const rows = [
-      ['Timing pulley', 'HTD 8M, 60 teeth (Ø153 mm), for 40 mm belt, aluminium', 'HTD 5M, 20 teeth (Ø32 mm), for 15 mm belt', '16', M('110310574739', 'MISUMI SG: Timing Pulleys HTD 8M') + '<br>' + M('110310532889', 'MISUMI SG: Timing Pulleys HTD 5M')],
-      ['Timing belt', 'HTD 8M, 40 mm wide, 1200 mm (150 teeth): 360 mm sections', 'HTD 5M, 15 mm wide, 240 mm (48 teeth): 70 mm sections', '8', M('110310527399', 'MISUMI SG: Timing Belts HTD 8M') + '<br>' + M('110310527489', 'MISUMI SG: Timing Belts HTD 5M')],
-      ['Rubber cover and cleats', '6 mm rubber strip on each belt, 15 mm cleats every 56 mm', '1.5 mm neoprene, 3 mm cleats every 11 mm', '8 belts', 'Glue on with contact adhesive; neoprene sheet and Selleys Kwik Grip at Horme or Selffix'],
-    ];
-    $('buy-body').innerHTML = rows.map((r) => `<tr><td class="spot">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="num">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
-    $('buy-note').innerHTML = 'For 2 parts use 2000 mm belts (760 mm units) at full size and 400 mm belts (150 mm units) at 1:5, four of each, with 8 pulleys. RS Singapore (sg.rs-online.com) also sells HTD 8M belts, such as Optibelt 1200 8M in 30 and 85 mm widths, and HTD 5M belts; some ship from its overseas warehouses. MISUMI\u2019s HTD 8M pulleys go up to 60 teeth and 40 mm belts, which is why the full-size track uses them.';
+  // ------------------------------------------------------------ how it is built: the drawings
+  // Full size, mm. The 2-part vehicle with 0.70 m units. Top view: x along the vehicle from the rear
+  // axle, y across from the middle. Per side, from the middle out: the box, the rear unit's side
+  // plate, the front unit's side plate, lane B (the front unit's belt) and lane A (the rear unit's
+  // belt): neighbouring units run in different lanes so both fit on the middle axle.
+  const BUILD = {
+    plateR: [200, 210], plateF: [214, 224], laneB: [228, 278], laneA: [288, 338], axleEnd: 348,
+    sector: 99,                          // the toothed sector on each front plate, tip radius round the middle axle
+    sectorFrom: 5, sectorTo: 131,        // its span, degrees from the front unit's line, upwards
+    pinion: { at: 68, dist: 117, r: 18 }, // the hinge motor's gear: angle from the front (up), distance from the middle axle, radius
+    laser: 45,                           // each laser sits this far beyond its end axle, looking down
+    bendUp: 35, bendDown: 39, bendMax: 55, // the bends these stairs need, and the hinge's range
+  };
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function sv(tag, attrs, parent, text) {
+    const e = document.createElementNS(SVGNS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function arrowDefs(svg, id) {
+    const m = sv('marker', { id, viewBox: '0 0 10 10', refX: 9.5, refY: 5, markerWidth: 9, markerHeight: 9, markerUnits: 'userSpaceOnUse', orient: 'auto-start-reverse' }, sv('defs', {}, svg));
+    sv('path', { d: 'M0 1 L10 5 L0 9 z', class: 'arrowhead' }, m);
+  }
+  // A label, a bold first line and an optional plain second line, with an arrow from the label's
+  // nearest edge to the part it names.
+  function bpLabel(g, L, arrow) {
+    const anchor = L.anchor || 'middle';
+    const t = sv('text', { x: L.x, y: L.y, class: 'lab', 'text-anchor': anchor }, g, L.t);
+    const s = L.s ? sv('text', { x: L.x, y: L.y + 15, class: 'labsub', 'text-anchor': anchor }, g, L.s) : null;
+    if (!L.to) return;
+    const a = t.getBBox(), b = s ? s.getBBox() : a;
+    const x0 = Math.min(a.x, b.x), x1 = Math.max(a.x + a.width, b.x + b.width), y0 = a.y, y1 = b.y + b.height;
+    const [tx, ty] = L.to, mid = (y0 + y1) / 2;
+    let sx = Math.max(x0 + 8, Math.min(x1 - 8, tx)), sy = ty > y1 ? y1 + 3 : y0 - 3;
+    if (L.from === 'left') { sx = x0 - 5; sy = mid; }
+    if (L.from === 'right') { sx = x1 + 5; sy = mid; }
+    sv('line', { x1: sx, y1: sy, x2: tx, y2: ty, class: 'lead', 'marker-end': `url(#${arrow})` }, g);
+  }
+  function bpDim(g, x1, y1, x2, y2, text, arrow, tx, ty, rot) {
+    sv('line', { x1, y1, x2, y2, class: 'dim', 'marker-start': `url(#${arrow})`, 'marker-end': `url(#${arrow})` }, g);
+    const a = { x: tx, y: ty, class: 'dimtxt', 'text-anchor': 'middle' };
+    if (rot) a.transform = `rotate(-90 ${tx} ${ty})`;
+    sv('text', a, g, text);
   }
 
-  // ------------------------------------------------------------ model notes
-  function renderModel() {
-    const rows = [
-      ['Stairs', 'ES1 as measured: 8.4 m high in two flights of 24 steps (175 mm rise, 250 mm deep, 35°), a 1 m mid-landing and a 3 m top platform, 1.5 m wide.'],
-      ['Casualty', 'A 120 kg adult on the 3-part platform (2 m × 0.5 m), folded into a chair shape: back 0.9 m, seat 0.5 m, legs 0.5 m, with padding.'],
-      ['Levelling', `The platform turns on pillow-block bearings on top of the box, ${(BASE.seatHeight * 1000).toFixed(0)} mm above the track axles. A worm-gear linear actuator, steered by the IMU, keeps it level: up to ${BASE.levelLimitDeg || 40}° each way, turning ${CONTROL.level}° a second (150° per metre at ${CONTROL.drive} m/s).`],
-      ['Box', `${((BOX.back + BOX.front) * 1000).toFixed(0)} × ${(BOX.width * 1000).toFixed(0)} × ${((BOX.top - BOX.floor) * 1000).toFixed(0)} mm, 15 kg of battery and drive motor, bolted to the section just behind the middle hinge.`],
-      ['Tracks', `Timing belts used as tracks, from parts MISUMI Singapore stocks (see Track parts in Singapore). Full size: HTD 8M belts, 40 mm wide, two side by side on each side, on 60-tooth pulleys (Ø153 mm), with a 6 mm rubber cover and 15 mm cleats every 56 mm: 170 mm tall, 200 mm with cleats. 1200 mm belts for each of the 4 parts (sections 360 mm), 2000 mm belts for each of the 2 parts (760 mm), about 3.5 m for one stiff track.`],
-      ['Weights', 'Track units 2 × 25 kg, platform and levelling 25 kg, box 15 kg; the 4-part tracks add two 6 kg hinge motors.'],
-      ['How it bends', stopGo()
-        ? `Stop, bend, then go. It drives at ${CONTROL.drive} m/s. Wherever a hinge or the levelling has to turn further than it can on the move, it stops until they have: the middle hinge turns ${CONTROL.hinge}° a second, the 4-part’s end hinges ${CONTROL.end.toFixed(0)}°, the levelling ${CONTROL.level}°. A hinge only turns as far as still leaves ${CONTROL.safeDeg}° of lean before tipping; otherwise it holds its bend until more track is on the stairs. Hinges bend up to 55°. When one layout stops, the others wait, so they all stay side by side.`
-        : `Bend while moving: the hinges and the levelling turn as it drives at ${CONTROL.drive} m/s, without stopping. The middle hinge bends up to 55° at 120° per metre travelled (${CONTROL.hinge}° a second); the 4-part’s end hinges about twice as fast, to keep each end on the stairs.`],
-      ['Front arms', `After the Cal Poly Pomona wheelchair stair climber on GrabCAD, scaled up: a stiff ${TRACK.armsMain.toFixed(2)} m main track carries the box and platform at its middle, with ${TRACK.armsArm.toFixed(2)} m track arms on its front axle. The main track rests on the stairs by its own weight; the arms swing down (up to ${ARMS.hingeLimitDeg}°) or up (up to ${ARMS.armUpDeg}°, where the platform gets in the way) until they just touch the stairs ahead. It turns round at the top so the arms lead both ways. With the prototype’s proportions (a 0.92 m main track and 0.60 m arms) it keeps only 7–10° at the top edge on these stairs.`],
-      ['Hinges', `A hinge only pushes its track down onto the stairs. To put a track end down it may lift the vehicle off them by ${Math.round(MAX_LIFT * 100)} cm at most; it never stands the vehicle on its two ends with the middle in the air, which would take a hinge motor strong enough to hold the whole vehicle and casualty off the ground, with only the end tracks gripping.`],
-      ...(stopGo() ? [['Laser', `A laser at the leading end of the track (the front going up, the back going down) points straight down. Near a platform edge the hinges stay locked as it drives on, until the laser reads ${laserName(state.laser)} (${Math.round(state.laser * STAIRS.rise * 1000)} mm) further than on flat ground; then it stops and bends. On the flights the steps alone make it read up to ${FLIGHT_READ} risers further, so it can’t be set lower than that.`]] : []),
-      ['Tipping', `"Lean before tipping" is how far the whole vehicle could be tilted before its weight passes the last point touching the stairs. A sudden stop from walking pace (0.25 m/s) in 0.2 s needs ${HARD_STOP.toFixed(1)}°.`],
+  function drawTop() {
+    const svg = $('bp-top'); svg.textContent = '';
+    const W = 1000, H = 580, k = 0.5, X = (x) => 160 + x * k, Y = (y) => 300 + y * k;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    arrowDefs(svg, 'bp-ar-top');
+    const g = sv('g', {}, svg), B = BUILD, U = Math.round(TRACK.unit2 * 1000), R = Math.round(TRACK.radius * 1000);
+    const rect = (x0, y0, x1, y1, cls, rx) => sv('rect', { x: X(Math.min(x0, x1)), y: Y(Math.min(y0, y1)), width: Math.abs(x1 - x0) * k, height: Math.abs(y1 - y0) * k, rx: rx || 0, class: cls }, g);
+    const both = (f) => { f(1); f(-1); };
+    const band = (sd, [a, b]) => (sd > 0 ? [a, b] : [-b, -a]);
+    const bx0 = U - BOX.back * 1000, bx1 = U + BOX.front * 1000, bw = BOX.width * 500;
+    const pin = U + B.pinion.dist * Math.cos(rad(B.pinion.at));
+    // centre lines
+    sv('line', { x1: X(-B.laser - 18), y1: Y(0), x2: X(2 * U + B.laser + 18), y2: Y(0), class: 'ctr' }, g);
+    for (const a of [0, U, 2 * U]) sv('line', { x1: X(a), y1: Y(-362), x2: X(a), y2: Y(362), class: 'ctr' }, g);
+    // axles (the rear and middle ones carry lane A, the middle and front ones lane B)
+    rect(-15, -B.axleEnd, 15, B.axleEnd, 'axle');
+    rect(U - 20, -B.axleEnd, U + 20, B.axleEnd, 'axle');
+    rect(2 * U - 15, -B.laneB[1] - 10, 2 * U + 15, B.laneB[1] + 10, 'axle');
+    // side plates: the rear unit's inside, the front unit's just outside, each on bearings on its two axles
+    both((sd) => { const [a, b] = band(sd, B.plateR); rect(-60, a, U + 60, b, 'plate', 1.5); });
+    both((sd) => { const [a, b] = band(sd, B.plateF); rect(U - 65, a, 2 * U + 60, b, 'plate', 1.5); rect(U - 65, a, U + B.sector, b, 'hinge', 1.5); });
+    // cross bars: one at the back of the rear unit (the box ties its front), two on the front unit
+    rect(60, -bw, 100, bw, 'plate', 1.5);
+    rect(U + 260, -B.plateF[0], U + 300, B.plateF[0], 'plate', 1.5);
+    rect(2 * U - 100, -B.plateF[0], 2 * U - 60, B.plateF[0], 'plate', 1.5);
+    // pulleys under the belts: the flanges show either side
+    const pulley = (a, lane) => both((sd) => { const [p, q] = band(sd, lane); rect(a - 80, p, a + 80, q, 'pulley', 3); });
+    pulley(0, B.laneA); pulley(U, B.laneA); pulley(U, B.laneB); pulley(2 * U, B.laneB);
+    // belts with their cleats
+    const belt = (a, lane) => both((sd) => {
+      const [p, q] = band(sd, lane);
+      rect(a - R, p + 5, a + U + R, q - 5, 'belt', 6);
+      for (let x = a + 20; x < a + U - 10; x += 56) sv('line', { x1: X(x), y1: Y(p + 5), x2: X(x), y2: Y(q - 5), class: 'cleat' }, g);
+    });
+    belt(0, B.laneA); belt(U, B.laneB);
+    // the box, and what is inside it (dashed)
+    rect(bx0, -bw, bx1, bw, 'boxf', 2);
+    rect(bx0 + 20, -180, bx0 + 180, -60, 'hid', 4);                         // drive motor
+    sv('line', { x1: X(bx0 + 180), y1: Y(-120), x2: X(U), y2: Y(-120), class: 'hid' }, g); // its chain down to the middle axle
+    rect(bx0 + 20, 40, bx0 + 180, 180, 'hid', 4);                           // battery
+    rect(pin - 58, -60, pin + 58, 60, 'hid', 4);                            // hinge motor, a worm gearbox on the cross shaft
+    for (const sd of [1, -1]) sv('line', { x1: X(pin), y1: Y(sd * 60), x2: X(pin), y2: Y(sd * B.plateF[0]), class: 'hid' }, g); // the cross shaft
+    both((sd) => { const [a, b] = band(sd, B.plateF); rect(pin - B.pinion.r, a - 1, pin + B.pinion.r, b + 1, 'hinge', 1); });
+    const intext = (x, y, lines, anchor) => lines.forEach((l, i) => sv('text', { x: X(x), y: Y(y) + i * 13, class: 'intext', 'text-anchor': anchor || 'start' }, g, l));
+    intext(bx0 + 30, -150, ['DRIVE', 'MOTOR']);
+    intext(bx0 + 30, 72, ['BATTERY']);
+    intext(pin, -12, ['HINGE', 'MOTOR'], 'middle');
+    intext(bx1 - 12, 186, ['BOX'], 'end');
+    // on top of the box: the platform's pivot in two pillow blocks, and the levelling actuator
+    both((sd) => { const [a, b] = band(sd, [128, 172]); rect(U - 28, a, U + 28, b, 'pulley', 3); });
+    rect(bx0 + 50, -16, bx0 + 170, 16, 'pulley', 6);
+    rect(bx0 + 170, -7, U - 55, 7, 'axle');
+    // lasers, one at each end, looking straight down
+    rect(-B.laser, -6, 60, 6, 'plate');
+    rect(2 * U - 60, -6, 2 * U + B.laser, 6, 'plate');
+    for (const x of [-B.laser, 2 * U + B.laser]) rect(x - 18, -14, x + 18, 14, 'laserf', 3);
+    sv('text', { x: X(-B.laser - 26), y: Y(0) + 4, class: 'intext', 'text-anchor': 'end' }, g, 'LASER');
+    sv('text', { x: X(2 * U + B.laser + 26), y: Y(0) + 4, class: 'intext' }, g, 'LASER');
+    // dimensions: width on the left, axle spacing and length below
+    const A = 'bp-ar-top';
+    for (const y of [-B.axleEnd, B.axleEnd]) sv('line', { x1: X(-22), y1: Y(y), x2: 26, y2: Y(y), class: 'ext' }, g);
+    bpDim(g, 32, Y(-B.axleEnd), 32, Y(B.axleEnd), '700', A, 25, Y(0), true);
+    for (const y of [-bw, bw]) sv('line', { x1: X(-64), y1: Y(y), x2: 56, y2: Y(y), class: 'ext' }, g);
+    bpDim(g, 62, Y(-bw), 62, Y(bw), `${Math.round(bw * 2)}`, A, 55, Y(0), true);
+    for (const [a, y] of [[0, B.axleEnd], [U, B.axleEnd], [2 * U, B.laneB[1] + 10]]) sv('line', { x1: X(a), y1: Y(y) + 3, x2: X(a), y2: 522, class: 'ext' }, g);
+    bpDim(g, X(0), 516, X(U), 516, `${U}`, A, X(U / 2), 510);
+    bpDim(g, X(U), 516, X(2 * U), 516, `${U}`, A, X(1.5 * U), 510);
+    sv('line', { x1: X(-R), y1: Y(B.laneA[1] - 5) + 3, x2: X(-R), y2: 558, class: 'ext' }, g);
+    sv('line', { x1: X(2 * U + R), y1: Y(B.laneB[1] - 5) + 3, x2: X(2 * U + R), y2: 558, class: 'ext' }, g);
+    const C = Math.round(TRACK.cleat * 1000);
+    bpDim(g, X(-R), 552, X(2 * U + R), 552, `${2 * U + 2 * R} over the tracks, ${2 * U + 2 * R + 2 * C} over the cleats`, A, X(U), 546);
+    // the axles' names, beside their extension lines
+    const tag = (x, t) => sv('text', { x: X(x) + 6, y: 494, class: 'intext' }, g, t);
+    tag(0, 'REAR AXLE'); tag(U, 'MIDDLE AXLE = HINGE'); tag(2 * U, 'FRONT AXLE');
+    // which way is which
+    sv('text', { x: 14, y: 22, class: 'intext' }, g, '◀ REAR, LEADS GOING DOWN');
+    sv('text', { x: W - 14, y: 22, class: 'intext', 'text-anchor': 'end' }, g, 'FRONT, LEADS GOING UP ▶');
+    // labels, all on the top half (the drawing is the same both sides)
+    const labels = [
+      { t: 'Side plates', s: 'rear inside, front outside', x: 300, y: 44, to: [X(330), Y(-205)] },
+      { t: 'Hinge gears', s: 'sector + motor’s gear', x: 490, y: 44, to: [X(U - 40), Y(-219)] },
+      { t: 'Platform pivot', s: 'on two pillow blocks', x: 676, y: 44, to: [X(U), Y(-172)] },
+      { t: 'Rear track unit', s: 'belt in the outer lane', x: 205, y: 92, to: [X(250), Y(-B.laneA[1] + 10)] },
+      { t: 'Levelling actuator', s: 'under the platform', x: 400, y: 92, to: [X(bx0 + 190), Y(-7)] },
+      { t: 'Front track unit', s: 'belt in the inner lane', x: 760, y: 92, to: [X(1100), Y(-B.laneB[1] + 10)] },
     ];
-    $('model').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+    for (const L of labels) bpLabel(g, L, A);
+  }
+
+  function drawHinge() {
+    const svg = $('bp-hinge'); svg.textContent = '';
+    const W = 1000, H = 560, k = 0.6, X = (x) => 470 + x * k, Y = (z) => 300 - z * k;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    arrowDefs(svg, 'bp-ar-hinge');
+    const g = sv('g', {}, svg), B = BUILD, R = Math.round(TRACK.radius * 1000), L = 470;
+    const P = (x, z) => `${X(x).toFixed(1)} ${Y(z).toFixed(1)}`;
+    const rot = (u, v, th) => [u * Math.cos(th) - v * Math.sin(th), u * Math.sin(th) + v * Math.cos(th)];
+    // a track unit from the middle axle along angle th (radians), cut off at L: the belt's outside,
+    // with a break line at the cut
+    const unitPath = (th, len) => {
+      const p = (u, v) => P(...rot(u, v, th));
+      const zig = [[len, R], [len - 10, R * 0.35], [len + 10, -R * 0.35], [len, -R]];
+      return `M${p(0, R)} L${zig.map(([u, v]) => p(u, v)).join(' L')} L${p(0, -R)} A${R * k} ${R * k} 0 0 ${th > Math.PI / 2 || th < -Math.PI / 2 ? 0 : 1} ${p(0, R)}`;
+    };
+    const cleats = (th, len) => {
+      for (let u = 25; u < len - 20; u += 56) for (const v of [R, -R]) {
+        const [a, b] = rot(u, v, th), [c, d] = rot(u, v + Math.sign(v) * 15, th);
+        sv('line', { x1: X(a), y1: Y(b), x2: X(c), y2: Y(d), class: 'beltline', 'stroke-width': 5 }, g);
+      }
+    };
+    // the box and what is inside it, seen through the side plates
+    const bx0 = -BOX.back * 1000, bx1 = BOX.front * 1000, bz0 = BOX.floor * 1000, bz1 = BOX.top * 1000;
+    sv('rect', { x: X(bx0), y: Y(bz1), width: (bx1 - bx0) * k, height: (bz1 - bz0) * k, rx: 2, class: 'boxf' }, g);
+    const pin = [B.pinion.dist * Math.cos(rad(B.pinion.at)), B.pinion.dist * Math.sin(rad(B.pinion.at))];
+    sv('rect', { x: X(pin[0] - 48), y: Y(pin[1] + 52), width: 96 * k, height: 100 * k, rx: 3, class: 'hid' }, g); // hinge motor
+    const dm = [-205, 100];
+    sv('rect', { x: X(dm[0] - 55), y: Y(dm[1] + 55), width: 110 * k, height: 105 * k, rx: 3, class: 'hid' }, g); // drive motor
+    // the drive chain from the motor's sprocket to the middle axle's
+    const r1 = 18, r2 = 34, dx = -dm[0], dz = -dm[1], d = Math.hypot(dx, dz), base = Math.atan2(dz, dx), off = Math.acos((r1 - r2) / d);
+    for (const s of [1, -1]) {
+      const a = base + s * off;
+      sv('line', { x1: X(dm[0] + r1 * Math.cos(a)), y1: Y(dm[1] + r1 * Math.sin(a)), x2: X(r2 * Math.cos(a)), y2: Y(r2 * Math.sin(a)), class: 'hid' }, g);
+    }
+    sv('circle', { cx: X(dm[0]), cy: Y(dm[1]), r: r1 * k, class: 'hid' }, g);
+    sv('circle', { cx: X(0), cy: Y(0), r: r2 * k, class: 'hid' }, g);
+    // platform pivot: a pillow block on the box top, the platform's shaft in it
+    const pz = BASE.seatHeight * 1000;
+    sv('rect', { x: X(-45), y: Y(bz1 + 16), width: 90 * k, height: 16 * k, rx: 2, class: 'pulley' }, g);
+    sv('path', { d: `M${P(-32, bz1 + 16)} L${P(-32, pz)} A${32 * k} ${32 * k} 0 0 1 ${P(32, pz)} L${P(32, bz1 + 16)} Z`, class: 'pulley' }, g);
+    sv('circle', { cx: X(0), cy: Y(pz), r: 13 * k, class: 'axle' }, g);
+    sv('rect', { x: X(-160), y: Y(pz + 44), width: 320 * k, height: 12 * k, rx: 2, class: 'plate' }, g);
+    sv('line', { x1: X(0), y1: Y(pz), x2: X(0), y2: Y(pz + 32), class: 'obj' }, g);
+    // the front unit where these stairs bend it, dashed
+    for (const a of [B.bendUp, -B.bendDown]) sv('path', { d: unitPath(rad(a), L), class: 'ghost' }, g);
+    // rear unit and front unit, straight
+    for (const th of [Math.PI, 0]) { sv('path', { d: unitPath(th, L), class: 'beltline', 'stroke-width': 9 }, g); cleats(th, L); }
+    // side plates: the rear unit's (inside) and the front unit's (outside), round ends on the middle axle
+    sv('path', { d: `M${P(-L + 25, 55)} L${P(0, 55)} A${55 * k} ${55 * k} 0 0 1 ${P(0, -55)} L${P(-L + 25, -55)}`, class: 'plateo' }, g);
+    sv('path', { d: `M${P(L - 25, 55)} L${P(0, 55)} A${55 * k} ${55 * k} 0 0 0 ${P(0, -55)} L${P(L - 25, -55)}`, class: 'plateo' }, g);
+    // the toothed sector on the front plate, and the motor's gear that turns it
+    const a0 = rad(B.sectorFrom), a1 = rad(B.sectorTo), rt = B.sector, rr = B.sector - 9, n = 22;
+    let d2 = `M${P(0, 0)}`;
+    for (let i = 0; i <= n; i++) {
+      const a = a0 + ((a1 - a0) * i) / n, h = (a1 - a0) / n / 4;
+      d2 += ` L${P(rr * Math.cos(a - h), rr * Math.sin(a - h))} L${P(rt * Math.cos(a - h / 2), rt * Math.sin(a - h / 2))} L${P(rt * Math.cos(a + h / 2), rt * Math.sin(a + h / 2))} L${P(rr * Math.cos(a + h), rr * Math.sin(a + h))}`;
+    }
+    sv('path', { d: d2 + ' Z', class: 'hinge' }, g);
+    let d3 = '';
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * 2 * Math.PI, h = Math.PI / 24, ro = B.pinion.r + 4, ri = B.pinion.r - 4;
+      d3 += `${i ? ' L' : 'M'}${P(pin[0] + ri * Math.cos(a - h), pin[1] + ri * Math.sin(a - h))} L${P(pin[0] + ro * Math.cos(a - h / 2), pin[1] + ro * Math.sin(a - h / 2))} L${P(pin[0] + ro * Math.cos(a + h / 2), pin[1] + ro * Math.sin(a + h / 2))} L${P(pin[0] + ri * Math.cos(a + h), pin[1] + ri * Math.sin(a + h))}`;
+    }
+    sv('path', { d: d3 + ' Z', class: 'hinge' }, g);
+    sv('circle', { cx: X(pin[0]), cy: Y(pin[1]), r: 5, class: 'solid' }, g);
+    // the middle axle and its pulleys
+    sv('circle', { cx: X(0), cy: Y(0), r: TRACK.pulley * 1000 * k, class: 'thin', fill: 'none', stroke: 'currentColor', 'stroke-width': 0.8, opacity: 0.5 }, g);
+    sv('circle', { cx: X(0), cy: Y(0), r: 20 * k, class: 'axle' }, g);
+    sv('line', { x1: X(-30), y1: Y(0), x2: X(30), y2: Y(0), class: 'ctr' }, g);
+    sv('line', { x1: X(0), y1: Y(-30), x2: X(0), y2: Y(30), class: 'ctr' }, g);
+    // how far it bends
+    const A = 'bp-ar-hinge', rArc = 535;
+    for (const a of [B.bendUp, -B.bendDown]) {
+      const e = rad(a), large = 0, sweep = a > 0 ? 0 : 1;
+      sv('path', { d: `M${P(rArc, 0)} A${rArc * k} ${rArc * k} 0 ${large} ${sweep} ${P(rArc * Math.cos(e), rArc * Math.sin(e))}`, class: 'dim', 'marker-end': `url(#${A})` }, g);
+    }
+    sv('line', { x1: X(L + 20), y1: Y(0), x2: X(rArc + 10), y2: Y(0), class: 'ctr' }, g);
+    // labels
+    const labels = [
+      { t: 'Platform pivot', s: 'pillow blocks on the box', x: 640, y: 40, to: [X(30), Y(pz + 6)] },
+      { t: 'Hinge motor', s: 'worm gear: holds with the power off', x: 300, y: 40, to: [X(pin[0] - 40), Y(pin[1] + 52)] },
+      { t: 'Hinge gears', s: 'motor’s gear turns a sector', x: 800, y: 150, anchor: 'start', from: 'left', to: [X(pin[0] + 22), Y(pin[1] + 4)] },
+      { t: 'Front unit, straight', s: '', x: 800, y: 262, anchor: 'start', from: 'left', to: [X(L - 40), Y(R + 15)] },
+      { t: `Bent up ${B.bendUp}°`, s: 'foot of a flight', x: 800, y: 92, anchor: 'start', from: 'left', to: [X(330), Y(300)] },
+      { t: `Bent down ${B.bendDown}°`, s: 'over an edge', x: 800, y: 470, anchor: 'start', from: 'left', to: [X(330), Y(-300)] },
+      { t: 'Box', s: 'bolted to the rear unit', x: 178, y: 120, anchor: 'end', from: 'right', to: [X(bx0), Y(bz1 - 30)] },
+      { t: 'Drive motor + chain', s: 'turn the middle axle', x: 178, y: 205, anchor: 'end', from: 'right', to: [X(dm[0] - 55), Y(dm[1])] },
+      { t: 'Rear track unit', s: '', x: 178, y: 405, anchor: 'end', from: 'right', to: [X(-330), Y(-R - 9)] },
+      { t: 'Middle axle = hinge', s: 'both units turn on it', x: 250, y: 480, to: [X(-12), Y(-14)] },
+    ];
+    for (const lb of labels) bpLabel(g, lb, A);
+  }
+
+  // ------------------------------------------------------------ track parts and dimensions (2 parts)
+  function renderParts() {
+    const U = Math.round(TRACK.unit2 * 1000), R = Math.round(TRACK.radius * 1000), C = Math.round(TRACK.cleat * 1000);
+    const B = BUILD, bw = Math.round(BOX.width * 1000), q = (mm) => `${+(mm / 5).toFixed(1)}`;
+    const box = [Math.round((BOX.back + BOX.front) * 1000), bw, Math.round((BOX.top - BOX.floor) * 1000)];
+    const dims = [
+      ['Track units', `2, each ${U} mm axle to axle`, `2, each ${q(U)} mm`],
+      ['Length', `${2 * U + 2 * R} mm (${2 * U + 2 * R + 2 * C} mm over the cleats)`, `${q(2 * U + 2 * R)} mm (${q(2 * U + 2 * R + 2 * C)} mm)`],
+      ['Width', `${2 * B.axleEnd + 4} mm overall, ${bw} mm between the side plates`, `${q(2 * B.axleEnd + 4)} mm, ${q(bw)} mm`],
+      ['Track height', `${2 * R} mm (${2 * R + 2 * C} mm with the cleats)`, `${q(2 * R)} mm (${q(2 * R + 2 * C)} mm)`],
+      ['Track belt', 'HTD 8M, 40 mm wide, one per side on each unit', 'HTD 5M, 15 mm wide'],
+      ['Hinge', `on the middle axle: ${B.bendMax}° up or down at ${CONTROL.hinge}°/s (these stairs need ${B.bendUp}° up, ${B.bendDown}° down)`, 'the same angles'],
+      ['Box', `${box.join(' × ')} mm, from ${Math.round(BOX.back * 1000)} mm behind to ${Math.round(BOX.front * 1000)} mm in front of the middle axle`, `${box.map(q).join(' × ')} mm`],
+      ['Platform pivot', `${Math.round(BASE.seatHeight * 1000)} mm above the middle axle`, `${q(BASE.seatHeight * 1000)} mm`],
+      ['Clearance under the box', `${Math.round((BOX.floor + TRACK.radius + TRACK.cleat) * 1000)} mm`, `${q((BOX.floor + TRACK.radius + TRACK.cleat) * 1000)} mm`],
+      ['Laser trigger', `a drop ${Math.round(1.25 * STAIRS.rise * 1000)} mm deeper than flat ground`, `${Math.round(1.25 * STAIRS.rise * 200)} mm`],
+      ['Speed', `${CONTROL.drive} m/s (${Math.round((CONTROL.drive / TRACK.pulley) * 60 / (2 * Math.PI))} rpm at the middle axle)`, '–'],
+    ];
+    $('dims-body').innerHTML = dims.map((r) => `<tr><td class="spot">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+    const money = (v) => `${Math.round(v).toLocaleString('en-SG')}`;
+    const tot = (k) => PARTS.reduce((a, r) => a + r[1] * r[k], 0);
+    $('parts-body').innerHTML = PARTS.map((r) => `<tr><td class="spot">${r[0]}</td><td class="num">${r[1]}</td><td>${r[2]}</td><td class="num">${money(r[1] * r[3])}</td><td>${r[4]}</td><td class="num">${money(r[1] * r[5])}</td><td>${r[6]}</td></tr>`).join('')
+      + `<tr><td class="spot">Total</td><td></td><td></td><td class="num"><b>≈ ${money(tot(3))}</b></td><td></td><td class="num"><b>≈ ${money(tot(5))}</b></td><td></td></tr>`;
+    $('parts-note').textContent = 'Rough prices in Singapore dollars, October 2026, for one vehicle: RS Singapore and Mouser as listed, the rest from online listings at about S$1.30 to the US dollar. The full-size motors, gears and plates are estimates. Check stock and prices before ordering. The prototype is cheaper by about S$120 with a second servo in place of the Actuonix actuator.';
+    $('parts-sub').textContent = `The 2-part vehicle with ${(U / 1000).toFixed(2)} m units, as drawn above.`;
   }
 
   // ------------------------------------------------------------ drawing
@@ -1151,7 +1465,7 @@
   function afterRuns(first) {
     $('busy').hidden = true;
     $('scrub').max = String(nPath() - 1);
-    renderVerdicts(); renderSpots(); renderSweep(); renderLaser(); renderModel();
+    renderVerdicts(); renderSpots(); renderLengths(); renderLaser();
     $('jump-next').hidden = !stopGo();
     if (first) {
       // open at the top edge, the riskiest place: stopping to bend, just before the 2-part track stops there
@@ -1195,10 +1509,11 @@
   readColors();
   showControls();
   renderBox();
-  renderSweep();
+  renderLengths();
   renderLaser();
-  renderBuy();
-  renderModel();
+  renderParts();
+  drawTop();
+  drawHinge();
   setupStages();
   setupJumps();
   runSims();
