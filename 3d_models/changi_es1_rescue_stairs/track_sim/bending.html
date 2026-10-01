@@ -358,7 +358,7 @@
   </section>
 
   <section class="card panel" aria-labelledby="parts-h">
-    <h2 id="parts-h">Track parts and dimensions</h2>
+    <h2 id="parts-h">Track and hinge parts, and dimensions</h2>
     <p class="sub" id="parts-sub"></p>
     <div class="table-wrap"><table>
       <caption class="tcap">Main dimensions</caption>
@@ -421,10 +421,10 @@
   // and the biggest drop (cm), then the same bending while moving (null = it tips)], and the HTD 8M belt
   // each needs (2 x length + 480 mm round a 60-tooth pulley): 0.69 m would need half a tooth.
   const LENGTHS = [[0.69, 8.5, 17.5, 5, null, null, 28], [0.7, 14.5, 17.5, 0, null, null, 29], [0.76, 14.5, 17.5, 0, null, null, 31]];
-  // Parts for one 2-part vehicle, tracks, hinge, drive and control (the platform and its levelling are
-  // designed separately): [part, how many, 1:5 prototype, its price each, full size, its price each,
-  // where]. Prices are rough, in Singapore dollars (October 2026): RS Singapore and Mouser as listed, the rest
-  // from online listings at about S$1.30 to the US dollar; the full-size motors, gears and plates are estimates.
+  // Parts for the tracks and hinge of one 2-part vehicle (the motors, battery, lasers, controller and the
+  // platform come from the rest of the team): [part, how many, 1:5 prototype, its price each, full size, its price each,
+  // where]. Prices are rough, in Singapore dollars (October 2026): RS Singapore as listed, the rest
+  // from online listings at about S$1.30 to the US dollar; the full-size gears and plates are estimates.
   const MISUMI = (id, label) => `<a href="https://sg.misumi-ec.com/vona2/detail/${id}/" target="_blank" rel="noopener">${label}</a>`;
   const LINK = (url, label) => `<a href="${url}" target="_blank" rel="noopener">${label}</a>`;
   const PARTS = [
@@ -432,12 +432,7 @@
     ['Timing pulley', 8, 'HTD 5M, 20 teeth (Ø31.8 mm), 8 mm bore', 13, 'HTD 8M, 60 teeth (Ø152.8 mm), for 40 mm belt', 120, MISUMI('110310532889', 'MISUMI SG 5M') + ', ' + MISUMI('110310574739', '8M') + '; AliExpress'],
     ['Axle', 3, '8 mm steel rod, 150 mm', 4, '40 mm steel bar, 700 mm', 40, 'Shopee or AliExpress (rod); a steel stockist (bar)'],
     ['Axle bearing', 8, 'flanged, 8 mm (KFL08)', 3, 'flange unit, 40 mm (UCFL208)', 85, LINK('https://sg.rs-online.com/web/p/bearing-units/1741440', 'RS SG: FAG UCFL208, S$85') + '; generic ones cost far less'],
-    ['Hinge motor', 1, '35 kg·cm metal-gear servo (DS3235)', 35, 'self-locking worm gearbox (NMRV090) + 24 V motor, ~600 N·m', 520, 'AliExpress (servo US$20–33; NMRV090 with motor about US$400)'],
-    ['Hinge gears', 1, '3D-printed sector + 2 pinions', 5, 'steel sector + 2 pinions, machined', 300, '3D printer; a machine shop quote at full size'],
-    ['Drive motor + chain', 1, '12 V gear motor, 100 rpm (JGB37-520) + belt', 20, '24 V geared motor, ~400 W, + 08B chain and sprockets', 400, 'AliExpress or Shopee'],
-    ['Laser sensor', 2, 'VL53L1X time-of-flight', 16, 'TFmini Plus lidar (12 m, IP65)', 90, 'Waveshare via LCSC (US$12); ' + LINK('https://www.mouser.sg/new/benewake/benewake-tfmini-plus/', 'Mouser SG') + ' (US$69)'],
-    ['Controller + motor driver', 1, 'ESP32 + TB6612 driver', 21, 'controller + Cytron MDDS30 (drive and hinge)', 155, 'Cytron or RobotShop (MDDS30 US$79)'],
-    ['Battery', 1, '3S LiPo, 2200 mAh', 30, '24 V LiFePO4, 20 Ah, with charger', 530, 'hobby shops; Bioenno (US$410 with charger)'],
+    ['Hinge gears', 1, '2 sectors + 2 pinions, 3D-printed, on a thin steel cross shaft in 2 small bearings', 10, '2 steel sectors + 2 pinions, machined, on a 25 mm cross shaft in 2 flange bearings', 400, '3D printer, and Shopee for the rod and bearings; a machine shop quote at full size'],
     ['Rubber cover + cleats', 4, '1.5 mm neoprene, 3 mm cleats', 4, '6 mm rubber, 15 mm cleats', 25, 'Horme or Selffix: neoprene sheet and contact cement'],
     ['Side plates + box', 1, '3 mm acrylic or aluminium, laser-cut', 30, '10 mm aluminium plates, box', 400, 'a laser-cutting shop'],
   ];
@@ -1054,8 +1049,8 @@
     const tot = (k) => PARTS.reduce((a, r) => a + r[1] * r[k], 0);
     $('parts-body').innerHTML = PARTS.map((r) => `<tr><td class="spot">${r[0]}</td><td class="num">${r[1]}</td><td>${r[2]}</td><td class="num">${money(r[1] * r[3])}</td><td>${r[4]}</td><td class="num">${money(r[1] * r[5])}</td><td>${r[6]}</td></tr>`).join('')
       + `<tr><td class="spot">Total</td><td></td><td></td><td class="num"><b>≈ ${money(tot(3))}</b></td><td></td><td class="num"><b>≈ ${money(tot(5))}</b></td><td></td></tr>`;
-    $('parts-note').textContent = 'Rough prices in Singapore dollars, October 2026, for one vehicle: RS Singapore and Mouser as listed, the rest from online listings at about S$1.30 to the US dollar. The full-size motors, gears and plates are estimates. Check stock and prices before ordering. Not included: the platform, its pivot and its levelling, which are designed separately. The 4-part version needs 8 shorter belts (1200 mm, 150 teeth; about 245 mm at 1:5), 16 pulleys, 5 axles, 16 bearings, three hinge motors with their gears and, at full size, a second motor driver: about S$640 at 1:5 and S$8,500 at full size.';
-    $('parts-sub').textContent = `The 2-part vehicle with ${(U / 1000).toFixed(2)} m units, as drawn above: tracks, hinge, drive and control.`;
+    $('parts-note').textContent = 'Rough prices in Singapore dollars, October 2026, for the tracks and hinge of one vehicle: RS Singapore as listed, the rest from online listings at about S$1.30 to the US dollar. The full-size gears and plates are estimates. Check stock and prices before ordering. Not included: the motors, battery, lasers and controller, and the platform with its levelling, which come from the rest of the team. The 4-part version needs 8 shorter belts (1200 mm, 150 teeth; about 245 mm at 1:5), 16 pulleys, 5 axles, 16 bearings and three sets of hinge gears: about S$440 at 1:5 and S$5,900 at full size.';
+    $('parts-sub').textContent = `The 2-part vehicle with ${(U / 1000).toFixed(2)} m units, as drawn above: the tracks and the hinge.`;
   }
 
   // ------------------------------------------------------------ drawing

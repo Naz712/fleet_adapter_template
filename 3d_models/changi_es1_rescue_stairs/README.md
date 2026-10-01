@@ -377,16 +377,17 @@ section lists the sizes, full size and 1:5.
   The platform and its levelling are designed separately.
 - **Lasers.** One at each end, 45 mm beyond the end axle, looking straight down between the tracks.
 
-The page also lists the parts for the tracks, hinge, drive and control of one vehicle, with rough
-prices in Singapore dollars (October 2026): about S$370 for the 1:5 prototype and about S$4,700 at
-full size. The platform, its pivot and its levelling are not included. RS Singapore and Mouser prices are as listed; the rest come from online listings, and the
-full-size motors, gears and plates are estimates. Check stock and prices before ordering.
+The page also lists the parts for the tracks and hinge of one vehicle, with rough prices in Singapore
+dollars (October 2026): about S$240 for the 1:5 prototype and about S$3,000 at full size. The motors,
+battery, lasers and controller, and the platform with its levelling, come from the rest of the team.
+RS Singapore prices are as listed; the rest come from online listings, and the full-size gears and
+plates are estimates. Check stock and prices before ordering.
 
 A second top view draws the 4-part version for comparison: four 360 mm sections on five axles, with
 the same box, platform and lasers. Its middle hinge works as above; each end hinge has its own motor
 on the end section, turning a toothed sector on the next section. It needs 8 shorter belts (1200 mm),
-16 pulleys, 5 axles, 16 bearings, three hinge motors and, at full size, a second motor driver: about
-S$640 at 1:5 and S$8,500 at full size.
+16 pulleys, 5 axles, 16 bearings and three sets of hinge gears: about S$440 at 1:5 and S$5,900 at
+full size.
 
 ### Centre box, tracks and tread
 
