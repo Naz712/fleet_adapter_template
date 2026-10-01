@@ -39,6 +39,12 @@
     // between the seat's hinge and that end, the vehicle drives on with its hinges held until the
     // laser sees the stairs this many risers lower than usual; then it stops and bends. null: no laser.
     laserRisers: null,
+    // How the hinges reach for the stairs at an edge. 'lift': a hinge may lift the vehicle so a track
+    // end reaches the stairs early (both ends down, the middle up). 'lie': every section lies on the
+    // stairs about its inner hinge and no hinge is lifted off them; a section past an edge stays
+    // straight until its hinge is near enough the edge to bend it down onto the steps.
+    reach: 'lift',
+    maxLift: 0, // reach 'lie': the most a hinge may lift the vehicle off the stairs to put a track end down, m
     speed: 0.25, // m/s: only used to turn rates per metre into rates per second
     comOffset: 0, // person shifted along the seat, m (+ towards the head)
     seatBias: 0.15, // the seat's load centre set this far towards the head from the post, m
@@ -630,6 +636,16 @@
     const tf = restAngle(T, J0.x, J0.z, L, rho), tb = restAngleBack(T, J0.x, J0.z, L, rho);
     let p = pose(o, J0.x, J0.z, -tb, tf);
     if (Math.abs(p.beta) > lim) p = solveBent(T, J0.x, J0.z, Math.sign(p.beta) * lim, o);
+    if (o.reach === 'lie') {
+      // only a small lift: fold the leading half down past the edge if the hinge rises no more than maxLift
+      const lead = dir === 'up' ? p.F : p.R, sgn = dir === 'up' ? 1 : -1;
+      const edge = prof.edges.find((c) => sgn * (c.x - p.J.x) > 0 && sgn * (lead.x - c.x) > rho);
+      if (edge && o.maxLift > 0 && lead.z - pathZ(QE, lead.x) > 0.02) {
+        const t = solveTent(T, QE, p.J.x, p.J.z, o);
+        if (t && t.J.z - p.J.z <= o.maxLift) { t.folded = true; return t; }
+      }
+      return p;
+    }
     const lead = dir === 'up' ? p.F : p.R;
     const sgn = dir === 'up' ? 1 : -1;
     // the edge the leading unit is reaching over (hinge before it, leading end past it)
@@ -955,6 +971,25 @@
   function targetChain(T, QE, J0, o, prof, dir, state, prev) {
     const N = o.sections.length, m = o.mainJoint, rho = o.sprocketRadius, lim = rad(o.hingeLimitDeg);
     const up = dir === 'up', sgn = up ? 1 : -1;
+    if (o.reach === 'lie') {
+      let p = makeChainPose(o, J0, drapeChain(T, o, J0));
+      if (!bendsOk(o, p.angles)) p = solveChainBent(T, o, J0.x, J0.z, p.bends.map((b) => clamp(b, -lim, lim))) || p;
+      // working out from the seat's hinge, the first section reaching out past an edge with its
+      // end in the air folds down onto the stairs, if that lifts no hinge more than maxLift
+      if (o.maxLift > 0) for (let k = up ? m : m - 1; up ? k < N : k >= 0; k += sgn) {
+        const A = p.pts[up ? k : k + 1], B = p.pts[up ? k + 1 : k];
+        const edge = prof.edges.find((c) => sgn * (c.x - A.x) > 0 && sgn * (B.x - c.x) > rho);
+        if (!edge) continue;
+        if (B.z - pathZ(QE, B.x) <= 0.02) break;
+        const t = foldSection(T, QE, o, p.J, p.angles, k, dir, prev);
+        if (t) {
+          const q = makeChainPose(o, t.M, t.a);
+          if (Math.max(...q.pts.slice(1, -1).map((v, i) => v.z - p.pts[i + 1].z)) <= o.maxLift) { q.folded = true; return q; }
+        }
+        break;
+      }
+      return p;
+    }
     // a split half that leads is held in line: work the target out with it as one unit
     const lead = sideSections(o, sgn);
     if ((o.leadMode === 'straight' || o.leadMode === 'droop') && lead.length > 1) {
@@ -1047,7 +1082,7 @@
     const target = targetChain(T, QE, J0, o, prof, dir, state, prev);
     const m = o.mainJoint, stuck = o.mainHingeSeized;
     const extraRate = o.extraHingeRateDegPerM == null ? (o.hingeRateDegPerM * o.unitLength) / Math.min(...o.sections) : o.extraHingeRateDegPerM;
-    const done = (p) => (o.leadMode === 'droop' ? droopLead(T, o, dir, J0, p, prev, ds, extraRate) : p);
+    const done = (p) => (o.leadMode === 'droop' && o.reach !== 'lie' ? droopLead(T, o, dir, J0, p, prev, ds, extraRate) : p);
     if (!prev && !stuck) return done(target);
     if (o.bendMode === 'stopGo' && !stuck) {
       const full = done(target);

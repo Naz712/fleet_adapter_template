@@ -187,7 +187,7 @@
   <header>
     <p class="eyebrow">Part 1 · Simulation · ES1 stairs: 8.4 m high, 35°, 1 m mid-landing</p>
     <h1>Stair Climber Bending Test</h1>
-    <p class="lede">The same casualty, folded into a chair shape on the 3-part platform, with the platform hinged on top of the battery box and kept level by the linear actuator. It is carried up and down the stairs three ways: on tracks that can't bend, on tracks in 2 parts, and on tracks in 4 parts. The bending tracks stop at each edge when a laser at the front sees the drop, bend until they touch the stairs, then drive on. Press play, or jump straight to a danger spot.</p>
+    <p class="lede">The same casualty, folded into a chair shape on the 3-part platform, with the platform hinged on top of the battery box and kept level by the linear actuator. It is carried up and down the stairs three ways: on tracks that can't bend, on tracks in 2 parts, and on tracks in 4 parts. The bending tracks stop at each edge when a laser at the front sees the drop, bend until they touch the stairs, then drive on. The hinges only push the tracks down onto the stairs, lifting the vehicle 5 cm at most. Press play, or jump straight to a danger spot.</p>
   </header>
 
   <section aria-labelledby="verdict-h" class="panel card">
@@ -314,24 +314,28 @@
   const TRACK = { radius: 0.085, pulley: 0.0764, cleat: 0.015, cleatPitch: 0.056, sections4: 0.36, unit2: 0.76 };
   // The box that fits all three layouts (see the box table), and the platform's hinge on top of it.
   const BOX = { back: 0.28, front: 0.12, floor: 0.04, top: 0.26, width: 0.4 };
+  // A hinge only pushes its track down onto the stairs: it may lift the vehicle off them by at most
+  // MAX_LIFT to put a track end down, never stand it on its two ends with the middle in the air.
+  const MAX_LIFT = 0.05;
   const BASE = Object.assign({ mastMode: 'base', seatHeight: 0.32, sprocketRadius: TRACK.radius, unitLength: TRACK.unit2, boxMass: 15,
-    box: BOX, boxCom: [(BOX.front - BOX.back) / 2, (BOX.floor + BOX.top) / 2] }, STAIRS);
+    box: BOX, boxCom: [(BOX.front - BOX.back) / 2, (BOX.floor + BOX.top) / 2], reach: 'lie', maxLift: MAX_LIFT }, STAIRS);
   const LAYOUTS = [
     { id: 'rigid', name: 'No bending', color: 'rigid', what: 'One stiff track, 1.52 m between the end pulleys.' },
     { id: 'two', name: '2 parts', color: 'two', what: 'Two 0.76 m track units with a hinge in the middle.' },
     { id: 'four', name: '4 parts', color: 'four', what: 'Four 0.36 m sections: each half bends again at an extra hinge.' },
   ];
   // Tallest box for each length, mm, full size: [length, height, from, to (along the section, from the middle
-  // hinge), floor, top]; height 0 = no box that long fits. Worked out from every pose of the three runs.
-  const BOX_RANGE = {"rigid":[[300,250,-540,-240,40,290],[400,250,-540,-140,40,290],[500,250,-540,-40,40,290],[600,250,-540,60,40,290],[700,233,-580,120,40,273],[800,200,-650,150,40,240],[1000,188,-670,330,40,228],[1100,188,-670,430,40,228],[1200,188,-670,530,40,228]],"two":[[300,250,-490,-190,40,290],[400,250,-490,-90,40,290],[500,250,-490,10,40,290],[600,245,-510,90,40,285],[700,209,-570,130,40,249],[800,171,-640,160,40,211],[1000,106,-640,360,105,211],[1100,48,-690,410,139,187],[1200,0,null,null,null,null]],"four":[[300,250,-300,0,40,290],[400,243,-300,100,40,283],[500,171,-300,200,40,211],[600,0,null,null,null,null],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]]};
+  // hinge), floor, top]; height 0 = no box that long fits. Worked out from every pose of the runs, both
+  // stopping to bend and bending while moving (the stricter of the two).
+  const BOX_RANGE = {"rigid":[[300,250,-540,-240,40,290],[400,250,-540,-140,40,290],[500,250,-540,-40,40,290],[600,250,-540,60,40,290],[700,233,-580,120,40,273],[800,200,-650,150,40,240],[1000,188,-670,330,40,228],[1100,188,-670,430,40,228],[1200,188,-670,530,40,228]],"two":[[300,250,-460,-160,40,290],[400,250,-460,-60,40,290],[500,250,-460,40,40,290],[600,233,-490,110,40,273],[700,195,-560,140,40,235],[800,169,-600,200,40,209],[1000,87,-630,370,105,192],[1100,0,null,null,null,null],[1200,0,null,null,null,null]],"four":[[300,250,-300,0,40,290],[400,244,-300,100,40,284],[500,171,-300,200,40,211],[600,0,null,null,null,null],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]]};
   // 2 parts with longer or shorter units (same stairs, box and platform): least lean before tipping
   // going down and up, degrees (null = it tips), the biggest drop in cm, and whether a unit can end up
   // resting on a single step edge.
-  const SWEEP = [[0.5, null, 14.0, 10, true], [0.55, null, 13.9, 8, true], [0.6, null, 12.7, 8, false], [0.65, 0.5, 11.5, 5, false], [0.693, 2.3, 11.4, 0, false],
-    [0.76, 4.6, 9.6, 0, false], [0.8, 5.7, 9.7, 0, false], [0.85, 4.2, 10.4, 0, false], [0.9, null, 9.2, 7, false]];
+  const SWEEP = [[0.5, null, null, 20, true], [0.55, null, null, 23, true], [0.6, null, null, 25, false], [0.65, null, null, 27, false], [0.693, null, null, 29, false],
+    [0.76, null, null, 31, false], [0.8, null, null, 33, false], [0.85, null, null, 40, false], [0.9, null, null, 43, false]];
   // The same, stopping to bend with the laser at 1 1/4 risers.
-  const SWEEP_STOPGO = [[0.5, 8.4, 14.0, 5, true], [0.55, 8.4, 16.7, 5, true], [0.6, 8.3, 18.9, 6, false], [0.65, 8.5, 21.1, 5, false], [0.693, 22.6, 22.6, 0, false],
-    [0.76, 25.0, 25.0, 0, false], [0.8, 25.1, 25.0, 0, false], [0.85, 25.1, 25.0, 0, false], [0.9, 25.1, 25.0, 0, false]];
+  const SWEEP_STOPGO = [[0.5, 8.4, 14, 5, true], [0.55, 8.4, 16.7, 5, true], [0.6, 8.3, 17.5, 6, false], [0.65, 8.5, 17.5, 4, false], [0.693, 14.3, 17.8, 0, false],
+    [0.76, 14.5, 17.5, 0, false], [0.8, 14.5, 17.5, 0, false], [0.85, 14.5, 17.5, 0, false], [0.9, 14.5, 17.5, 0, false]];
   const CURRENT_BASE = [1100, 600, 250]; // the base on the levelling sheet, full size (220 x 120 x 50 mm at 1:5)
   // Stop, bend, then go: it drives at 0.25 m/s and stops wherever a hinge or the levelling has to turn
   // further than it can on the move. The middle hinge turns 30 degrees a second (120 per metre on the move),
@@ -344,16 +348,16 @@
   const LASERS = [[1, '1 riser'], [1.25, '1¼ risers'], [1.5, '1½ risers'], [2, '2 risers'], [3, '3 risers']];
   // Each setting run in full: least lean before tipping (degrees), biggest drop (cm) and trip time (s, of it
   // stopped) for 2 parts then 4 parts: [risers, two: down, up, drop, down s, stopped, up s, stopped, four: the same].
-  const LASER_TABLE = [[1, 25.0, 25.0, 0, 83.7, 9.5, 79.4, 5.2, 24.4, 24.4, 0, 86.6, 12.4, 80.3, 6.1],
-    [1.25, 25.0, 25.0, 0, 80.9, 6.7, 79.5, 5.3, 24.4, 24.4, 0, 83.5, 9.3, 80.3, 6.2],
-    [1.5, 10.8, 25.0, 0, 80.9, 6.8, 79.5, 5.3, 10.1, 24.4, 0, 83.8, 9.6, 80.5, 6.3],
-    [2, 10.8, 25.0, 0, 81.0, 6.8, 79.9, 5.7, 10.1, 21.8, 0, 84.0, 9.9, 80.7, 6.5],
-    [3, 10.8, -7.8, 28, 80.8, 6.7, 76.0, 1.8, 10.1, -8.0, 26, 83.4, 9.3, 81.7, 7.6]];
+  const LASER_TABLE = [[1, 14.5, 17.5, 0, 79.5, 5.3, 79.4, 5.2, 24.4, 24.4, 0, 87.1, 12.9, 84, 9.8],
+    [1.25, 14.5, 17.5, 0, 79.6, 5.5, 79.4, 5.2, 24.4, 24.4, 0, 87.3, 13.1, 83.8, 9.6],
+    [1.5, 10.8, 17.5, 0, 79.7, 5.6, 79.4, 5.2, 10.1, 24.4, 0, 87.4, 13.3, 84, 9.9],
+    [2, 10.8, 17.5, 0, 79.7, 5.6, 79.4, 5.2, 10.1, 21.8, 0, 87, 12.9, 84.4, 10.2],
+    [3, 10.8, -7.8, 28, 79.9, 5.8, 76, 1.8, 10.1, -8, 26, 86.4, 12.3, 80.8, 6.7]];
   const LASER_WHAT = {
     1: `Just as safe, but the steps alone can read ${FLIGHT_READ} risers, so it would also stop on every step of the flights.`,
     1.25: 'Best: as safe as stopping in exactly the right spot, and no false stops on the flights.',
     1.5: 'Late going down at the mid-landing: it can lean only 11° there (10° with 4 parts).',
-    2: 'Late going down at the mid-landing (11°, 10° with 4 parts), and the 4 parts keep only 22° going up.',
+    2: 'Late going down at the mid-landing (11°, 10° with 4 parts); the 4 parts keep only 22° going up, and its platform brushes its own tracks.',
     3: 'Too late going up: it tips at the mid-landing edge and the top edge, one end dropping 28 cm. Going down, the platform knocks its own tracks.',
   };
 
@@ -508,8 +512,10 @@
       if (hit.v < 0 && lvl === 'good') lvl = 'warn';
       const items = [];
       if (d.id === 'rigid') items.push('One stiff track can’t follow the stairs where the slope changes, so it <b>rocks over each edge like a see-saw</b>.' + (stopGo() ? ' Stopping can’t help: it has no hinge to bend.' : ''));
-      if (d.id === 'two') items.push(stopGo() ? 'At each edge it <b>stops, bends until its front half touches the stairs</b>, then drives on while the back half follows.' : 'It <b>bends in the middle</b> as it drives, so it rolls over the edges instead of rocking.');
-      if (d.id === 'four') items.push(stopGo() ? 'At each edge it <b>stops to bend, one hinge at a time</b>, and a hinge <b>stays bent until more track is on the stairs</b>.' : 'Each half <b>bends again at the edges</b> to keep its tracks on the stairs.');
+      if (d.id === 'two') items.push(stopGo() ? 'At each edge it <b>stops, bends until its front half touches the stairs</b>, then drives on while the back half follows.'
+        : worst.v < 0 ? 'It <b>bends in the middle</b> as it drives, but at an edge the hinge <b>can’t fold the front half down in time</b>.' : 'It <b>bends in the middle</b> as it drives, so it rolls over the edges instead of rocking.');
+      if (d.id === 'four') items.push(stopGo() ? 'At each edge it <b>stops to bend, one hinge at a time</b>, and a hinge <b>stays bent until more track is on the stairs</b>.'
+        : worst.v < 0 ? 'Its hinges <b>bend as it drives</b>, but at an edge they <b>can’t fold the ends down in time</b>.' : 'Each half <b>bends again at the edges</b> to keep its tracks on the stairs.');
       if (worst.v < 0) items.push(`It tips at the <b>${tipSpots.join(' and the ')}</b>: one end drops about <b>${Math.round(drop * 100)} cm</b>.`);
       else if (worst.v < HARD_STOP) items.push(`At the <b>${lower(spotOf(worst.x))}</b> going ${worst.dir} it can only lean <b>${worst.v.toFixed(0)}°</b> before tipping: a sudden stop or a bump there could tip it.`);
       else items.push(`It can lean at least <b>${worst.v.toFixed(0)}°</b> before tipping, anywhere, both ways.`);
@@ -592,10 +598,11 @@
       body.appendChild(tr);
     }
     const [L, W, H] = CURRENT_BASE, mm = (v) => `${Math.round(v / k)} mm`;
+    const backMost = (id) => Math.min(...BOX_RANGE[id].filter((r) => r[1] >= 250).map((r) => r[2]));
     $('box-callout').innerHTML = `<p><b>Your current base</b>, ${mm(L)} × ${mm(W)} × ${mm(H)}, is too big for all three. It is too long for 2 and 4 parts, too tall to be that long with no bending, and wider than the ${mm(400)} between the track frames.</p>`
       + `<p><b>A box that fits all three:</b> ${mm((BOX.back + BOX.front) * 1000)} long × ${mm(BOX.width * 1000)} wide × ${mm((BOX.top - BOX.floor) * 1000)} tall. That is the box in the simulation.</p>`
       + `<p>Its floor sits ${mm(BOX.floor * 1000)} above the track axles, so it clears the middle axle, and ${mm(BOX.floor * 1000 + TRACK.radius * 1000 + TRACK.cleat * 1000)} above flat ground. The platform's hinge stands on top, ${mm(BASE.seatHeight * 1000)} above the axles.</p>`
-      + `<p>Keep the box towards the back: the 2-part box can start up to ${mm(490)} behind the middle hinge, the 4-part box ${mm(300)}. Make a longer box lower: the platform tilts close above its ends.</p>`;
+      + `<p>Keep the box towards the back: the 2-part box can start up to ${mm(-backMost('two'))} behind the middle hinge, the 4-part box ${mm(-backMost('four'))}. Make a longer box lower: the platform tilts close above its ends.</p>`;
     updateUnits();
   }
 
@@ -604,10 +611,15 @@
     const rows = stopGo() ? SWEEP_STOPGO : SWEEP;
     const best = rows.reduce((a, r) => (r[1] != null && (a == null || r[1] > a[1]) ? r : a), null);
     const at = (L) => rows.find((r) => Math.abs(r[0] - L) < 1e-6), short = rows.filter((r) => r[0] < 0.69);
-    const shortLean = Math.min(...short.map((r) => r[1])), drops = short.map((r) => r[3]);
-    $('sweep-sub').textContent = stopGo()
-      ? `No. Stopping to bend (laser at 1¼ risers), halves of ${TRACK.unit2.toFixed(2)} m or longer keep ${at(TRACK.unit2)[1].toFixed(0)}° of lean both ways. A shorter half has less of itself on the stairs at an edge: at ${(0.693).toFixed(2)} m it keeps ${at(0.693)[1].toFixed(0)}°, and shorter still only ${shortLean.toFixed(0)}°, with one end rocking down ${Math.min(...drops)} to ${Math.max(...drops)} cm. Below about 0.6 m a half can also rest on a single step edge and rock from step to step. Longer halves are no safer, only longer and heavier.`
-      : `No. Going down over the top edge, a shorter track has less of itself on the stairs, so the weight passes the last point of contact sooner and it tips. Below about 0.6 m a half can also end up resting on a single step edge and rock from step to step. Much longer is no good either: the front half reaches out too far past the edge. The best is about ${best[0].toFixed(2)} m a half, and even that can only lean ${best[1].toFixed(0)}° at the top edge, short of the ${HARD_STOP.toFixed(1)}° a sudden stop needs. The trouble is bending while it drives: stopping to bend, or the 4-part track's extra hinges, keep both ends on the stairs at the edge.`;
+    const tips = (r) => r[1] == null || r[2] == null;
+    if (stopGo()) {
+      const shortLean = Math.min(...short.map((r) => r[1])), drops = short.map((r) => r[3]), unit = at(TRACK.unit2);
+      $('sweep-sub').textContent = `No. Stopping to bend (laser at 1¼ risers), halves of 0.69 m or longer all keep about ${Math.round(unit[1])}° of lean going down and ${Math.round(unit[2])}° going up. A shorter half has less of itself on the stairs at an edge: it keeps only ${shortLean.toFixed(0)}° going down, with one end rocking down ${Math.min(...drops)} to ${Math.max(...drops)} cm, and below about 0.6 m a half can also rest on a single step edge and rock from step to step. Longer halves are no safer, only longer and heavier.`;
+    } else if (rows.every(tips)) {
+      $('sweep-sub').textContent = `No. Bending while it drives, a 2-part track of any length tips at an edge: its hinge can’t fold the front half down in time without lifting the vehicle off the stairs. Longer halves only drop further when it tips: ${rows[0][3]} cm at ${rows[0][0].toFixed(2)} m, ${rows[rows.length - 1][3]} cm at ${rows[rows.length - 1][0].toFixed(2)} m. Stopping to bend is what keeps it up.`;
+    } else {
+      $('sweep-sub').textContent = `Bending while it drives, the best is about ${best[0].toFixed(2)} m a half, keeping ${best[1].toFixed(0)}° of lean.`;
+    }
     const body = $('sweep-body'); body.textContent = '';
     const cell = (v) => (v == null || v < 0 ? chip('bad', 'Tips') : `${chip(levelOf(v), `${v.toFixed(1)}°`)}`);
     for (const [L, dn, up, drop, one] of rows) {
@@ -674,6 +686,7 @@
       ['How it bends', stopGo()
         ? `Stop, bend, then go. It drives at ${CONTROL.drive} m/s. Wherever a hinge or the levelling has to turn further than it can on the move, it stops until they have: the middle hinge turns ${CONTROL.hinge}° a second, the 4-part’s end hinges ${CONTROL.end.toFixed(0)}°, the levelling ${CONTROL.level}°. A hinge only turns as far as still leaves ${CONTROL.safeDeg}° of lean before tipping; otherwise it holds its bend until more track is on the stairs. Hinges bend up to 55°. When one layout stops, the others wait, so the three stay side by side.`
         : `Bend while moving: the hinges and the levelling turn as it drives at ${CONTROL.drive} m/s, without stopping. The middle hinge bends up to 55° at 120° per metre travelled (${CONTROL.hinge}° a second); the 4-part’s end hinges about twice as fast, to keep each end on the stairs.`],
+      ['Hinges', `A hinge only pushes its track down onto the stairs. To put a track end down it may lift the vehicle off them by ${Math.round(MAX_LIFT * 100)} cm at most; it never stands the vehicle on its two ends with the middle in the air, which would take a hinge motor strong enough to hold the whole vehicle and casualty off the ground, with only the end tracks gripping.`],
       ...(stopGo() ? [['Laser', `A laser at the leading end of the track (the front going up, the back going down) points straight down. Near a platform edge the hinges stay locked as it drives on, until the laser reads ${laserName(state.laser)} (${Math.round(state.laser * STAIRS.rise * 1000)} mm) further than on flat ground; then it stops and bends. On the flights the steps alone make it read up to ${FLIGHT_READ} risers further, so it can’t be set lower than that.`]] : []),
       ['Tipping', `"Lean before tipping" is how far the whole vehicle could be tilted before its weight passes the last point touching the stairs. A sudden stop from walking pace (0.25 m/s) in 0.2 s needs ${HARD_STOP.toFixed(1)}°.`],
     ];
@@ -940,7 +953,7 @@
         : p.edgeSeen && (p.bends || [p.beta]).every((b) => Math.abs(deg(b)) < 1) ? '<b>The laser sees the drop.</b> Driving on until the hinge is close enough to the edge to bend.'
         : p.held ? '<b>Holding the bend</b> until more of the track is on the stairs.'
         : tm.moving[ks] ? MOVE_MSG[tm.moving[ks]]
-        : `Steady on the ${spot}.`;
+        : spot.startsWith('across') ? `Steady ${spot.replace('across', 'crossing')}.` : `Steady on the ${spot}.`;
     }
     const signed = (v) => `${deg(v) >= 0 ? '+' : '−'}${Math.abs(deg(v)).toFixed(0)}°`;
     const rows = [['Casualty tilt', signed(p.phi)]];
