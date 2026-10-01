@@ -379,9 +379,21 @@ section lists the sizes, full size and 1:5.
   middle axle. The platform pivots on two pillow blocks on top of it, 320 mm above the middle axle.
   The platform and its levelling are designed separately.
 - **Lasers.** One at each end, 45 mm beyond the end axle, looking straight down between the tracks.
+- **Axles.** 35 mm steel bar (C45) at full size in UCFL207 flange bearings; 8 mm rod in KFL08s at
+  1:5. The worst case is a step edge under the end of a unit while the belts pull hard: about 1.7 kN
+  on each pulley. The rear unit's belts run in the outer lane, 108 mm outside its bearings, so they
+  bend its axles with about 180 N·m, and the middle axle also carries up to about 65 N·m of drive
+  torque each side and the chain's pull. A 35 mm axle takes that with a safety factor of about 3 and
+  bends so little that the outer pulleys tilt under 0.25°, the limit for timing belts. A 30 mm axle
+  would tilt them 0.34°, and the belts would walk off; 40 mm only adds about 8 kg with its bigger
+  bearings. At 1:5 the 8 mm rod is about four times stronger than it needs to be.
+- **Slide strips.** A low-friction plastic strip under each belt's lower run, between its pulleys,
+  carries the load where a step edge presses on the belt. Without it the belt bows up between the
+  pulleys, by several centimetres at full size, and the tracks don't stay straight on the stairs as
+  the simulation assumes.
 
 The page also lists the parts for the tracks and hinge of one vehicle, with rough prices in Singapore
-dollars (October 2026): about S$240 for the 1:5 prototype and about S$3,000 at full size. The motors,
+dollars (October 2026): about S$240 for the 1:5 prototype and about S$2,900 at full size. The motors,
 battery, lasers and controller, and the platform with its levelling, come from the rest of the team.
 RS Singapore prices are as listed; the rest come from online listings, and the full-size gears and
 plates are estimates. Check stock and prices before ordering.
@@ -389,8 +401,8 @@ plates are estimates. Check stock and prices before ordering.
 A second top view draws the 4-part version for comparison: four 360 mm sections on five axles, with
 the same box, platform and lasers. Its middle hinge works as above; each end hinge has its own motor
 on the end section, turning a toothed sector on the next section. It needs 8 shorter belts (1200 mm),
-16 pulleys, 5 axles, 16 bearings and three sets of hinge gears: about S$440 at 1:5 and S$5,900 at
-full size.
+16 pulleys, 5 axles, 16 bearings, 8 slide strips and three sets of hinge gears: about S$460 at 1:5
+and S$5,700 at full size.
 
 ### Centre box, tracks and tread
 
