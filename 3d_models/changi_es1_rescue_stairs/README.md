@@ -373,19 +373,20 @@ section lists the sizes, full size and 1:5.
   any bend. The end axles turn freely.
 - **Box and platform.** The 400 × 400 × 220 mm box holds the battery, the drive motor and the hinge
   motor. It sits between the rear unit's side plates, from 280 mm behind to 120 mm in front of the
-  middle axle. The platform pivots on two pillow blocks on top of it, 320 mm above the middle axle,
-  and the levelling actuator keeps it level.
+  middle axle. The platform pivots on two pillow blocks on top of it, 320 mm above the middle axle.
+  The platform and its levelling are designed separately.
 - **Lasers.** One at each end, 45 mm beyond the end axle, looking straight down between the tracks.
 
-The page also lists the parts for one vehicle with rough prices in Singapore dollars (October 2026):
-about S$530 for the 1:5 prototype (S$410 with a second servo for the levelling) and about S$5,100 at
-full size. RS Singapore and Mouser prices are as listed; the rest come from online listings, and the
+The page also lists the parts for the tracks, hinge, drive and control of one vehicle, with rough
+prices in Singapore dollars (October 2026): about S$370 for the 1:5 prototype and about S$4,700 at
+full size. The platform, its pivot and its levelling are not included. RS Singapore and Mouser prices are as listed; the rest come from online listings, and the
 full-size motors, gears and plates are estimates. Check stock and prices before ordering.
 
 A second top view draws the 4-part version for comparison: four 360 mm sections on five axles, with
 the same box, platform and lasers. Its middle hinge works as above; each end hinge has its own motor
 on the end section, turning a toothed sector on the next section. It needs 8 shorter belts (1200 mm),
-16 pulleys, 5 axles, 16 bearings and three hinge motors: about S$800 at 1:5 and S$8,800 at full size.
+16 pulleys, 5 axles, 16 bearings, three hinge motors and, at full size, a second motor driver: about
+S$640 at 1:5 and S$8,500 at full size.
 
 ### Centre box, tracks and tread
 
