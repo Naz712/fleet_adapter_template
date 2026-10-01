@@ -287,17 +287,21 @@ one stiff track, two track units, and four sections. It uses the team's levellin
 arm, the 3-part platform hinged on top of the centre box (`mastMode: 'base'`, 0.32 m above the
 track axles) and kept level by a linear actuator. The box (400 × 400 × 220 mm, 15 kg) is bolted to
 the section behind the middle hinge, and every pose checks its gap to the steps and to the platform.
-The tracks are modelled on HTD 14M timing belts on 36-tooth pulleys (89 mm from axle to grip,
-15 mm cleats every 56 mm), with 1190-14M belts for 4 × 343 mm sections and 1890-14M for 2 × 693 mm.
+The tracks are modelled on parts MISUMI stocks in Singapore: HTD 8M timing belts, 40 mm wide, on
+60-tooth pulleys (85 mm from axle to grip, 15 mm cleats every 56 mm). 1200 mm belts give 0.36 m
+sections, 2000 mm belts 0.76 m units; the prototype uses HTD 5M belts on 20-tooth pulleys.
 
 | Layout | Least lean before tipping, down · up | Where it is weakest |
 |---|---|---|
-| No bending | tips · tips (drops up to 30 cm) | the mid-landing edge and the top edge |
-| 2 parts | 2.1° · 11.1° | the top edge |
-| 4 parts | 22.9° · 22.9° | nowhere below 22° |
+| No bending (1.52 m) | tips · tips (drops up to 36 cm) | the mid-landing edge and the top edge |
+| 2 parts (2 × 0.76 m) | 4.6° · 9.6° | the top edge |
+| 4 parts (4 × 0.36 m) | 24.4° · 24.4° | nowhere below 24° |
 
-The page also lists the tallest box that fits each layout for each length (4 parts: 300 mm long at
-250 mm tall, or 400 mm at 220 mm; 2 parts: 500 mm at 250 mm; no bending: 600 mm at 250 mm).
+Shortening the 2-part track makes it worse: with halves of 0.6 m or less it tips going down over
+the top edge, and below about 0.6 m a half can rest on a single step edge. The best length, about
+0.8 m a half, still keeps only 5.7° there. The page also lists the tallest box for each length
+(4 parts: 300 mm long at 250 mm tall, or 400 mm at 243 mm; 2 parts: 500 mm at 250 mm; no bending:
+600 mm at 250 mm).
 
 ### Centre box, tracks and tread
 

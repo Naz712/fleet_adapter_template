@@ -67,6 +67,8 @@
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: var(--two); text-underline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--two); outline-offset: 2px; }
   .wrap { max-width: 1240px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; display: grid; gap: 22px; }
   @media (max-width: 560px) { .wrap { padding-inline: 16px; padding-block: 18px 48px; gap: 18px; } }
   header { display: grid; gap: 6px; }
@@ -251,6 +253,25 @@
     </div>
   </section>
 
+  <section class="card panel" aria-labelledby="sweep-h">
+    <h2 id="sweep-h">Would a shorter 2-part track help?</h2>
+    <p class="sub" id="sweep-sub"></p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Each half</th><th class="num">Whole vehicle</th><th>Going down</th><th>Going up</th><th>What happens at the top edge</th></tr></thead>
+      <tbody id="sweep-body"></tbody>
+    </table></div>
+  </section>
+
+  <section class="card panel" aria-labelledby="buy-h">
+    <h2 id="buy-h">Track parts in Singapore</h2>
+    <p class="sub">The tracks are timing belts on toothed pulleys, with a rubber cover and cleats glued on. MISUMI keeps both sizes in its Singapore warehouse and delivers in Singapore, usually the next working day. Check stock and prices on the site before ordering.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Part</th><th>Full size (4 parts)</th><th>1:5 prototype (4 parts)</th><th class="num">Qty</th><th>Where</th></tr></thead>
+      <tbody id="buy-body"></tbody>
+    </table></div>
+    <p class="note" id="buy-note"></p>
+  </section>
+
   <section class="card panel" aria-labelledby="model-h">
     <h2 id="model-h">What the simulation includes</h2>
     <dl class="model" id="model"></dl>
@@ -269,21 +290,27 @@
   // ES1 stairs as measured: 8.4 m in two flights of 24 steps of 175 x 250 mm (35 degrees),
   // a 1 m mid-landing and a 3 m top platform.
   const STAIRS = { height: 8.4, rise: 0.175, going: 0.25, lowerTreads: 23, topPlatform: 3.0 };
-  // Tracks modelled on HTD 14M timing belts on 36-tooth pulleys (pitch diameter 160.4 mm),
-  // with a 6 mm rubber cover: 89 mm from the axle to the grip; 15 mm cleats every 4 teeth (56 mm).
-  const TRACK = { radius: 0.089, pulley: 0.0802, cleat: 0.015, cleatPitch: 0.056, sections4: 0.343, unit2: 0.693 };
+  // Tracks modelled on parts MISUMI Singapore stocks: HTD 8M timing belts, 40 mm wide, on 60-tooth
+  // pulleys (pitch diameter 152.8 mm), with a 6 mm rubber cover: 85 mm from the axle to the grip;
+  // 15 mm cleats every 7 teeth (56 mm). 1200 mm belts give 0.36 m sections, 2000 mm belts 0.76 m units.
+  const TRACK = { radius: 0.085, pulley: 0.0764, cleat: 0.015, cleatPitch: 0.056, sections4: 0.36, unit2: 0.76 };
   // The box that fits all three layouts (see the box table), and the platform's hinge on top of it.
   const BOX = { back: 0.28, front: 0.12, floor: 0.04, top: 0.26, width: 0.4 };
   const BASE = Object.assign({ mastMode: 'base', seatHeight: 0.32, sprocketRadius: TRACK.radius, unitLength: TRACK.unit2, boxMass: 15,
     box: BOX, boxCom: [(BOX.front - BOX.back) / 2, (BOX.floor + BOX.top) / 2] }, STAIRS);
   const LAYOUTS = [
-    { id: 'rigid', name: 'No bending', color: 'rigid', what: 'One stiff track, 1.39 m between the end wheels.' },
-    { id: 'two', name: '2 parts', color: 'two', what: 'Two 0.69 m track units with a hinge in the middle.' },
-    { id: 'four', name: '4 parts', color: 'four', what: 'Four 0.34 m sections: each half bends again at an extra hinge.' },
+    { id: 'rigid', name: 'No bending', color: 'rigid', what: 'One stiff track, 1.52 m between the end pulleys.' },
+    { id: 'two', name: '2 parts', color: 'two', what: 'Two 0.76 m track units with a hinge in the middle.' },
+    { id: 'four', name: '4 parts', color: 'four', what: 'Four 0.36 m sections: each half bends again at an extra hinge.' },
   ];
   // Tallest box for each length, mm, full size: [length, height, from, to (along the section, from the middle
   // hinge), floor, top]; height 0 = no box that long fits. Worked out from every pose of the three runs.
-  const BOX_RANGE = {"rigid":[[300,250,-540,-240,40,290],[400,250,-540,-140,40,290],[500,250,-540,-40,40,290],[600,250,-540,60,40,290],[700,233,-580,120,40,273],[800,188,-620,180,40,228],[1000,188,-620,380,40,228],[1100,188,-620,480,40,228],[1200,188,-620,580,40,228]],"two":[[300,250,-490,-190,40,290],[400,250,-490,-90,40,290],[500,250,-490,10,40,290],[600,243,-500,100,40,283],[700,206,-570,130,40,246],[800,171,-620,180,40,211],[1000,110,-620,380,101,211],[1100,0,null,null,null,null],[1200,0,null,null,null,null]],"four":[[300,250,-280,20,40,290],[400,220,-280,120,40,260],[500,0,null,null,null,null],[600,0,null,null,null,null],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]]};
+  const BOX_RANGE = {"rigid":[[300,250,-540,-240,40,290],[400,250,-540,-140,40,290],[500,250,-540,-40,40,290],[600,250,-540,60,40,290],[700,233,-580,120,40,273],[800,200,-650,150,40,240],[1000,188,-670,330,40,228],[1100,188,-670,430,40,228],[1200,188,-670,530,40,228]],"two":[[300,250,-490,-190,40,290],[400,250,-490,-90,40,290],[500,250,-490,10,40,290],[600,245,-510,90,40,285],[700,209,-570,130,40,249],[800,171,-640,160,40,211],[1000,106,-640,360,105,211],[1100,48,-690,410,139,187],[1200,0,null,null,null,null]],"four":[[300,250,-300,0,40,290],[400,243,-300,100,40,283],[500,171,-300,200,40,211],[600,0,null,null,null,null],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]]};
+  // 2 parts with longer or shorter units (same stairs, box and platform): least lean before tipping
+  // going down and up, degrees (null = it tips), the biggest drop in cm, and whether a unit can end up
+  // resting on a single step edge.
+  const SWEEP = [[0.5, null, 14.0, 10, true], [0.55, null, 13.9, 8, true], [0.6, null, 12.7, 8, false], [0.65, 0.5, 11.5, 5, false], [0.693, 2.3, 11.4, 0, false],
+    [0.76, 4.6, 9.6, 0, false], [0.8, 5.7, 9.7, 0, false], [0.85, 4.2, 10.4, 0, false], [0.9, null, 9.2, 7, false]];
   const CURRENT_BASE = [1100, 600, 250]; // the base on the levelling sheet, full size (220 x 120 x 50 mm at 1:5)
 
   const state = { dir: 'down', idx: 0, playing: false, speed: 2, lastT: 0, travel: 0, sims: null, cam: null, scale: 1, spots: [] };
@@ -446,8 +473,36 @@
     $('box-callout').innerHTML = `<p><b>Your current base</b>, ${mm(L)} × ${mm(W)} × ${mm(H)}, is too big for all three. It is too long for 2 and 4 parts, too tall to be that long with no bending, and wider than the ${mm(400)} between the track frames.</p>`
       + `<p><b>A box that fits all three:</b> ${mm((BOX.back + BOX.front) * 1000)} long × ${mm(BOX.width * 1000)} wide × ${mm((BOX.top - BOX.floor) * 1000)} tall. That is the box in the simulation.</p>`
       + `<p>Its floor sits ${mm(BOX.floor * 1000)} above the track axles, so it clears the middle axle, and ${mm(BOX.floor * 1000 + TRACK.radius * 1000 + TRACK.cleat * 1000)} above flat ground. The platform's hinge stands on top, ${mm(BASE.seatHeight * 1000)} above the axles.</p>`
-      + `<p>The 2-part and 4-part boxes start ${mm(490)} and ${mm(280)} behind the middle hinge. Make a longer box lower: with 4 parts the platform tilts close above it at the ends.</p>`;
+      + `<p>Keep the box towards the back: the 2-part box can start up to ${mm(490)} behind the middle hinge, the 4-part box ${mm(300)}. Make a longer box lower: the platform tilts close above its ends.</p>`;
     updateUnits();
+  }
+
+  // ------------------------------------------------------------ shorter or longer 2-part track
+  function renderSweep() {
+    const best = SWEEP.reduce((a, r) => (r[1] != null && (a == null || r[1] > a[1]) ? r : a), null);
+    $('sweep-sub').textContent = `No. Going down over the top edge, a shorter track has less of itself on the stairs, so the weight passes the last point of contact sooner and it tips. Below about 0.6 m a half can also end up resting on a single step edge and rock from step to step. Much longer is no good either: the front half reaches out too far past the edge. The best is about ${best[0].toFixed(2)} m a half, and even that can only lean ${best[1].toFixed(0)}° at the top edge, short of the ${HARD_STOP.toFixed(1)}° a sudden stop needs. The trouble is the single hinge, not the length: the 4-part track's extra hinges keep both ends on the stairs at the edge.`;
+    const body = $('sweep-body'); body.textContent = '';
+    const cell = (v) => (v == null ? chip('bad', 'Tips') : `${chip(levelOf(v), `${v.toFixed(1)}°`)}`);
+    for (const [L, dn, up, drop, one] of SWEEP) {
+      const tr = document.createElement('tr');
+      const lvl = dn == null ? 'bad' : levelOf(dn);
+      const what = dn == null ? `Tips over the edge, one end drops ${drop} cm${one ? '; a half can rest on a single step edge' : ''}` : lvl === 'warn' ? 'Stays up, but a sudden stop could tip it' : 'Steady';
+      tr.innerHTML = `<td class="num" style="text-align:left">${L.toFixed(2)} m${Math.abs(L - TRACK.unit2) < 0.005 ? ' (shown above)' : ''}</td><td class="num">${(2 * L + 2 * TRACK.radius).toFixed(2)} m</td><td>${cell(dn)}</td><td>${cell(up)}</td><td></td>`;
+      tr.lastChild.textContent = what;
+      body.appendChild(tr);
+    }
+  }
+
+  // ------------------------------------------------------------ parts in Singapore
+  function renderBuy() {
+    const M = (id, label) => `<a href="https://sg.misumi-ec.com/vona2/detail/${id}/" target="_blank" rel="noopener">${label}</a>`;
+    const rows = [
+      ['Timing pulley', 'HTD 8M, 60 teeth (Ø153 mm), for 40 mm belt, aluminium', 'HTD 5M, 20 teeth (Ø32 mm), for 15 mm belt', '16', M('110310574739', 'MISUMI SG: Timing Pulleys HTD 8M') + '<br>' + M('110310532889', 'MISUMI SG: Timing Pulleys HTD 5M')],
+      ['Timing belt', 'HTD 8M, 40 mm wide, 1200 mm (150 teeth): 360 mm sections', 'HTD 5M, 15 mm wide, 240 mm (48 teeth): 70 mm sections', '8', M('110310527399', 'MISUMI SG: Timing Belts HTD 8M') + '<br>' + M('110310527489', 'MISUMI SG: Timing Belts HTD 5M')],
+      ['Rubber cover and cleats', '6 mm rubber strip on each belt, 15 mm cleats every 56 mm', '1.5 mm neoprene, 3 mm cleats every 11 mm', '8 belts', 'Glue on with contact adhesive; neoprene sheet and Selleys Kwik Grip at Horme or Selffix'],
+    ];
+    $('buy-body').innerHTML = rows.map((r) => `<tr><td class="spot">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="num">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+    $('buy-note').innerHTML = 'For 2 parts use 2000 mm belts (760 mm units) at full size and 400 mm belts (150 mm units) at 1:5, four of each, with 8 pulleys. RS Singapore (sg.rs-online.com) also sells HTD 8M belts, such as Optibelt 1200 8M in 30 and 85 mm widths, and HTD 5M belts; some ship from its overseas warehouses. MISUMI\u2019s HTD 8M pulleys go up to 60 teeth and 40 mm belts, which is why the full-size track uses them.';
   }
 
   // ------------------------------------------------------------ model notes
@@ -457,7 +512,7 @@
       ['Casualty', 'A 120 kg adult on the 3-part platform (2 m × 0.5 m), folded into a chair shape: back 0.9 m, seat 0.5 m, legs 0.5 m, with padding.'],
       ['Levelling', `The platform turns on pillow-block bearings on top of the box, ${(BASE.seatHeight * 1000).toFixed(0)} mm above the track axles. A worm-gear linear actuator, steered by the IMU, keeps it level: up to ${BASE.levelLimitDeg || 40}° each way, as fast as 150° per metre travelled.`],
       ['Box', `${((BOX.back + BOX.front) * 1000).toFixed(0)} × ${(BOX.width * 1000).toFixed(0)} × ${((BOX.top - BOX.floor) * 1000).toFixed(0)} mm, 15 kg of battery and drive motor, bolted to the section just behind the middle hinge.`],
-      ['Tracks', `Timing belts used as tracks, sold in both sizes. Full size: HTD 14M belts, 55 mm wide, two side by side on each side, on 36-tooth pulleys (Ø160 mm), with a 6 mm rubber cover and 15 mm cleats every 56 mm: 178 mm tall, 208 mm with cleats. Belts: 1190-14M for each of the 4 parts (sections 343 mm), 1890-14M for each of the 2 parts (693 mm), about 3.3 m for one stiff track. 1:5 prototype: HTD 5M belts, 15 mm wide, on 20-tooth pulleys (Ø31.8 mm): 240-5M for 4 parts, 375-5M for 2 parts.`],
+      ['Tracks', `Timing belts used as tracks, from parts MISUMI Singapore stocks (see Track parts in Singapore). Full size: HTD 8M belts, 40 mm wide, two side by side on each side, on 60-tooth pulleys (Ø153 mm), with a 6 mm rubber cover and 15 mm cleats every 56 mm: 170 mm tall, 200 mm with cleats. 1200 mm belts for each of the 4 parts (sections 360 mm), 2000 mm belts for each of the 2 parts (760 mm), about 3.5 m for one stiff track.`],
       ['Weights', 'Track units 2 × 25 kg, platform and levelling 25 kg, box 15 kg; the 4-part tracks add two 6 kg hinge motors.'],
       ['Hinges', 'The middle hinge bends up to 55° at 120° per metre travelled. The 4-part’s extra hinges bend twice as fast, to keep each end on the stairs.'],
       ['Tipping', `"Lean before tipping" is how far the whole vehicle could be tilted before its weight passes the last point touching the stairs. A sudden stop from walking pace (0.25 m/s) in 0.2 s needs ${HARD_STOP.toFixed(1)}°.`],
@@ -834,6 +889,8 @@
   readColors();
   $('legend').innerHTML = LAYOUTS.map((d) => nameHtml(d)).join('');
   renderBox();
+  renderSweep();
+  renderBuy();
   renderModel();
   setupStages();
   setupJumps();
