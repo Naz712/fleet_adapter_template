@@ -344,6 +344,33 @@
     for (let i = 0; i < n; i++) { X[i] = x0 + i * dx; Z[i] = clearanceZ(T, X[i], rho); }
     return { X, Z, x0, dx, n };
   }
+  // Where a hinge axle sits when the track is folded over the stairs: the pitch line moved up by the
+  // pulley radius with its corners kept sharp. Over a crest a single pulley rolls round the corner a
+  // little lower than this, and the sections either side of a hinge held that low would cut the corner.
+  function mitreZ(prof, rho, x) {
+    if (!prof._mitre || prof._mitre.rho !== rho) {
+      const pts = prof.pitch, off = [];
+      for (let i = 1; i < pts.length; i++) {
+        const [x0, z0] = pts[i - 1], [x1, z1] = pts[i], l = Math.hypot(x1 - x0, z1 - z0);
+        if (l < 1e-9) continue;
+        const nx = -(z1 - z0) / l, nz = (x1 - x0) / l;
+        off.push([x0 + nx * rho, z0 + nz * rho, x1 + nx * rho, z1 + nz * rho]);
+      }
+      const V = [[off[0][0], off[0][1]]];
+      for (let i = 1; i < off.length; i++) {
+        const [ax, az, bx, bz] = off[i - 1], [cx, cz, dx, dz] = off[i];
+        const den = (bx - ax) * (dz - cz) - (bz - az) * (dx - cx);
+        const t = Math.abs(den) < 1e-12 ? 1 : ((cx - ax) * (dz - cz) - (cz - az) * (dx - cx)) / den;
+        V.push([ax + t * (bx - ax), az + t * (bz - az)]);
+      }
+      V.push([off[off.length - 1][2], off[off.length - 1][3]]);
+      prof._mitre = { rho, V };
+    }
+    const V = prof._mitre.V;
+    if (x <= V[0][0]) return V[0][1];
+    for (let i = 1; i < V.length; i++) if (x <= V[i][0]) { const [x0, z0] = V[i - 1], [x1, z1] = V[i]; return z0 + ((z1 - z0) * (x - x0)) / Math.max(1e-12, x1 - x0); }
+    return V[V.length - 1][1];
+  }
   function pathZ(Q, x) {
     const f = (x - Q.x0) / Q.dx, i = Math.max(0, Math.min(Q.n - 2, Math.floor(f))), t = f - i;
     return Q.Z[i] + (Q.Z[i + 1] - Q.Z[i]) * t;
@@ -999,8 +1026,10 @@
       }
     }
     if (o.reach === 'lie') {
-      let p = makeChainPose(o, J0, drapeChain(T, o, J0));
-      if (!bendsOk(o, p.angles)) p = solveChainBent(T, o, J0.x, J0.z, p.bends.map((b) => clamp(b, -lim, lim))) || p;
+      // every section rests on the stairs about its inner hinge, the seat's hinge where a folded track puts it
+      const J = { x: J0.x, z: Math.max(J0.z, mitreZ(prof, rho, J0.x)) };
+      let p = makeChainPose(o, J, drapeChain(T, o, J));
+      if (!bendsOk(o, p.angles)) p = solveChainBent(T, o, J.x, J.z, p.bends.map((b) => clamp(b, -lim, lim))) || p;
       // working out from the seat's hinge, the first section reaching out past an edge with its
       // end in the air folds down onto the stairs, if that lifts no hinge more than maxLift
       if (o.maxLift > 0) for (let k = up ? m : m - 1; up ? k < N : k >= 0; k += sgn) {

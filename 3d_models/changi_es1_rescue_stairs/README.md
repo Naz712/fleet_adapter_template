@@ -321,7 +321,7 @@ own layout). The split matters: with the prototype's proportions (0.92 m and 0.6
 |---|---|---|---|
 | No bending (1.52 m) | tips · tips (drops up to 36 cm) | the same | 74 s · 74 s |
 | 2 parts (2 × 0.76 m) | 14.5° · 17.5° | tips (drops up to 31 cm) | 80 s (6 s) · 79 s (5 s) |
-| 4 parts (4 × 0.36 m) | 24.4° · 24.4° | tips (drops up to 8 cm) | 87 s (13 s) · 84 s (10 s) |
+| 4 parts (4 × 0.36 m) | 24.4° · 24.4° | tips (drops up to 8 cm) | 89 s (14 s) · 84 s (9 s) |
 | Front arms (0.80 m + 0.72 m arms) | 25.9° · 14.0° | 8.7° · 8.0° | 80 s (6 s) · 82 s (8 s) |
 
 Stopping to bend is what keeps the hinged tracks up: bending while moving, the hinges can't fold a
