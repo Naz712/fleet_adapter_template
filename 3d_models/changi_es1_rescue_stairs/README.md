@@ -363,11 +363,14 @@ section lists the sizes, full size and 1:5.
   one 40 mm belt per side. The rear unit's belts run in the outer lane and the front unit's in the
   inner lane, so both fit on the middle axle. Overall 1570 × 700 mm (1600 mm over the cleats),
   170 mm tall (200 mm with cleats), 400 mm between the side plates.
-- **Hinge.** A self-locking worm gear motor in the box turns a cross shaft with a small gear at each
-  end. Each gear meshes with a toothed sector on one of the front unit's side plates, so the front
-  unit swings up to 55° either way about the middle axle, at 30° a second. These stairs need 35° up
-  at the foot of a flight and 39° down over an edge. A worm can't be back-driven, so the bend holds
-  with the power off.
+- **Hinge.** A worm gear motor in the box turns a cross shaft with a small gear at each end. Each
+  gear meshes with a toothed sector on one of the front unit's side plates, so the two units swing
+  up to 55° either way about the middle axle, at 30° a second. These stairs need 35° up at the foot
+  of a flight and 39° down over an edge. The bend is the angle between the units, so either one can
+  tip: going down, the rear unit leads and tips over the edge, carrying the box. A worm resists being
+  back-driven, but vibration can make it creep, so the motor also has a spring-applied brake to
+  hold the bend with the power off. At 1:5 the gears are bigger than scale (module 1.25, 32 : 14
+  teeth, about 2.3:1), so they can be printed and a 270° servo covers the whole ±55°.
 - **Drive.** The drive motor in the box turns the middle axle through a chain. Both units' pulleys are
   clamped to it, and bending about it doesn't stretch or slacken the belts, so both tracks drive at
   any bend. The end axles turn freely.
