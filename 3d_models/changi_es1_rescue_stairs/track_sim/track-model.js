@@ -42,9 +42,13 @@
     // How the hinges reach for the stairs at an edge. 'lift': a hinge may lift the vehicle so a track
     // end reaches the stairs early (both ends down, the middle up). 'lie': every section lies on the
     // stairs about its inner hinge and no hinge is lifted off them; a section past an edge stays
-    // straight until its hinge is near enough the edge to bend it down onto the steps.
+    // straight until its hinge is near enough the edge to bend it down onto the steps. 'touch' (a stiff
+    // main track and an arm on its leading axle): the main track rests on the stairs by its own weight
+    // and the arm swings, down or up, until it just touches the stairs ahead.
     reach: 'lift',
     maxLift: 0, // reach 'lie': the most a hinge may lift the vehicle off the stairs to put a track end down, m
+    armUpDeg: null, // reach 'touch': how far the arm can swing up before the platform is in the way (null: hingeLimitDeg)
+    dirs: null, // only these directions, e.g. ['up'] (null: both)
     speed: 0.25, // m/s: only used to turn rates per metre into rates per second
     comOffset: 0, // person shifted along the seat, m (+ towards the head)
     seatBias: 0.15, // the seat's load centre set this far towards the head from the post, m
@@ -971,6 +975,29 @@
   function targetChain(T, QE, J0, o, prof, dir, state, prev) {
     const N = o.sections.length, m = o.mainJoint, rho = o.sprocketRadius, lim = rad(o.hingeLimitDeg);
     const up = dir === 'up', sgn = up ? 1 : -1;
+    if (o.reach === 'touch' && N > 2) {
+      // A stiff main track (every section but the leading one, its hinges straight, the seat's hinge in
+      // its middle) and an arm on its leading axle. The main track rests on the stairs by its own weight,
+      // then the arm swings (down or up) until it just touches the stairs ahead: it can catch the vehicle,
+      // but never props it up.
+      const armK = up ? N - 1 : 0, main = up ? o.sections.slice(0, N - 1) : o.sections.slice(1);
+      const om = Object.assign({}, o, { sections: main, mainJoint: up ? m : m - 1 });
+      const body = solveChainBent(T, om, J0.x, J0.z, main.slice(1).map(() => 0), prev ? prev.angles[m] : undefined);
+      if (body) {
+        const ang = up ? body.angles.concat([0]) : [0].concat(body.angles);
+        const P = body.pts[up ? main.length : 0], inner = ang[up ? armK - 1 : armK + 1];
+        const arm = up ? restAngle(T, P.x, P.z, o.sections[armK], rho) : -restAngleBack(T, P.x, P.z, o.sections[armK], rho);
+        const lift = up ? arm - inner : inner - arm, upMax = o.armUpDeg != null ? rad(o.armUpDeg) : lim; // + is the arm up
+        if (lift <= upMax) {
+          const b = Math.max(-lim, lift);
+          ang[armK] = up ? inner + b : inner - b;
+          return makeChainPose(o, body.J, ang);
+        }
+        // the arm can't swing up that far (the platform is in the way): it climbs the step at its limit
+        const q = solveChainBent(T, o, J0.x, J0.z, o.sections.slice(1).map((_, j) => (j === (up ? N - 2 : 0) ? upMax : 0)), prev ? prev.angles[m] : undefined);
+        if (q) return q;
+      }
+    }
     if (o.reach === 'lie') {
       let p = makeChainPose(o, J0, drapeChain(T, o, J0));
       if (!bendsOk(o, p.angles)) p = solveChainBent(T, o, J0.x, J0.z, p.bends.map((b) => clamp(b, -lim, lim))) || p;
@@ -1082,7 +1109,7 @@
     const target = targetChain(T, QE, J0, o, prof, dir, state, prev);
     const m = o.mainJoint, stuck = o.mainHingeSeized;
     const extraRate = o.extraHingeRateDegPerM == null ? (o.hingeRateDegPerM * o.unitLength) / Math.min(...o.sections) : o.extraHingeRateDegPerM;
-    const done = (p) => (o.leadMode === 'droop' && o.reach !== 'lie' ? droopLead(T, o, dir, J0, p, prev, ds, extraRate) : p);
+    const done = (p) => (o.leadMode === 'droop' && o.reach === 'lift' ? droopLead(T, o, dir, J0, p, prev, ds, extraRate) : p);
     if (!prev && !stuck) return done(target);
     if (o.bendMode === 'stopGo' && !stuck) {
       const full = done(target);
@@ -1327,7 +1354,7 @@
       prev = r;
       rigid.push(r);
     }
-    for (const dir of ['up', 'down']) {
+    for (const dir of o.dirs || ['up', 'down']) {
       const seq = dir === 'up' ? path.map((_, i) => i) : path.map((_, i) => path.length - 1 - i);
       const res = new Array(path.length);
       const state = { folding: null, T };
@@ -1370,6 +1397,11 @@
       out[dir === 'up' ? 'rigidUp' : 'rigidDown'] = one;
     }
     const sm = (ps) => summarise(ps, o, prof, step);
+    if (o.dirs) { // one direction only
+      out.summary = {};
+      for (const dir of o.dirs) out.summary[dir] = sm(out[dir]);
+      return out;
+    }
     out.summary = { up: sm(out.up), down: sm(out.down) };
     out.summary.two = worstOf(out.summary.up, out.summary.down);
     if (withOne) {

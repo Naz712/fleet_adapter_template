@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
   /* Layout: a test-bench sheet, as on the other simulator pages. The verdict for each
-     layout first, then the three running in step, then where the danger is, the lean
+     layout first, then the four running in step, then where the danger is, the lean
      trace, the box sizes and what was modelled. */
   :root {
     color-scheme: light;
@@ -24,6 +24,7 @@
     --rigid: #eb6834;   /* no bending */
     --two: #2a78d6;     /* 2 parts */
     --four: #1baf7a;    /* 4 parts */
+    --arms: #eda100;    /* front arms */
     --track: #262b32;
     --tread: #59616b;
     --chair: #3a424c;
@@ -50,7 +51,7 @@
       color-scheme: dark;
       --bg: #0e1216; --surface: #161b21; --surface-2: #1c232a; --ink: #e9edf1; --ink-2: #b2bcc6; --muted: #7f8a96;
       --hair: #283039; --hair-strong: #3a4450; --steel: #3a424c; --steel-edge: #6a7480; --nosing: #9fb514;
-      --rigid: #d95926; --two: #3987e5; --four: #199e70;
+      --rigid: #d95926; --two: #3987e5; --four: #199e70; --arms: #c98500;
       --track: #0b0e11; --tread: #6f7883; --chair: #aeb8c3; --box: #2b333c; --box-edge: #8792a0; --person: #5b4d3f; --person-edge: #c4ad92; --laser: #f062c8;
       --good-ink: #3fc43f; --warn-ink: #f5c04a; --bad-ink: #f07a7a; --warn-tint: rgba(250, 178, 25, 0.12); --bad-tint: rgba(240, 122, 122, 0.12);
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
@@ -60,7 +61,7 @@
     color-scheme: dark;
     --bg: #0e1216; --surface: #161b21; --surface-2: #1c232a; --ink: #e9edf1; --ink-2: #b2bcc6; --muted: #7f8a96;
     --hair: #283039; --hair-strong: #3a4450; --steel: #3a424c; --steel-edge: #6a7480; --nosing: #9fb514;
-    --rigid: #d95926; --two: #3987e5; --four: #199e70;
+    --rigid: #d95926; --two: #3987e5; --four: #199e70; --arms: #c98500;
     --track: #0b0e11; --tread: #6f7883; --chair: #aeb8c3; --box: #2b333c; --box-edge: #8792a0; --person: #5b4d3f; --person-edge: #c4ad92; --laser: #f062c8;
     --good-ink: #3fc43f; --warn-ink: #f5c04a; --bad-ink: #f07a7a; --warn-tint: rgba(250, 178, 25, 0.12); --bad-tint: rgba(240, 122, 122, 0.12);
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
@@ -84,13 +85,15 @@
   .key.rigid { border-top: 0; height: 3px; background: repeating-linear-gradient(90deg, var(--rigid) 0 5px, transparent 5px 8px); }
   .key.two { border-color: var(--two); }
   .key.four { border-color: var(--four); }
+  .key.arms { border-color: var(--arms); }
   .name { display: inline-flex; align-items: center; gap: 7px; }
 
   /* verdicts */
-  .verdicts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-  @media (max-width: 900px) { .verdicts { grid-template-columns: minmax(0, 1fr); } }
+  .verdicts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 1100px) { .verdicts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 620px) { .verdicts { grid-template-columns: minmax(0, 1fr); } }
   .verdict { padding: 14px 16px 16px; display: grid; gap: 10px; align-content: start; min-width: 0; border: 1px solid var(--hair); border-radius: 12px; background: var(--surface-2); }
-  .verdict .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .verdict .top { display: flex; align-items: center; justify-content: space-between; gap: 6px 10px; flex-wrap: wrap; }
   .verdict h3 { margin: 0; font: 700 21px/1.1 var(--display); letter-spacing: 0.02em; }
   .verdict .num { display: flex; align-items: baseline; gap: 8px; }
   .verdict .num b { font: 600 34px/1 var(--display); font-variant-numeric: tabular-nums; }
@@ -111,8 +114,8 @@
   .seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
   .seg button:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible, td.jump:focus-visible { outline: 2px solid var(--two); outline-offset: 2px; }
   .where { margin-left: auto; font: 12.5px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
-  .stages { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--hair); }
-  @media (max-width: 1000px) { .stages { grid-template-columns: minmax(0, 1fr); } }
+  .stages { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--hair); }
+  @media (max-width: 760px) { .stages { grid-template-columns: minmax(0, 1fr); } }
   .stage { position: relative; background: var(--surface); min-width: 0; display: grid; grid-template-rows: auto 1fr auto; }
   .stage canvas { display: block; width: 100%; height: clamp(230px, 22vw, 290px); touch-action: pan-y; }
   .stage-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px 0; flex-wrap: wrap; }
@@ -187,17 +190,17 @@
   <header>
     <p class="eyebrow">Part 1 · Simulation · ES1 stairs: 8.4 m high, 35°, 1 m mid-landing</p>
     <h1>Stair Climber Bending Test</h1>
-    <p class="lede">The same casualty, folded into a chair shape on the 3-part platform, with the platform hinged on top of the battery box and kept level by the linear actuator. It is carried up and down the stairs three ways: on tracks that can't bend, on tracks in 2 parts, and on tracks in 4 parts. The bending tracks stop at each edge when a laser at the front sees the drop, bend until they touch the stairs, then drive on. The hinges only push the tracks down onto the stairs, lifting the vehicle 5 cm at most. Press play, or jump straight to a danger spot.</p>
+    <p class="lede">The same casualty, folded into a chair shape on the 3-part platform, with the platform hinged on top of the battery box and kept level by the linear actuator. It is carried up and down the stairs four ways: on tracks that can't bend, on tracks in 2 parts, on tracks in 4 parts, and on a stiff track with arms at the front that swing up and down, like the Cal Poly Pomona stair climber. The bending tracks stop at each edge when a laser at the front sees the drop, bend until they touch the stairs, then drive on. The hinges only push the tracks down onto the stairs, lifting the vehicle 5 cm at most. Press play, or jump straight to a danger spot.</p>
   </header>
 
   <section aria-labelledby="verdict-h" class="panel card">
     <h2 id="verdict-h">What changes when the tracks bend</h2>
-    <p class="sub" id="verdict-sub">Working out all three runs…</p>
+    <p class="sub" id="verdict-sub">Working out all four runs…</p>
     <div class="verdicts" id="verdicts"></div>
     <div class="legend-status" id="legend-status"></div>
   </section>
 
-  <section class="card run" aria-label="The three layouts running in step">
+  <section class="card run" aria-label="The four layouts running in step">
     <div class="toolbar">
       <div class="group"><span class="group-label" id="lbl-ctl">How it bends</span>
         <div class="seg" role="group" aria-labelledby="lbl-ctl" id="seg-ctl">
@@ -216,7 +219,7 @@
       <span class="where" id="where"></span>
     </div>
     <div class="stages" id="stages">
-      <div class="busy" id="busy">Working out the three runs…</div>
+      <div class="busy" id="busy">Working out the four runs…</div>
     </div>
     <div class="transport">
       <button type="button" class="btn primary" id="play" aria-label="Play"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span>Play</span></button>
@@ -249,7 +252,7 @@
     <h2 id="laser-h">Where should the laser stop it?</h2>
     <p class="sub" id="laser-sub"></p>
     <div class="table-wrap"><table>
-      <thead><tr><th>Laser stops it at a drop of</th><th id="laser-th-two"></th><th id="laser-th-four"></th><th class="num">Slowest trip</th><th>What happens</th></tr></thead>
+      <thead><tr id="laser-head"></tr></thead>
       <tbody id="laser-body"></tbody>
     </table></div>
   </section>
@@ -311,8 +314,8 @@
   // Tracks modelled on parts MISUMI Singapore stocks: HTD 8M timing belts, 40 mm wide, on 60-tooth
   // pulleys (pitch diameter 152.8 mm), with a 6 mm rubber cover: 85 mm from the axle to the grip;
   // 15 mm cleats every 7 teeth (56 mm). 1200 mm belts give 0.36 m sections, 2000 mm belts 0.76 m units.
-  const TRACK = { radius: 0.085, pulley: 0.0764, cleat: 0.015, cleatPitch: 0.056, sections4: 0.36, unit2: 0.76 };
-  // The box that fits all three layouts (see the box table), and the platform's hinge on top of it.
+  const TRACK = { radius: 0.085, pulley: 0.0764, cleat: 0.015, cleatPitch: 0.056, sections4: 0.36, unit2: 0.76, armsMain: 0.8, armsArm: 0.72 };
+  // The box that fits all four layouts (see the box table), and the platform's hinge on top of it.
   const BOX = { back: 0.28, front: 0.12, floor: 0.04, top: 0.26, width: 0.4 };
   // A hinge only pushes its track down onto the stairs: it may lift the vehicle off them by at most
   // MAX_LIFT to put a track end down, never stand it on its two ends with the middle in the air.
@@ -323,11 +326,20 @@
     { id: 'rigid', name: 'No bending', color: 'rigid', what: 'One stiff track, 1.52 m between the end pulleys.' },
     { id: 'two', name: '2 parts', color: 'two', what: 'Two 0.76 m track units with a hinge in the middle.' },
     { id: 'four', name: '4 parts', color: 'four', what: 'Four 0.36 m sections: each half bends again at an extra hinge.' },
+    { id: 'arms', name: 'Front arms', color: 'arms', what: 'A stiff 0.80 m main track with 0.72 m track arms on its front axle that swing up and down.' },
   ];
+  // Front arms, after the Cal Poly Pomona wheelchair stair climber (GrabCAD): a stiff main track carries the
+  // box and platform at its middle (its two halves never bend), with track arms on its leading axle. The main
+  // track rests on the stairs by its own weight; the arms swing down (up to 90 degrees) or up (up to 45, where
+  // the platform gets in the way) until they just touch the stairs ahead. It turns round at the top, so the
+  // arms lead both ways: the last section going up, the first going down.
+  const ARMS = { reach: 'touch', hingeLimitDeg: 90, armUpDeg: 45, oneTrack: false };
+  const ARMS_UP = { sections: [TRACK.armsMain / 2, TRACK.armsMain / 2, TRACK.armsArm], mainJoint: 1, dirs: ['up'] };
+  const ARMS_DOWN = { sections: [TRACK.armsArm, TRACK.armsMain / 2, TRACK.armsMain / 2], mainJoint: 2, dirs: ['down'] };
   // Tallest box for each length, mm, full size: [length, height, from, to (along the section, from the middle
   // hinge), floor, top]; height 0 = no box that long fits. Worked out from every pose of the runs, both
   // stopping to bend and bending while moving (the stricter of the two).
-  const BOX_RANGE = {"rigid":[[300,250,-540,-240,40,290],[400,250,-540,-140,40,290],[500,250,-540,-40,40,290],[600,250,-540,60,40,290],[700,233,-580,120,40,273],[800,200,-650,150,40,240],[1000,188,-670,330,40,228],[1100,188,-670,430,40,228],[1200,188,-670,530,40,228]],"two":[[300,250,-460,-160,40,290],[400,250,-460,-60,40,290],[500,250,-460,40,40,290],[600,233,-490,110,40,273],[700,195,-560,140,40,235],[800,169,-600,200,40,209],[1000,87,-630,370,105,192],[1100,0,null,null,null,null],[1200,0,null,null,null,null]],"four":[[300,250,-300,0,40,290],[400,244,-300,100,40,284],[500,171,-300,200,40,211],[600,0,null,null,null,null],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]]};
+  const BOX_RANGE = {"rigid":[[300,250,-540,-240,40,290],[400,250,-540,-140,40,290],[500,250,-540,-40,40,290],[600,250,-540,60,40,290],[700,233,-580,120,40,273],[800,200,-650,150,40,240],[1000,188,-670,330,40,228],[1100,188,-670,430,40,228],[1200,188,-670,530,40,228]],"two":[[300,250,-460,-160,40,290],[400,250,-460,-60,40,290],[500,250,-460,40,40,290],[600,233,-490,110,40,273],[700,195,-560,140,40,235],[800,169,-600,200,40,209],[1000,87,-630,370,105,192],[1100,0,null,null,null,null],[1200,0,null,null,null,null]],"four":[[300,250,-300,0,40,290],[400,244,-300,100,40,284],[500,171,-300,200,40,211],[600,0,null,null,null,null],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]],"arms":[[300,250,-330,-30,40,290],[400,250,-330,70,40,290],[500,182,-330,170,40,222],[600,182,-330,270,40,222],[700,0,null,null,null,null],[800,0,null,null,null,null],[1000,0,null,null,null,null],[1100,0,null,null,null,null],[1200,0,null,null,null,null]]};
   // 2 parts with longer or shorter units (same stairs, box and platform): least lean before tipping
   // going down and up, degrees (null = it tips), the biggest drop in cm, and whether a unit can end up
   // resting on a single step edge.
@@ -347,18 +359,18 @@
   const FLIGHT_READ = 1.1;
   const LASERS = [[1, '1 riser'], [1.25, '1¼ risers'], [1.5, '1½ risers'], [2, '2 risers'], [3, '3 risers']];
   // Each setting run in full: least lean before tipping (degrees), biggest drop (cm) and trip time (s, of it
-  // stopped) for 2 parts then 4 parts: [risers, two: down, up, drop, down s, stopped, up s, stopped, four: the same].
-  const LASER_TABLE = [[1, 14.5, 17.5, 0, 79.5, 5.3, 79.4, 5.2, 24.4, 24.4, 0, 87.1, 12.9, 84, 9.8],
-    [1.25, 14.5, 17.5, 0, 79.6, 5.5, 79.4, 5.2, 24.4, 24.4, 0, 87.3, 13.1, 83.8, 9.6],
-    [1.5, 10.8, 17.5, 0, 79.7, 5.6, 79.4, 5.2, 10.1, 24.4, 0, 87.4, 13.3, 84, 9.9],
-    [2, 10.8, 17.5, 0, 79.7, 5.6, 79.4, 5.2, 10.1, 21.8, 0, 87, 12.9, 84.4, 10.2],
-    [3, 10.8, -7.8, 28, 79.9, 5.8, 76, 1.8, 10.1, -8, 26, 86.4, 12.3, 80.8, 6.7]];
+  // stopped) for 2 parts, 4 parts and front arms: [risers, two: down, up, drop, down s, stopped, up s, stopped, four: the same, arms: the same].
+  const LASER_TABLE = [[1,  14.5,  17.5,  0,  79.5,  5.3,  79.4,  5.2,  24.4,  24.4,  0,  87.1,  12.9,  84,  9.8,  25.9,  14,  0,  80,  5.9,  81.9,  7.6],
+    [1.25,  14.5,  17.5,  0,  79.6,  5.5,  79.4,  5.2,  24.4,  24.4,  0,  87.3,  13.1,  83.8,  9.6,  25.9,  14,  0,  80.1,  5.9,  81.9,  7.6],
+    [1.5,  10.8,  17.5,  0,  79.7,  5.6,  79.4,  5.2,  10.1,  24.4,  0,  87.4,  13.3,  84,  9.9,  19.1,  14,  0,  80.2,  6,  81.9,  7.6],
+    [2,  10.8,  17.5,  0,  79.7,  5.6,  79.4,  5.2,  10.1,  21.8,  0,  87,  12.9,  84.4,  10.2,  19.1,  14,  0,  80.3,  6.2,  81.9,  7.6],
+    [3,  10.8,  -7.8,  28,  79.9,  5.8,  76,  1.8,  10.1,  -8,  26,  86.4,  12.3,  80.8,  6.7,  19.1,  14,  0,  80.4,  6.3,  82.7,  8.4]];
   const LASER_WHAT = {
     1: `Just as safe, but the steps alone can read ${FLIGHT_READ} risers, so it would also stop on every step of the flights.`,
     1.25: 'Best: as safe as stopping in exactly the right spot, and no false stops on the flights.',
-    1.5: 'Late going down at the mid-landing: it can lean only 11° there (10° with 4 parts).',
-    2: 'Late going down at the mid-landing (11°, 10° with 4 parts); the 4 parts keep only 22° going up, and its platform brushes its own tracks.',
-    3: 'Too late going up: it tips at the mid-landing edge and the top edge, one end dropping 28 cm. Going down, the platform knocks its own tracks.',
+    1.5: 'Late going down at the mid-landing: 2 parts can lean only 11° there, 4 parts 10°, front arms 19°.',
+    2: 'Late going down at the mid-landing (11°, 10° and 19°); the 4 parts keep only 22° going up, and its platform brushes its own tracks.',
+    3: 'Too late going up: 2 and 4 parts tip at the mid-landing edge and the top edge, one end dropping 28 cm, and going down their platforms knock their own tracks. The front arms still keep 14°.',
   };
 
   const state = { dir: 'down', idx: 0, playing: false, speed: 2, lastT: 0, travel: 0, sims: null, cam: null, scale: 1, spots: [], ctl: 'stopGo', laser: 1.25 };
@@ -367,7 +379,7 @@
   let C = {};
   function readColors() {
     const cs = getComputedStyle(document.documentElement);
-    for (const k of ['surface', 'surface-2', 'ink', 'ink-2', 'muted', 'hair', 'hair-strong', 'steel', 'steel-edge', 'nosing', 'rigid', 'two', 'four', 'track', 'tread', 'chair', 'box', 'box-edge', 'person', 'person-edge', 'laser', 'good', 'warn', 'bad', 'good-ink', 'warn-ink', 'bad-ink', 'warn-tint', 'bad-tint']) C[k] = cs.getPropertyValue('--' + k).trim();
+    for (const k of ['surface', 'surface-2', 'ink', 'ink-2', 'muted', 'hair', 'hair-strong', 'steel', 'steel-edge', 'nosing', 'rigid', 'two', 'four', 'arms', 'track', 'tread', 'chair', 'box', 'box-edge', 'person', 'person-edge', 'laser', 'good', 'warn', 'bad', 'good-ink', 'warn-ink', 'bad-ink', 'warn-tint', 'bad-tint']) C[k] = cs.getPropertyValue('--' + k).trim();
   }
   const icons = {
     good: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -405,10 +417,16 @@
         const four = TM.simulate(Object.assign({ oneTrack: false, sections: [TRACK.sections4, TRACK.sections4, TRACK.sections4, TRACK.sections4], mainJoint: 2 }, o));
         four.sEnd = four.path[four.path.length - 1].s;
         const rigid = { opts: two.opts, profile: two.profile, terrain: two.terrain, path: two.path, sEnd: two.sEnd, up: two.rigidUp, down: two.rigidDown, rigid: true };
-        const sims = { rigid, two, four };
-        addTiming(sims);
-        cache[key] = sims;
-        if (keyNow() === key) useSims(sims); else runSims(); // the choice changed while it worked
+        busy.textContent = 'Working out the front-arms run…';
+        setTimeout(() => {
+          // the arms lead both ways, so each way is its own vehicle layout
+          const up = TM.simulate(Object.assign({}, o, ARMS, ARMS_UP)), down = TM.simulate(Object.assign({}, o, ARMS, ARMS_DOWN));
+          const arms = { opts: up.opts, dirOpts: { up: up.opts, down: down.opts }, profile: up.profile, terrain: up.terrain, path: up.path, sEnd: two.sEnd, up: up.up, down: down.down, arms: true };
+          const sims = { rigid, two, four, arms };
+          addTiming(sims);
+          cache[key] = sims;
+          if (keyNow() === key) useSims(sims); else runSims(); // the choice changed while it worked
+        }, 30);
       }, 30);
     }, 40);
   }
@@ -423,15 +441,16 @@
   // How long each 1 cm step takes, in the order it is driven (k). Driving takes 1 cm / 0.25 m/s.
   // Where a hinge or the levelling has to turn further than it can in that time, the step takes
   // as long as the turn: stop, bend, then go. Bending while moving, the turns always fit.
-  function timing(list, dir, rigid) {
+  function timing(list, dir, kind) {
     const n = list.length, need = new Float64Array(n), cum = new Float64Array(n), stopCum = new Float64Array(n), why = new Array(n).fill(''), moving = new Array(n).fill('');
     for (let k = 1; k < n; k++) {
       const a = list[dir === 'up' ? k - 1 : n - k], b = list[dir === 'up' ? k : n - 1 - k];
       const drive = Math.abs(b.s - a.s) / CONTROL.drive;
       let turn = Math.abs(deg(b.lam - a.lam)) / CONTROL.level, w = 'level';
       const hinge = (x, y, rate, name) => { const t = Math.abs(deg(y - x)) / rate; if (t > turn) { turn = t; w = (Math.abs(y) > Math.abs(x) ? 'bend ' : 'ease ') + name; } };
-      if (b.bends) b.bends.forEach((v, j) => hinge(a.bends[j], v, j === b.m - 1 ? CONTROL.hinge : CONTROL.end, j === b.m - 1 ? 'main' : 'end'));
-      else if (!rigid) hinge(a.beta, b.beta, CONTROL.hinge, 'main');
+      if (kind === 'arms') b.bends.forEach((v, j) => { const t = Math.abs(deg(v - a.bends[j])) / CONTROL.hinge; if (t > turn) { turn = t; w = Math.abs(v) < Math.abs(a.bends[j]) ? 'arm in' : v > a.bends[j] ? 'arm up' : 'arm down'; } });
+      else if (b.bends) b.bends.forEach((v, j) => hinge(a.bends[j], v, j === b.m - 1 ? CONTROL.hinge : CONTROL.end, j === b.m - 1 ? 'main' : 'end'));
+      else if (kind !== 'rigid') hinge(a.beta, b.beta, CONTROL.hinge, 'main');
       need[k] = Math.max(drive, turn);
       cum[k] = cum[k - 1] + need[k];
       const stop = turn > drive * 1.5;
@@ -441,11 +460,11 @@
     }
     return { need, cum, stopCum, why, moving, total: cum[n - 1], stopped: stopCum[n - 1] };
   }
-  // The three are shown side by side: each step lasts as long as the slowest of them needs.
+  // The four are shown side by side: each step lasts as long as the slowest of them needs.
   function addTiming(sims) {
     sims.step = {};
     for (const dir of ['up', 'down']) {
-      for (const d of LAYOUTS) (sims[d.id].time = sims[d.id].time || {})[dir] = timing(sims[d.id][dir], dir, d.id === 'rigid');
+      for (const d of LAYOUTS) (sims[d.id].time = sims[d.id].time || {})[dir] = timing(sims[d.id][dir], dir, d.id);
       const n = sims.two.path.length, step = new Float64Array(n);
       for (let k = 1; k < n; k++) step[k] = Math.max(...LAYOUTS.map((d) => sims[d.id].time[dir].need[k]));
       sims.step[dir] = step;
@@ -516,6 +535,7 @@
         : worst.v < 0 ? 'It <b>bends in the middle</b> as it drives, but at an edge the hinge <b>can’t fold the front half down in time</b>.' : 'It <b>bends in the middle</b> as it drives, so it rolls over the edges instead of rocking.');
       if (d.id === 'four') items.push(stopGo() ? 'At each edge it <b>stops to bend, one hinge at a time</b>, and a hinge <b>stays bent until more track is on the stairs</b>.'
         : worst.v < 0 ? 'Its hinges <b>bend as it drives</b>, but at an edge they <b>can’t fold the ends down in time</b>.' : 'Each half <b>bends again at the edges</b> to keep its tracks on the stairs.');
+      if (d.id === 'arms') items.push('A <b>stiff main track</b> carries the weight. The <b>arms swing down or up until they touch the stairs</b> ahead, so they catch it at an edge but never hold it up.');
       if (worst.v < 0) items.push(`It tips at the <b>${tipSpots.join(' and the ')}</b>: one end drops about <b>${Math.round(drop * 100)} cm</b>.`);
       else if (worst.v < HARD_STOP) items.push(`At the <b>${lower(spotOf(worst.x))}</b> going ${worst.dir} it can only lean <b>${worst.v.toFixed(0)}°</b> before tipping: a sudden stop or a bump there could tip it.`);
       else items.push(`It can lean at least <b>${worst.v.toFixed(0)}°</b> before tipping, anywhere, both ways.`);
@@ -528,6 +548,7 @@
         ? `The trip takes <b>${tm.down.total.toFixed(0)} s down and ${tm.up.total.toFixed(0)} s up</b>, ${tm.down.stopped.toFixed(0)} s and ${tm.up.stopped.toFixed(0)} s of it stopped to bend.`
         : `The trip takes <b>${Math.max(tm.down.total, tm.up.total).toFixed(0)} s</b> each way, without stopping.`);
       if (d.id === 'four') items.push('Needs three hinge motors instead of one, and a shorter box.');
+      if (d.id === 'arms') items.push('It has to <b>turn round at the top</b> so the arms lead on the way down.');
       const range = BOX_RANGE[d.id], full = range.filter((r) => r[1] >= 250).pop(), longest = range.filter((r) => r[1] > 0).pop();
       const el = document.createElement('article'); el.className = 'verdict';
       el.innerHTML = `<div class="top"><h3>${nameHtml(d)}</h3>${chip(lvl)}</div>`
@@ -599,10 +620,10 @@
     }
     const [L, W, H] = CURRENT_BASE, mm = (v) => `${Math.round(v / k)} mm`;
     const backMost = (id) => Math.min(...BOX_RANGE[id].filter((r) => r[1] >= 250).map((r) => r[2]));
-    $('box-callout').innerHTML = `<p><b>Your current base</b>, ${mm(L)} × ${mm(W)} × ${mm(H)}, is too big for all three. It is too long for 2 and 4 parts, too tall to be that long with no bending, and wider than the ${mm(400)} between the track frames.</p>`
-      + `<p><b>A box that fits all three:</b> ${mm((BOX.back + BOX.front) * 1000)} long × ${mm(BOX.width * 1000)} wide × ${mm((BOX.top - BOX.floor) * 1000)} tall. That is the box in the simulation.</p>`
+    $('box-callout').innerHTML = `<p><b>Your current base</b>, ${mm(L)} × ${mm(W)} × ${mm(H)}, is too big for all four. It is too long for 2 and 4 parts and the front arms, too tall to be that long with no bending, and wider than the ${mm(400)} between the track frames.</p>`
+      + `<p><b>A box that fits all four:</b> ${mm((BOX.back + BOX.front) * 1000)} long × ${mm(BOX.width * 1000)} wide × ${mm((BOX.top - BOX.floor) * 1000)} tall. That is the box in the simulation.</p>`
       + `<p>Its floor sits ${mm(BOX.floor * 1000)} above the track axles, so it clears the middle axle, and ${mm(BOX.floor * 1000 + TRACK.radius * 1000 + TRACK.cleat * 1000)} above flat ground. The platform's hinge stands on top, ${mm(BASE.seatHeight * 1000)} above the axles.</p>`
-      + `<p>Keep the box towards the back: the 2-part box can start up to ${mm(-backMost('two'))} behind the middle hinge, the 4-part box ${mm(-backMost('four'))}. Make a longer box lower: the platform tilts close above its ends.</p>`;
+      + `<p>Keep the box towards the back: the 2-part box can start up to ${mm(-backMost('two'))} behind the middle hinge, the 4-part box ${mm(-backMost('four'))}, and the front-arms box ${mm(-backMost('arms'))} behind the middle of its main track. Make a longer box lower: the platform tilts close above its ends.</p>`;
     updateUnits();
   }
 
@@ -636,20 +657,19 @@
 
   // ------------------------------------------------------------ laser setting
   function renderLaser() {
-    const two = LAYOUTS[1], four = LAYOUTS[2];
-    $('laser-th-two').innerHTML = nameHtml(two);
-    $('laser-th-four').innerHTML = nameHtml(four);
+    // each bending layout's columns in a LASER_TABLE row start here
+    const cols = LAYOUTS.filter((d) => d.id !== 'rigid').map((d, i) => ({ d, at: 1 + 7 * i }));
+    $('laser-head').innerHTML = '<th>Laser stops it at a drop of</th>' + cols.map(({ d }) => `<th>${nameHtml(d)}</th>`).join('') + '<th class="num">Slowest trip</th><th>What happens</th>';
     const mm = (r) => Math.round(r * STAIRS.rise * 1000);
     $('laser-sub').textContent = `The laser sits at the leading end of the track and looks straight down. On flat ground it reads the same all the time. On the flights the steps alone make it read up to ${FLIGHT_READ} risers further, so it must not stop below that. At an edge the reading jumps: the sooner it stops to bend, the more of the track is still on the stairs. Each setting below was run up and down in full. Click one to watch it.`;
     const body = $('laser-body'); body.textContent = '';
     const pair = (dn, up) => `${chip(levelOf(Math.min(dn, up)), Math.min(dn, up) < 0 ? 'Tips' : WORD[levelOf(Math.min(dn, up))])}<span class="lean">${leanTxt(dn)} down · ${leanTxt(up)} up</span>`;
     for (const r of LASER_TABLE) {
-      const [risers, tDn, tUp, , tDnSec, , tUpSec, , fDn, fUp, , fDnSec, , fUpSec] = r;
-      const tr = document.createElement('tr');
+      const risers = r[0], tr = document.createElement('tr');
       const on = stopGo() && state.laser === risers;
       tr.innerHTML = `<td class="jump spot"><div>${laserName(risers)}${on ? ' (shown above)' : ''}</div><div class="what">${mm(risers)} mm further than on flat ground; ${Math.round(mm(risers) / 5)} mm at 1:5</div></td>`
-        + `<td class="jump">${pair(tDn, tUp)}</td><td class="jump">${pair(fDn, fUp)}</td>`
-        + `<td class="num"><span class="name"><i class="key two"></i>${Math.max(tDnSec, tUpSec).toFixed(0)} s</span><br><span class="name"><i class="key four"></i>${Math.max(fDnSec, fUpSec).toFixed(0)} s</span></td><td></td>`;
+        + cols.map(({ at }) => `<td class="jump">${pair(r[at], r[at + 1])}</td>`).join('')
+        + `<td class="num">${cols.map(({ d, at }) => `<span class="name"><i class="key ${d.color}"></i>${Math.max(r[at + 3], r[at + 5]).toFixed(0)} s</span>`).join('<br>')}</td><td></td>`;
       tr.lastChild.textContent = LASER_WHAT[risers];
       const go = () => { setLaser(risers); document.querySelector('.run').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }); };
       tr.querySelectorAll('td.jump').forEach((td) => {
@@ -684,8 +704,9 @@
       ['Tracks', `Timing belts used as tracks, from parts MISUMI Singapore stocks (see Track parts in Singapore). Full size: HTD 8M belts, 40 mm wide, two side by side on each side, on 60-tooth pulleys (Ø153 mm), with a 6 mm rubber cover and 15 mm cleats every 56 mm: 170 mm tall, 200 mm with cleats. 1200 mm belts for each of the 4 parts (sections 360 mm), 2000 mm belts for each of the 2 parts (760 mm), about 3.5 m for one stiff track.`],
       ['Weights', 'Track units 2 × 25 kg, platform and levelling 25 kg, box 15 kg; the 4-part tracks add two 6 kg hinge motors.'],
       ['How it bends', stopGo()
-        ? `Stop, bend, then go. It drives at ${CONTROL.drive} m/s. Wherever a hinge or the levelling has to turn further than it can on the move, it stops until they have: the middle hinge turns ${CONTROL.hinge}° a second, the 4-part’s end hinges ${CONTROL.end.toFixed(0)}°, the levelling ${CONTROL.level}°. A hinge only turns as far as still leaves ${CONTROL.safeDeg}° of lean before tipping; otherwise it holds its bend until more track is on the stairs. Hinges bend up to 55°. When one layout stops, the others wait, so the three stay side by side.`
+        ? `Stop, bend, then go. It drives at ${CONTROL.drive} m/s. Wherever a hinge or the levelling has to turn further than it can on the move, it stops until they have: the middle hinge turns ${CONTROL.hinge}° a second, the 4-part’s end hinges ${CONTROL.end.toFixed(0)}°, the levelling ${CONTROL.level}°. A hinge only turns as far as still leaves ${CONTROL.safeDeg}° of lean before tipping; otherwise it holds its bend until more track is on the stairs. Hinges bend up to 55°. When one layout stops, the others wait, so they all stay side by side.`
         : `Bend while moving: the hinges and the levelling turn as it drives at ${CONTROL.drive} m/s, without stopping. The middle hinge bends up to 55° at 120° per metre travelled (${CONTROL.hinge}° a second); the 4-part’s end hinges about twice as fast, to keep each end on the stairs.`],
+      ['Front arms', `After the Cal Poly Pomona wheelchair stair climber on GrabCAD, scaled up: a stiff ${TRACK.armsMain.toFixed(2)} m main track carries the box and platform at its middle, with ${TRACK.armsArm.toFixed(2)} m track arms on its front axle. The main track rests on the stairs by its own weight; the arms swing down (up to ${ARMS.hingeLimitDeg}°) or up (up to ${ARMS.armUpDeg}°, where the platform gets in the way) until they just touch the stairs ahead. It turns round at the top so the arms lead both ways. With the prototype’s proportions (a 0.92 m main track and 0.60 m arms) it keeps only 7–10° at the top edge on these stairs.`],
       ['Hinges', `A hinge only pushes its track down onto the stairs. To put a track end down it may lift the vehicle off them by ${Math.round(MAX_LIFT * 100)} cm at most; it never stands the vehicle on its two ends with the middle in the air, which would take a hinge motor strong enough to hold the whole vehicle and casualty off the ground, with only the end tracks gripping.`],
       ...(stopGo() ? [['Laser', `A laser at the leading end of the track (the front going up, the back going down) points straight down. Near a platform edge the hinges stay locked as it drives on, until the laser reads ${laserName(state.laser)} (${Math.round(state.laser * STAIRS.rise * 1000)} mm) further than on flat ground; then it stops and bends. On the flights the steps alone make it read up to ${FLIGHT_READ} risers further, so it can’t be set lower than that.`]] : []),
       ['Tipping', `"Lean before tipping" is how far the whole vehicle could be tilted before its weight passes the last point touching the stairs. A sudden stop from walking pace (0.25 m/s) in 0.2 s needs ${HARD_STOP.toFixed(1)}°.`],
@@ -696,8 +717,9 @@
   // ------------------------------------------------------------ drawing
   // Between two samples. A hinge can turn a long way in one sample while the vehicle is stopped,
   // so the tracks are rebuilt from the hinge and their angles: they turn, rather than shrink.
+  const optsOf = (sim) => (sim.dirOpts ? sim.dirOpts[state.dir] : sim.opts);
   function lerpPose(a, b, t, sim) {
-    const o = sim.opts, L = (u, v) => u + (v - u) * t;
+    const o = optsOf(sim), L = (u, v) => u + (v - u) * t;
     const P = (u, v) => ({ x: L(u.x, v.x), z: L(u.z, v.z) });
     const near = t < 0.5 ? a : b;
     const q = { R: P(a.R, b.R), J: P(a.J, b.J), F: P(a.F, b.F), P: P(a.P, b.P), pitch: L(a.pitch, b.pitch), beta: L(a.beta, b.beta),
@@ -784,9 +806,10 @@
       };
       pulley(A.x, A.z); pulley(B.x, B.z);
     }
-    function hinges(p, rho, rigid) {
+    function hinges(p, rho, rigid, only) {
       if (rigid) return;
       const dot = (Q, r) => { g.beginPath(); g.arc(SX(Q.x), SY(Q.z), r * scale, 0, Math.PI * 2); g.fillStyle = C.nosing; g.fill(); g.lineWidth = 2; g.strokeStyle = C.track; g.stroke(); };
+      if (only) { for (const Q of only) dot(Q, rho * 0.42); return; }
       dot(p.J, rho * 0.42);
       if (p.pts) for (let j = 1; j < p.pts.length - 1; j++) if (j !== p.m) dot(p.pts[j], rho * 0.34);
     }
@@ -883,19 +906,25 @@
     $('scrub').value = String(Math.round(k));
     updateChart();
   }
-  const SHORT = { rigid: 'the stiff track', two: 'the 2-part track', four: 'the 4-part track' };
+  const SHORT = { rigid: 'the stiff track', two: 'the 2-part track', four: 'the 4-part track', arms: 'the front-arms track' };
   const STOP_MSG = {
     'bend main': '<b>Stopped to bend.</b> The middle hinge turns until the track touches the stairs.',
     'ease main': '<b>Stopped to straighten.</b> The middle hinge eases back as more track gets onto the stairs.',
     'bend end': '<b>Stopped to bend.</b> An end hinge turns until its end of the track touches the stairs.',
     'ease end': '<b>Stopped to straighten</b> an end hinge.',
     level: '<b>Stopped to re-level</b> the platform.',
+    'arm down': '<b>Stopped to swing the arms down</b> until they touch the stairs.',
+    'arm up': '<b>Stopped to swing the arms up</b> onto the next step.',
+    'arm in': '<b>Stopped to bring the arms back</b> in line with the main track.',
   };
   const MOVE_MSG = {
     'bend main': '<b>Driving on</b> as the middle hinge bends to keep the track on the stairs.',
     'ease main': '<b>Driving on</b> as the middle hinge eases back and the other half follows.',
     'bend end': '<b>Driving on</b> as an end hinge bends to keep its end on the stairs.',
     'ease end': '<b>Driving on</b> as an end hinge eases back.',
+    'arm down': '<b>Driving on</b> as the arms swing down to keep touching the stairs.',
+    'arm up': '<b>Driving on</b> as the arms swing up onto the steps.',
+    'arm in': '<b>Driving on</b> as the arms come back in line with the main track.',
   };
   const PART = { backrest: 'platform’s backrest', seat: 'platform’s seat', 'leg rest': 'platform’s leg rest', thigh: 'casualty’s legs', shank: 'casualty’s legs', foot: 'casualty’s feet', torso: 'casualty’s back', head: 'casualty’s head' };
   // the laser at the leading end: how much further than on flat ground it reads, in risers
@@ -904,7 +933,7 @@
     return { lead, ground, risers: (lead.z - ground - sim.opts.sprocketRadius) / sim.opts.rise };
   }
   function drawStage(d) {
-    const st = stages[d.id], sim = state.sims[d.id], o = sim.opts, rho = o.sprocketRadius, g = st.g;
+    const st = stages[d.id], sim = state.sims[d.id], o = optsOf(sim), rho = o.sprocketRadius, g = st.g;
     const p = poseAt(sim, state.idx);
     g.setTransform(st.dpr, 0, 0, st.dpr, 0, 0);
     g.fillStyle = C.surface; g.fillRect(0, 0, st.W, st.H);
@@ -918,9 +947,12 @@
     paint.stairs(sim.profile, sim.terrain.V);
     paint.box(o, p);
     const dirSign = state.dir === 'up' ? 1 : -1;
-    const units = sim.rigid ? [[p.R, p.F]] : (p.units || [[p.R, p.J], [p.J, p.F]]);
+    const N = p.pts ? p.pts.length - 1 : 0, axle = sim.arms ? (state.dir === 'up' ? N - 1 : 1) : 0;
+    const units = sim.rigid ? [[p.R, p.F]]
+      : sim.arms ? (state.dir === 'up' ? [[p.pts[0], p.pts[axle]], [p.pts[axle], p.pts[N]]] : [[p.pts[axle], p.pts[N]], [p.pts[0], p.pts[axle]]])
+      : (p.units || [[p.R, p.J], [p.J, p.F]]);
     for (const [A, B] of units) paint.unit(A, B, rho, state.travel, dirSign, C[d.color]);
-    paint.hinges(p, rho, sim.rigid);
+    paint.hinges(p, rho, sim.rigid, sim.arms ? [p.pts[axle]] : null);
     const laser = stopGo() && !sim.rigid ? laserRead(sim, p) : null;
     if (laser) paint.laser(laser, laser.lead.z - rho - state.laser * o.rise, laser.risers >= state.laser - 0.02, dirSign);
     paint.platform(o, p, C[d.color]);
@@ -948,7 +980,7 @@
         : hit ? `<b>Knocking its own track.</b> The ${PART[ev.trackHit.part] || 'platform'} hits the ${ev.trackHit.unit} track.`
         : why ? STOP_MSG[why.startsWith('level') ? 'level' : why]
         : lean < HARD_STOP ? '<b>Close to tipping.</b> A sudden stop or a bump here could tip it.'
-        : others.length ? `<b>Waiting</b> while ${others.length > 1 ? 'the others stop' : `${SHORT[others[0].id]} stops`}, so the three stay side by side.`
+        : others.length ? `<b>Waiting</b> while ${others.length > 1 ? 'the others stop' : `${SHORT[others[0].id]} stops`}, so they all stay side by side.`
         : p.waiting ? `<b>Hinges locked.</b> Driving on until the laser sees a drop of ${laserName(state.laser)}.`
         : p.edgeSeen && (p.bends || [p.beta]).every((b) => Math.abs(deg(b)) < 1) ? '<b>The laser sees the drop.</b> Driving on until the hinge is close enough to the edge to bend.'
         : p.held ? '<b>Holding the bend</b> until more of the track is on the stairs.'
@@ -957,8 +989,11 @@
     }
     const signed = (v) => `${deg(v) >= 0 ? '+' : '−'}${Math.abs(deg(v)).toFixed(0)}°`;
     const rows = [['Casualty tilt', signed(p.phi)]];
-    if (!sim.rigid) rows.push(['Middle hinge', signed(p.beta)]);
-    if (p.bends) { const ex = p.bends.filter((_, j) => j !== p.m - 1); rows.push(['End hinges', ex.map(signed).join(' · ')]); }
+    if (sim.arms) { const b = p.bends.find((_, j) => j !== p.m - 1); rows.push(['Arms', `${Math.abs(deg(b)) < 0.5 ? 'in line' : `${Math.abs(deg(b)).toFixed(0)}° ${b > 0 ? 'up' : 'down'}`}`]); }
+    else {
+      if (!sim.rigid) rows.push(['Middle hinge', signed(p.beta)]);
+      if (p.bends) { const ex = p.bends.filter((_, j) => j !== p.m - 1); rows.push(['End hinges', ex.map(signed).join(' · ')]); }
+    }
     if (laser) rows.push(['Laser', `${Math.max(0, laser.risers).toFixed(1)} risers`]);
     const t = clockAt(tm.cum, state.idx), ts = clockAt(tm.stopCum, state.idx);
     rows.push(['Time', `${t.toFixed(0)} s${ts >= 0.5 ? ` · ${ts.toFixed(0)} s stopped` : ''}`]);
@@ -1109,7 +1144,7 @@
     // just before the next place either bending track stops to bend
     add('Next stop', () => {
       const n = nPath(), from = Math.floor(state.idx) + 36;
-      for (let k = from; k < n; k++) if (timeOf('two').why[k] || timeOf('four').why[k]) { seek(Math.max(0, k - 30)); return; }
+      for (let k = from; k < n; k++) if (['two', 'four', 'arms'].some((id) => timeOf(id).why[k])) { seek(Math.max(0, k - 30)); return; }
       seek(0);
     }, 'jump-next');
   }
