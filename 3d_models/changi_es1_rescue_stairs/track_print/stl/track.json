@@ -1,0 +1,121 @@
+{
+  "design": {
+    "rise": 35.0,
+    "going": 50.0,
+    "cleats_per_step": 5,
+    "sprocket_teeth": 8,
+    "cleats": 31,
+    "target_centres": 140.0,
+    "width": 15.0,
+    "backing": 1.8,
+    "lug_base": 4.4,
+    "lug_tip": 3.0,
+    "lug_height": 2.4,
+    "cleat_base": 4.4,
+    "cleat_tip": 2.4,
+    "cleat_height": 3.0,
+    "tip_round": 0.5,
+    "root_fillet": 0.4,
+    "groove_clearance": 0.35,
+    "groove_extra_depth": 0.4,
+    "tooth_round": 0.6,
+    "lane_clearance": 0.4,
+    "flange": 1.6,
+    "flange_flat": 0.6,
+    "flange_inside_back": 0.25,
+    "bore": 8.25,
+    "hub_radius": 9.5,
+    "hub_length": 9.0,
+    "screw_hole": 3.2,
+    "nut_slot": 5.9,
+    "nut_thick": 2.8,
+    "gauge_steps": 3,
+    "gauge_width": 25.0,
+    "gauge_foot": 20.0,
+    "gauge_top": 60.0
+  },
+  "geometry": {
+    "step_mm": [
+      35.0,
+      50.0
+    ],
+    "slope_deg": 34.99,
+    "nosing_to_nosing_mm": 61.033,
+    "cleat_spacing_mm": 12.207,
+    "cleats_per_step": 5,
+    "cleats_per_loop": 31,
+    "loop_length_mm": 378.4,
+    "axle_to_axle_mm": 140.38,
+    "full_size_unit_m": 0.702,
+    "sprocket_teeth": 8,
+    "sprocket_pitch_diameter_mm": 31.12,
+    "axle_to_track_face_mm": 16.46,
+    "axle_to_cleat_tip_mm": 19.46,
+    "track_height_over_cleats_mm": 38.92
+  },
+  "parts": {
+    "track_TPU_x4": {
+      "size_mm": [
+        128.0,
+        128.2,
+        15.0
+      ],
+      "volume_cm3": 19.07,
+      "watertight": true,
+      "bodies": 1
+    },
+    "sprocket_end_PETG_x4": {
+      "size_mm": [
+        32.4,
+        32.4,
+        28.4
+      ],
+      "volume_cm3": 12.86,
+      "watertight": true,
+      "bodies": 1
+    },
+    "sprocket_middle_double_PETG_x2": {
+      "size_mm": [
+        32.4,
+        32.4,
+        46.4
+      ],
+      "volume_cm3": 22.59,
+      "watertight": true,
+      "bodies": 1
+    },
+    "fit_test_track_5mm_TPU": {
+      "size_mm": [
+        128.0,
+        128.2,
+        5.0
+      ],
+      "volume_cm3": 6.36,
+      "watertight": true,
+      "bodies": 1
+    },
+    "step_gauge_3_steps_1-5_PLA": {
+      "size_mm": [
+        180.0,
+        110.0,
+        25.0
+      ],
+      "volume_cm3": 311.25,
+      "watertight": true,
+      "bodies": 1
+    }
+  },
+  "mesh_check": {
+    "lug_overlaps_sprocket_mm2": 0.0,
+    "lug_clearance_mm": 0.339
+  },
+  "seating": {
+    "rise": 35.0,
+    "going": 50.0,
+    "nosings_in_contact": 3,
+    "seated": true,
+    "slack_mm": 3.72,
+    "rest_phase_mm": 5.29,
+    "tolerance_per_step_mm": 1.86
+  }
+}

@@ -404,6 +404,17 @@ on the end section, turning a toothed sector on the next section. It needs 8 sho
 16 pulleys, 5 axles, 16 bearings, 8 slide strips and three sets of hinge gears: about S$460 at 1:5
 and S$5,700 at full size.
 
+### Printable track for the 1:5 prototype
+
+`track_print/` has 3D-print files for the prototype's tracks, in place of the HTD 5M belts and
+pulleys: a one-piece TPU track printed as a ring (4 needed), one-lane sprockets for the end
+axles and two-lane sprockets for the middle axle, both for 8 mm axles. The cleats are 12.21 mm
+apart, exactly a fifth of the 1:5 ES1 nosing-to-nosing distance (35 × 50 mm steps, 61.03 mm
+along the slope). Every nosing under a unit sits in a gap between cleats, and the cleat above
+it stands on the tread. 31 cleats on 8-tooth sprockets put the axles 140.4 mm apart, the
+0.70 m units at 1:5. See `track_print/README.md` for printing and assembly, and
+`generate_track.py` to regenerate the files for other test stairs.
+
 ### Centre box, tracks and tread
 
 The battery and drive motor go in a box between the tracks, bolted to the section just behind the
