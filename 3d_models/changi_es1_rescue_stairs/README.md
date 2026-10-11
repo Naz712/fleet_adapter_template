@@ -406,14 +406,15 @@ and S$5,700 at full size.
 
 ### Printable track for the 1:5 prototype
 
-`track_print/` has 3D-print files for the prototype's tracks, in place of the HTD 5M belts and
-pulleys: a one-piece TPU track printed as a ring (4 needed), one-lane sprockets for the end
-axles and two-lane sprockets for the middle axle, both for 8 mm axles. The cleats are 12.21 mm
-apart, exactly a fifth of the 1:5 ES1 nosing-to-nosing distance (35 × 50 mm steps, 61.03 mm
-along the slope). Every nosing under a unit sits in a gap between cleats, and the cleat above
-it stands on the tread. 31 cleats on 8-tooth sprockets put the axles 140.4 mm apart, the
-0.70 m units at 1:5. See `track_print/README.md` for printing and assembly, and
-`generate_track.py` to regenerate the files for other test stairs.
+`track_print/` has a 3D-print file for the prototype's tracks, sized to the team's 1:5 base:
+two segments 225 mm axle to axle, each with a 550 mm track loop on wheels about 1.5 cm in
+radius. The track is a one-piece TPU loop printed as a ring, with 110 HTD 5M teeth inside so it
+runs on bought HTD 5M 20-tooth pulleys. Its 45 cleats are 12.22 mm apart, a fifth of the 1:5 ES1
+edge-to-edge distance (35 × 50 mm steps, 61.03 mm along the slope), so every step edge under a
+segment sits in a gap between cleats and the cleat above it stands on the tread. In the
+simulator, 1.125 m segments (22.5 cm at 1:5) stop, bend and go as well as 0.70 m ones: 14.5° of
+lean before tipping going down and 18° going up. See `track_print/README.md` for printing,
+buying and assembly.
 
 ### Centre box, tracks and tread
 

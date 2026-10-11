@@ -1,24 +1,22 @@
 #!/usr/bin/env python3
 """Printable track for the 1:5 prototype of the ES1 stair carrier.
 
-The prototype is the 2-part carrier from ../track_sim/bending.html: two track units, 140 mm
-axle to axle (0.70 m at full size), one track per side on each unit, on 8 mm axles.
+The prototype is the team's 2-part base at 1:5: two track segments, 225 mm axle to axle
+(45 cm in all), each with a 550 mm track loop on wheels about 1.5 cm in radius. The track is a
+one-piece TPU loop printed upright as a ring. Inside it has HTD 5M teeth, so it runs on bought
+HTD 5M 20-tooth pulleys (31.8 mm pitch diameter): 110 teeth make the 550 mm loop, and
+(550 - 100) / 2 puts the axles exactly 225 mm apart.
 
-The track is a one-piece TPU loop with drive lugs inside and cleats outside, printed upright
-as a ring, on printed sprockets. The tracks are matched to the ES1 steps. Measured at
-175 mm x 250 mm, they are 35 x 50 mm at 1:5, so their nosings are 61.03 mm apart along the
-slope. The cleats are exactly a fifth of that apart (12.21 mm), so when the track lies on the
-flight, every step nosing sits in a gap between two cleats. The cleat just above each nosing
-then stands on that step's tread, and every step in contact shares the load, like a rack in
-a gear. With any other spacing, some nosings land on cleat tips and the track rides on them.
-
-The loop has 31 cleats and the sprockets 8 teeth, which puts the axles (31 - 8) / 2 = 11.5
-cleat spacings apart: 140.4 mm, the 0.70 m units of the simulation at 1:5. For other steps
-the script picks the cleat count that keeps the axles nearest 140 mm.
+Outside, the cleats are matched to the ES1 steps. Measured at 175 x 250 mm, they are 35 x 50 mm
+at 1:5, so their nosings are 61.03 mm apart along the slope. 45 cleats round the 550 mm loop are
+12.22 mm apart, a fifth of that to within 0.1 mm a step, so when the track lies on the flight
+every step nosing sits in a gap between two cleats and the cleat above it stands on the tread.
+Every step in contact shares the load, like a rack in a gear. With other spacings some nosings
+land on cleat tips and the track rides on them.
 
 Usage:
     pip install manifold3d trimesh numpy matplotlib shapely
-    python3 generate_track.py                     # ES1 steps, 35 x 50 mm at 1:5
+    python3 generate_track.py                         # ES1 steps, 35 x 50 mm at 1:5
     python3 generate_track.py --rise 34 --going 56    # other test stairs, at model size
 
 All sizes are millimetres at model size (1:5).
@@ -48,35 +46,21 @@ class Design:
     rise: float = 35.0
     going: float = 50.0
     cleats_per_step: int = 5
-    # Loop
-    sprocket_teeth: int = 8
-    cleats: int = 0  # cleats (and drive lugs) around the loop; 0 picks the count nearest the target
-    target_centres: float = 140.0  # axle to axle: the 0.70 m units at 1:5
-    width: float = 15.0  # across the track
-    backing: float = 1.8  # belt thickness between the lugs and the cleats
-    # Drive lugs inside and cleats outside: trapezoids (base width, tip width, height)
-    lug_base: float = 4.4
-    lug_tip: float = 3.0
-    lug_height: float = 2.4
+    # Drive: bought HTD 5M pulleys
+    belt_pitch: float = 5.0
+    pld: float = 0.5715  # HTD 5M: pitch line to tooth root
+    pulley_teeth: int = 20  # 31.8 mm pitch diameter, about 1.5 cm wheel radius
+    belt_teeth: int = 110  # 550 mm loop, axles 225 mm apart
+    # Track
+    width: float = 15.0  # across the track, for pulleys made for 15 mm belts
+    backing: float = 1.4  # belt thickness between the teeth and the cleats
+    tooth_height: float = 2.0  # HTD 5M teeth are 2.06 mm; a hair less so they seat in stock pulleys
+    tooth_radius: float = 1.45  # round-topped tooth, 2.7 mm wide at the root before the fillets
     cleat_base: float = 4.4
     cleat_tip: float = 2.4
     cleat_height: float = 3.0  # 15 mm at full size
     tip_round: float = 0.5
-    root_fillet: float = 0.4
-    # Sprocket
-    groove_clearance: float = 0.35  # each side of a lug
-    groove_extra_depth: float = 0.4  # below the lug tip
-    tooth_round: float = 0.6  # rounds the groove mouths so the lugs slide in
-    lane_clearance: float = 0.4  # each side of the track, between the flanges
-    flange: float = 1.6  # the flat flange printed on the bed
-    flange_flat: float = 0.6  # flat rim on the 45-degree flanges printed above a lane
-    flange_inside_back: float = 0.25  # the flange rim stays this far inside the track's outer face
-    bore: float = 8.25  # 8 mm axle
-    hub_radius: float = 9.5
-    hub_length: float = 9.0
-    screw_hole: float = 3.2  # M3 grub screw
-    nut_slot: float = 5.9  # across the flats of an M3 nut (5.5 mm), plus clearance
-    nut_thick: float = 2.8
+    root_fillet: float = 0.35
     # Step gauge: three 1:5 ES1 steps to check the cleats on
     gauge_steps: int = 3
     gauge_width: float = 25.0
@@ -91,30 +75,15 @@ class Geometry:
         self.d = d
         self.slope = math.atan2(d.rise, d.going)
         self.step_pitch = math.hypot(d.rise, d.going)  # nosing to nosing, along the slope
-        self.pitch = self.step_pitch / d.cleats_per_step
-        if not d.cleats:  # axles are (cleats - teeth) / 2 cleat spacings apart
-            d.cleats = d.sprocket_teeth + round(2 * d.target_centres / self.pitch)
-        self.centres = (d.cleats - d.sprocket_teeth) * self.pitch / 2
-        self.length = d.cleats * self.pitch
-        self.ring_radius = self.length / (2 * math.pi)  # backing mid-plane when printed as a ring
-        # On a sprocket the belt is rigid over each lug (lug + backing + cleat) and bends between
-        # them, so its mid-plane is a polygon of rigid chords and arcs. Solve for its radius.
-        b = max(d.lug_base, d.cleat_base)
-        theta = 2 * math.pi / d.sprocket_teeth
-        lo, hi = b, 10 * self.pitch
-        for _ in range(100):
-            r = (lo + hi) / 2
-            per = r * (theta - 2 * math.asin(b / (2 * r))) + b
-            lo, hi = (r, hi) if per < self.pitch else (lo, r)
-        self.pitch_radius = (lo + hi) / 2
-        self.chord_sag = self.pitch_radius * (1 - math.cos(math.asin(b / (2 * self.pitch_radius))))
-        self.land = self.pitch_radius - d.backing / 2  # sprocket surface the belt rests on
-        self.back = self.pitch_radius + d.backing / 2  # track's outer face on a sprocket
+        self.length = d.belt_teeth * d.belt_pitch
+        self.cleats = round(self.length * d.cleats_per_step / self.step_pitch)
+        self.pitch = self.length / self.cleats  # cleat spacing
+        self.pulley_pitch_r = d.pulley_teeth * d.belt_pitch / (2 * math.pi)
+        self.centres = (self.length - d.pulley_teeth * d.belt_pitch) / 2
+        self.ring_radius = self.length / (2 * math.pi)  # pitch line when printed as a ring
+        self.root = self.pulley_pitch_r - d.pld  # pulley outside radius: the tooth roots sit on it
+        self.back = self.root + d.backing  # axle to the track's outer face
         self.cleat_tip = self.back + d.cleat_height
-        self.groove_bottom = self.land - d.lug_height - d.groove_extra_depth
-        self.flange_rim = self.back - d.flange_inside_back
-        self.lane = d.width + 2 * d.lane_clearance
-        self.chamfer = self.flange_rim - self.land  # 45-degree flange: as tall as it is wide
 
     def summary(self) -> dict:
         d = self.d
@@ -122,17 +91,16 @@ class Geometry:
             "step_mm": [d.rise, d.going],
             "slope_deg": round(math.degrees(self.slope), 2),
             "nosing_to_nosing_mm": round(self.step_pitch, 3),
+            "cleats_per_loop": self.cleats,
             "cleat_spacing_mm": round(self.pitch, 3),
-            "cleats_per_step": d.cleats_per_step,
-            "cleats_per_loop": d.cleats,
-            "loop_length_mm": round(self.length, 2),
+            "five_cleats_vs_step_mm": round(5 * self.pitch - self.step_pitch, 3),
+            "loop_length_mm": round(self.length, 1),
+            "belt_teeth": d.belt_teeth,
+            "pulley": f"HTD 5M, {d.pulley_teeth} teeth, {2 * self.pulley_pitch_r:.2f} mm pitch diameter",
             "axle_to_axle_mm": round(self.centres, 2),
-            "full_size_unit_m": round(self.centres * 5 / 1000, 3),
-            "sprocket_teeth": d.sprocket_teeth,
-            "sprocket_pitch_diameter_mm": round(2 * self.pitch_radius, 2),
+            "full_size_segment_m": round(self.centres * 5 / 1000, 3),
             "axle_to_track_face_mm": round(self.back, 2),
             "axle_to_cleat_tip_mm": round(self.cleat_tip, 2),
-            "track_height_over_cleats_mm": round(2 * self.cleat_tip, 2),
         }
 
 
@@ -164,94 +132,34 @@ def circle(r: float) -> CrossSection:
     return CrossSection.circle(r, CIRCLE_SEG)
 
 
+def tooth_outline(d: Design, sink: float = 0.3):
+    """HTD-style round-topped tooth in its own frame: t along the belt, h in from the tooth root."""
+    hc = d.tooth_height - d.tooth_radius
+    a0 = math.asin(hc / d.tooth_radius)
+    w0 = math.sqrt(d.tooth_radius ** 2 - hc ** 2)
+    arc = [(d.tooth_radius * math.cos(a), hc + d.tooth_radius * math.sin(a))
+           for a in np.linspace(-a0, math.pi + a0, 40)]
+    return [(w0, -sink)] + arc + [(-w0, -sink)]
+
+
 def track_profile(g: Geometry) -> CrossSection:
     """The track's outline when printed as an upright ring (looking down on the bed)."""
     d = g.d
-    inner = g.ring_radius - d.backing / 2
-    outer = g.ring_radius + d.backing / 2
-    lug = trapezoid(d.lug_base, d.lug_tip, d.lug_height)
+    root = g.ring_radius - d.pld
+    outer = root + d.backing
+    tooth = tooth_outline(d)
     cleat = trapezoid(d.cleat_base, d.cleat_tip, d.cleat_height)
-    parts = [circle(outer) - circle(inner)]
-    for k in range(d.cleats):
-        phi = 2 * math.pi * k / d.cleats
-        parts.append(CrossSection([on_circle(lug, inner, phi, -1)]))
-        parts.append(CrossSection([on_circle(cleat, outer, phi, +1)]))
+    parts = [circle(outer) - circle(root)]
+    parts += [CrossSection([on_circle(tooth, root, 2 * math.pi * k / d.belt_teeth, -1)]) for k in range(d.belt_teeth)]
+    parts += [CrossSection([on_circle(cleat, outer, 2 * math.pi * k / g.cleats, +1)]) for k in range(g.cleats)]
     cs = CrossSection.batch_boolean(parts, OpType.Add)
-    # round the lug and cleat tips, then fillet their roots
+    # round the cleat tips, then fillet the tooth and cleat roots
     cs = cs.offset(-d.tip_round, JoinType.Round, 2.0, SEG).offset(d.tip_round, JoinType.Round, 2.0, SEG)
     cs = cs.offset(d.root_fillet, JoinType.Round, 2.0, SEG).offset(-d.root_fillet, JoinType.Round, 2.0, SEG)
     return cs.simplify(0.01)
 
 
-def groove_outline(g: Geometry):
-    d = g.d
-    c = d.groove_clearance
-    depth = d.lug_height + d.groove_extra_depth + g.chord_sag
-    # local: t along the land, h outward from the land (the groove goes inward, h < 0)
-    return [(-(d.lug_base / 2 + c), 2.0), (d.lug_base / 2 + c, 2.0), (d.lug_base / 2 + c, 0.0),
-            (d.lug_tip / 2 + c, -depth), (-(d.lug_tip / 2 + c), -depth), (-(d.lug_base / 2 + c), 0.0)]
-
-
-def sprocket_profile(g: Geometry) -> CrossSection:
-    d = g.d
-    grooves = [CrossSection([on_circle(groove_outline(g), g.land, 2 * math.pi * k / d.sprocket_teeth + math.pi / 2, +1)])
-               for k in range(d.sprocket_teeth)]
-    cs = circle(g.land) - CrossSection.batch_boolean(grooves, OpType.Add)
-    cs = cs.offset(-d.tooth_round, JoinType.Round, 2.0, SEG).offset(d.tooth_round, JoinType.Round, 2.0, SEG)
-    cs = cs.offset(0.3, JoinType.Round, 2.0, SEG).offset(-0.3, JoinType.Round, 2.0, SEG)
-    return cs.simplify(0.01)  # drop the slivers the offsets leave
-
-
 # --------------------------------------------------------------------------- solids
-def cylinder(r: float, h: float, z0: float = 0.0) -> Manifold:
-    return Manifold.cylinder(h, r, r, CIRCLE_SEG).translate((0, 0, z0))
-
-
-def chamfer_flange(g: Geometry, z0: float) -> Manifold:
-    """A flange printed above a lane: a full disc at the land radius (it bridges the grooves
-    below), widening at 45 degrees to the rim, then a short flat rim."""
-    d = g.d
-    h = g.chamfer
-    prof = CrossSection([[(0.0, 0.0), (g.land, 0.0), (g.flange_rim, h), (g.flange_rim, h + d.flange_flat),
-                          (0.0, h + d.flange_flat)]])
-    return Manifold.revolve(prof, CIRCLE_SEG).translate((0, 0, z0))
-
-
-def hub(g: Geometry, z0: float) -> Manifold:
-    """Boss with an M3 grub screw through a captive nut, to clamp the sprocket to its axle."""
-    d = g.d
-    boss = cylinder(d.hub_radius, d.hub_length, z0)
-    zc = z0 + d.hub_length / 2
-    screw = Manifold.cylinder(d.hub_radius + 2, d.screw_hole / 2, d.screw_hole / 2, 32) \
-        .rotate((0, 90, 0)).translate((0, 0, zc))
-    nut_r = (d.bore / 2 + d.hub_radius) / 2
-    z_lo, z_hi = zc - 3.4, z0 + d.hub_length + 1  # open at the top, deep enough for the nut's corners
-    nut = Manifold.cube((d.nut_thick, d.nut_slot, z_hi - z_lo), True).translate((nut_r, 0, (z_lo + z_hi) / 2))
-    return boss - screw - nut
-
-
-def sprocket(g: Geometry, lanes: int) -> Manifold:
-    """Flat flange on the bed, then for each lane the grooved body and a 45-degree flange,
-    then the hub. One lane for the end axles, two for the middle axle."""
-    d = g.d
-    body = sprocket_profile(g)
-    parts = [cylinder(g.flange_rim, d.flange)]
-    z = d.flange
-    e = 0.05  # each piece overlaps the one below, so they fuse into one body
-    for _ in range(lanes):
-        parts.append(Manifold.extrude(body, g.lane + e).translate((0, 0, z - e)))
-        z += g.lane
-        parts.append(chamfer_flange(g, z - e))
-        z += g.chamfer + d.flange_flat - e
-    parts.append(hub(g, z - e))
-    z += d.hub_length - e
-    solid = Manifold.batch_boolean(parts, OpType.Add)
-    bore = cylinder(d.bore / 2, z + 2, -1)
-    # small 45-degree lead-in on the bed side so the first layer doesn't close the bore
-    lead = Manifold.cylinder(0.6, d.bore / 2 + 0.6, d.bore / 2, CIRCLE_SEG).translate((0, 0, -0.001))
-    return solid - bore - lead
-
-
 def track(g: Geometry, width: float | None = None) -> Manifold:
     return Manifold.extrude(track_profile(g), width or g.d.width)
 
@@ -287,7 +195,7 @@ def check_seating(g: Geometry, rise: float | None = None, going: float | None = 
     going = going or d.going
     slope = math.atan2(rise, going)
     step = math.hypot(rise, going)
-    contact = g.centres  # length of track face lying on the flight
+    contact = g.centres  # length of track face lying on the flight, axle to axle
     nosings = [i * step for i in range(int(contact // step) + 1)]
     # one step's solid near its nosing, in (s, n): the tread runs uphill below the face at the
     # slope angle, the riser runs downhill below it at 90 degrees minus the slope
@@ -334,20 +242,14 @@ def check_seating(g: Geometry, rise: float | None = None, going: float | None = 
     return out
 
 
-def check_mesh(g: Geometry) -> dict:
-    """Pose a lug as it sits on the sprocket (a rigid chord of the belt) and measure its
-    clearance to the groove."""
+def check_teeth(g: Geometry) -> dict:
+    """The printed teeth must be no bigger than a standard HTD 5M belt tooth (2.06 mm high,
+    about 3.05 mm wide at the root) so they seat in stock pulleys."""
     d = g.d
-    prof = sprocket_profile(g)
-    sprocket_poly = unary_union([Polygon(p) for p in prof.to_polygons()])
-    # the groove centred at the top of the sprocket (phi = 90 degrees + k * 45)
-    lug = rounded(trapezoid(d.lug_base, d.lug_tip, d.lug_height, sink=0), d.tip_round).to_polygons()[0]
-    base_r = g.land - g.chord_sag  # the rigid chord's inner face at the groove centre
-    lug_poly = poly([(t, base_r - h) for t, h in lug])
-    return {
-        "lug_overlaps_sprocket_mm2": round(lug_poly.intersection(sprocket_poly).area, 4),
-        "lug_clearance_mm": round(lug_poly.distance(sprocket_poly), 3),
-    }
+    tooth = poly(tooth_outline(d, sink=0))
+    minx, _, maxx, maxy = tooth.bounds
+    return {"tooth_height_mm": round(maxy, 2), "tooth_root_width_mm": round(maxx - minx, 2),
+            "fits_htd5m_pulley": bool(maxy <= 2.06 and maxx - minx <= 3.05)}
 
 
 def to_mesh(m: Manifold) -> trimesh.Trimesh:
@@ -360,7 +262,6 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--rise", type=float, help="step height at model size (mm)")
     ap.add_argument("--going", type=float, help="step depth, nosing to nosing, at model size (mm)")
-    ap.add_argument("--cleats", type=int, help="cleats around the loop (default: nearest to 140 mm axle to axle)")
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "stl")
     args = ap.parse_args()
     d = Design()
@@ -368,15 +269,11 @@ def main():
         d.rise = args.rise
     if args.going:
         d.going = args.going
-    if args.cleats:
-        d.cleats = args.cleats
     g = Geometry(d)
     args.out.mkdir(parents=True, exist_ok=True)
 
     parts = {
         "track_TPU_x4": track(g),
-        "sprocket_end_PETG_x4": sprocket(g, 1),
-        "sprocket_middle_double_PETG_x2": sprocket(g, 2),
         "fit_test_track_5mm_TPU": track(g, 5.0),
         "step_gauge_3_steps_1-5_PLA": step_gauge(g),
     }
@@ -390,10 +287,10 @@ def main():
         ext = mesh.bounds[1] - mesh.bounds[0]
         report["parts"][name] = {"size_mm": [round(v, 1) for v in ext], "volume_cm3": round(m.volume() / 1000, 2),
                                  "watertight": mesh.is_watertight, "bodies": bodies}
-    report["mesh_check"] = check_mesh(g)
+    report["teeth"] = check_teeth(g)
     report["seating"] = check_seating(g)
     (args.out / "track.json").write_text(json.dumps(report, indent=2))
-    print(json.dumps({k: report[k] for k in ("geometry", "mesh_check", "seating")}, indent=2))
+    print(json.dumps({k: report[k] for k in ("geometry", "teeth", "seating")}, indent=2))
     for k, v in report["parts"].items():
         print(f"{k:34s} {v['size_mm']} mm  {v['volume_cm3']} cm3")
 

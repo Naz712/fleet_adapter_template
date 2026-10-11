@@ -3,32 +3,19 @@
     "rise": 35.0,
     "going": 50.0,
     "cleats_per_step": 5,
-    "sprocket_teeth": 8,
-    "cleats": 31,
-    "target_centres": 140.0,
+    "belt_pitch": 5.0,
+    "pld": 0.5715,
+    "pulley_teeth": 20,
+    "belt_teeth": 110,
     "width": 15.0,
-    "backing": 1.8,
-    "lug_base": 4.4,
-    "lug_tip": 3.0,
-    "lug_height": 2.4,
+    "backing": 1.4,
+    "tooth_height": 2.0,
+    "tooth_radius": 1.45,
     "cleat_base": 4.4,
     "cleat_tip": 2.4,
     "cleat_height": 3.0,
     "tip_round": 0.5,
-    "root_fillet": 0.4,
-    "groove_clearance": 0.35,
-    "groove_extra_depth": 0.4,
-    "tooth_round": 0.6,
-    "lane_clearance": 0.4,
-    "flange": 1.6,
-    "flange_flat": 0.6,
-    "flange_inside_back": 0.25,
-    "bore": 8.25,
-    "hub_radius": 9.5,
-    "hub_length": 9.0,
-    "screw_hole": 3.2,
-    "nut_slot": 5.9,
-    "nut_thick": 2.8,
+    "root_fillet": 0.35,
     "gauge_steps": 3,
     "gauge_width": 25.0,
     "gauge_foot": 20.0,
@@ -41,56 +28,35 @@
     ],
     "slope_deg": 34.99,
     "nosing_to_nosing_mm": 61.033,
-    "cleat_spacing_mm": 12.207,
-    "cleats_per_step": 5,
-    "cleats_per_loop": 31,
-    "loop_length_mm": 378.4,
-    "axle_to_axle_mm": 140.38,
-    "full_size_unit_m": 0.702,
-    "sprocket_teeth": 8,
-    "sprocket_pitch_diameter_mm": 31.12,
-    "axle_to_track_face_mm": 16.46,
-    "axle_to_cleat_tip_mm": 19.46,
-    "track_height_over_cleats_mm": 38.92
+    "cleats_per_loop": 45,
+    "cleat_spacing_mm": 12.222,
+    "five_cleats_vs_step_mm": 0.078,
+    "loop_length_mm": 550.0,
+    "belt_teeth": 110,
+    "pulley": "HTD 5M, 20 teeth, 31.83 mm pitch diameter",
+    "axle_to_axle_mm": 225.0,
+    "full_size_segment_m": 1.125,
+    "axle_to_track_face_mm": 16.74,
+    "axle_to_cleat_tip_mm": 19.74
   },
   "parts": {
     "track_TPU_x4": {
       "size_mm": [
-        128.0,
-        128.2,
+        182.6,
+        182.7,
         15.0
       ],
-      "volume_cm3": 19.07,
-      "watertight": true,
-      "bodies": 1
-    },
-    "sprocket_end_PETG_x4": {
-      "size_mm": [
-        32.4,
-        32.4,
-        28.4
-      ],
-      "volume_cm3": 12.86,
-      "watertight": true,
-      "bodies": 1
-    },
-    "sprocket_middle_double_PETG_x2": {
-      "size_mm": [
-        32.4,
-        32.4,
-        46.4
-      ],
-      "volume_cm3": 22.59,
+      "volume_cm3": 26.56,
       "watertight": true,
       "bodies": 1
     },
     "fit_test_track_5mm_TPU": {
       "size_mm": [
-        128.0,
-        128.2,
+        182.6,
+        182.7,
         5.0
       ],
-      "volume_cm3": 6.36,
+      "volume_cm3": 8.85,
       "watertight": true,
       "bodies": 1
     },
@@ -105,17 +71,18 @@
       "bodies": 1
     }
   },
-  "mesh_check": {
-    "lug_overlaps_sprocket_mm2": 0.0,
-    "lug_clearance_mm": 0.339
+  "teeth": {
+    "tooth_height_mm": 2.0,
+    "tooth_root_width_mm": 2.9,
+    "fits_htd5m_pulley": true
   },
   "seating": {
     "rise": 35.0,
     "going": 50.0,
-    "nosings_in_contact": 3,
+    "nosings_in_contact": 4,
     "seated": true,
-    "slack_mm": 3.72,
-    "rest_phase_mm": 5.29,
-    "tolerance_per_step_mm": 1.86
+    "slack_mm": 3.5,
+    "rest_phase_mm": 5.286,
+    "tolerance_per_step_mm": 1.17
   }
 }
