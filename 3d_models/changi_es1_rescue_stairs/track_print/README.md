@@ -56,12 +56,15 @@ it.
 
 **Print settings:** TPU 95A on a direct-drive extruder (Bambu, Prusa MK3/MK4 and similar). Print
 the track as it is, standing up as a ring, with no supports, 0.2 mm layers, 20–30 mm/s and 100%
-infill. The belt is pulled and bent along its layers, its strongest direction.
+infill. The belt is pulled and bent along its layers, its strongest direction. The NUS Library
+printer only prints PLA, so print the tracks on a printer that takes TPU or ask one of the 3D
+printing services on the vendor list.
 
 ## Buy
 
 - 8 × HTD 5M 20-tooth pulleys for 15 mm belts, 8 mm bore, with flanges (2 per segment per side).
 - 8 mm steel rod for the 3 axles, 8 KFL08 flange bearings.
+- All three from MISUMI Singapore, which is on the approved vendor list.
 - Slide strips under each track's lower run: the teeth ride on them, so their top face sits
   13.3 mm below the axle centres. They run between the pulleys, about 185 mm long.
 
