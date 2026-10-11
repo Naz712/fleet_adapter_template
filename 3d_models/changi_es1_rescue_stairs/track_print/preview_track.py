@@ -100,7 +100,8 @@ def sprocket_poly(g: gt.Geometry, centre, groove_at):
     return [rot(p, groove_at - math.pi / 2, centre) for p in prof]
 
 
-def side_view(g: gt.Geometry, out: Path):
+def side_view(g: gt.Geometry, out: Path, title: bool = True):
+    """title=False leaves off the heading, for use on a slide that has its own."""
     d = g.d
     a = g.slope
     e = np.array([math.cos(a), math.sin(a)])
@@ -165,8 +166,9 @@ def side_view(g: gt.Geometry, out: Path):
     mid = W([[g.centres / 2, d.backing + d.lug_height + 1.6]])[0]
     ax.annotate("slide strip", mid, mid + np.array([28, -40]), fontsize=8.5, color="#3d5f86",
                 arrowprops=dict(arrowstyle="-", color="#3d5f86", lw=0.7))
-    ax.set_title(f"Printed track on the ES1 steps at 1:5 ({d.rise:.0f} × {d.going:.0f} mm), section through one track",
-                 fontsize=11, color=INK, loc="left")
+    if title:
+        ax.set_title(f"Printed track on the ES1 steps at 1:5 ({d.rise:.0f} × {d.going:.0f} mm), section through one track",
+                     fontsize=11, color=INK, loc="left")
     # close-up of the middle nosing
     cx, cy = nos_xy[3]
     zx.set_xlim(cx - 16, cx + 16)
@@ -178,7 +180,6 @@ def side_view(g: gt.Geometry, out: Path):
         sp.set_color("#8a939b")
     ax.add_patch(Rectangle((cx - 16, cy - 13), 32, 28, fill=False, ec="#8a939b", lw=0.8, zorder=7))
     zx.plot(cx, cy, "o", ms=5, color=ACCENT, zorder=6)
-    tip = np.array(nos_xy[3]) + np.array([4.3 * math.cos(0) * 1.0, 0])  # cleat tip on the tread
     zx.annotate("nosing sits in the gap\nbetween two cleats", (cx, cy), (cx - 15, cy + 11), fontsize=8.5, color=INK,
                 arrowprops=dict(arrowstyle="-", color=INK, lw=0.7))
     zx.annotate("the cleat above it\nstands on the tread", (cx + 5.2, cy - 0.2), (cx + 3, cy - 11), fontsize=8.5, color=INK,
