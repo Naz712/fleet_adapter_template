@@ -134,10 +134,12 @@ leader(ax1, (R_TIPS * math.cos(a), R_TIPS * math.sin(a)), (-178, 54), f"{N_T} te
 ax1b = view(0.03, 0.37, 0.44, (-180, 180), (-6, 28), "SIDE VIEW  -  standing on the print bed")
 rect(ax1b, -R_CLEATS, 0, OD_CLEATS, RING_H, FILL["tpu"], lw=0.6)
 ax1b.plot([-R_CLEATS, R_CLEATS], [RING_H - H_C, RING_H - H_C], color="white", lw=0.4, alpha=0.5)  # cleat-root edge, faint
-dim_v(ax1b, 0, RING_H, R_CLEATS + 13, f"{RING_H:g}", ext_from=R_CLEATS)
-# cutting plane A-A at mid height: thick stubs outside the part, arrows show the viewing direction
+dim_v(ax1b, 0, RING_H, R_CLEATS + 7, f"{RING_H:g}", ext_from=R_CLEATS)
+# cutting plane A-A at mid height: chain line across the part, thick stubs clear of the dimension,
+# arrows show the viewing direction (along the ring's axis)
+ax1b.plot([-R_CLEATS, R_CLEATS], [RING_H / 2, RING_H / 2], color="white", lw=0.5, dashes=(8, 2, 1.5, 2))
 for sx in (-1, 1):
-    x_in, x_out = sx * (R_CLEATS + 2), sx * (R_CLEATS + 22)
+    x_in, x_out = sx * (R_CLEATS + 15), sx * (R_CLEATS + 33)
     ax1b.plot([x_in, x_out], [RING_H / 2, RING_H / 2], color=INK, lw=1.6)
     ax1b.annotate("", xy=(x_out, RING_H / 2 + 13), xytext=(x_out, RING_H / 2),
                   arrowprops=dict(arrowstyle="-|>", lw=0.8, color=INK, mutation_scale=9))
