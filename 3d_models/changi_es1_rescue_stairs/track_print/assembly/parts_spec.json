@@ -1,0 +1,112 @@
+{
+  "_about": "One track segment of the 1:5 prototype: every part, its dimensions in mm at model size, and whether it is bought or made. Source of truth for the drawings in this folder. Coordinates: x along the segment from the rear axle (0) to the front axle (225); y up from the axle centre line; z across from the vehicle's centre line, one side only (the other side mirrors).",
+  "scale": "1:5 (multiply by 5 for full size)",
+  "layout_decision": {
+    "summary": "The two segments share the middle axle. Per side, from the vehicle centre line outwards: box (to 40) | front segment plate 41-48 | front track lane 49-67, its pulley hub 67-74 | rear track lane 75-93, its pulley hub 93-100 | rear segment plate 101-108. So the front segment's plates are inboard and the rear segment's plates are outboard (the top-view slide shows them the other way round; this way is 16 mm narrower because the bought pulleys have 7 mm hubs that the 1:5 scale drawing did not allow for).",
+    "width_over_tracks_mm": 186,
+    "width_over_plates_mm": 216,
+    "all_pulleys_fixed_to_axles": "Every pulley is set-screwed to its axle; the axles turn in bearings in the plates. The drive motor turns the middle axle (a sprocket between the two front plates, inside the box), so both segments' tracks are driven.",
+    "hinge": "The front segment turns about the middle axle on its plate bearings. The hinge sector gear bolts to the rear end of each front plate; the pinion sits on the box. Those parts are outside this drawing set."
+  },
+  "segment": {
+    "axle_to_axle_mm": 225.0,
+    "length_over_track_mm": 258.5,
+    "length_over_cleats_mm": 264.5,
+    "axle_to_track_face_mm": 16.74,
+    "axle_to_cleat_tip_mm": 19.74,
+    "height_over_track_mm": 33.5,
+    "height_over_cleats_mm": 39.5
+  },
+  "parts": {
+    "track": {
+      "name": "Track",
+      "file": "stl/track_TPU_x4.stl",
+      "make_or_buy": "make",
+      "process": "3D print, TPU 95A, upright as a ring, 0.2 mm layers, 100% infill, no supports",
+      "qty_per_segment": 2,
+      "qty_total": 4,
+      "mass_g": 32,
+      "width_mm": 15.0,
+      "loop_length_mm": 550.0,
+      "teeth": {"profile": "HTD 5M", "count": 110, "pitch_mm": 5.0, "height_mm": 2.0, "root_width_mm": 2.9, "tip_radius_mm": 1.45},
+      "backing_thickness_mm": 1.4,
+      "cleats": {"count": 45, "pitch_mm": 12.222, "height_mm": 3.0, "base_width_mm": 4.4, "tip_width_mm": 2.4, "tip_round_mm": 0.5, "root_fillet_mm": 0.35},
+      "total_thickness_mm": 6.4,
+      "as_printed_ring": {"inside_dia_over_tooth_tips_mm": 169.9, "pitch_dia_mm": 175.1, "outside_dia_of_belt_mm": 176.7, "outside_dia_over_cleats_mm": 182.7, "height_mm": 15.0},
+      "why_these_cleats": "ES1 steps are 35 x 50 mm at 1:5, so their edges are 61.03 mm apart along the slope; 5 cleats at 12.222 mm = 61.11 mm, so every step edge under the track sits in a gap between two cleats."
+    },
+    "pulley": {
+      "name": "Timing pulley, HTD 5M, 20 teeth",
+      "make_or_buy": "buy",
+      "vendor": "MISUMI Singapore (approved vendor list)",
+      "spec_to_order": "HTD 5M, 20 teeth, for 15 mm belt, 8 mm bore, flanges both sides, set-screw hub",
+      "stand_in_file": "stl/stand_in_pulley_20T_PLA_test_only.stl (PLA copy for fit tests only)",
+      "qty_per_segment": 4,
+      "qty_total": 8,
+      "teeth": 20,
+      "pitch_dia_mm": 31.83,
+      "outside_dia_mm": 30.69,
+      "flange_dia_mm": 35.7,
+      "flange_thickness_mm": 1.5,
+      "face_width_between_flanges_mm": 17.0,
+      "hub_dia_mm": 18.0,
+      "hub_length_mm": 7.0,
+      "overall_length_mm": 27.0,
+      "bore_mm": 8.0,
+      "set_screw": "M3 in the stand-in; bought pulleys usually M4, 2 off",
+      "note": "Flange and hub sizes are the stand-in's; check the vendor drawing, the ones that matter are 20T HTD 5M, 15 mm belt, 8 mm bore."
+    },
+    "axle": {
+      "name": "Axle, 8 mm steel rod",
+      "make_or_buy": "buy",
+      "vendor": "MISUMI Singapore 8 mm linear shaft, or spare 8 mm rod from the Design Lab (EA-03-04)",
+      "dia_mm": 8.0,
+      "tolerance": "h7 (fits 608 bearings and 8 mm pulley bores)",
+      "lengths_mm": {"rear": 220, "middle": 220, "front": 160},
+      "qty_total": 3,
+      "flats": "File a 0.5 mm deep flat, 10 mm long, under each pulley set screw and under the drive sprocket on the middle axle",
+      "note": "Lengths follow the layout: the rear and middle axles reach the outboard rear plates (to z = 108 each side); the front axle only reaches the front pulley hubs (to z = 74)."
+    },
+    "bearing": {
+      "name": "Ball bearing 608ZZ",
+      "make_or_buy": "buy",
+      "vendor": "Wheeler Mectrade / SKF distributor (approved vendor list), or any 608ZZ",
+      "bore_mm": 8.0,
+      "outside_dia_mm": 22.0,
+      "width_mm": 7.0,
+      "qty_per_segment": 4,
+      "qty_total": 10,
+      "note": "Pressed into a 22.2 mm pocket in each printed plate (2 per plate, 8 in all) plus 2 for the hinge cross shaft. Replaces the KFL08 flange blocks on the quotation slide: a KFL08 housing is 48 x 26 x 12 mm, far too big to fit between the box and the track lanes at 1:5, and costs more.",
+      "alternative": "KFL08 flange block (48 x 26 mm, 12 mm thick, 2 x M4): only if the plates end up laser-cut and the layout is widened by 12 mm per side."
+    },
+    "side_plate": {
+      "name": "Side plate with slide rail",
+      "make_or_buy": "make",
+      "process": "3D print, PETG, lying on its plate face, 0.2 mm layers, 4 walls, 30% infill, no supports",
+      "variants": ["front left", "front right", "rear left", "rear right"],
+      "qty_total": 4,
+      "plate": {"length_mm": 265.0, "height_mm": 40.0, "thickness_mm": 7.0, "shape": "stadium: a 225 mm bar with R20 semicircular ends centred on the axles", "bottom_edge_below_axle_mm": 12.0, "top_edge_above_axle_mm": 28.0},
+      "bearing_pockets": {"dia_mm": 22.2, "depth_mm": 7.0, "centres_mm": 225.0, "note": "through pockets; 0.2 mm larger than the 608 so it presses in"},
+      "rail": {"length_mm": 185.0, "from_x_mm": 20.0, "to_x_mm": 205.0, "width_mm": 18.0, "thickness_mm": 4.0, "top_face_below_axle_mm": 13.34, "note": "The lower run's tooth tips ride on it. It is joined to the plate's bottom edge by a web 5.3 mm tall (from 12.0 to 17.3 below the axle)."},
+      "rail_offset": {"front_plate": "rail directly outboard of the plate: z 49 to 67 (plate at 41 to 48)", "rear_plate": "rail inboard of the plate under the outer lane: z 75 to 93 (plate at 101 to 108), joined by a 8 mm web under the pulley hub"},
+      "cross_bar_holes": {"dia_mm": 4.5, "at_x_mm": [60, 200], "above_axle_mm": 22, "note": "M4 threaded rod with printed spacers ties the two plates of a segment"},
+      "front_plate_extra": "the rear end (around the middle axle) carries the hinge sector gear: 3 x M3 holes on a 14 mm radius",
+      "rear_plate_extra": "2 x M4 holes at x = -60 and -200 (measured from the middle axle, towards the rear), 22 mm above the axle, for the box cross bars"
+    },
+    "cross_bar": {
+      "name": "Cross bar (M4 threaded rod + printed spacer)",
+      "make_or_buy": "buy rod and nuts, print spacer",
+      "qty_per_segment": 2,
+      "qty_total": 4,
+      "front_segment": {"rod_length_mm": 110, "spacer_length_mm": 82, "spacer_od_mm": 10},
+      "rear_segment": {"rod_length_mm": 230, "spacer_length_mm": 202, "spacer_od_mm": 10},
+      "note": "Spacer length = inside distance between the two plates; the rod runs through plate, spacer, plate with a nut each end."
+    },
+    "set_screws_and_bolts": {
+      "name": "Fasteners",
+      "make_or_buy": "buy (Design Lab spares first)",
+      "items": ["pulley set screws (come with bought pulleys; M3 x 6 for the stand-in)", "4 x M4 nuts and 8 x M4 washers for the cross bars", "6 x M3 x 10 for the hinge sector gears", "4 x M4 x 12 for the box cross bars"]
+    }
+  },
+  "buy_vs_make_rule": "Make (print) anything with a shape only this design needs: track, plates with rails, spacers. Buy anything that is a standard part cheaper and better than a print: pulleys, bearings, rod, screws."
+}
