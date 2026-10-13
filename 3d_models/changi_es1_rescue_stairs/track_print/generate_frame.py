@@ -456,10 +456,10 @@ def preview(f: Frame, g: gt.Geometry, report: dict, stl: Path, out: Path):
         track_section(R, lz0 + f.flange_t, lz1 - f.flange_t)
         R(hz0, hz1, -hub_r, hub_r, C["pulley"])  # hub, set-screwed to the axle
         R(hz0, hz1, -4, 4, C["steel"], lw=0)
-    ax.text(20, 45, "box, to z = 40: the drive\nmotor turns this axle by\na sprocket inside it", ha="center", va="center", fontsize=8.5, color=INK)
-    lab((44.5, f.above), (57, 46), "front plate 41-48, its rear end:\n608ZZ + 3 x M3 on R14\nfor the hinge sector gear")
+    ax.text(18, 46, "box, to z = 40:\nthe drive motor turns\nthis axle by a sprocket\ninside the box", ha="center", va="center", fontsize=8.5, color=INK)
+    lab((44.5, f.above), (60, 46), "front plate 41-48, its rear end:\n608ZZ + 3 x M3 on R14\nfor the hinge sector gear")
     lab((58, f.cleat_tip), (64, 35.5), "front lane 49-67,\nhub 67-74")
-    lab((84, f.cleat_tip), (94, 46), "rear lane 75-93,\nhub 93-100")
+    lab((84, f.cleat_tip), (97, 46), "rear lane 75-93,\nhub 93-100")
     lab((104.5, f.above), (112, 35.5), "rear plate 101-108,\nits front end")
     lab((108, -4), (96, -23), "middle axle, 8 mm steel, 220 long: the hinge axis")
     lab((58, -f.cleat_tip), (40, -30), "track: teeth inside, cleats outside")
