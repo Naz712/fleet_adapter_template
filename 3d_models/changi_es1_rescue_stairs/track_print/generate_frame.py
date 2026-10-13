@@ -5,8 +5,8 @@ One segment has two side plates and two cross-bar spacers. A side plate is a 265
 stadium (R20 ends, 12 mm below and 28 mm above the axle line) with a 608ZZ pocket at each axle,
 two 4.5 mm cross-bar holes along its top edge and an integral slide rail under the lower run of
 the track. The rail is joined to the plate's bottom edge by a web. The front segment's plates sit
-inboard of their track lanes (plate z 41-48, rail z 49-67); the rear segment's plates sit
-outboard (plate z 101-108, rail z 75-93 under the lane, joined by a web under the pulley hub).
+inboard of their track lanes (plate z 41-48, rail z 50-68); the rear segment's plates sit
+outboard (plate z 105-112, rail z 78-96 under the lane, joined by a web under the pulley hub).
 The front plates also carry three M3 holes on a 14 mm radius round the middle-axle pocket for
 the hinge sector gear. Left and right plates are mirror images.
 
@@ -61,7 +61,8 @@ class Frame:
     bar_hole_y: float  # above the axle
     sector_hole_d: float  # hinge sector gear bolts (front plates only)
     sector_r: float  # on this radius round the middle-axle pocket
-    sector_angles_deg: tuple  # derived: not in the spec
+    sector_angles_deg: tuple
+    boss_r: float  # bearing boss round each pocket
     # rail and web
     rail_x0: float
     rail_x1: float
@@ -96,12 +97,13 @@ class Frame:
         pl, pulley, bar, bearing = sp["plate"], p["pulley"], p["cross_bar"], p["bearing"]
         return cls(
             centres=spec["segment"]["axle_to_axle_mm"], plate_t=pl["thickness_mm"], plate_h=pl["height_mm"],
-            end_r=pl["height_mm"] / 2, below=pl["bottom_edge_below_axle_mm"], above=pl["top_edge_above_axle_mm"],
+            end_r=20.0, below=pl["bottom_edge_below_axle_mm"], above=pl["top_edge_above_axle_mm"],
             pocket_d=pk["dia_mm"], bar_hole_d=cb["dia_mm"], bar_hole_x=list(cb["at_x_mm"]), bar_hole_y=cb["above_axle_mm"],
-            sector_hole_d=3.4, sector_r=14.0, sector_angles_deg=(0.0, 90.0, 180.0),
+            sector_hole_d=sp['sector_bolts']['dia_mm'], sector_r=sp['sector_bolts']['radius_mm'], sector_angles_deg=tuple(sp['sector_bolts']['angles_deg']),
+            boss_r=pl['boss_radius_mm'],
             rail_x0=rail["from_x_mm"], rail_x1=rail["to_x_mm"], rail_w=rail["width_mm"], rail_t=rail["thickness_mm"],
             rail_top=rail["top_face_below_axle_mm"], web_top=pl["bottom_edge_below_axle_mm"],
-            box_z=40.0, gap=1.0, lane_w=18.0, hub_l=pulley["hub_length_mm"],
+            box_z=40.0, gap=1.0, lane_w=pulley["over_flanges_mm"], hub_l=pulley["hub_length_mm"],
             spacer_od=bar["front_segment"]["spacer_od_mm"], spacer_bore=cb["dia_mm"],
             spacer_len_front=bar["front_segment"]["spacer_length_mm"], spacer_len_rear=bar["rear_segment"]["spacer_length_mm"],
             hub_d=pulley["hub_dia_mm"], flange_d=pulley["flange_dia_mm"], flange_t=pulley["flange_thickness_mm"],
@@ -120,7 +122,7 @@ class Frame:
 
     @property
     def arc_centre_y(self) -> float:
-        return (self.above - self.below) / 2  # the R20 arcs are centred 8 mm above the axle
+        return (self.above - self.below) / 2  # the R20 end arcs are centred here, above the axle
 
     def layout(self) -> dict:
         """z of every band on one side, from the centre line outwards: [start, end]."""
@@ -149,7 +151,8 @@ def plate_outline(f: Frame) -> CrossSection:
     """The stadium in the segment's frame: x from the rear axle, y up from the axle line."""
     bar = CrossSection.square((f.centres, f.plate_h)).translate((0.0, -f.below))
     ends = [CrossSection.circle(f.end_r, CIRCLE_SEG).translate((x, f.arc_centre_y)) for x in (0.0, f.centres)]
-    return CrossSection.batch_boolean([bar] + ends, OpType.Add)
+    bosses = [CrossSection.circle(f.boss_r, CIRCLE_SEG).translate((x, 0.0)) for x in (0.0, f.centres)]
+    return CrossSection.batch_boolean([bar] + ends + bosses, OpType.Add)
 
 
 def box(x0, x1, y0, y1, z0, z1) -> Manifold:
@@ -166,10 +169,12 @@ def side_plate(f: Frame, segment: str, side: str) -> Manifold:
     lay = f.layout()
     pz0, pz1 = lay[f"{segment}_plate"]
     lz0, lz1 = lay[f"{segment}_lane"]
-    if segment == "front":  # rail directly outboard of the plate, the web spans the 1 mm gap
-        web_z, rail_z = (pz0, lz0), (lz0, lz1)
+    lc = (lz0 + lz1) / 2  # the rail is centred under its lane
+    rail_z = (lc - f.rail_w / 2, lc + f.rail_w / 2)
+    if segment == "front":  # rail outboard of the plate, the web spans the gap
+        web_z = (pz0, rail_z[0])
     else:  # rail inboard under the outer lane, the web bridges under the pulley hub
-        web_z, rail_z = (lz1, pz1), (lz0, lz1)
+        web_z = (rail_z[1], pz1)
     plate = Manifold.extrude(plate_outline(f), f.plate_t).translate((0, 0, pz0))
     web = box(f.rail_x0, f.rail_x1, -f.rail_bottom, -f.web_top, *web_z)
     rail = box(f.rail_x0, f.rail_x1, -f.rail_bottom, -f.rail_top, *rail_z)
@@ -235,7 +240,7 @@ def checks(f: Frame, g: gt.Geometry) -> dict:
     pulley_over_flanges = f.pulley_face_w + 2 * f.flange_t
     return {
         "rail_top_vs_lower_run_tooth_tips_mm": round(tooth_tips - f.rail_top, 3),
-        "pocket_wall_to_plate_bottom_edge_mm": round(f.below - pocket_r, 2),
+        "pocket_wall_mm": round(f.boss_r - pocket_r, 2),
         "pocket_wall_to_plate_end_mm": round(math.sqrt(f.end_r ** 2 - f.arc_centre_y ** 2) - pocket_r, 2),
         "sector_hole_wall_to_pocket_mm": round(f.sector_r - f.sector_hole_d / 2 - pocket_r, 2),
         "sector_hole_wall_to_plate_edge_mm": round(min(
@@ -259,28 +264,22 @@ def checks(f: Frame, g: gt.Geometry) -> dict:
 
 
 def spec_problems(c: dict) -> list:
+    """Anything the spec still gets wrong. Empty when the layout is clean."""
     out = []
-    if c["pocket_wall_to_plate_bottom_edge_mm"] < 2.0:
-        out.append(f"Bearing pocket wall: the plate's bottom edge is {c['pocket_wall_to_plate_bottom_edge_mm']} mm from the 22.2 mm pocket "
-                   "(the R20 ends are centred 8 mm above the axle, the pocket on it). A press fit will split it. "
-                   "Put the R20 arcs on the axle centres (ends 20 mm below the axle) or move the plate down.")
+    if c["pocket_wall_mm"] < 2.0:
+        out.append(f"Bearing pocket wall is {c['pocket_wall_mm']} mm: a press fit will split it; enlarge the boss.")
     if c["sector_hole_wall_to_pocket_mm"] < 2.0:
-        out.append(f"Hinge sector holes: 3.4 mm holes on a 14 mm radius leave {c['sector_hole_wall_to_pocket_mm']} mm to the 22.2 mm pocket. "
-                   "A 16 or 17 mm radius would leave 3 to 4 mm.")
-    if c["rear_spacer_bottom_vs_upper_run_cleat_tips_mm"] < 0:
-        out.append(f"Rear cross bars: the 10 mm spacer at 22 mm above the axle runs over both tracks' upper runs and fouls the cleat tips "
-                   f"by {-c['rear_spacer_bottom_vs_upper_run_cleat_tips_mm']} mm (the bare M4 rod clears by {c['rear_rod_bottom_vs_upper_run_cleat_tips_mm']} mm). "
-                   "Raise the rear plate's top edge and the rear cross-bar holes, or use a spacer only inside the box.")
+        out.append(f"Hinge sector holes leave {c['sector_hole_wall_to_pocket_mm']} mm to the pocket; move them out.")
+    if c["sector_hole_wall_to_plate_edge_mm"] < 2.0:
+        out.append(f"Hinge sector holes leave {c['sector_hole_wall_to_plate_edge_mm']} mm to the plate edge.")
+    if c["rear_spacer_bottom_vs_upper_run_cleat_tips_mm"] < 1.0:
+        out.append(f"Rear cross-bar spacer clears the upper run's cleat tips by only {c['rear_spacer_bottom_vs_upper_run_cleat_tips_mm']} mm.")
     if c["lane_width_vs_pulley_over_flanges_mm"] < 0:
-        out.append(f"Layout: each track lane is 18 mm but the pulley is 17 + 2 x 1.5 = 20 mm over its flanges "
-                   f"({-c['lane_width_vs_pulley_over_flanges_mm']} mm short per lane, 4 mm per side). Check against the vendor drawing.")
-    if min(c["sector_gear_room_inboard_mm"], c["sector_gear_room_outboard_mm"]) < 3:
-        out.append("Hinge sector gear: only 1 mm of room on either face of the front plate at the middle axle (box at 40, pulley flange at 49). "
-                   "The box wall needs a recess or the gear goes elsewhere; not in this drawing set.")
-    out.append("parts_spec.json side_plate.rear_plate_extra says the box cross-bar holes are at x = -60 and -200 from the middle axle, "
-               "which is x = 165 and 25 from the rear axle: not the cross-bar holes at 60 and 200. These plates have one pattern (60 and 200), "
-               "shared by the segment cross bars and the box cross bars; reword the spec, or add the two extra holes if they are really wanted.")
-    out.append("parts_spec.json side_plate.rail.note gives the web bottom as 17.3; it is 13.34 + 4 = 17.34, flush with the rail.")
+        out.append(f"Track lane is {-c['lane_width_vs_pulley_over_flanges_mm']} mm narrower than the pulley over its flanges.")
+    if c["bar_hole_wall_to_plate_top_mm"] < 2.0:
+        out.append(f"Cross-bar holes leave {c['bar_hole_wall_to_plate_top_mm']} mm to the plate's top edge.")
+    if c["sector_gear_room_inboard_mm"] < 3 and c["sector_gear_room_outboard_mm"] < 3:
+        out.append("No 3 mm face free for the hinge sector gear on the front plate at the middle axle: the box must stop at z 37 there.")
     return out
 
 
@@ -399,9 +398,9 @@ def preview(f: Frame, g: gt.Geometry, report: dict, stl: Path, out: Path):
         s = p["size_mm"]
         return f"{s[0]:.0f} x {s[1]:.0f} x {s[2]:.0f} mm, {p['mass_g_solid']:.0f} g solid"
 
-    plates = [("side_plate_front_L", "Front plate, left", "rail outboard (z 49 to 67); 3 x M3 hinge holes round the middle-axle pocket"),
+    plates = [("side_plate_front_L", "Front plate, left", "rail outboard (z 50 to 68); 3 x M3 hinge holes on R17 round the middle-axle pocket"),
               ("side_plate_front_R", "Front plate, right", "mirror of the left"),
-              ("side_plate_rear_L", "Rear plate, left", "rail inboard under the lane (z 75 to 93), 8 mm web under the pulley hub"),
+              ("side_plate_rear_L", "Rear plate, left", "rail inboard under the lane (z 78 to 96), 9 mm web under the pulley hub"),
               ("side_plate_rear_R", "Rear plate, right", "mirror of the left")]
     for i, (name, title, sub) in enumerate(plates):
         col, row = i % 2, i // 2
@@ -411,7 +410,7 @@ def preview(f: Frame, g: gt.Geometry, report: dict, stl: Path, out: Path):
     sp_f, sp_r = trimesh.load(stl / "spacer_front_x2.stl"), trimesh.load(stl / "spacer_rear_x2.stl")
     sp_f.apply_translation((-22, 0, 0))
     panel([0.02, 0.10, 0.13, 0.30], trimesh.util.concatenate([sp_f, sp_r]), C["spacer"], "Spacers",
-          f"front 82 long (x2), rear 202 long (x2)\nOD {f.spacer_od:g}, bore {f.spacer_bore:g}, printed standing", elev=18, azim=100)
+          f"front {f.spacer_len_front:g} long (x2), rear {f.spacer_len_rear:g} long (x2)\nOD {f.spacer_od:g}, bore {f.spacer_bore:g}, printed standing", elev=18, azim=100)
 
     def section_axes(rect, title, xmax):
         ax = fig.add_axes(rect)
@@ -441,7 +440,7 @@ def preview(f: Frame, g: gt.Geometry, report: dict, stl: Path, out: Path):
 
     # ---- section A: at the middle axle, left half, looking forward
     ax, R, lab = section_axes([0.17, 0.05, 0.41, 0.37], "A: section at the middle axle (the hinge), left half, looking forward", 136)
-    R(0, 110, -4, 4, C["steel"])  # the middle axle, 220 long
+    R(0, 115, -4, 4, C["steel"])  # the middle axle, 230 long
     for seg in ("front", "rear"):
         pz0, pz1 = lay[f"{seg}_plate"]
         lz0, lz1 = lay[f"{seg}_lane"]
@@ -457,11 +456,11 @@ def preview(f: Frame, g: gt.Geometry, report: dict, stl: Path, out: Path):
         R(hz0, hz1, -hub_r, hub_r, C["pulley"])  # hub, set-screwed to the axle
         R(hz0, hz1, -4, 4, C["steel"], lw=0)
     ax.text(18, 46, "box, to z = 40:\nthe drive motor turns\nthis axle by a sprocket\ninside the box", ha="center", va="center", fontsize=8.5, color=INK)
-    lab((44.5, f.above), (60, 46), "front plate 41-48, its rear end:\n608ZZ + 3 x M3 on R14\nfor the hinge sector gear")
-    lab((58, f.cleat_tip), (64, 35.5), "front lane 49-67,\nhub 67-74")
-    lab((84, f.cleat_tip), (97, 46), "rear lane 75-93,\nhub 93-100")
-    lab((104.5, f.above), (112, 35.5), "rear plate 101-108,\nits front end")
-    lab((108, -4), (96, -23), "middle axle, 8 mm steel, 220 long: the hinge axis")
+    lab((44.5, f.above), (60, 46), f"front plate {lay['front_plate'][0]:g}-{lay['front_plate'][1]:g}, its rear end:\n608ZZ + 3 x M3 on R{f.sector_r:g}\nfor the hinge sector gear")
+    lab((58, f.cleat_tip), (64, 35.5), f"front lane {lay['front_lane'][0]:g}-{lay['front_lane'][1]:g},\nhub {lay['front_hub'][0]:g}-{lay['front_hub'][1]:g}")
+    lab((84, f.cleat_tip), (97, 46), f"rear lane {lay['rear_lane'][0]:g}-{lay['rear_lane'][1]:g},\nhub {lay['rear_hub'][0]:g}-{lay['rear_hub'][1]:g}")
+    lab((104.5, f.above), (112, 35.5), f"rear plate {lay['rear_plate'][0]:g}-{lay['rear_plate'][1]:g},\nits front end")
+    lab((108, -4), (96, -23), "middle axle, 8 mm steel, 230 long: the hinge axis")
     lab((58, -f.cleat_tip), (40, -30), "track: teeth inside, cleats outside")
     ax.text(0, -39, "Every pulley is set-screwed to the axle and the axle turns in the 608ZZ.\nThe front segment pivots about this axle; the box and the rear segment do not.",
             fontsize=8, color=MUTED, ha="left", va="center")
@@ -481,12 +480,12 @@ def preview(f: Frame, g: gt.Geometry, report: dict, stl: Path, out: Path):
     RB(pz1, pz1 + 3.2, f.bar_hole_y - 3.5, f.bar_hole_y + 3.5, C["steel"])  # nut
     RB(tz0, tz1, sb, f.cleat_tip, "none", ec=RED, lw=0.8, hatch="////")  # where the spacer meets the cleats
     bx.text(20, -9, "box: the rear\nsegment is fixed to it", ha="center", va="center", fontsize=8.5, color=INK)
-    labB((40, f.bar_hole_y + 5), (40, 45), "cross bar: M4 rod + 10 mm spacer, 202\nlong, holds the two plates apart; it runs\nthrough the box, so it ties the segment to it")
-    labB((104.5, f.above), (100, 45), "rear plate 101-108")
-    labB((tz1, 18.4), (84, 34.5), f"upper run, cleat tips {f.cleat_tip:g} up: the spacer\n(bottom at {sb:g}) fouls them by {f.cleat_tip - sb:.1f} mm, see frame.json", color=RED)
-    labB((lz0, -f.rail_top - 2), (46, -24), "rail 75-93, 4 thick, top 13.34 below the axle:\nthe lower run's tooth tips ride on it")
-    labB((97, -f.rail_bottom), (100, -30), "web 93-108 under the pulley hub\n(hub bottom at 9, web top at 12)")
-    bx.text(0, -39, "Front segment, same section: plate 41-48, web 41-49, rail 49-67 under the front lane;\nits 82 mm spacer runs between the plates, inside the box width.",
+    labB((40, f.bar_hole_y + 5), (40, 45), f"cross bar: M4 rod + 10 mm spacer, {f.spacer_len_rear:g}\nlong, holds the two plates apart; it runs\nthrough the box, so it ties the segment to it")
+    labB((108.5, f.above), (100, 45), f"rear plate {lay['rear_plate'][0]:g}-{lay['rear_plate'][1]:g}")
+    labB((tz1, 18.4), (84, 34.5), f"upper run, cleat tips {f.cleat_tip:g} up: the spacer\n(bottom at {sb:g}) clears them by {sb - f.cleat_tip:.1f} mm")
+    labB((lz0, -f.rail_top - 2), (46, -24), "rail 78-96, 4 thick, top 13.34 below the axle:\nthe lower run's tooth tips ride on it")
+    labB((97, -f.rail_bottom), (100, -30), "web 96-112 under the pulley hub\n(hub bottom at 9, web top at 12)")
+    bx.text(0, -39, "Front segment, same section: plate 41-48, web 41-50, rail 50-68 under the front lane;\nits 82 mm spacer runs between the plates, inside the box width.",
             fontsize=8, color=MUTED, ha="left", va="center")
     fig.savefig(out, facecolor="white")
     plt.close(fig)

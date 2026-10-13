@@ -3,7 +3,7 @@
   "source": "assembly/parts_spec.json",
   "derived": {
     "plate_length_mm": 265.0,
-    "stadium_arc_centres_above_axle_mm": 8.0,
+    "stadium_arc_centres_above_axle_mm": 10.5,
     "web_bottom_below_axle_mm": 17.34,
     "z_layout_one_side_mm": {
       "front_plate": [
@@ -12,23 +12,23 @@
       ],
       "front_lane": [
         49.0,
-        67.0
+        69.0
       ],
       "front_hub": [
-        67.0,
-        74.0
+        69.0,
+        76.0
       ],
       "rear_lane": [
-        75.0,
-        93.0
+        77.0,
+        97.0
       ],
       "rear_hub": [
-        93.0,
-        100.0
+        97.0,
+        104.0
       ],
       "rear_plate": [
-        101.0,
-        108.0
+        105.0,
+        112.0
       ]
     },
     "front_plate": {
@@ -42,30 +42,30 @@
       ],
       "rail_z": [
         49.0,
-        67.0
+        69.0
       ]
     },
     "rear_plate": {
       "plate_z": [
-        101.0,
-        108.0
+        105.0,
+        112.0
       ],
       "web_z": [
-        93.0,
-        108.0
+        97.0,
+        112.0
       ],
       "rail_z": [
-        75.0,
-        93.0
+        77.0,
+        97.0
       ]
     },
     "sector_holes": {
       "dia_mm": 3.4,
-      "radius_mm": 14.0,
+      "radius_mm": 17.0,
       "angles_deg_from_x": [
-        0.0,
-        90.0,
-        180.0
+        50,
+        90,
+        130
       ],
       "note": "angles are not in the spec; one up and one each side on the axle line. 120 degree spacing would break the plate edge."
     },
@@ -82,11 +82,11 @@
       "print_orientation": "plate face on the bed (its inboard face, z = 41), rail standing up",
       "size_mm": [
         265.0,
-        45.34,
-        26.0
+        50.34,
+        27.0
       ],
-      "volume_cm3": 87.19,
-      "mass_g_solid": 110.7,
+      "volume_cm3": 97.03,
+      "mass_g_solid": 123.2,
       "watertight": true,
       "bodies": 1
     },
@@ -99,11 +99,11 @@
       "print_orientation": "plate face on the bed (its inboard face, z = 41), rail standing up",
       "size_mm": [
         265.0,
-        45.34,
-        26.0
+        50.34,
+        27.0
       ],
-      "volume_cm3": 87.19,
-      "mass_g_solid": 110.7,
+      "volume_cm3": 97.03,
+      "mass_g_solid": 123.2,
       "watertight": true,
       "bodies": 1
     },
@@ -113,14 +113,14 @@
       "material": "PETG",
       "make_or_buy": "make",
       "process": "3D print, plate face down, rail standing up, 0.2 mm layers, 4 walls, 30% infill, no supports",
-      "print_orientation": "plate face on the bed (its outboard face, z = 108), rail standing up",
+      "print_orientation": "plate face on the bed (its outboard face, z = 112), rail standing up",
       "size_mm": [
         265.0,
-        45.34,
-        33.0
+        50.34,
+        34.0
       ],
-      "volume_cm3": 94.29,
-      "mass_g_solid": 119.8,
+      "volume_cm3": 104.13,
+      "mass_g_solid": 132.2,
       "watertight": true,
       "bodies": 1
     },
@@ -130,14 +130,14 @@
       "material": "PETG",
       "make_or_buy": "make",
       "process": "3D print, plate face down, rail standing up, 0.2 mm layers, 4 walls, 30% infill, no supports",
-      "print_orientation": "plate face on the bed (its outboard face, z = 108), rail standing up",
+      "print_orientation": "plate face on the bed (its outboard face, z = 112), rail standing up",
       "size_mm": [
         265.0,
-        45.34,
-        33.0
+        50.34,
+        34.0
       ],
-      "volume_cm3": 94.29,
-      "mass_g_solid": 119.8,
+      "volume_cm3": 104.13,
+      "mass_g_solid": 132.2,
       "watertight": true,
       "bodies": 1
     },
@@ -168,50 +168,44 @@
       "size_mm": [
         10.0,
         10.0,
-        202.0
+        210.0
       ],
-      "volume_cm3": 12.66,
-      "mass_g_solid": 16.1,
+      "volume_cm3": 13.16,
+      "mass_g_solid": 16.7,
       "watertight": true,
       "bodies": 1
     }
   },
   "checks": {
     "rail_top_vs_lower_run_tooth_tips_mm": 0.004,
-    "pocket_wall_to_plate_bottom_edge_mm": 0.9,
-    "pocket_wall_to_plate_end_mm": 7.23,
-    "sector_hole_wall_to_pocket_mm": 1.2,
-    "sector_hole_wall_to_plate_edge_mm": 2.18,
-    "bar_hole_wall_to_plate_top_mm": 3.75,
+    "pocket_wall_mm": 3.4,
+    "pocket_wall_to_plate_end_mm": 5.92,
+    "sector_hole_wall_to_pocket_mm": 4.2,
+    "sector_hole_wall_to_plate_edge_mm": 7.09,
+    "bar_hole_wall_to_plate_top_mm": 2.75,
     "rear_web_top_below_pulley_hub_mm": 3.0,
     "rear_web_start_past_pulley_hub_in_x_mm": 11.0,
     "rail_end_to_pulley_flange_at_rail_top_mm": 8.14,
     "rear_web_z_vs_rear_hub_z": {
       "web": [
-        93.0,
-        108.0
+        97.0,
+        112.0
       ],
       "hub": [
-        93.0,
-        100.0
+        97.0,
+        104.0
       ]
     },
-    "rear_spacer_bottom_vs_upper_run_cleat_tips_mm": -2.74,
-    "rear_rod_bottom_vs_upper_run_cleat_tips_mm": 0.01,
+    "rear_spacer_bottom_vs_upper_run_cleat_tips_mm": 3.26,
+    "rear_rod_bottom_vs_upper_run_cleat_tips_mm": 6.01,
     "front_spacer_runs_inside_box_width": true,
-    "lane_width_vs_pulley_over_flanges_mm": -2.0,
+    "lane_width_vs_pulley_over_flanges_mm": 0.0,
     "sector_gear_room_inboard_mm": 1.0,
     "sector_gear_room_outboard_mm": 1.0,
     "plate_length_mm": 265.0,
-    "diagonal_footprint_on_square_bed_mm": 219.4
+    "diagonal_footprint_on_square_bed_mm": 223.0
   },
   "spec_problems": [
-    "Bearing pocket wall: the plate's bottom edge is 0.9 mm from the 22.2 mm pocket (the R20 ends are centred 8 mm above the axle, the pocket on it). A press fit will split it. Put the R20 arcs on the axle centres (ends 20 mm below the axle) or move the plate down.",
-    "Hinge sector holes: 3.4 mm holes on a 14 mm radius leave 1.2 mm to the 22.2 mm pocket. A 16 or 17 mm radius would leave 3 to 4 mm.",
-    "Rear cross bars: the 10 mm spacer at 22 mm above the axle runs over both tracks' upper runs and fouls the cleat tips by 2.74 mm (the bare M4 rod clears by 0.01 mm). Raise the rear plate's top edge and the rear cross-bar holes, or use a spacer only inside the box.",
-    "Layout: each track lane is 18 mm but the pulley is 17 + 2 x 1.5 = 20 mm over its flanges (2.0 mm short per lane, 4 mm per side). Check against the vendor drawing.",
-    "Hinge sector gear: only 1 mm of room on either face of the front plate at the middle axle (box at 40, pulley flange at 49). The box wall needs a recess or the gear goes elsewhere; not in this drawing set.",
-    "parts_spec.json side_plate.rear_plate_extra says the box cross-bar holes are at x = -60 and -200 from the middle axle, which is x = 165 and 25 from the rear axle: not the cross-bar holes at 60 and 200. These plates have one pattern (60 and 200), shared by the segment cross bars and the box cross bars; reword the spec, or add the two extra holes if they are really wanted.",
-    "parts_spec.json side_plate.rail.note gives the web bottom as 17.3; it is 13.34 + 4 = 17.34, flush with the rail."
+    "No 3 mm face free for the hinge sector gear on the front plate at the middle axle: the box must stop at z 37 there."
   ]
 }

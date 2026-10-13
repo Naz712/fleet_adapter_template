@@ -2,11 +2,41 @@
   "_about": "One track segment of the 1:5 prototype: every part, its dimensions in mm at model size, and whether it is bought or made. Source of truth for the drawings in this folder. Coordinates: x along the segment from the rear axle (0) to the front axle (225); y up from the axle centre line; z across from the vehicle's centre line, one side only (the other side mirrors).",
   "scale": "1:5 (multiply by 5 for full size)",
   "layout_decision": {
-    "summary": "The two segments share the middle axle. Per side, from the vehicle centre line outwards: box (to 40) | front segment plate 41-48 | front track lane 49-67, its pulley hub 67-74 | rear track lane 75-93, its pulley hub 93-100 | rear segment plate 101-108. So the front segment's plates are inboard and the rear segment's plates are outboard (the top-view slide shows them the other way round; this way is 16 mm narrower because the bought pulleys have 7 mm hubs that the 1:5 scale drawing did not allow for).",
-    "width_over_tracks_mm": 186,
-    "width_over_plates_mm": 216,
+    "summary": "The two segments share the middle axle. Per side, from the vehicle centre line outwards: box (to 40; it must stop at 37 near the middle axle to leave room for the 3 mm hinge sector gear on the front plate's inboard face) | front segment plate 41-48 | front track lane 49-69 (the bought pulley is 20 mm over its flanges), its pulley hub 69-76 | rear track lane 77-97, its hub 97-104 | rear segment plate 105-112. So the front segment's plates are inboard and the rear segment's outboard (the top-view slide shows them the other way round and 1:5-scaled plates; this layout allows for the real pulley hubs and flanges).",
+    "width_over_tracks_mm": 194,
+    "width_over_plates_mm": 224,
     "all_pulleys_fixed_to_axles": "Every pulley is set-screwed to its axle; the axles turn in bearings in the plates. The drive motor turns the middle axle (a sprocket between the two front plates, inside the box), so both segments' tracks are driven.",
-    "hinge": "The front segment turns about the middle axle on its plate bearings. The hinge sector gear bolts to the rear end of each front plate; the pinion sits on the box. Those parts are outside this drawing set."
+    "hinge": "The front segment turns about the middle axle on its plate bearings. The hinge sector gear bolts to the rear end of each front plate; the pinion sits on the box. Those parts are outside this drawing set.",
+    "z_stations_one_side_mm": {
+      "box": [
+        0,
+        40
+      ],
+      "front_plate": [
+        41,
+        48
+      ],
+      "front_lane": [
+        49,
+        69
+      ],
+      "front_hub": [
+        69,
+        76
+      ],
+      "rear_lane": [
+        77,
+        97
+      ],
+      "rear_hub": [
+        97,
+        104
+      ],
+      "rear_plate": [
+        105,
+        112
+      ]
+    }
   },
   "segment": {
     "axle_to_axle_mm": 225.0,
@@ -15,7 +45,9 @@
     "axle_to_track_face_mm": 16.74,
     "axle_to_cleat_tip_mm": 19.74,
     "height_over_track_mm": 33.5,
-    "height_over_cleats_mm": 39.5
+    "height_over_cleats_mm": 39.5,
+    "width_over_tracks_mm": 194,
+    "width_over_plates_mm": 224
   },
   "parts": {
     "track": {
@@ -28,11 +60,32 @@
       "mass_g": 32,
       "width_mm": 15.0,
       "loop_length_mm": 550.0,
-      "teeth": {"profile": "HTD 5M", "count": 110, "pitch_mm": 5.0, "height_mm": 2.0, "root_width_mm": 2.9, "tip_radius_mm": 1.45},
+      "teeth": {
+        "profile": "HTD 5M",
+        "count": 110,
+        "pitch_mm": 5.0,
+        "height_mm": 2.0,
+        "root_width_mm": 2.9,
+        "tip_radius_mm": 1.45
+      },
       "backing_thickness_mm": 1.4,
-      "cleats": {"count": 45, "pitch_mm": 12.222, "height_mm": 3.0, "base_width_mm": 4.4, "tip_width_mm": 2.4, "tip_round_mm": 0.5, "root_fillet_mm": 0.35},
+      "cleats": {
+        "count": 45,
+        "pitch_mm": 12.222,
+        "height_mm": 3.0,
+        "base_width_mm": 4.4,
+        "tip_width_mm": 2.4,
+        "tip_round_mm": 0.5,
+        "root_fillet_mm": 0.35
+      },
       "total_thickness_mm": 6.4,
-      "as_printed_ring": {"inside_dia_over_tooth_tips_mm": 169.9, "pitch_dia_mm": 175.1, "outside_dia_of_belt_mm": 176.7, "outside_dia_over_cleats_mm": 182.7, "height_mm": 15.0},
+      "as_printed_ring": {
+        "inside_dia_over_tooth_tips_mm": 169.9,
+        "pitch_dia_mm": 175.1,
+        "outside_dia_of_belt_mm": 176.7,
+        "outside_dia_over_cleats_mm": 182.7,
+        "height_mm": 15.0
+      },
       "why_these_cleats": "ES1 steps are 35 x 50 mm at 1:5, so their edges are 61.03 mm apart along the slope; 5 cleats at 12.222 mm = 61.11 mm, so every step edge under the track sits in a gap between two cleats."
     },
     "pulley": {
@@ -54,7 +107,8 @@
       "overall_length_mm": 27.0,
       "bore_mm": 8.0,
       "set_screw": "M3 in the stand-in; bought pulleys usually M4, 2 off",
-      "note": "Flange and hub sizes are the stand-in's; check the vendor drawing, the ones that matter are 20T HTD 5M, 15 mm belt, 8 mm bore."
+      "note": "Flange and hub sizes are the stand-in's; check the vendor drawing, the ones that matter are 20T HTD 5M, 15 mm belt, 8 mm bore.",
+      "over_flanges_mm": 20.0
     },
     "axle": {
       "name": "Axle, 8 mm steel rod",
@@ -62,10 +116,14 @@
       "vendor": "MISUMI Singapore 8 mm linear shaft, or spare 8 mm rod from the Design Lab (EA-03-04)",
       "dia_mm": 8.0,
       "tolerance": "h7 (fits 608 bearings and 8 mm pulley bores)",
-      "lengths_mm": {"rear": 220, "middle": 220, "front": 160},
+      "lengths_mm": {
+        "rear": 230,
+        "middle": 230,
+        "front": 160
+      },
       "qty_total": 3,
       "flats": "File a 0.5 mm deep flat, 10 mm long, under each pulley set screw and under the drive sprocket on the middle axle",
-      "note": "Lengths follow the layout: the rear and middle axles reach the outboard rear plates (to z = 108 each side); the front axle only reaches the front pulley hubs (to z = 74)."
+      "note": "Lengths follow the layout: the rear and middle axles reach the outboard rear plates (z 112 each side, plus 3 mm proud); the front axle only reaches the front pulley hubs (z 76). Order unhardened rod: hardened shafts (56-64 HRC) cannot be filed for the flats."
     },
     "bearing": {
       "name": "Ball bearing 608ZZ",
@@ -83,30 +141,102 @@
       "name": "Side plate with slide rail",
       "make_or_buy": "make",
       "process": "3D print, PETG, lying on its plate face, 0.2 mm layers, 4 walls, 30% infill, no supports",
-      "variants": ["front left", "front right", "rear left", "rear right"],
+      "variants": [
+        "front left",
+        "front right",
+        "rear left",
+        "rear right"
+      ],
       "qty_total": 4,
-      "plate": {"length_mm": 265.0, "height_mm": 40.0, "thickness_mm": 7.0, "shape": "stadium: a 225 mm bar with R20 semicircular ends centred on the axles", "bottom_edge_below_axle_mm": 12.0, "top_edge_above_axle_mm": 28.0},
-      "bearing_pockets": {"dia_mm": 22.2, "depth_mm": 7.0, "centres_mm": 225.0, "note": "through pockets; 0.2 mm larger than the 608 so it presses in"},
-      "rail": {"length_mm": 185.0, "from_x_mm": 20.0, "to_x_mm": 205.0, "width_mm": 18.0, "thickness_mm": 4.0, "top_face_below_axle_mm": 13.34, "note": "The lower run's tooth tips ride on it. It is joined to the plate's bottom edge by a web 5.3 mm tall (from 12.0 to 17.3 below the axle)."},
-      "rail_offset": {"front_plate": "rail directly outboard of the plate: z 49 to 67 (plate at 41 to 48)", "rear_plate": "rail inboard of the plate under the outer lane: z 75 to 93 (plate at 101 to 108), joined by a 8 mm web under the pulley hub"},
-      "cross_bar_holes": {"dia_mm": 4.5, "at_x_mm": [60, 200], "above_axle_mm": 22, "note": "M4 threaded rod with printed spacers ties the two plates of a segment"},
-      "front_plate_extra": "the rear end (around the middle axle) carries the hinge sector gear: 3 x M3 holes on a 14 mm radius",
-      "rear_plate_extra": "2 x M4 holes at x = -60 and -200 (measured from the middle axle, towards the rear), 22 mm above the axle, for the box cross bars"
+      "plate": {
+        "length_mm": 265.0,
+        "height_mm": 45.0,
+        "thickness_mm": 7.0,
+        "shape": "a 225 mm bar from 12 below to 33 above the axle line, with R20 semicircular ends centred 10.5 mm above each axle (half way up the plate), plus an R14.5 boss round each bearing pocket (so the pocket wall is 3.4 mm; the boss reaches 14.5 below the axle, inside the pulley's radius)",
+        "bottom_edge_below_axle_mm": 12.0,
+        "top_edge_above_axle_mm": 33.0,
+        "boss_radius_mm": 14.5
+      },
+      "bearing_pockets": {
+        "dia_mm": 22.2,
+        "depth_mm": 7.0,
+        "centres_mm": 225.0,
+        "wall_mm": 3.4,
+        "note": "through pockets; 0.2 mm larger than the 608 so it presses in; the R14.5 boss gives the 3.4 mm wall"
+      },
+      "rail": {
+        "length_mm": 185.0,
+        "from_x_mm": 20.0,
+        "to_x_mm": 205.0,
+        "width_mm": 18.0,
+        "thickness_mm": 4.0,
+        "top_face_below_axle_mm": 13.34,
+        "bottom_below_axle_mm": 17.34,
+        "note": "The lower run's tooth tips ride on it (they are 13.344 below the axle). It is joined to the plate's bottom edge by a web from 12.0 to 17.34 below the axle."
+      },
+      "rail_offset": {
+        "front_plate": "rail centred under the lane: z 50 to 68 (plate at 41 to 48, web z 41 to 50)",
+        "rear_plate": "rail inboard of the plate under the outer lane: z 78 to 96 (plate at 105 to 112), joined by a 9 mm web (z 96 to 105) that passes under the pulley hub (the hub is 9 above the web top)"
+      },
+      "cross_bar_holes": {
+        "dia_mm": 4.5,
+        "at_x_mm": [
+          60,
+          200
+        ],
+        "above_axle_mm": 28,
+        "note": "M4 threaded rod with printed spacers ties the two plates of a segment; at 28 above the axle the 10 mm spacer clears the upper run's cleat tips (19.74) by 3.3 mm"
+      },
+      "front_plate_extra": "the rear end (around the middle axle) carries the hinge sector gear: 3 x M3 holes on a 17 mm radius at 50, 90 and 130 degrees from the forward direction",
+      "rear_plate_extra": "the box bolts to the rear plates through the same two 4.5 mm cross-bar holes (x = 60 and 200 from the rear axle, 28 above the axle): one M4 rod per hole runs plate - box - plate",
+      "sector_bolts": {
+        "dia_mm": 3.4,
+        "radius_mm": 17.0,
+        "angles_deg": [
+          50,
+          90,
+          130
+        ],
+        "note": "front plates only, round the middle-axle pocket (the front segment's rear end); the 3 mm sector gear sits on the inboard face, z 38 to 41, with M3 x 14 bolts and nuts"
+      },
+      "print_note": "265 x 50 mm footprint printed flat: needs a bed at least 235 mm on one side, or 225 mm diagonally. On a 220 mm bed print the plate in two halves with a lap joint (ask for that file)."
     },
     "cross_bar": {
       "name": "Cross bar (M4 threaded rod + printed spacer)",
       "make_or_buy": "buy rod and nuts, print spacer",
       "qty_per_segment": 2,
       "qty_total": 4,
-      "front_segment": {"rod_length_mm": 110, "spacer_length_mm": 82, "spacer_od_mm": 10},
-      "rear_segment": {"rod_length_mm": 230, "spacer_length_mm": 202, "spacer_od_mm": 10},
-      "note": "Spacer length = inside distance between the two plates; the rod runs through plate, spacer, plate with a nut each end."
+      "front_segment": {
+        "rod_length_mm": 110,
+        "spacer_length_mm": 82,
+        "spacer_od_mm": 10
+      },
+      "rear_segment": {
+        "rod_length_mm": 238,
+        "spacer_length_mm": 210,
+        "spacer_od_mm": 10
+      },
+      "note": "Spacer length = inside distance between the two plates (front 2 x 41, rear 2 x 105); rod = spacer + 2 plates + 7 each end for washer, nut and 3 mm proud."
     },
     "set_screws_and_bolts": {
       "name": "Fasteners",
       "make_or_buy": "buy (Design Lab spares first)",
-      "items": ["pulley set screws (come with bought pulleys; M3 x 6 for the stand-in)", "4 x M4 nuts and 8 x M4 washers for the cross bars", "6 x M3 x 10 for the hinge sector gears", "4 x M4 x 12 for the box cross bars"]
+      "items": [
+        "pulley set screws (come with bought pulleys; M3 x 6 for the stand-in)",
+        "8 x M4 nuts and 8 x M4 washers for the cross bars",
+        "6 x M3 x 14 with nuts for the hinge sector gears (7 plate + 3 sector + 2.4 nut)",
+        "4 x M4 x 12 for the box"
+      ]
+    },
+    "hinge_cross_shaft": {
+      "name": "Hinge cross shaft, 8 mm steel rod",
+      "make_or_buy": "buy (cut from the axle rod)",
+      "dia_mm": 8.0,
+      "length_mm": 120,
+      "qty_total": 1,
+      "note": "carries the two hinge pinions across the box, in the 2 spare 608ZZ in the box walls; length to be fixed with the hinge gear drawing"
     }
   },
-  "buy_vs_make_rule": "Make (print) anything with a shape only this design needs: track, plates with rails, spacers. Buy anything that is a standard part cheaper and better than a print: pulleys, bearings, rod, screws."
+  "buy_vs_make_rule": "Make (print) anything with a shape only this design needs: track, plates with rails, spacers. Buy anything that is a standard part cheaper and better than a print: pulleys, bearings, rod, screws.",
+  "_revision": "v2, 13 Oct 2026: lanes 20 mm (pulley over flanges), plates 45 tall with bearing bosses, cross bars at 28, sector bolts on R17, axles 230/230/160, rear spacer 210. v1 problems found by the frame check: 0.9 mm pocket wall, spacer fouling the cleat tips, 18 mm lanes."
 }

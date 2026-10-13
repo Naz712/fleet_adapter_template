@@ -37,11 +37,12 @@ RAIL = P["side_plate"]["rail"]
 RAIL_BOT = -RAIL["top_face_below_axle_mm"] - RAIL["thickness_mm"]
 BAR_X, BAR_Y = P["side_plate"]["cross_bar_holes"]["at_x_mm"], P["side_plate"]["cross_bar_holes"]["above_axle_mm"]
 BOX_BAR_X = [-60, -200]  # rear_plate_extra: from the middle axle, towards the rear
-SECTOR_BOLT_R = 14.0  # front_plate_extra: 3 x M3 on a 14 mm radius
+SECTOR_BOLT_R = P["side_plate"]["sector_bolts"]["radius_mm"]  # 17
 AXLE_HALF = P["axle"]["lengths_mm"]["middle"] / 2  # 110
-# z stations, one side (layout_decision.summary): box to 40 | front plate 41-48 | front lane 49-67 + hub 67-74 |
-# rear lane 75-93 + hub 93-100 | rear plate 101-108
-Z = dict(box=40, fplate=(41, 48), flane=(49, 67), fhub=(67, 74), rlane=(75, 93), rhub=(93, 100), rplate=(101, 108))
+# z stations, one side (layout_decision.z_stations_one_side_mm)
+_zs = SPEC["layout_decision"]["z_stations_one_side_mm"]
+Z = dict(box=_zs["box"][1], fplate=tuple(_zs["front_plate"]), flane=tuple(_zs["front_lane"]), fhub=tuple(_zs["front_hub"]),
+         rlane=tuple(_zs["rear_lane"]), rhub=tuple(_zs["rear_hub"]), rplate=tuple(_zs["rear_plate"]))
 SWING_UP, SWING_DOWN = 35, 37  # deg, the team's hinge range
 
 # ----------------------------------------------------------------------------- DERIVED (not in the spec)
@@ -255,7 +256,7 @@ def side_view(ax):
             linespacing=1.25, zorder=12, bbox=dict(fc="white", ec="none", pad=1.0, alpha=0.92))
     # below the segments
     note(ax, (-L, -26), (-262, -46), "end axles idle:\nturn with the track\nin the plates' 608s")
-    note(ax, (-150, RAIL_BOT), (-172, -46), "rear plate (outboard, z 101–108)")
+    note(ax, (-150, RAIL_BOT), (-172, -46), f"rear plate (outboard, z {Z['rplate'][0]}–{Z['rplate'][1]})")
     note(ax, (-R_SPROCKET * 0.7, -R_SPROCKET * 0.72), (-172, -60), "SPROCKET on the middle axle\n(z 0, set screw), chain from the 37D", relpos=(1, 1))
     note(ax, (-1, -26), (-250, -82), color=RED, relpos=(1, 0.5), text=(
         "MIDDLE AXLE = HINGE, 8 mm rod: turns clockwise in this view\n"
@@ -272,9 +273,9 @@ def side_view(ax):
 KEY = [
     ("A", "sprocket, z −3…3: fixed to the axle (set screw)"),
     ("B", "front plate + its 608, z 41–48: turns on the axle"),
-    ("C", "front pulley, z 49–74: fixed (set screw on a flat)"),
-    ("D", "rear pulley, z 75–100: fixed (set screw on a flat)"),
-    ("E", "rear plate + its 608, z 101–108: turns on the axle"),
+    ("C", f"front pulley, z {Z['flane'][0]}–{Z['fhub'][1]}: fixed (set screw on a flat)"),
+    ("D", f"rear pulley, z {Z['rlane'][0]}–{Z['rhub'][1]}: fixed (set screw on a flat)"),
+    ("E", f"rear plate + its 608, z {Z['rplate'][0]}–{Z['rplate'][1]}: turns on the axle"),
     ("F", "worm wheel: fixed to the cross shaft; the hinge"),
     ("", "motor's worm turns it"),
     ("G", "cross shaft 608s in the box walls, z 33–40"),
@@ -324,7 +325,7 @@ def shaft_view(ax):
             block(z0, z1, V_AXLE, 2 * R_FLANGE, FIXED, zorder=6)
             block(z0 + 1.5, z1 - 1.5, V_AXLE, 2 * R_PULLEY, FIXED, zorder=7)
             block(*s(*Z[hub]), V_AXLE, 2 * R_HUB, FIXED, zorder=6)
-    ax.text(-AXLE_HALF - 2, V_AXLE + 21, "middle axle, 8 mm × 220", fontsize=6.8, ha="left", va="bottom", color=INK, zorder=12)
+    ax.text(-AXLE_HALF - 2, V_AXLE + 21, f"middle axle, 8 mm × {AXLE_HALF * 2:g}", fontsize=6.8, ha="left", va="bottom", color=INK, zorder=12)
     letter(0, -24, "A")
     letter(44.5, 27, "B")
     letter(61.5, -27, "C")
@@ -407,7 +408,7 @@ NOTES = [
     "NOTES",
     "1  Sizes from parts_spec.json (1:5, mm): axles 225 apart, pulleys",
     "   Ø31.8 pitch, track 16.74 to its face and 19.74 to the cleat tips,",
-    "   plates 40 × 7, 608 bearings, z stations as listed in view 2.",
+    "   plates 45 × 7, 608 bearings, z stations as listed in view 2.",
     "   A diagram, not a part drawing: nothing here is to be made from.",
     "2  Not in the spec, drawn to the team's values: pinion r 10 and",
     "   sector R 35 (module 1.25, 16 T, centre distance 45); chain",

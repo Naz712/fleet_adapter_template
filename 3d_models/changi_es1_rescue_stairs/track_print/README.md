@@ -86,6 +86,29 @@ pulleys and axle spacing; the cleats can then be printed as strips and glued on.
 4. Try a track on the step gauge or the test stairs. Push the segment down the slope by hand: it
    should settle with a cleat standing on each tread.
 
+## Assembly drawings (`assembly/`)
+
+Everything for one track segment, drawn from `assembly/parts_spec.json` (the single source of
+numbers, mm at 1:5). `drawings/`:
+
+| Sheet | What it shows |
+|---|---|
+| `exploded_segment.png` | the front segment pulled apart along the axle, z stations, and every screw depth |
+| `part_track.png` | the track ring and belt section |
+| `part_pulley.png` | the bought HTD 5M 20T pulley and its order spec |
+| `part_axle.png` | the three axles and what sits where on each |
+| `part_side_plate.png` | the printed plate with its slide rail, both variants |
+| `part_bearing_and_fasteners.png` | 608ZZ and its pocket, cross bars, every fastener |
+| `motion_and_drive.png` | what turns on which shaft, and how the segments link to the drive motor, the hinge motor and the box |
+
+`buy_vs_make.md` lists every part with where to get it. `generate_frame.py` makes the plate and
+spacer print files (`stl/side_plate_*.stl`, `stl/spacer_*.stl`) from the spec.
+
+Layout (v2): per side from the centre line, box to 40 | front plate 41-48 | front track 49-69 |
+rear track 77-97 | rear plate 105-112; 194 mm over the tracks. Bearings are 608ZZ pressed into
+the plates; axles 230 / 230 / 160 mm; the box must stop at z 37 near the middle axle for the
+hinge sector gear.
+
 ## Other stairs
 
 ```bash
