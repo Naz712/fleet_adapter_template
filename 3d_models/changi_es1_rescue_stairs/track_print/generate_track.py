@@ -178,6 +178,27 @@ def step_gauge(g: Geometry, base: float = 5.0) -> Manifold:
     return Manifold.extrude(CrossSection([outline]), d.gauge_width)
 
 
+def stand_in_pulley(g: Geometry, clearance: float = 0.15, bore: float = 8.2) -> Manifold:
+    """A PLA copy of the bought pulley, to check the printed teeth mesh before the real ones arrive.
+    Test only: it is not made to drive. Printed on a flange; the other flange overhangs 2.5 mm,
+    which most printers bridge (or turn supports on). The hub takes an M3 set screw, self-tapped."""
+    d = g.d
+    groove = CrossSection([tooth_outline(d, sink=0.5)]).offset(clearance, JoinType.Round, 2.0, SEG)
+    pts = [tuple(p) for p in np.asarray(groove.to_polygons()[0])]
+    grooves = [CrossSection([on_circle(pts, g.root, 2 * math.pi * k / d.pulley_teeth, -1)]) for k in range(d.pulley_teeth)]
+    flange, lip, body_h = 1.5, 2.5, d.width + 2.0
+    body = Manifold.extrude((circle(g.root) - CrossSection.batch_boolean(grooves, OpType.Add)).simplify(0.01), body_h).translate((0, 0, flange))
+    e = 0.05  # overlaps so the stacked parts fuse into one solid
+    base = Manifold.cylinder(flange + e, g.root + lip, g.root + lip, CIRCLE_SEG)
+    top_flange = base.translate((0, 0, flange + body_h - e))
+    top = flange + body_h + flange
+    hub = Manifold.cylinder(7.0 + e, 9.0, 9.0, CIRCLE_SEG).translate((0, 0, top - e))
+    m = Manifold.batch_boolean([base, body, top_flange, hub], OpType.Add)
+    m -= Manifold.cylinder(top + 20, bore / 2, bore / 2, 90).translate((0, 0, -5))
+    screw = Manifold.cylinder(12, 1.25, 1.25, 40).rotate((0, 90, 0)).translate((0, 0, top + 3.5))
+    return m - screw
+
+
 # --------------------------------------------------------------------------- checks
 def poly(points) -> Polygon:
     return Polygon(points).buffer(0)
@@ -276,6 +297,7 @@ def main():
         "track_TPU_x4": track(g),
         "fit_test_track_5mm_TPU": track(g, 5.0),
         "step_gauge_3_steps_1-5_PLA": step_gauge(g),
+        "stand_in_pulley_20T_PLA_test_only": stand_in_pulley(g),
     }
     report = {"design": asdict(d), "geometry": g.summary(), "parts": {}}
     for name, m in parts.items():

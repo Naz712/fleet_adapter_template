@@ -69,6 +69,16 @@
       "volume_cm3": 311.25,
       "watertight": true,
       "bodies": 1
+    },
+    "stand_in_pulley_20T_PLA_test_only": {
+      "size_mm": [
+        35.7,
+        35.7,
+        27.0
+      ],
+      "volume_cm3": 14.02,
+      "watertight": true,
+      "bodies": 1
     }
   },
   "teeth": {

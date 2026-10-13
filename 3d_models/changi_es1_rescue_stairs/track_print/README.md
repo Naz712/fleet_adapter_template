@@ -8,6 +8,8 @@ about 1.5 cm in radius. The track is printed; the pulleys are bought.
 
 ![Print and buy](preview/parts.png)
 
+![What to print](preview/print_parts.png)
+
 ## How it fits the team's base
 
 - **Bought pulleys:** HTD 5M, 20 teeth (31.8 mm pitch diameter, so about 1.5 cm to the track),
@@ -51,6 +53,7 @@ it.
 | `track_TPU_x4.stl` | TPU 95A | 4 | 183 mm ring, 15 mm tall, about 32 g. Needs a bed at least 190 mm across |
 | `fit_test_track_5mm_TPU.stl` | TPU 95A | 1 | A 5 mm slice of the track. Print it first and try it on a pulley |
 | `step_gauge_3_steps_1-5_PLA.stl` | PLA | 1 | Optional: three ES1 steps at 1:5 to try a track on by hand |
+| `stand_in_pulley_20T_PLA_test_only.stl` | PLA | 1 | A copy of the bought pulley to check the teeth mesh before the real ones arrive. Test only, not for driving. The top flange overhangs 2.5 mm: most printers bridge it, or turn supports on. M3 set screw in the hub |
 
 `stl/track.json` lists every dimension and the check results.
 
