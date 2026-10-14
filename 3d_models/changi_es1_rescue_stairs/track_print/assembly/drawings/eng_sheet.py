@@ -139,10 +139,12 @@ def parts_list(bg, rows, x=None, y=None, col_w=(14, 60, 70, 12)):
 
 def section_mark(ax, x, y0, y1, label="A", side=1):
     """Cutting-plane line with arrows and letters."""
-    ax.plot([x, x], [y0, y1], color=INK, lw=0.9, dashes=(6, 2, 1.5, 2))
+    L = (y1 - y0) * 0.12
+    ax.plot([x, x], [y0, y0 + L], color=INK, lw=1.1)
+    ax.plot([x, x], [y1 - L, y1], color=INK, lw=1.1)
     for yy in (y0, y1):
         ax.annotate("", xy=(x + 4 * side, yy), xytext=(x, yy), arrowprops=dict(arrowstyle="-|>", lw=0.9, color=INK, mutation_scale=9))
-        ax.text(x + 5.5 * side, yy, label, fontsize=8, fontweight="bold", ha="center", va="center")
+        ax.text(x + 6 * side, yy, f"{label}", fontsize=8, fontweight="bold", ha="center", va="center")
 
 
 def save(fig, name):
