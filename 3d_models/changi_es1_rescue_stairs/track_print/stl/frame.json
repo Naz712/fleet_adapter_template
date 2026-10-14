@@ -158,8 +158,8 @@
       "watertight": true,
       "bodies": 1
     },
-    "spacer_rear_x2": {
-      "file": "stl/spacer_rear_x2.stl",
+    "spacer_rear_x4": {
+      "file": "stl/spacer_rear_x4.stl",
       "qty": 2,
       "material": "PETG",
       "make_or_buy": "make",
@@ -168,10 +168,10 @@
       "size_mm": [
         10.0,
         10.0,
-        210.0
+        65.0
       ],
-      "volume_cm3": 13.16,
-      "mass_g_solid": 16.7,
+      "volume_cm3": 4.07,
+      "mass_g_solid": 5.2,
       "watertight": true,
       "bodies": 1
     }

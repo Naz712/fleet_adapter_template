@@ -113,9 +113,10 @@ title block, parts list and balloons on the assembly:
 | `TS-05_spacer.png` | cross bar spacers 82 and 210 |
 | `TS-06_pulley_20T.png` | bought HTD 5M 20T pulley: front view and section 2:1, order spec |
 | `TS-07_bearing_608ZZ.png` | bought 608ZZ: front view, section, fitted in the plate pocket |
+| `TS-08_rear_segment_to_base.png` | cut through the middle axle (box, hinge gear, plates, pulleys, tracks side by side), cut through a rear cross bar (track on rail, box clamped between the plates), side view of the rear segment on the box |
 
 `buy_vs_make.md` lists every part with where to get it. `generate_frame.py` makes the plate and
-spacer print files (`stl/side_plate_*.stl`, `stl/spacer_*.stl`) from the spec.
+spacer print files (`stl/side_plate_*.stl`, `stl/spacer_front_x2.stl`, `stl/spacer_rear_x4.stl`) from the spec.
 
 Layout (v2): per side from the centre line, box to 40 | front plate 41-48 | front track 49-69 |
 rear track 77-97 | rear plate 105-112; 194 mm over the tracks. Bearings are 608ZZ pressed into

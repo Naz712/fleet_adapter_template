@@ -136,7 +136,7 @@ def sheet_assembly():
         (5, "TS-04 AXLE_FRONT", "FRONT AXLE, ROD 8 x 160", 1),
         (6, "TS-07 BEARING_608ZZ", "BALL BEARING 608ZZ, 8 x 22 x 7, BOUGHT", 4),
         (7, "TS-05 SPACER_82", "SPACER OD 10 x 82, BORE 4.5, PETG", 2),
-        (8, "M4_ROD_110", "M4 THREADED ROD x 110 + 4 NUTS + 4 WASHERS", 2),
+        (8, "M4_ROD_110", "M4 THREADED ROD x 110 + 2 NUTS + 2 WASHERS", 2),
         (9, "M3x14", "M3 x 14 BOLT + NUT, HINGE SECTOR GEAR, BOUGHT", 6),
     ]
     parts_list(bg, rows)
@@ -481,13 +481,13 @@ def sheet_axles():
 def sheet_spacer():
     od, bore = CB["front_segment"]["spacer_od_mm"], 4.5
     lf, lr = CB["front_segment"]["spacer_length_mm"], CB["rear_segment"]["spacer_length_mm"]
-    fig, view, bg = a3_sheet("CROSS BAR SPACER", "TS-05", material="PETG, 3D PRINTED", finish="AS PRINTED", qty="2 x 82 + 2 x 210", scale="1:1, DETAIL 3:1", notes=[
-        "FILES stl/spacer_front_x2.stl (82) AND stl/spacer_rear_x2.stl (210). PRINT STANDING ON END, 0.2 LAYERS, 3 WALLS, 20% INFILL.",
-        "ONE SPACER SITS BETWEEN THE TWO PLATES OF A SEGMENT ON EACH M4 THREADED ROD (ROD 110 FRONT, 238 REAR); THE NUTS OUTSIDE THE PLATES PULL THE PLATES ONTO IT.",
-        "LENGTH = INSIDE DISTANCE BETWEEN THE PLATES: FRONT 2 x 41 = 82, REAR 2 x 105 = 210. AT 28 ABOVE THE AXLE IT CLEARS THE UPPER RUN'S CLEAT TIPS BY 3.3.",
+    fig, view, bg = a3_sheet("CROSS BAR SPACER", "TS-05", material="PETG, 3D PRINTED", finish="AS PRINTED", qty="2 x 82 + 4 x 65", scale="1:1, DETAIL 3:1", notes=[
+        "FILES stl/spacer_front_x2.stl (82) AND stl/spacer_rear_x4.stl (65). PRINT STANDING ON END, 0.2 LAYERS, 3 WALLS, 20% INFILL.",
+        "FRONT: ONE 82 SPACER PER ROD BETWEEN THE FRONT PLATES (2 x 41). REAR: TWO 65 SPACERS PER ROD, ONE EACH SIDE BETWEEN THE BOX WALL (Z 40) AND THE REAR PLATE (Z 105).",
+        "THE NUTS OUTSIDE THE PLATES PULL PLATE - SPACER - BOX - SPACER - PLATE TOGETHER (SEE TS-08). AT 28 ABOVE THE AXLE THE SPACER CLEARS THE UPPER RUN'S CLEAT TIPS BY 3.3.",
         "BORE 4.5 IS A CLEARANCE FOR THE M4 ROD. ENDS SQUARE: THEY SET THE PLATE SPACING.",
     ])
-    for y, L, name in ((215, lr, "REAR SEGMENT SPACER, QTY 2"), (165, lf, "FRONT SEGMENT SPACER, QTY 2")):
+    for y, L, name in ((215, lr, "REAR SEGMENT SPACER, QTY 4 (2 PER ROD)"), (165, lf, "FRONT SEGMENT SPACER, QTY 2")):
         ax = view(22, y, (-12, 230), (-10, 12), 1.0, name)
         rect(ax, 0, -od / 2, L, od, "white")
         for yy in (bore / 2, -bore / 2):
@@ -610,10 +610,124 @@ def sheet_bearing():
     save(fig, "TS-07_bearing_608ZZ")
 
 
+# ------------------------------------------------------------------ TS-08 rear segment to base
+def sheet_rear_to_base():
+    fig, view, bg = a3_sheet("REAR SEGMENT TO THE BOX", "TS-08", material="SEE TS-00", qty="1", scale="1.5:1 SECTIONS, 1:2 SIDE", notes=[
+        "ATTACHMENT: THE REAR SEGMENT BOLTS TO THE BOX BY ITS TWO CROSS-BAR RODS (M4 x 238), NUT + WASHER EACH END:",
+        "PLATE - 65 SPACER - BOX WALL - BOX WALL - 65 SPACER - PLATE. BOX NEEDS 2 x Ø4.5 HOLES PER WALL AT X 60 AND 200, 28 ABOVE THE AXLE.",
+        "THE FRONT SEGMENT IS HELD ONLY BY THE MIDDLE AXLE (HINGE) AND THE SECTOR GEARS, SO IT CAN SWING.",
+        "ONE SIDE SHOWN (Z FROM THE CENTRE LINE), THE OTHER MIRRORS. BOX, SECTOR GEAR AND PINION: TEAM'S PARTS, DASHED.",
+    ])
+    S = 1.5
+    fz1, fzb, fz2 = lane_bands(Z["front_lane"])
+    rz1, rzb, rz2 = lane_bands(Z["rear_lane"])
+    fp, rp, fh, rh = Z["front_plate"], Z["rear_plate"], Z["front_hub"], Z["rear_hub"]
+    half = AX["lengths_mm"]["middle"] / 2
+    BOX_Z, BOX_Z_MID = 40.0, 37.0
+
+    def plate_cut(ax, z0):
+        for y0, y1 in ((-BOSS_R, -BR["outside_dia_mm"] / 2 - 0.1), (BR["outside_dia_mm"] / 2 + 0.1, ABOVE)):
+            rect(ax, z0, y0, T, y1 - y0, "white", hatch=True)
+        for sgn in (1, -1):                                   # 608 races
+            rect(ax, z0, sgn * (BR["outside_dia_mm"] / 2 - 2.2) if sgn > 0 else -BR["outside_dia_mm"] / 2, T, 2.2, "white", lw=0.5)
+            rect(ax, z0, sgn * 4 if sgn > 0 else -6.2, T, 2.2, "white", lw=0.5)
+            circle(ax, z0 + T / 2, sgn * 8.1, 1.7, fill="white", lw=0.5)
+
+    def pulley_cut(ax, b1, bb, b2, hub):
+        for sgn in (1, -1):
+            pts = [(b1[0], sgn * 4), (b1[0], sgn * FL_R), (b1[1], sgn * FL_R), (b1[1], sgn * PU_OD_R), (b2[0], sgn * PU_OD_R), (b2[0], sgn * FL_R),
+                   (b2[1], sgn * FL_R), (b2[1], sgn * HUB_R), (hub[1], sgn * HUB_R), (hub[1], sgn * 4)]
+            ax.add_patch(Polygon(pts, closed=True, fc="white", ec=INK, lw=0.7, hatch="////", zorder=3))
+            rect(ax, bb[0], sgn * R_TOOTH if sgn > 0 else -R_TIP, TRK_W, R_TIP - R_TOOTH, "white", hatch=True, zorder=4)   # track wrapped on the pulley
+        for k in range(1, 4):                                 # cleats on the top run
+            x = bb[0] + 2 + k * 3.5
+            ax.plot([x, x], [R_FACE, R_TIP], color=INK, lw=0.3)
+
+    # ---- SECTION A-A through the middle axle
+    ax = view(20, 160, (-8, 124), (-28, 46), S, "SECTION A-A THROUGH THE MIDDLE AXLE (HINGE), 1.5:1")
+    rect(ax, 0, -4, half + 3, 8, "white", lw=0.7, zorder=5)                                            # axle (not hatched: solid shaft)
+    hidden_rect(ax, 0, 6, BOX_Z_MID, 28)
+    ax.text(18, 20, "BOX (REF)\nSTOPS AT Z 37 HERE", fontsize=6, ha="center", va="center")
+    hidden_rect(ax, 38, -25, 3, 50)
+    ax.text(39.5, -26.5, "SECTOR GEAR 3 THICK (REF)", fontsize=5.5, ha="center", va="top", rotation=0)
+    plate_cut(ax, fp[0])
+    pulley_cut(ax, fz1, fzb, fz2, fh)
+    pulley_cut(ax, rz1, rzb, rz2, rh)
+    plate_cut(ax, rp[0])
+    rect(ax, fp[0], 0, T, 0, "white")  # no-op keeps order
+    for z in (fp[0] + 3.5, rp[0] + 3.5):                                                                 # M3 sector bolt (front plate) / nothing on rear
+        pass
+    rect(ax, 38, 15, 10, 3.4, "white", lw=0.5, zorder=6)                                                 # M3 x 14 through sector gear + plate, nut outboard
+    rect(ax, 48, 14.5, 2.4, 4.4, "white", lw=0.5, zorder=6)
+    leader(ax, (43, 18.4), (2, 8), "M3 x 14 + NUT, 3 PER PLATE, ON R17\n(SECTOR GEAR TO FRONT PLATE)", fontsize=6)
+    centreline(ax, -6, 0, 122, 0)
+    y0 = -26
+    for (z0, z1), lab in ((fp, "7"), (Z["front_lane"], "20"), (Z["rear_lane"], "20"), (rp, "7")):
+        dim_h(ax, z0, z1, y0, lab, ext_from=-R_TIP - 1, fontsize=6.5)
+    dim_h(ax, 0, BOX_Z, 37, "40 BOX", ext_from=34, fontsize=6.5)
+    dim_h(ax, 0, rzb[1], 40.5, "97 (194 OVER TRACKS)", ext_from=R_TIP, fontsize=6.5)
+    dim_h(ax, 0, rp[1], 44.5, "112 (224 OVER PLATES)", ext_from=ABOVE, fontsize=6.5)
+    for z, t in ((fz1[0], "49"), (fz2[1], "69"), (rz1[0], "77"), (rz2[1], "97"), (rp[0], "105")):
+        ax.text(z, -R_TIP - 2.2, t, fontsize=5, ha="center", va="top")
+    leader(ax, (fzb[0] + 7, R_TIP), (54, 31), "TRACK ON ITS PULLEY", fontsize=6)
+    leader(ax, (rh[1] - 2, HUB_R), (104, 30), "SET SCREW HUB", fontsize=6)
+    leader(ax, (rp[0] + 3.5, BR["outside_dia_mm"] / 2 - 1), (100, -22), "608ZZ IN THE PLATE", fontsize=6)
+
+    # ---- SECTION B-B through the rear cross bar (x = 60 from the rear axle)
+    ax = view(20, 40, (-8, 124), (-28, 46), S, "SECTION B-B THROUGH A REAR CROSS BAR (X 60 FROM THE REAR AXLE), 1.5:1")
+    rail_z = ((Z["rear_lane"][0] + Z["rear_lane"][1]) / 2 - RW / 2, (Z["rear_lane"][0] + Z["rear_lane"][1]) / 2 + RW / 2)
+    rect(ax, rp[0], -BELOW, T, BELOW + ABOVE, "white", hatch=True)                                         # rear plate
+    rect(ax, rail_z[1], -RBOT, rp[1] - rail_z[1], RBOT - BELOW, "white", hatch=True)                       # web
+    rect(ax, rail_z[0], -RBOT, RW, RT, "white", hatch=True)                                                # rail
+    for yy0 in (R_TOOTH, -R_TIP):                                                                          # track upper and lower runs, cut
+        rect(ax, rzb[0], yy0, TRK_W, R_TIP - R_TOOTH, "white", hatch=True, zorder=4)
+    hidden_rect(ax, 0, 6, BOX_Z, 38)
+    ax.text(20, 12, "BOX (REF)", fontsize=6, ha="center")
+    yb = CBH["above_axle_mm"]
+    rect(ax, 0, yb - 2, CB["rear_segment"]["rod_length_mm"] / 2, 4, "white", lw=0.6, zorder=5)             # rod (solid)
+    rect(ax, BOX_Z, yb - 5, CB["rear_segment"]["spacer_length_mm"], 10, "white", hatch=True, zorder=4)     # 65 spacer, cut
+    rect(ax, BOX_Z, yb - 2.25, CB["rear_segment"]["spacer_length_mm"], 4.5, "white", lw=0.4, zorder=5)
+    rect(ax, rp[1], yb - 4.5, 0.8, 9, "white", lw=0.5, zorder=6)                                           # washer
+    rect(ax, rp[1] + 0.8, yb - 3.5, 3.2, 7, "white", lw=0.5, zorder=6)                                     # nut
+    rect(ax, BOX_Z - 2, yb - 2.25, 2, 4.5, "white", lw=0.4, zorder=5)                                      # hole in the box wall
+    centreline(ax, -6, 0, 122, 0)
+    dim_v(ax, 0, yb, 120, "28", fontsize=6.5)
+    dim_h(ax, BOX_Z, rp[0], yb + 8, "65 SPACER", ext_from=yb + 5, fontsize=6.5)
+    dim_h(ax, 0, CB["rear_segment"]["rod_length_mm"] / 2, yb + 15, "119 (ROD 238)", ext_from=yb + 2, fontsize=6.5)
+    dim_h(ax, rail_z[0], rail_z[1], -RBOT - 4, "18 RAIL", ext_from=-RBOT, fontsize=6.5)
+    dim_v(ax, -RTOP, 0, rail_z[0] - 4, "13.34", fontsize=6.5)
+    leader(ax, (rzb[0] + 7, -R_TOOTH - 3), (50, -24), "LOWER RUN RIDES ON THE RAIL", fontsize=6)
+    leader(ax, (rp[1] + 2.4, yb + 3.5), (100, 42), "M4 NUT + WASHER", fontsize=6)
+    leader(ax, (BOX_Z - 1, yb + 2.25), (12, 36), "Ø4.5 HOLE IN THE BOX WALL", fontsize=6)
+
+    # ---- SIDE VIEW of the rear segment on the box, 1:2
+    ax = view(232, 120, (-60, 290), (-50, 100), 0.5, "SIDE VIEW, REAR SEGMENT ON THE BOX (FROM OUTBOARD), 1:2")
+    shape_patch(ax, plate_shape(), zorder=1)
+    track_side(ax, zorder=3)
+    for x in (0, C):
+        circle(ax, x, 0, FL_R, fill="white", lw=0.6, zorder=4)
+        circle(ax, x, 0, HUB_R, fill="white", lw=0.6, zorder=5)
+        circle(ax, x, 0, 4, fill="white", lw=0.6, zorder=6)
+        centre_mark(ax, x, 0, 26)
+    for x in CBH["at_x_mm"]:
+        hex_nut(ax, x, CBH["above_axle_mm"])
+    hidden_rect(ax, -30, 6, C + 60, 80)
+    ax.text(100, 70, "BOX (REF), BOLTED THROUGH THE TWO CROSS BARS", fontsize=6, ha="center")
+    hidden_circle(ax, C, 0, 25)
+    ax.text(C, 48, "FRONT SEGMENT HINGES HERE\n(MIDDLE AXLE)", fontsize=5.5, ha="center", va="bottom")
+    centreline(ax, -40, 0, C + 40, 0)
+    section_mark(ax, C, -40, 95, "A", side=1)
+    section_mark(ax, CBH["at_x_mm"][0], -40, 95, "B", side=-1)
+    dim_h(ax, 0, CBH["at_x_mm"][0], -34, "60", ext_from=-22, fontsize=6.5)
+    dim_h(ax, 0, CBH["at_x_mm"][1], -42, "200", ext_from=-22, fontsize=6.5)
+    ax.text(-55, -48, "REAR AXLE AT X 0, MIDDLE AXLE AT X 225", fontsize=6, va="bottom")
+    save(fig, "TS-08_rear_segment_to_base")
+
+
 if __name__ == "__main__":
     which = sys.argv[1:] or ["all"]
     fns = dict(assembly=sheet_assembly, track=sheet_track, front=lambda: sheet_side_plate(True), rear=lambda: sheet_side_plate(False),
-               axles=sheet_axles, spacer=sheet_spacer, pulley=sheet_pulley, bearing=sheet_bearing)
+               axles=sheet_axles, spacer=sheet_spacer, pulley=sheet_pulley, bearing=sheet_bearing, base=sheet_rear_to_base)
     for k, f in fns.items():
         if "all" in which or k in which:
             f()

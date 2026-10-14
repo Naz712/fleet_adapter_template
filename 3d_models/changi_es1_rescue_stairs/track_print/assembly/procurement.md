@@ -24,7 +24,7 @@ through the EDIC request form.
 |---|---|---|---|---|
 | Track | 4 | 3D print, TPU 95A, standing, 100% infill, 0.2 mm, no supports. File `stl/track_TPU_x4.stl` | Fab Lab UP300 (TPU head) | A toothed flexible belt with step-matched cleats on the outside; no stock belt has the cleats, and the cleat pitch (12.22 mm) is set by the ES1 step size. |
 | Side plate, front L and R, rear L and R | 4 | **Option A:** 3D print PETG, flat, 4 walls, 30% infill. Files `stl/side_plate_{front,rear}_{L,R}.stl`. **Option B:** CNC-mill from 7 mm aluminium plate to sheets TS-02 / TS-03 (the drawings are made for this). | A: Fab Lab UP600 or UP300. B: Professional Workshop, by request form | One part carries the two bearing pockets, the slide rail under the lower track run and all holes; a cut sheet would need the rail and bearing housings as extra parts. |
-| Cross bar spacer, 82 and 210 | 2 + 2 | 3D print PETG (`stl/spacer_*.stl`), or cut from Ø10 aluminium tube with a 4.5 bore on the lathe | Fab Lab, or Training Workshop with the plates | Non-standard lengths (82, 210) set the plate spacing. |
+| Cross bar spacer, 82 (front) and 65 (rear) | 2 + 4 | 3D print PETG (`stl/spacer_front_x2.stl`, `stl/spacer_rear_x4.stl`), or cut from Ø10 aluminium tube with a 4.5 bore on the lathe | Fab Lab, or Training Workshop with the plates | Non-standard lengths set the plate spacing; the rear ones sit between the box wall and the plate. |
 | Stand-in pulley, PLA, test only | 1 | 3D print PLA (`stl/stand_in_pulley_20T_PLA_test_only.stl`) | Fab Lab, Tinkering Corner or NUS Library | Fit test of the printed teeth before the bought pulleys arrive. |
 
 If printing is the hassle: **Option B for the plates** moves the biggest print (4 x 5 h) to the
@@ -60,10 +60,9 @@ segment** (fixed to the box, plates outboard). They share the middle axle.
 | - | Rear side plate | 2 | 1 left + 1 right |
 | 6 | Bearing 608ZZ | 4 | 2 per plate |
 | - | Rear axle Ø8 x 230 | 1 | |
-| - | Spacer Ø10 x 210 | 2 | |
-| - | M4 threaded rod x 238 | 2 | the same two rods also bolt the box: plate - box - plate |
-| - | M4 nut + washer | 4 + 4 | |
-| - | M4 x 12 bolt | 4 | box to the rear plates (team's box) |
+| - | Spacer Ø10 x 65 | 4 | two per rod, one each side between the box wall (z 40) and the plate (z 105) |
+| - | M4 threaded rod x 238 | 2 | **these are what bolt the segment to the box**: plate - spacer - box wall - box wall - spacer - plate (sheet TS-08) |
+| - | M4 nut + washer | 4 + 4 | one each end of each rod |
 | - | M4 set screw | 8 | |
 
 ### Shared
@@ -83,11 +82,10 @@ segment** (fixed to the box, plates outboard). They share the middle axle.
 | Side plate | 4 (2 front L/R + 2 rear L/R) | make |
 | Bearing 608ZZ | 10 | buy (2 packs of 5) |
 | Ø8 rod, cut to 230 + 230 + 160 + 120 = 740 mm | 2 x 400 mm | buy (or Design Lab spare) |
-| Spacer | 4 (2 x 82, 2 x 210) | make |
+| Spacer | 6 (2 x 82, 4 x 65) | make |
 | M4 threaded rod, cut to 110 + 110 + 238 + 238 = 696 mm | 1 x 1 m | buy |
 | M4 nut / M4 washer | 8 / 8 | buy or Design Lab spares |
 | M3 x 14 bolt + nut | 6 + 6 | buy or spares |
-| M4 x 12 bolt | 4 | buy or spares |
 | M4 set screw (M4 x 4 or x 5, cup point) | 16 | buy with the pulleys |
 | Stand-in pulley, PLA | 1 | make |
 
@@ -103,13 +101,17 @@ segment** (fixed to the box, plates outboard). They share the middle axle.
    track over the two left pulleys (TPU stretches a little; walk it on like a bicycle chain). Then
    slide the right plate on and loop the right track. Doing the track before the outer plate is
    what makes it possible.
-4. **Cross bars.** Push an M4 rod through the Ø4.5 hole in one plate, slide the spacer on, through
-   the other plate; washer and nut each end, tighten until the plates sit flat on the spacer. Two
-   per segment, at x 60 and 200 from the rear axle of that segment.
+4. **Cross bars.** Front segment: M4 rod through one plate, the 82 spacer, the other plate; washer
+   and nut each end. Rear segment: the same rods also hold the box. Rod through the plate, a 65 spacer,
+   through the box wall, across the box, out the other wall, the second 65 spacer, the other plate;
+   washer and nut each end, tightened until plates, spacers and box are clamped as one. Two per
+   segment, at x 60 and 200 from the rear axle, 28 above the axle line. The box needs two Ø4.5 holes
+   through each wall at those positions (sheet TS-08).
 5. **Check:** turn the middle axle by hand, both tracks run without clicking; the lower run rests on
    the slide rails.
-6. **Hinge and box (team's parts).** Sector gears bolt to the inboard face of the front plates with
-   the six M3 x 14; the box bolts to the rear plates with the four M4 x 12 through the cross-bar holes.
+6. **Hinge (team's parts).** Sector gears bolt to the inboard face of the front plates with the six
+   M3 x 14 and nuts (7 plate + 3 gear + nut). The front segment is held to the box only by the middle
+   axle and these gears, so it can swing; nothing else is bolted.
 
 ## 5. Buy list with links
 
@@ -120,7 +122,7 @@ segment** (fixed to the box, plates outboard). They share the middle axle.
 | Bearing | 608ZZ (608-2Z/C3), 8 x 22 x 7, shielded | [RS SG pack of 5, 261-2603](https://sg.rs-online.com/web/p/ball-bearings/2612603) | S$14.82 per pack | 2 packs | next working day (order before 3:30 pm), max 4 working days |
 | Ø8 rod | 8 mm x 400 mm steel shaft; hardened, so grind the flats (Dremel), or buy soft rod from a hardware shop on the vendor list | Design Lab spare first; else [RS SG linear shafts](https://sg.rs-online.com/web/c/bearings-seals/linear-motion/linear-shafts/) | S$37 each at RS; ~S$5 at a hardware shop | 2 | next working day / same day |
 | M4 rod | stainless M4 x 1 m, DIN 975 | [RS SG 200-9958](https://sg.rs-online.com/web/p/products/2009958) (pack of 5, S$49.69) or one rod from a hardware shop | S$10 per rod | 1 | 4 working days / same day |
-| Nuts, washers, bolts | M4 nuts x 8, M4 washers x 8, M3 x 14 + nuts x 6, M4 x 12 x 4 | Design Lab spares; else [Element14 SG nuts](https://sg.element14.com/c/fasteners-mechanical/fasteners-fixings/nuts/hex-nuts) and RS SG | S$0 to S$15 | 26 | 1-2 business days |
+| Nuts, washers, bolts | M4 nuts x 8, M4 washers x 8, M3 x 14 + nuts x 6 | Design Lab spares; else [Element14 SG nuts](https://sg.element14.com/c/fasteners-mechanical/fasteners-fixings/nuts/hex-nuts) and RS SG | S$0 to S$15 | 22 | 1-2 business days |
 | TPU filament | TPU 95A, 1.75 mm, 1 kg (4 tracks use about 130 g) | [Element14 SG, Multicomp Pro](https://sg.element14.com/multicomp-pro/mc011460/3d-printer-filament-tpu-1-75mm/dp/3021512), or the Fab Lab's own stock | ~S$45 | 1 | 1-2 business days |
 
 **Totals:** about S$160 of Singapore-priced parts (bearings, rod, M4 rod, nuts), about S$45 with

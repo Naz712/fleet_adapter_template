@@ -218,8 +218,8 @@ def build_parts(f: Frame) -> dict:
                 "process": "3D print, plate face down, rail standing up, 0.2 mm layers, 4 walls, 30% infill, no supports",
                 "print_orientation": "plate face on the bed (its %s face, z = %g), rail standing up" % ("inboard" if segment == "front" else "outboard", abs(face)),
             })
-    for segment, length in (("front", f.spacer_len_front), ("rear", f.spacer_len_rear)):
-        parts[f"spacer_{segment}_x2"] = (spacer(f, length), {
+    for segment, length, n in (("front", f.spacer_len_front, 2), ("rear", f.spacer_len_rear, 4)):
+        parts[f"spacer_{segment}_x{n}"] = (spacer(f, length), {
             "qty": 2, "material": "PETG", "make_or_buy": "make",
             "process": "3D print, standing on end, 0.2 mm layers, 3 walls, no supports",
             "print_orientation": "standing, axis vertical",
@@ -407,7 +407,7 @@ def preview(f: Frame, g: gt.Geometry, report: dict, stl: Path, out: Path):
         rect = [0.02 + col * 0.49, 0.725 - row * 0.215, 0.47, 0.18]
         panel(rect, trimesh.load(stl / f"{name}.stl"), C["petg"], f"{title}: {name}.stl", f"{size_text(name)}. {sub}")
 
-    sp_f, sp_r = trimesh.load(stl / "spacer_front_x2.stl"), trimesh.load(stl / "spacer_rear_x2.stl")
+    sp_f, sp_r = trimesh.load(stl / "spacer_front_x2.stl"), trimesh.load(stl / "spacer_rear_x4.stl")
     sp_f.apply_translation((-22, 0, 0))
     panel([0.02, 0.10, 0.13, 0.30], trimesh.util.concatenate([sp_f, sp_r]), C["spacer"], "Spacers",
           f"front {f.spacer_len_front:g} long (x2), rear {f.spacer_len_rear:g} long (x2)\nOD {f.spacer_od:g}, bore {f.spacer_bore:g}, printed standing", elev=18, azim=100)

@@ -36,7 +36,8 @@
         105,
         112
       ]
-    }
+    },
+    "box_attachment": "Rear segment to box: 2 x M4 threaded rod (238) through the rear plates and the box walls, 4 nuts + 4 washers. Front segment to box: only through the middle axle (hinge) and the sector gear / pinion on the hinge cross shaft; nothing else is bolted, so it can swing."
   },
   "segment": {
     "axle_to_axle_mm": 225.0,
@@ -188,7 +189,7 @@
         "note": "M4 threaded rod with printed spacers ties the two plates of a segment; at 28 above the axle the 10 mm spacer clears the upper run's cleat tips (19.74) by 3.3 mm"
       },
       "front_plate_extra": "the rear end (around the middle axle) carries the hinge sector gear: 3 x M3 holes on a 17 mm radius at 50, 90 and 130 degrees from the forward direction",
-      "rear_plate_extra": "the box bolts to the rear plates through the same two 4.5 mm cross-bar holes (x = 60 and 200 from the rear axle, 28 above the axle): one M4 rod per hole runs plate - box - plate",
+      "rear_plate_extra": "the box is held by the two rear cross-bar rods themselves: each M4 rod runs plate - 65 spacer - box wall - box wall - 65 spacer - plate with a nut and washer at each end, so the box needs two 4.5 mm holes through each wall at x = 60 and 200 from the rear axle, 28 above the axle line. No separate box bolts.",
       "sector_bolts": {
         "dia_mm": 3.4,
         "radius_mm": 17.0,
@@ -213,19 +214,20 @@
       },
       "rear_segment": {
         "rod_length_mm": 238,
-        "spacer_length_mm": 210,
-        "spacer_od_mm": 10
+        "spacer_length_mm": 65,
+        "spacers_per_rod": 2,
+        "spacer_od_mm": 10,
+        "note": "two 65 mm spacers per rod, one each side between the box wall (z 40) and the rear plate (z 105); the box (80 wide) sits between them, so plate - spacer - box - spacer - plate = 2 x 7 + 2 x 65 + 80 = 224"
       },
-      "note": "Spacer length = inside distance between the two plates (front 2 x 41, rear 2 x 105); rod = spacer + 2 plates + 7 each end for washer, nut and 3 mm proud."
+      "note": "Front: spacer = inside distance between the front plates (2 x 41 = 82). Rear: the box sits between the rear plates, so each rod carries two 65 mm spacers (z 40 to 105 each side). Rod = span + 2 plates + 7 each end for washer, nut and 3 mm proud."
     },
     "set_screws_and_bolts": {
       "name": "Fasteners",
       "make_or_buy": "buy (Design Lab spares first)",
       "items": [
-        "pulley set screws (come with bought pulleys; M3 x 6 for the stand-in)",
-        "8 x M4 nuts and 8 x M4 washers for the cross bars",
-        "6 x M3 x 14 with nuts for the hinge sector gears (7 plate + 3 sector + 2.4 nut)",
-        "4 x M4 x 12 for the box"
+        "pulley set screws, 16 x M4 (not included with MISUMI economy pulleys; M3 x 6 for the stand-in)",
+        "8 x M4 nuts and 8 x M4 washers for the 4 cross-bar rods",
+        "6 x M3 x 14 with nuts for the hinge sector gears (7 plate + 3 sector + 2.4 nut)"
       ]
     },
     "hinge_cross_shaft": {
@@ -238,5 +240,5 @@
     }
   },
   "buy_vs_make_rule": "Make (print) anything with a shape only this design needs: track, plates with rails, spacers. Buy anything that is a standard part cheaper and better than a print: pulleys, bearings, rod, screws.",
-  "_revision": "v2, 13 Oct 2026: lanes 20 mm (pulley over flanges), plates 45 tall with bearing bosses, cross bars at 28, sector bolts on R17, axles 230/230/160, rear spacer 210. v1 problems found by the frame check: 0.9 mm pocket wall, spacer fouling the cleat tips, 18 mm lanes."
+  "_revision": "v2, 13 Oct 2026: lanes 20 mm (pulley over flanges), plates 45 tall with bearing bosses, cross bars at 28, sector bolts on R17, axles 230/230/160, rear spacer 210. v1 problems found by the frame check: 0.9 mm pocket wall, spacer fouling the cleat tips, 18 mm lanes. 14 Oct: rear spacers 2 x 65 per rod with the box between (was one 210)."
 }
