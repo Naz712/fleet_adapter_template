@@ -101,6 +101,19 @@ numbers, mm at 1:5). `drawings/`:
 | `part_bearing_and_fasteners.png` | 608ZZ and its pocket, cross bars, every fastener |
 | `motion_and_drive.png` | what turns on which shaft, and how the segments link to the drive motor, the hinge motor and the box |
 
+CAD-style A3 sheets (`eng_sheets.py`, template `eng_sheet.py`): monochrome, true scale, third angle,
+title block, parts list and balloons on the assembly:
+
+| Sheet | DWG NO. |
+|---|---|
+| `TS-00_assembly_front_segment.png` | front segment: top, side and end views, balloons 1-9, parts list |
+| `TS-01_track.png` | track ring 1:1, edge view, belt section 4:1 |
+| `TS-02_side_plate_front.png`, `TS-03_side_plate_rear.png` | top and front views 1:1, sections A-A and B-B 2:1, sector holes detail |
+| `TS-04_axles.png` | the three axles and the hinge cross shaft, flats detail 4:1 |
+| `TS-05_spacer.png` | cross bar spacers 82 and 210 |
+| `TS-06_pulley_20T.png` | bought HTD 5M 20T pulley: front view and section 2:1, order spec |
+| `TS-07_bearing_608ZZ.png` | bought 608ZZ: front view, section, fitted in the plate pocket |
+
 `buy_vs_make.md` lists every part with where to get it. `generate_frame.py` makes the plate and
 spacer print files (`stl/side_plate_*.stl`, `stl/spacer_*.stl`) from the spec.
 
