@@ -68,7 +68,7 @@ aside ol { padding-left: 20px; margin: 4px 0 0 } aside li { margin-bottom: 3px }
   <div id="stage">
     <div id="markers"></div>
     <div id="hint">Numbers mark the parts in the connection map. Near side is exploded; the far side stays assembled.</div>
-    <div id="loading">Loading the model (4 MB)…</div>
+    <div id="loading">Loading the model (6 MB)…</div>
   </div>
   <aside id="panel"></aside>
 </main>
@@ -164,7 +164,8 @@ const meshes = [], byKey = {};
 const colorFor = (k, c) => k === 'mine' ? css('--mine') : k === 'buy' ? css('--buy') : k === 'theirs' ? css('--theirs') : k === 'deck' ? css('--deck') : css('--ghost');
 
 async function load() {
-  const [idx, buf] = await Promise.all([fetch('parts.json').then(r => r.json()), fetch('parts.bin').then(r => r.arrayBuffer())]);
+  const [idx, b64] = await Promise.all([fetch('parts.json').then(r => r.json()), fetch('parts.b64.txt').then(r => r.text())]);
+  const bin = atob(b64.trim()), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i); const buf = bytes.buffer;
   for (const p of idx.parts) {
     const q = new Uint16Array(buf, p.o, p.v * 3), pos = new Float32Array(p.v * 3);
     for (let i = 0; i < p.v; i++) for (let k = 0; k < 3; k++) pos[i * 3 + k] = p.mn[k] + q[i * 3 + k] / 65535 * (p.mx[k] - p.mn[k]);
