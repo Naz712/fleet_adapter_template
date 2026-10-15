@@ -2,7 +2,7 @@
 STEP (AP214) opens in SolidWorks, Fusion, Onshape and FreeCAD; the assembly STEP comes in as an assembly with
 one component per part. Vehicle frame: x forward (middle axle at x = 0), y up (axle centre line at y = 0),
 z across (centre line at z = 0). Run: python3 export_step.py  -> step/"""
-import json, math
+import json, math, os
 from pathlib import Path
 import cadquery as cq
 from shapely import affinity
@@ -172,8 +172,8 @@ parts = {
     "washer_M4_ref": washer(),
 }
 for name, wp in parts.items():
-    cq.exporters.export(wp, str(OUT / f"{name}.step"))
-    print("part", name)
+    if not os.environ.get("NO_SAVE"):
+        cq.exporters.export(wp, str(OUT / f"{name}.step")); print("part", name)
 
 # ---------------------------------------------------------------- assembly, vehicle frame (x forward, y up, z across)
 asm = cq.Assembly(name="track_segments_1to5")
@@ -212,5 +212,6 @@ for seg, x0, front in (("front", 0.0, True), ("rear", -C, False)):
 add("axle_middle", parts["axle_middle_230"], L(0, 0, 0), STEEL)
 add("axle_front", parts["axle_front_160"], L(C, 0, 0), STEEL)
 add("axle_rear", parts["axle_rear_230"], L(-C, 0, 0), STEEL)
-asm.save(str(OUT / "track_segments_assembly.step"))
+if not os.environ.get("NO_SAVE"):
+    asm.save(str(OUT / "track_segments_assembly.step"))
 print("assembly", OUT / "track_segments_assembly.step", len(asm.children), "components")

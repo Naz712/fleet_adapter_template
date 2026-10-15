@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#fff}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./three.module.js","three/addons/":"./jsm/"}}</script></head><body>
+<script type="module">
+import * as THREE from 'three';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+const q = new URLSearchParams(location.search);
+const bend = parseFloat(q.get('bend') || '0'), stairs = q.get('stairs') === '1', view = q.get('view') || 'iso', explode = parseFloat(q.get('explode') || '0');
+const W = innerWidth, H = innerHeight;
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); renderer.setSize(W, H); renderer.setClearColor(0xffffff);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.75; document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene(); scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x667788, 0.5)); const dl = new THREE.DirectionalLight(0xffffff, 1.6); dl.position.set(200, 400, 300); scene.add(dl);
+// model frame: x fwd, y up, z across (same as three.js) 
+const front = new THREE.Group(); const rear = new THREE.Group(); scene.add(front, rear);
+const man = await (await fetch('manifest.json')).json(); const loader = new STLLoader();
+for (const p of man) {
+  const g = await new Promise(r => loader.load(p.file, r)); g.computeVertexNormals();
+  const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(...p.color), metalness: p.name.includes('axle') || p.name.includes('pulley') || p.name.includes('bearing') || p.name.includes('rod') || p.name.includes('nut') ? 0.7 : 0.05, roughness: 0.5, envMapIntensity: 0.35 });
+  const m = new THREE.Mesh(g, mat); (p.front ? front : rear).add(m);
+  if (explode && (p.name.includes('plate_L') || p.name.includes('plate_R'))) m.position.z += (p.name.endsWith('_L') ? 1 : -1) * explode;
+}
+front.rotation.z = THREE.MathUtils.degToRad(bend);   // hinge about the middle axle (z axis through origin)
+// box between the rear plates (team's): x -215..40, y 6..46, z -40..40
+const box = new THREE.Mesh(new THREE.BoxGeometry(255, 40, 80), new THREE.MeshStandardMaterial({ color: 0xd9b45a, transparent: true, opacity: 0.6, roughness: 0.6 }));
+box.position.set(-87.5, 26, 0); rear.add(box);
+if (stairs) {  // ES1 at 1:5: 35 rise x 50 going, descending to +x. track bottom y = -19.74 on the landing
+  const yb = -19.74, sm = new THREE.MeshStandardMaterial({ color: 0xc9ccd2, roughness: 0.9 });
+  const land = new THREE.Mesh(new THREE.BoxGeometry(300, 40, 300), sm); land.position.set(-90, yb - 20, 0); scene.add(land);
+  for (let k = 0; k < 6; k++) { const s = new THREE.Mesh(new THREE.BoxGeometry(50, 300, 300), sm); s.position.set(60 + 25 + 50 * k, yb - 35 * (k + 1) - 150, 0); scene.add(s); }
+}
+const cam = new THREE.PerspectiveCamera(30, W / H, 1, 5000);
+const look = new THREE.Vector3(stairs ? 20 : 0, stairs ? -40 : 0, 0);
+if (view === 'iso') cam.position.set(560, 420, 620); else if (view === 'side') cam.position.set(0, 60, 1100); else if (view === 'top') cam.position.set(0.01, 1100, 0); else if (view === 'front') cam.position.set(1100, 200, 0); else if (view === 'iso2') cam.position.set(-620, 420, 560);
+cam.position.add(look); cam.lookAt(look);
+renderer.render(scene, cam); window.done = true;
+</script></body></html>
