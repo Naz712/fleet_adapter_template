@@ -240,5 +240,52 @@
     }
   },
   "buy_vs_make_rule": "Make (print) anything with a shape only this design needs: track, plates with rails, spacers. Buy anything that is a standard part cheaper and better than a print: pulleys, bearings, rod, screws.",
-  "_revision": "v2, 13 Oct 2026: lanes 20 mm (pulley over flanges), plates 45 tall with bearing bosses, cross bars at 28, sector bolts on R17, axles 230/230/160, rear spacer 210. v1 problems found by the frame check: 0.9 mm pocket wall, spacer fouling the cleat tips, 18 mm lanes. 14 Oct: rear spacers 2 x 65 per rod with the box between (was one 210)."
+  "_revision": "v2, 13 Oct 2026: lanes 20 mm (pulley over flanges), plates 45 tall with bearing bosses, cross bars at 28, sector bolts on R17, axles 230/230/160, rear spacer 210. v1 problems found by the frame check: 0.9 mm pocket wall, spacer fouling the cleat tips, 18 mm lanes. 14 Oct: rear spacers 2 x 65 per rod with the box between (was one 210).",
+  "alternative_layout_revB_plates": {
+    "source": "Rev B pack 2026-10-15, plates P1/P2 (Al 5 mm), z converted to vehicle centre line, one side",
+    "z_stations_one_side_mm": {
+      "hinge_support_P17": [
+        36,
+        41
+      ],
+      "front_plate": [
+        55,
+        60
+      ],
+      "front_lane": [
+        60.5,
+        79.5
+      ],
+      "front_track": [
+        62.5,
+        77.5
+      ],
+      "rear_plate": [
+        80,
+        85
+      ],
+      "rear_lane": [
+        85.5,
+        104.5
+      ],
+      "rear_track": [
+        87.5,
+        102.5
+      ],
+      "hinge_shaft_end": 106
+    },
+    "width_over_track_faces_mm": 205,
+    "width_over_pulley_flanges_mm": 209,
+    "inside_rear_plates_mm": 160,
+    "axles": {
+      "hinge_shaft": "\u00d88 D-shaft flat 7: A 82.3 + B 77.3 (two motors) or one 212 (one motor)",
+      "end_axles": "none: 4 x ISO 7379 \u00d88x25 M6 shoulder screws in the plate slots"
+    },
+    "bearings": "14 x 688-2RS (8x16x5)",
+    "pulleys": "HTD5M 20T 15 mm, plain bore, modified: 4 x D-bore 8, 4 x \u00d816 H7 for 2 x 688 each",
+    "spacers": "none (2020 x 110 and 3030 x 160 bars)",
+    "cross_bars": "none (bars + corner brackets + T-nuts)",
+    "track": "unchanged (my printed track, 550 loop, 45 cleats); or Rev B stock belt 550-5M-15 with 22 glued cleats",
+    "note": "see layout_with_revB_plates.md"
+  }
 }
