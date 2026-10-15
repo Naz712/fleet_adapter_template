@@ -6,7 +6,7 @@
 :root {
   --bg: #efede7; --panel: #ffffff; --fg: #1d1f23; --muted: #5f646c; --line: #d6d2c8; --soft: #f7f6f2;
   --accent: #d9671f; --accent-ink: #ffffff;
-  --mine: #3a4650; --buy: #9aa2a9; --theirs: #6b93cf; --deck: #d9b45a; --ghost: #c7ccd3;
+  --mine: #3a4650; --buy: #9aa2a9; --theirs: #6b93cf; --deck: #d9b45a; --drive: #5f6b7a; --elec: #8a9a6e; --ghost: #c7ccd3;
   --font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-data: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 }
@@ -18,56 +18,64 @@ html, body { height: 100% }
 body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-ui); font-size: 14px; line-height: 1.45;
   display: flex; flex-direction: column; box-sizing: border-box;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 }
-.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding-block: 10px 8px; border-bottom: 1px solid var(--line) }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-block: 10px 8px; border-bottom: 1px solid var(--line) }
 .bar h1 { font-size: 16px; font-weight: 600; margin: 0 12px 0 0; letter-spacing: .01em; text-wrap: balance }
 .bar .sub { color: var(--muted); font-size: 12.5px; margin-right: auto }
 .ctl { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted) }
 .ctl label { white-space: nowrap }
-.ctl input[type=range] { width: 130px; accent-color: var(--accent) }
-.ctl select, .ctl button { font: inherit; font-size: 12.5px; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px }
-.ctl button { cursor: pointer } .ctl button:hover { border-color: var(--accent) }
+.ctl input[type=range] { accent-color: var(--accent) }
+#assemble { width: 220px } #bend { width: 110px }
+.ctl button { font: inherit; font-size: 12.5px; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; cursor: pointer }
+.ctl button:hover { border-color: var(--accent) }
 .ctl input[type=checkbox] { accent-color: var(--accent) }
+.val { font-family: var(--font-data); min-width: 3.5ch; color: var(--fg) }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
-main { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 340px; gap: 12px; padding-block: 10px 12px }
+main { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 350px; gap: 12px; padding-block: 10px 12px }
 #stage { position: relative; min-width: 0; min-height: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--soft) }
 #stage canvas { display: block; width: 100%; height: 100%; touch-action: none }
 #markers { position: absolute; inset: 0; pointer-events: none }
-.mk { position: absolute; transform: translate(-50%, -50%); width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
-  font: 500 11px/22px var(--font-data); text-align: center; border: 2px solid var(--panel); box-shadow: 0 1px 3px rgba(0,0,0,.35); pointer-events: auto; cursor: pointer; user-select: none }
+.mk { position: absolute; transform: translate(-50%, -50%); width: 19px; height: 19px; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
+  font: 500 10px/19px var(--font-data); text-align: center; border: 2px solid var(--panel); box-shadow: 0 1px 3px rgba(0,0,0,.35); pointer-events: auto; cursor: pointer; user-select: none; padding: 0 }
 .mk.on { background: var(--fg); color: var(--bg) }
 #loading[hidden] { display: none }
 #loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-family: var(--font-data); font-size: 13px; background: var(--soft) }
-#hint { position: absolute; left: 10px; bottom: 8px; font-size: 11.5px; color: var(--muted); background: color-mix(in srgb, var(--panel) 80%, transparent); padding: 3px 7px; border-radius: 5px; pointer-events: none }
+#hint { position: absolute; left: 10px; bottom: 8px; right: 10px; font-size: 11.5px; color: var(--muted); background: color-mix(in srgb, var(--panel) 85%, transparent); padding: 4px 8px; border-radius: 5px; pointer-events: none }
 aside { min-width: 0; min-height: 0; overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; box-sizing: border-box }
 aside h2 { font-size: 15px; margin: 0 0 4px; text-wrap: balance }
 aside .tag { display: inline-block; font: 500 11px/1 var(--font-data); letter-spacing: .04em; text-transform: uppercase; padding: 4px 7px; border-radius: 4px; margin: 2px 6px 10px 0 }
-.tag.mine { background: var(--mine); color: #fff } .tag.buy { background: var(--buy); color: #111 } .tag.theirs { background: var(--theirs); color: #fff } .tag.deck { background: var(--deck); color: #222 } .tag.other { background: var(--ghost); color: var(--fg) }
+.tag.mine { background: var(--mine); color: #fff } .tag.buy { background: var(--buy); color: #111 } .tag.drive { background: var(--drive); color: #fff } .tag.elec { background: var(--elec); color: #fff } .tag.theirs { background: var(--theirs); color: #fff } .tag.deck { background: var(--deck); color: #222 } .tag.other { background: var(--ghost); color: var(--fg) }
 aside h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 14px 0 4px }
 aside p { margin: 0 0 6px; max-width: 62ch }
-aside .fast { font-family: var(--font-data); font-size: 12.5px; background: var(--soft); border-left: 3px solid var(--accent); padding: 8px 10px; border-radius: 0 6px 6px 0; white-space: pre-wrap }
-aside ol { padding-left: 20px; margin: 4px 0 0 } aside li { margin-bottom: 3px }
+aside .fast { font-family: var(--font-data); font-size: 12.5px; background: var(--soft); border-left: 3px solid var(--accent); padding: 8px 10px; border-radius: 0 6px 6px 0; white-space: pre-wrap; margin-bottom: 8px }
+.joint { display: flex; gap: 8px; align-items: baseline; margin: 6px 0 2px }
+.joint .n { flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 500 11px/20px var(--font-data); text-align: center }
+.joint b { font-weight: 600 }
 .legend { display: grid; grid-template-columns: auto 1fr; gap: 4px 8px; align-items: center; font-size: 12.5px; margin-top: 6px }
 .sw { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--line) }
 .steps button { display: block; width: 100%; text-align: left; font: inherit; font-size: 12.5px; color: var(--fg); background: none; border: 1px solid transparent; border-radius: 5px; padding: 4px 6px; cursor: pointer }
 .steps button.on { border-color: var(--accent); background: var(--soft) }
+.steps button.done { color: var(--muted) }
+.small { color: var(--muted); font-size: 12px }
+.btn { font: inherit; font-size: 12.5px; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer }
 @media (max-width: 820px) {
-  main { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) minmax(0, 38%) }
-  .ctl input[type=range] { width: 90px }
+  main { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) minmax(0, 40%) }
+  #assemble { width: 150px } #bend { width: 80px }
 }
 </style>
 
 <header class="bar">
   <h1>RB4107 Track Assembly</h1>
-  <span class="sub">1:5 prototype. Nhien's Rev B frame with the printed track. Drag to orbit, scroll to zoom, click a part.</span>
-  <div class="ctl"><label for="explode">Explode</label><input id="explode" type="range" min="0" max="100" value="55"></div>
-  <div class="ctl"><label for="bend">Hinge</label><input id="bend" type="range" min="-40" max="40" value="0"><span id="bendv" style="font-family:var(--font-data);min-width:3.5ch">0°</span></div>
-  <div class="ctl"><label for="ghost"><input id="ghost" type="checkbox" checked> Fade electronics and screws</label></div>
+  <span class="sub">1:5 prototype, Nhien's Rev B frame with the printed track. Drag to orbit, scroll to zoom, click a part.</span>
+  <div class="ctl"><label for="assemble">Assemble</label><input id="assemble" type="range" min="0" max="1000" value="1000"><span class="val" id="assv">done</span></div>
+  <div class="ctl"><label for="bend">Hinge</label><input id="bend" type="range" min="-40" max="40" value="0"><span class="val" id="bendv">0°</span></div>
+  <div class="ctl"><label for="stairs"><input id="stairs" type="checkbox"> ES1 stairs</label></div>
+  <div class="ctl"><label for="ghost"><input id="ghost" type="checkbox" checked> Fade small hardware</label></div>
   <div class="ctl"><button id="reset" type="button">Reset view</button></div>
 </header>
 <main>
   <div id="stage">
     <div id="markers"></div>
-    <div id="hint">Numbers mark the parts in the connection map. Near side is exploded; the far side stays assembled.</div>
+    <div id="hint">Pull the Assemble slider left to take it apart, then push it right to put it together one connection at a time. The numbers are the joints; the panel names the fasteners for the joint being made.</div>
     <div id="loading">Loading the model (6 MB)…</div>
   </div>
   <aside id="panel"></aside>
@@ -101,10 +109,25 @@ const INFO = {
   bar_3030: { n: 14, t: 'Cross bars 3030 x 160 (P8)', k: 'theirs', role: 'Two heavier profiles that hold the rear plates 160 apart and carry the deck.', fast: 'P18 brackets to the plates (M6 x 10 + T-nut, 2 x M5 x 8).\nDeck on top: 8 x M5 x 12 csk + slot-8 T-nuts. P17 hinge supports: 2 x M5 x 10 + T-nuts each.', src: '3030 B-type profile, slot 8, cut to 160.' },
   deck: { n: 15, t: 'Deck plate P12', k: 'deck', role: '5 mm aluminium floor on the 3030 bars. Motors, hinge motor, drivers and the posts for the tray mount on it. This is the box.', fast: 'To the bars: 8 x M5 x 12 csk + T-nuts.\nPosts P15: M6 x 16 csk from below. Drive motors on P9 shim + Pololu bracket, M3 x 12. Hinge motor 5840 on its L-bracket: 4 x M4 x 8 csk, 2 x M5 x 8 into the deck.', src: 'Nhien: laser cut, Rev B sheets 6 and 7.' },
   tray: { n: 15, t: 'Tray plate P16', k: 'deck', role: 'Upper deck for the controller, battery and cover.', fast: 'To the posts: 4 x M6 x 16 from the top. Cover P22: 4 x M3 x 25.', src: 'Nhien: laser cut, Rev B sheet 8.' },
-  other: { n: 0, t: 'Rev B hardware', k: 'other', role: 'Screws, T-nuts, brackets, posts, motors, belts, electronics or the cover from Nhien\'s Rev B pack.', fast: 'See Rev B sheet 3 (joint and fastener schedule).', src: 'Rev B bill of materials.' }
+  drive: { n: 0, t: 'Drive train (Rev B)', k: 'drive', role: 'The motors and their belt stages, on the deck. Two Pololu 37D gearmotors with encoders, one per side: stage-1 HTD 3M belt to an intermediate shaft P21 (F686ZZ bearings in P13 supports), stage-2 HTD 5M belt to the pulley M3 on that side\'s hinge shaft. The 5840 worm motor turns the pinion M6 on the sector gear P11 to bend the hinge.', fast: 'Motors: Pololu #1995 bracket on P9 shim, M3 x 12 from below + nut, tail cradle P10.\nIntermediate shafts: E-clip DIN 6799-5 + shim 6 x 8 x 0.5 both ends. Belt tension: motor slots (stage 1), M7 bracket slots (stage 2).\nHinge motor: L-bracket, 4 x M4 x 8 csk into the gearbox, 2 x M5 x 8 into the deck.', src: 'Nhien: Rev B BOM sections 2 and 3 (Pololu, 5840, pulleys M3 to M5).' },
+  elec: { n: 0, t: 'Controller tray and cover (Rev B)', k: 'elec', role: 'ESP32 on its sled P23, two MDD10A motor drivers, BNO085 IMU, 5 V regulator, battery, all on the tray under the vented cover P22.', fast: 'MDD10A on M3 x 6 nylon standoffs; ESP32 sled M3; BNO085 M2.5 x 5; regulator M2 x 5. Cover: 4 x M3 x 25. Battery: 20 mm hook-and-loop strap through the deck slots.', src: 'Nhien: Rev B BOM section 5 and sheet 22.' },
+  frame_misc: { n: 0, t: 'Brackets, posts and small frame parts (Rev B)', k: 'theirs', role: 'The pieces that join the big parts: P18 and P19 corner brackets, RS 427-991 rail brackets, P17 hinge-shaft supports, P14 sector angle, sector gear P11, corner posts P15, idler shoulder screws and spacers.', fast: 'See the joint each one belongs to: brackets M5/M6 + T-nuts into the bars; posts M6 x 16 both ends; shoulder screws M6 nyloc.', src: 'Nhien: Rev B drawings sheets 9 to 17.' },
+  other: { n: 0, t: 'Fastener (Rev B)', k: 'other', role: 'A screw, nut, T-nut, washer, shim or E-clip from Nhien\'s pack. Faded by default so the real parts stay readable.', fast: 'See Rev B sheet 3 (joint and fastener schedule) for where it goes and its torque.', src: 'Rev B BOM section 4.' }
 };
-const STEPS = ['All parts', '1  Bearings into plates, P17 and idlers', '2  Rear frame: P2 + 3030 bars + P18', '3  Front frame: P1 + 2020 bars + P19 + sector gear', '4  Hinge shaft, hinge wheels, E-clips', '5  Deck, posts, tray', '6  Motors, belts, tension', '7  Idlers on shoulder screws, tracks on, tension', '8  Electronics and cover'];
-const TM = [0, 1.0, 2.3, 3.6, 4.9];
+// The assembly, one connection at a time (order from Rev B sheet 3). j = joints involved (markers), test = which parts move in.
+const MOVES = [
+  { t: 'Press the 688 bearings into the plates, the P17 supports and the idler wheels', j: ['bearing_front_plate'], test: (p, k) => p.c === 'bearing' },
+  { t: 'Rear frame: rear plates P2 onto the 3030 bars with P18 corner brackets', j: ['plate_rear', 'bar_3030'], test: (p, k) => k === 'plate_rear' || k === 'bar_3030' || (p.c === 'other' && p.yc < 25 && p.xc < 0) },
+  { t: 'Rear slide rails P5 / P6 onto the rear plates', j: ['rail_rear_lower'], test: (p, k) => k.startsWith('rail_rear') },
+  { t: 'Front frame: front plates P1 onto the 2020 bars with P19 brackets, sector gear on its angle', j: ['plate_front', 'bar_2020'], test: (p, k) => k === 'plate_front' || k === 'bar_2020' || (p.c === 'other' && p.yc < 25 && p.xc >= 0) },
+  { t: 'Front slide rails P3 / P4 onto the front plates', j: ['rail_front_lower'], test: (p, k) => k.startsWith('rail_front') },
+  { t: 'Hinge shafts in: through rear wheel, rear plate, front wheel, front plate and P17; E-clips on', j: ['shaft', 'wheel_hinge_front', 'wheel_hinge_rear'], test: (p, k) => k === 'shaft' || k.startsWith('wheel_hinge') },
+  { t: 'Deck onto the 3030 bars; posts, drive motors and hinge motor onto the deck', j: ['deck'], test: (p, k) => k === 'deck' || (p.c === 'other' && p.yc >= 25 && p.yc < 60) },
+  { t: 'Tray onto the posts; controller, battery and cover', j: ['deck'], test: (p, k) => k === 'tray' || (p.c === 'other' && p.yc >= 60) },
+  { t: 'Idler wheels onto their shoulder screws through the plate slots', j: ['wheel_nose', 'wheel_rear'], test: (p, k) => k === 'wheel_nose' || k === 'wheel_rear' },
+  { t: 'Tracks over the wheels; slide the idlers out to tension, tighten the nuts', j: ['track_front', 'track_rear'], test: (p, k) => p.c === 'track' },
+];
+const TM = [0, 1.0, 2.3, 3.6, 4.9], E = 62;
 
 function keyOf(p) {
   const ax = Math.abs(p.xc);
@@ -118,24 +141,33 @@ function keyOf(p) {
     case 'bar': return p.xc > 0 ? 'bar_2020' : 'bar_3030';
     case 'bearing': if (ax > 100) return 'bearing_idler'; return p.tier === 1 ? 'bearing_front_plate' : p.tier === 3 ? 'bearing_rear_plate' : 'bearing_support';
     case 'deck': return p.yc < 60 ? 'deck' : 'tray';
-    default: return 'other';
+    default: {
+      const big = Math.max(p.mx[0] - p.mn[0], p.mx[1] - p.mn[1], p.mx[2] - p.mn[2]);
+      if (big < 14) return 'other';
+      if (p.yc >= 60) return 'elec';
+      if (p.yc >= 25) return 'drive';
+      return 'frame_misc';
+    }
   }
 }
-function stepOf(p, key) {
-  if (p.c === 'bearing') return 1;
-  if (key === 'plate_rear' || key === 'bar_3030' || key.startsWith('rail_rear')) return 2;
-  if (key === 'plate_front' || key === 'bar_2020' || key.startsWith('rail_front')) return 3;
-  if (key === 'shaft' || key.startsWith('wheel_hinge')) return 4;
-  if (key === 'deck' || key === 'tray') return 5;
-  if (key === 'wheel_nose' || key === 'wheel_rear' || p.c === 'track') return 7;
-  if (p.yc > 60) return 8;
-  if (p.yc > 25) return p.xc < -80 || p.xc > 40 ? 6 : 5;
-  return p.xc < 0 ? 2 : 3;
-}
+function moveOf(p, k) { for (let i = 0; i < MOVES.length; i++) if (MOVES[i].test(p, k)) return i; return MOVES.length - 1; }
 function isFront(p, key) {
   if (key === 'deck' || key === 'tray' || key === 'shaft' || key.startsWith('wheel_hinge') || key === 'bearing_support') return false;
+  if (key === 'drive' || key === 'elec') return false;
   if (p.c === 'other') return p.xc > 30 && p.yc < 25;
   return p.xc > 30;
+}
+// Where a part sits when the assembly is fully taken apart: sideways out of the frame, or up for the deck stack.
+function explodedOffset(p, key) {
+  const s = p.zc >= 0 ? 1 : -1;
+  if (key === 'deck') return [0, 1.5 * E, 0];
+  if (key === 'tray') return [0, 2.6 * E, 0];
+  if (p.c === 'other' && p.yc >= 60) return [0, 3.1 * E, 0];
+  if (p.c === 'other' && p.yc >= 25) return [0, 1.1 * E, 0];
+  if (key === 'bar_2020' || key === 'bar_3030') return [0, 0, 0];
+  if (key === 'shaft') return [0, 0, s * 2.4 * E];
+  if (key === 'bearing_support') return [0, 0.6 * E, 0];
+  return [0, 0, s * TM[p.tier] * 0.9 * E];
 }
 
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -150,18 +182,23 @@ scene.add(new THREE.HemisphereLight(0xffffff, 0x667788, 0.45));
 const sun = new THREE.DirectionalLight(0xffffff, 1.4); sun.position.set(250, 420, 320); scene.add(sun);
 const camera = new THREE.PerspectiveCamera(33, 1, 1, 6000);
 const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.1;
-const HOME = { pos: new THREE.Vector3(420, 330, 820), tgt: new THREE.Vector3(0, 15, 40) };
+const HOME = { pos: new THREE.Vector3(540, 400, 980), tgt: new THREE.Vector3(0, 30, 0) };
 function resetView() { camera.position.copy(HOME.pos); controls.target.copy(HOME.tgt); controls.update(); }
 resetView();
 const front = new THREE.Group(), rear = new THREE.Group(); scene.add(front, rear);
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600), new THREE.ShadowMaterial({ opacity: 0 })); ground.visible = false; scene.add(ground);
+// ES1 flight at 1:5 (35 rise x 50 going), descending ahead of the nose; the track's cleat tips sit at y = -25
+const stairs = new THREE.Group(); stairs.visible = false; scene.add(stairs);
+{ const sm = new THREE.MeshStandardMaterial({ color: 0xcdd0d6, roughness: 0.95 }); const yb = -25;
+  const land = new THREE.Mesh(new THREE.BoxGeometry(320, 40, 360), sm); land.position.set(-100, yb - 20, 0); stairs.add(land);
+  for (let k = 0; k < 7; k++) { const s = new THREE.Mesh(new THREE.BoxGeometry(50, 320, 360), sm); s.position.set(60 + 25 + 50 * k, yb - 35 * (k + 1) - 160, 0); stairs.add(s); } }
 
+const meshes = [], byKey = {};
+const colorFor = (k) => k === 'mine' ? css('--mine') : k === 'buy' ? css('--buy') : k === 'theirs' ? css('--theirs') : k === 'deck' ? css('--deck') : k === 'drive' ? css('--drive') : k === 'elec' ? css('--elec') : css('--ghost');
 function applyTheme() {
   renderer.setClearColor(new THREE.Color(css('--soft')));
-  for (const m of meshes) if (m.userData.p.c === 'other') m.material.color.set(css('--ghost'));
+  for (const m of meshes) { m.userData.base.set(colorFor(INFO[m.userData.key].k)); }
+  update();
 }
-const meshes = [], byKey = {};
-const colorFor = (k, c) => k === 'mine' ? css('--mine') : k === 'buy' ? css('--buy') : k === 'theirs' ? css('--theirs') : k === 'deck' ? css('--deck') : css('--ghost');
 
 async function load() {
   const [idx, b64] = await Promise.all([fetch('parts.json').then(r => r.json()), fetch('parts.b64.txt').then(r => r.text())]);
@@ -169,28 +206,39 @@ async function load() {
   for (const p of idx.parts) {
     const q = new Uint16Array(buf, p.o, p.v * 3), pos = new Float32Array(p.v * 3);
     for (let i = 0; i < p.v; i++) for (let k = 0; k < 3; k++) pos[i * 3 + k] = p.mn[k] + q[i * 3 + k] / 65535 * (p.mx[k] - p.mn[k]);
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.computeVertexNormals();
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.computeVertexNormals(); g.computeBoundingBox();
     const key = keyOf(p), info = INFO[key];
-    const metal = ['buy'].includes(info.k) ? 0.75 : 0.05;
-    const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(colorFor(info.k, p.c)), metalness: metal, roughness: 0.5, envMapIntensity: 0.4 });
-    if (p.c === 'other') { mat.transparent = true; mat.opacity = 0.12; }
-    const m = new THREE.Mesh(g, mat); m.userData = { p, key, step: stepOf(p, key), side: p.zc > 0 ? 1 : -1, base: mat.color.clone() };
+    const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(colorFor(info.k)), metalness: info.k === 'buy' ? 0.75 : 0.05, roughness: 0.5, envMapIntensity: 0.4, transparent: true, opacity: 1 });
+    const m = new THREE.Mesh(g, mat);
+    m.userData = { p, key, move: moveOf(p, key), off: explodedOffset(p, key), base: mat.color.clone() };
     (isFront(p, key) ? front : rear).add(m); meshes.push(m);
     if (!byKey[key] || (p.zc > 0 && byKey[key].userData.p.zc <= 0)) byKey[key] = m;
   }
   document.getElementById('loading').hidden = true;
-  buildMarkers(); update(); showInfo(null);
+  buildMarkers(); update(); showPanel();
 }
 
-const state = { explode: 0.55, bend: 0, ghost: true, step: 0, sel: null };
+const state = { a: MOVES.length, bend: 0, ghost: true, stairs: false, sel: null };
+const ease = (t) => t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t);
+function progressOf(m) { return ease(state.a - m.userData.move); }   // 0 = still out, 1 = in place
 function update() {
+  const cur = Math.min(Math.floor(state.a), MOVES.length - 1), transit = state.a < MOVES.length;
   for (const m of meshes) {
-    const { p, step, side } = m.userData;
-    m.position.z = (side > 0 ? 1 : 0) * TM[p.tier] * 36 * state.explode;   // near side explodes outwards
-    m.visible = state.step === 0 || step <= state.step;
-    if (p.c === 'other') { m.material.transparent = true; m.material.opacity = state.ghost ? 0.12 : 1; m.material.depthWrite = !state.ghost; }
+    const { p, key, off, move, base } = m.userData, pr = progressOf(m), small = key === 'other';
+    m.position.set(off[0] * (1 - pr), off[1] * (1 - pr), off[2] * (1 - pr));
+    const inThisMove = transit && move === cur;
+    let op = 1;
+    if (small) op = state.ghost ? 0.12 : 1;
+    if (pr < 1 && !inThisMove) op *= 0.35;                          // still waiting its turn
+    m.material.opacity = op; m.material.depthWrite = op > 0.5;
+    m.material.color.copy(base);
+    if (state.sel === m) { m.material.color.set(new THREE.Color(css('--accent'))); m.material.emissive.set(new THREE.Color(css('--accent'))); m.material.emissiveIntensity = 0.25; }
+    else if (inThisMove && !small) { m.material.emissive.set(new THREE.Color(css('--accent'))); m.material.emissiveIntensity = 0.28; }
+    else m.material.emissive.set(0x000000);
   }
   front.rotation.z = THREE.MathUtils.degToRad(state.bend);
+  stairs.visible = state.stairs;
+  document.getElementById('assv').textContent = state.a >= MOVES.length ? 'done' : (cur + 1) + '/' + MOVES.length;
 }
 const NUMBERED = ['track_front', 'wheel_hinge_front', 'wheel_nose', 'shaft', 'plate_front', 'rail_front_lower', 'bearing_front_plate', 'plate_rear', 'track_rear', 'wheel_hinge_rear', 'wheel_rear', 'rail_rear_lower', 'bar_2020', 'bar_3030', 'deck'];
 const markers = [];
@@ -204,38 +252,39 @@ function buildMarkers() {
 }
 const v = new THREE.Vector3();
 function placeMarkers() {
-  const r = renderer.domElement.getBoundingClientRect();
+  const r = renderer.domElement.getBoundingClientRect(), clean = location.hash === '#clean';
   for (const { el, m } of markers) {
-    if (!m.visible) { el.hidden = true; continue; }
-    const b = m.geometry.boundingBox || (m.geometry.computeBoundingBox(), m.geometry.boundingBox);
-    v.set((b.min.x + b.max.x) / 2, (b.min.y + b.max.y) / 2, (b.min.z + b.max.z) / 2); m.localToWorld(v); v.project(camera);
+    if (clean || progressOf(m) < 1) { el.hidden = true; continue; }                 // a joint appears once it is made
+    const b = m.geometry.boundingBox; v.set((b.min.x + b.max.x) / 2, (b.min.y + b.max.y) / 2, (b.min.z + b.max.z) / 2); m.localToWorld(v); v.project(camera);
     if (v.z > 1) { el.hidden = true; continue; }
     el.hidden = false; el.style.left = ((v.x + 1) / 2 * r.width) + 'px'; el.style.top = ((1 - v.y) / 2 * r.height) + 'px';
     el.classList.toggle('on', state.sel === m);
   }
 }
-function select(m) {
-  if (state.sel) state.sel.material.emissive.set(0x000000);
-  state.sel = m;
-  if (m) { m.material.emissive.set(new THREE.Color(css('--accent'))); m.material.emissiveIntensity = 0.55; }
-  showInfo(m);
-}
-function showInfo(m) {
-  if (!m) {
-    panel.innerHTML = `<h2>Click any part</h2><p>Each part shows what it does, how it is fastened to its neighbours, and where it comes from. The orange numbers are the 15 joints of the connection map, in assembly order from the track outwards.</p>
-      <h3>Colours</h3><div class="legend"><span class="sw" style="background:var(--mine)"></span>my printed track<span class="sw" style="background:var(--buy)"></span>bought: wheels, bearings, shaft<span class="sw" style="background:var(--theirs)"></span>Nhien's plates, rails, bars<span class="sw" style="background:var(--deck)"></span>deck and tray (the box)<span class="sw" style="background:var(--ghost)"></span>screws, motors, electronics (faded)</div>
-      <h3>Build step</h3><div class="steps">${STEPS.map((s, i) => `<button type="button" data-step="${i}" class="${i === state.step ? 'on' : ''}">${s}</button>`).join('')}</div>
-      <p style="margin-top:8px;color:var(--muted);font-size:12px">Steps follow Rev B sheet 3. Small hardware is placed by its position, so a few screws may appear a step early.</p>`;
-    panel.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => { state.step = +b.dataset.step; update(); showInfo(null); }));
+function select(m) { state.sel = m; update(); showPanel(); }
+function jointLine(key) { const i = INFO[key]; return `<div class="joint"><span class="n">${i.n}</span><div><b>${i.t}</b><div class="fast">${i.fast}</div></div></div>`; }
+function showPanel() {
+  const m = state.sel;
+  if (m) {
+    const i = INFO[m.userData.key], p = m.userData.p, mv = MOVES[m.userData.move];
+    panel.innerHTML = `<h2>${i.n ? i.n + '.  ' : ''}${i.t}</h2><span class="tag ${i.k}">${i.k === 'mine' ? 'mine, printed' : i.k === 'buy' ? 'bought' : i.k === 'theirs' ? "Nhien's part" : i.k === 'deck' ? 'the box' : i.k === 'drive' ? 'drive train' : i.k === 'elec' ? 'electronics' : 'fastener'}</span>
+      <h3>What it does</h3><p>${i.role}</p><h3>How it is fastened</h3><div class="fast">${i.fast}</div><h3>Where it comes from</h3><p>${i.src}</p>
+      <h3>Goes in at step ${m.userData.move + 1}</h3><p class="small">${mv.t}</p>
+      <h3>Position (mm, 1:5)</h3><p class="small" style="font-family:var(--font-data)">x ${p.xc.toFixed(0)}, y ${p.yc.toFixed(0)}, z ${p.zc.toFixed(0)} from the hinge axis</p>
+      <p><button type="button" id="back" class="btn">Back</button></p>`;
+    panel.querySelector('#back').addEventListener('click', () => select(null));
     return;
   }
-  const i = INFO[m.userData.key], p = m.userData.p;
-  panel.innerHTML = `<h2>${i.n ? i.n + '.  ' : ''}${i.t}</h2><span class="tag ${i.k}">${i.k === 'mine' ? 'mine, printed' : i.k === 'buy' ? 'bought' : i.k === 'theirs' ? "Nhien's part" : i.k === 'deck' ? 'the box' : 'Rev B hardware'}</span>
-    <h3>What it does</h3><p>${i.role}</p><h3>How it is fastened</h3><div class="fast">${i.fast}</div><h3>Where it comes from</h3><p>${i.src}</p>
-    <h3>Position (mm, 1:5)</h3><p style="font-family:var(--font-data);font-size:12.5px">x ${p.xc.toFixed(0)}, y ${p.yc.toFixed(0)}, z ${p.zc.toFixed(0)} from the hinge axis; across-width layer ${p.tier}</p>
-    <p><button type="button" id="back" style="font:inherit;font-size:12.5px;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer">Back to the list</button></p>`;
-  panel.querySelector('#back').addEventListener('click', () => select(null));
+  const done = state.a >= MOVES.length, cur = Math.min(Math.floor(state.a), MOVES.length - 1);
+  let head;
+  if (done) head = `<h2>Assembled</h2><p>Pull the Assemble slider left to take the robot apart, then push it right to rebuild it one connection at a time. Click any part or number for its job, fasteners and source.</p>`;
+  else head = `<h2>Step ${cur + 1} of ${MOVES.length}</h2><p>${MOVES[cur].t}</p><h3>Connections made in this step</h3>${[...new Set(MOVES[cur].j)].map(jointLine).join('')}`;
+  panel.innerHTML = head + `<h3>Build order</h3><div class="steps">${MOVES.map((s, i) => `<button type="button" data-step="${i}" class="${!done && i === cur ? 'on' : ''} ${state.a >= i + 1 ? 'done' : ''}">${i + 1}  ${s.t}</button>`).join('')}</div>
+    <h3>Colours</h3><div class="legend"><span class="sw" style="background:var(--mine)"></span>my printed track<span class="sw" style="background:var(--buy)"></span>bought: wheels, bearings, shaft<span class="sw" style="background:var(--theirs)"></span>Nhien's plates, rails, bars<span class="sw" style="background:var(--deck)"></span>deck and tray (the box)<span class="sw" style="background:var(--drive)"></span>motors, belts, drive pulleys<span class="sw" style="background:var(--elec)"></span>controller, battery, cover<span class="sw" style="background:var(--ghost)"></span>screws, nuts, clips (faded)</div>
+    <p class="small" style="margin-top:8px">Order and fasteners from Rev B sheet 3. Small hardware is grouped by where it sits, so a few screws may travel with a neighbouring step.</p>`;
+  panel.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => { setA(+b.dataset.step + 0.5); }));
 }
+function setA(a) { state.a = a; document.getElementById('assemble').value = Math.round(a / MOVES.length * 1000); update(); showPanel(); }
 
 // picking (click, not drag)
 const ray = new THREE.Raycaster(), ptr = new THREE.Vector2(); let down = null;
@@ -244,11 +293,12 @@ renderer.domElement.addEventListener('pointerup', (e) => {
   if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) { down = null; return; } down = null;
   const r = renderer.domElement.getBoundingClientRect(); ptr.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
   ray.setFromCamera(ptr, camera);
-  const hits = ray.intersectObjects(meshes.filter(m => m.visible && !(state.ghost && m.userData.p.c === 'other')), false);
+  const hits = ray.intersectObjects(meshes.filter(m => m.material.opacity > 0.3), false);
   select(hits.length ? hits[0].object : null);
 });
-document.getElementById('explode').addEventListener('input', (e) => { state.explode = e.target.value / 100; update(); });
+document.getElementById('assemble').addEventListener('input', (e) => { state.a = e.target.value / 1000 * MOVES.length; state.sel = null; update(); showPanel(); });
 document.getElementById('bend').addEventListener('input', (e) => { state.bend = +e.target.value; document.getElementById('bendv').textContent = state.bend + '°'; update(); });
+document.getElementById('stairs').addEventListener('change', (e) => { state.stairs = e.target.checked; update(); });
 document.getElementById('ghost').addEventListener('change', (e) => { state.ghost = e.target.checked; update(); });
 document.getElementById('reset').addEventListener('click', resetView);
 
@@ -256,7 +306,7 @@ function resize() { const w = stage.clientWidth, h = stage.clientHeight; if (!w 
 new ResizeObserver(resize).observe(stage); resize();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
 new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-applyTheme();
+renderer.setClearColor(new THREE.Color(css('--soft')));
 (function loop() { controls.update(); renderer.render(scene, camera); placeMarkers(); requestAnimationFrame(loop); })();
 load().catch((err) => { document.getElementById('loading').textContent = 'The model could not be loaded: ' + err.message; });
 </script>

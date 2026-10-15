@@ -72,14 +72,14 @@ PAGES = [
   (327, 217, "End view", "Ø10 outside, Ø4.5 bore: the M4 rod passes through with clearance."),
   (339, 143, "Section", "Just a tube, 2.75 wall, ends cut square because they set the plate spacing."),
  ]),
- ("TS-06_pulley_20T", "How to read TS-06: the toothed wheel (bought)", [
+ ("TS-06_pulley_20T", "How to read TS-06: the toothed wheel (bought, plain bore)", [
   (88, 178, "20 grooves", "The track's teeth drop into these. HTD 5M profile, 5 pitch, pitch diameter 31.83."),
   (112, 122, "Flange", "A thin Ø35.7 disc on each side of the teeth. Keeps the 15 wide track from walking off sideways."),
-  (88, 160, "Hub", "Ø18 boss, 7 long, on one side. The 2 M4 set screws sit in it and clamp the wheel to the axle."),
-  (88, 148, "Bore", "Ø8 H7: a close sliding fit on the Ø8 axle."),
+  (88, 160, "Hub (stand-in only)", "On Nhien's plates there is no room for a hub: the real wheels are plain-bore and get a D-bore or a Ø16 bearing bore at the workshop."),
+  (88, 148, "Bore", "Ordered plain. Workshop: 4 x D-bore Ø8 (driven by the hinge shaft's flat), 4 x Ø16 H7 (two 688 bearings, idlers on shoulder screws)."),
   (163.5, 188, "Flange, in section", "1.5 thick, both sides. Total 20 over the flanges, which is the lane width in the layout."),
   (182, 184, "Belt seat", "17 between the flanges; the 15 wide track sits here with 1 each side."),
-  (209, 168, "Hub and set screws", "The 7 long hub with 2 x M4 set screws onto the axle flat. 27 overall length per wheel."),
+  (209, 168, "Hub and set screws (stand-in only)", "Not used on the Rev B frame: the D-bore drives the wheel, E-clips locate it. Only the 20 over the flanges matters for the lane width."),
  ]),
  ("TS-07_bearing_608ZZ", "How to read TS-07: the bearing (bought)", [
   (88, 188, "Outer race, Ø22", "Pressed into the plate's Ø22.2 pocket. It does not turn."),
