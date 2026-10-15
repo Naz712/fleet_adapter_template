@@ -122,8 +122,12 @@ def page(sheet, title, marks, n):
     ax.imshow(img, extent=(0, W, 0, H)); ax.axis("off")
     for i, (x, y, name, _) in enumerate(marks):
         c = COL[i % len(COL)]
-        ax.add_patch(Circle((x, y), 7, fc=c, ec="white", lw=1.2, alpha=0.92, zorder=5))
-        ax.text(x, y, str(i + 1), color="white", fontsize=8, fontweight="bold", ha="center", va="center", zorder=6)
+        dx, dy = (14, 11) if (i % 2 == 0) else (-14, 11)          # marker sits off the feature, leader points at it
+        if y > 250: dy = -11
+        ax.plot([x, x + dx * 0.72], [y, y + dy * 0.72], color=c, lw=0.9, zorder=5)
+        ax.plot([x], [y], marker="o", ms=2.5, color=c, zorder=5)
+        ax.add_patch(Circle((x + dx, y + dy), 3.6, fc=c, ec="white", lw=0.8, zorder=6))
+        ax.text(x + dx, y + dy, str(i + 1), color="white", fontsize=5.5, fontweight="bold", ha="center", va="center", zorder=7)
     # key on the right
     kx, ky = 292, H - 32
     for i, (x, y, name, text) in enumerate(marks):
