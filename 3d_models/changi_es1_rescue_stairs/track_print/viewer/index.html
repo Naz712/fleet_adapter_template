@@ -38,6 +38,7 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 350px; 
   font: 500 10px/19px var(--font-data); text-align: center; border: 2px solid var(--panel); box-shadow: 0 1px 3px rgba(0,0,0,.35); pointer-events: auto; cursor: pointer; user-select: none; padding: 0 }
 .mk.on { background: var(--fg); color: var(--bg) }
 #loading[hidden] { display: none }
+#hint.stop { border-left: 3px solid #c0392b; padding-left: 10px }
 #loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-family: var(--font-data); font-size: 13px; background: var(--soft) }
 #hint { position: absolute; left: 10px; bottom: 8px; right: 10px; font-size: 11.5px; color: var(--muted); background: color-mix(in srgb, var(--panel) 85%, transparent); padding: 4px 8px; border-radius: 5px; pointer-events: none }
 aside { min-width: 0; min-height: 0; overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; box-sizing: border-box }
@@ -68,10 +69,11 @@ aside .fast { font-family: var(--font-data); font-size: 12.5px; background: var(
   <h1>RB4107 Track Assembly</h1>
   <span class="sub">1:5 prototype, Nhien's Rev B frame with the printed track. Drag to orbit, scroll to zoom, click a part.</span>
   <div class="ctl"><label for="assemble">Assemble</label><input id="assemble" type="range" min="0" max="1000" value="1000"><span class="val" id="assv">done</span></div>
-  <div class="ctl"><label for="bend">Hinge</label><input id="bend" type="range" min="-40" max="40" value="0"><span class="val" id="bendv">0°</span></div>
+  <div class="ctl"><label for="bend">Hinge</label><input id="bend" type="range" min="-40" max="40" step="0.1" value="0"><span class="val" id="bendv">0°</span></div>
   <div class="ctl"><label for="view">Show</label><select id="view"><option value="all">everything</option><option value="drive">drive train only</option><option value="frame">frame and tracks only</option></select></div>
   <div class="ctl"><label for="stairs"><input id="stairs" type="checkbox"> ES1 stairs</label></div>
   <div class="ctl"><label for="ghost"><input id="ghost" type="checkbox" checked> Fade fasteners</label></div>
+  <div class="ctl"><label for="slotfix"><input id="slotfix" type="checkbox"> Deck slot H +3 mm</label></div>
   <div class="ctl"><button id="reset" type="button">Reset view</button></div>
 </header>
 <main>
@@ -91,7 +93,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const INFO = {
   track_front: { n: 1, t: 'Front track', k: 'mine', role: 'My printed TPU belt: 110 teeth inside sit in the wheel grooves, 45 cleats outside (3 mm high) spaced so five span one ES1 step. Drives the front segment over the step edges. Shown here in place of Rev B\'s stock belt.', fast: 'No fastener. Teeth mesh in the wheel grooves; the loop goes over the two wheels from above.\nTension: slide the nose idler outwards in the plate slot, then tighten its nut.', src: 'Make: Fab Lab UP300, TPU 95A, file stl/track_TPU_x4.stl. Qty 4.' },
-  wheel_hinge_front: { n: 2, t: 'Hinge wheel, front segment (M1)', k: 'buy', role: 'HTD 5M 20-tooth timing pulley on the hinge shaft, between the front and rear plates. The shaft turns it, it drives the front track.', fast: 'D-bore 8 on the shaft\'s flat: no set screw.\nHeld along the shaft by E-clip DIN 6799-6 + shim 8 x 11 x 1.', src: 'Buy plain-bore from MISUMI SG, bore to D-shape at the Professional Workshop (Rev B sheet 21).' },
+  wheel_hinge_front: { n: 2, t: 'Hinge wheel, front segment (M1)', k: 'buy', role: 'HTD 5M 20-tooth timing pulley on the hinge shaft, between the front and rear plates. The shaft turns it, it drives the front track.', fast: 'D-bore 8 on the shaft\'s flat, plus an M4 x 8 grub screw on the front pair (Rev B M1, F16).\nHeld along the shaft by E-clip DIN 6799-6 + shim 8 x 11 x 1.', src: 'Buy plain-bore from MISUMI SG, bore to D-shape at the Professional Workshop (Rev B sheet 21).' },
   wheel_nose: { n: 3, t: 'Nose idler wheel (M2)', k: 'buy', role: 'Same 20-tooth pulley, bored to 16 mm with two 688 bearings inside. It only turns with the track.', fast: 'ISO 7379 shoulder screw Ø8 x 25, M6 thread, through the plate slot:\n8 x 11 x 1 washer, 8 x 11 x 0.5 shim, spacer 8 x 10 x 9, M6 washer + nyloc nut.', src: 'Buy plain-bore from MISUMI SG, bore Ø16 H7 at the workshop. Shoulder screw: RS SG or MISUMI.' },
   shaft: { n: 4, t: 'Hinge shaft P20', k: 'buy', role: 'Ø8 D-shaft (flat 7), pushed in from outside through the rear wheel, rear plate, front wheel, front plate and the P17 support. The hinge axis, and the drive: its D-flat turns both hinge wheels. Two half shafts, A 82.3 and B 77.3, one per motor.', fast: 'Runs in 688-2RS bearings in the front plate, the rear plate and P17.\nE-clip DIN 6799-6 + shim 8 x 11 x 1 at each end.', src: 'Buy Ø8 D-shaft stock (RS SG or MISUMI), cut to length, E-clip grooves per Rev B sheet 20.' },
   plate_front: { n: 5, t: 'Front side plate P1', k: 'theirs', role: '5 mm aluminium, 255 x 30.4, inboard at z 55 to 60. Built up with its 2020 bars and brackets as the front frame, then lowered in between the rear plates.', fast: '688-2RS pressed in the Ø16 hinge hole.\nTo each 2020 bar: P19 corner bracket, M5 x 8 + slot-6 T-nut into the bar, 2 x M4 x 8 into the tapped plate.', src: 'Nhien: laser cut from DXF P1, drill and tap per Rev B sheet 4. One left, one right.' },
@@ -109,12 +111,12 @@ const INFO = {
   rail_rear_upper: { n: 12, t: 'Slide rail P5 (upper)', k: 'theirs', role: 'Upper rail for the rear track.', fast: 'RS 427-991 bracket: M3 x 6 into the plate, 3 x 5 PT screw into the rail.', src: 'MISUMI UPA-189-20-5.' },
   bar_2020: { n: 13, t: 'Cross bars 2020 x 110 (P7)', k: 'theirs', role: 'Two aluminium profiles that hold the front plates 110 apart. The hinge sector gear sits on one of them.', fast: 'P19 brackets to the plates (M5 x 8 + T-nut, 2 x M4 x 8).\nSector gear P11 on angle P14: 2 x M3 x 8 csk into the gear, 2 x M4 x 8 csk + slot-6 T-nuts into the bar.', src: '2020 B-type profile, slot 6, cut to 110. MISUMI SG or local.' },
   bar_3030: { n: 14, t: 'Cross bars 3030 x 160 (P8)', k: 'theirs', role: 'Two heavier profiles that hold the rear plates 160 apart and carry the deck.', fast: 'P18 brackets to the plates (M6 x 10 + T-nut, 2 x M5 x 8).\nDeck on top: 8 x M5 x 12 csk + slot-8 T-nuts. P17 hinge supports: 2 x M5 x 10 + T-nuts each.', src: '3030 B-type profile, slot 8, cut to 160.' },
-  deck: { n: 15, t: 'Deck plate P12', k: 'deck', role: '5 mm aluminium floor on the 3030 bars: the box. Motors, hinge motor, drivers and the tray posts mount on it. Its edges overhang the front track lanes by 12 mm at y 25: Rev B\'s 7.9 mm cleats would touch it; my 3 mm cleats clear it by 5 mm.', fast: 'To the bars: 8 x M5 x 12 csk + T-nuts.\nPosts P15: M6 x 16 csk from below. Drive motors on P9 shim + Pololu bracket, M3 x 12. Hinge motor 5840 on its L-bracket: 4 x M4 x 8 csk, 2 x M5 x 8 into the deck.', src: 'Nhien: laser cut, Rev B sheets 6 and 7.' },
+  deck: { n: 15, t: 'Deck plate P12', k: 'deck', role: '5 mm aluminium floor on the 3030 bars: the box. Motors, hinge motor, drivers and the tray posts mount on it. Its edges overhang the front track lanes by 12 mm at y 25: Rev B\'s 7.9 mm cleats would touch it; my 3 mm cleats clear it by 5 mm. Slot H (71 x 12) lets the sector gear through; it ends 46 mm ahead of the hinge, 3 mm short of the P14 corner\'s swing. Two foam pads B18 under it are the hinge up-stops.', fast: 'To the bars: 8 x M5 x 12 csk + T-nuts.\nPosts P15: M6 x 16 csk from below. Drive motors on P9 shim + Pololu bracket, M3 x 12. Hinge motor 5840 on its L-bracket: 4 x M4 x 8 csk, 2 x M5 x 8 into the deck.', src: 'Nhien: laser cut, Rev B sheets 6 and 7.' },
   tray: { n: 15, t: 'Tray plate P16', k: 'deck', role: 'Upper deck for the controller, battery and cover.', fast: 'To the posts: 4 x M6 x 16 from the top. Cover P22: 4 x M3 x 25.', src: 'Nhien: laser cut, Rev B sheet 8.' },
   drive_hinge_pulley: { n: 16, t: 'Drive pulley M3 on the hinge shaft', k: 'drive', role: 'The "sprocket" that turns the track: a stage-2 HTD 5M pulley (9 mm belt) on each hinge half-shaft, just inboard of the front plate. The belt from the intermediate shaft turns it, it turns the shaft, the shaft\'s D-flat turns the two hinge wheels, and they drive both tracks of that side.', fast: 'D-bore 8 on the shaft flat; located by the P17 support and a shim.\nBelt tension: slide the M7 brackets of the intermediate shaft.', src: 'Buy HTD 5M pulley for a 9 mm belt, D-bore at the workshop (Rev B M3).' },
   drive: { n: 17, t: 'Drive motor and belt stages (Rev B)', k: 'drive', role: 'One Pololu 37D gearmotor with encoder per side, on the deck. Stage-1 HTD 3M belt from the motor pulley M5 to the intermediate shaft P21 (F686ZZ bearings in P13 supports); stage-2 HTD 5M belt down to the pulley M3 on the hinge shaft. The 5840 worm motor turns the pinion M6 on the sector gear to bend the hinge.', fast: 'Motor: Pololu #1995 bracket on P9 shim, M3 x 12 from below + nut, tail cradle P10.\nIntermediate shaft: E-clip DIN 6799-5 + shim 6 x 8 x 0.5 both ends. Belt tension: motor slots (stage 1), M7 bracket slots (stage 2).', src: 'Nhien: Rev B BOM sections 2 and 3.' },
   belt: { n: 17, t: 'Drive belt (Rev B)', k: 'drive', role: 'Stage-1 (HTD 3M, 9 wide) or stage-2 (HTD 5M, 9 wide) timing belt of the drive train.', fast: 'Tensioned by sliding the motor or the M7 brackets.', src: 'Nhien: Rev B BOM B8 / B9.' },
-  sector: { n: 13, t: 'Hinge sector gear P11 and its angle P14', k: 'theirs', role: 'Steel 5 mm sector gear (module 1, R51) on the 2020 bar of the front frame. The hinge motor\'s pinion turns it, so the whole front segment swings about the hinge shaft.', fast: '2 x M3 x 8 csk into the gear, 2 x M4 x 8 csk + slot-6 T-nuts into the bar.', src: 'Nhien: Rev B sheets 9 and 14.' },
+  sector: { n: 13, t: 'Hinge sector gear P11 and its angle P14', k: 'theirs', role: 'Steel 5 mm sector gear (module 1, R51) on the 2020 bar of the front frame, up through deck slot H to the pinion M6 on the 5840 worm motor. The pinion turns it, so the whole front segment swings nose-down about the hinge shaft; the worm holds the angle. The angle P14 carries it on the bar; P14\'s top corner (53 mm from the axis) reaches the end of slot H at 19° nose-down.', fast: '2 x M3 x 8 csk into the gear, 2 x M4 x 8 csk + slot-6 T-nuts into the bar.', src: 'Nhien: Rev B sheets 9 and 14.' },
   p17: { n: 4, t: 'Hinge shaft support P17', k: 'theirs', role: 'Third bearing seat for each hinge half-shaft, on the middle 3030 bar.', fast: '2 x M5 x 10 + slot-8 T-nuts into the bar; 688-2RS pressed in.', src: 'Nhien: Rev B sheet 11.' },
   posts: { n: 15, t: 'Corner post P15', k: 'theirs', role: '2020 profile x 60, tapped M6 both ends, holds the tray above the deck.', fast: 'M6 x 16 csk from below through the deck; M6 x 16 from above through the tray.', src: 'Nhien: Rev B sheet 19.' },
   elec: { n: 0, t: 'Controller tray parts (Rev B)', k: 'elec', role: 'ESP32 on its sled P23, two MDD10A motor drivers, BNO085 IMU, 5 V regulator, battery, vented cover P22.', fast: 'MDD10A on M3 x 6 nylon standoffs; ESP32 sled M3; BNO085 M2.5 x 5; regulator M2 x 5. Cover: 4 x M3 x 25. Battery: hook-and-loop strap through the deck slots.', src: 'Nhien: Rev B BOM section 5, sheet 22.' },
@@ -162,6 +164,7 @@ function ownOf(key, s) {
     default: return [0, 0, 0];
   }
 }
+const nearSector = (p) => p.xc > 12 && p.xc < 36 && p.zc > -40 && p.zc < -10 && (p.mx[1] <= 23 || (p.mn[2] >= -21.5 && p.mx[2] <= -12.5));   // P14's screws and T-nuts, and the two M3 into the gear
 function classify(p) {
   const ax = Math.abs(p.xc), az = Math.abs(p.zc), dx = p.mx[0] - p.mn[0], dy = p.mx[1] - p.mn[1], dz = p.mx[2] - p.mn[2], big = Math.max(dx, dy, dz);
   switch (p.c) {
@@ -177,6 +180,8 @@ function classify(p) {
     default:
       if (big < 14) {                                                            // a fastener: rides with whatever it is screwed into
         if (ax < 12 && Math.abs(p.yc) < 12) return { key: 'other', parent: 'shaft' };
+        if (nearSector(p)) return { key: 'other', parent: 'sector' };
+        if (p.mn[1] >= 19.9 && p.mx[1] <= 25.1 && p.xc > 15 && p.xc < 35 && big < 12) return { key: 'other', parent: 'deck', pad: true };   // foam up-stops B18
         if (p.yc >= 60) return { key: 'other', parent: 'tray' };
         if (p.yc >= 25) return { key: 'other', parent: 'deck' };
         if (ax > 150) return { key: 'other', parent: p.xc > 0 ? 'wheel_nose' : 'wheel_rear' };
@@ -187,17 +192,29 @@ function classify(p) {
       if (ax < 36 && p.yc < 25 && az > 28 && az < 52 && dx > 30) return { key: 'p17' };
       if (dz < 12 && dx > 45 && dy > 45) return { key: 'belt' };
       if (dy > 50 && dx < 25 && dz < 25) return { key: 'posts' };
+      if (ax < 25 && az < 20 && p.yc >= 45 && p.yc <= 75 && big <= 24) return { key: 'drive' };                       // hinge pinion M6
       if (p.yc >= 60) return { key: 'elec' };
-      if (p.yc >= 20 && ax < 40 && az < 35 && big <= 70 && (dz < 8 || big <= 25)) return { key: 'sector' };
+      if (p.mn[1] < 25 && p.yc >= 20 && ax < 40 && az < 35 && big <= 70 && (dz < 8 || big <= 25)) return { key: 'sector' };   // P11 and P14 start at the bar top (y 20); the P13 plates and M7 brackets start on the deck (y 30)
       if (p.yc >= 25) return { key: 'drive' };
       return { key: 'frame_misc', parent: az < 62 ? 'plate_front' : 'plate_rear' };
   }
 }
-function isFront(p, key) {
+// The front segment is everything that swings about the hinge shaft: front plates, both 2020 bars, the sector gear P11 with its angle P14
+// and screws, the P19 brackets, the rails and their hardware, the nose idlers. Shaft parts, the hinge wheels and the box stay with the rear frame.
+function isFront(p, key, parent) {
   if (['deck', 'tray', 'shaft', 'wheel_hinge_front', 'wheel_hinge_rear', 'bearing_support', 'p17', 'drive', 'elec', 'belt', 'posts', 'drive_hinge_pulley'].includes(key)) return false;
-  if (key === 'other' || key === 'frame_misc') return p.xc > 30 && p.yc < 25;
+  if (key === 'bar_2020' || key === 'sector') return true;
+  if (key === 'other' || key === 'frame_misc') return parent === 'sector' || (p.xc > 30 && p.yc < 25);
   return p.xc > 30;
 }
+// Hinge travel, from the Rev B geometry checked part against part at 0.1° steps (scratch sweep): nose-up stops at 0° on the two foam
+// up-stops B18 under the deck; nose-down, as drawn, at 18.8° where the top corner of P14 meets the nose end of deck slot H (46 mm ahead
+// of the hinge, corner radius 53 mm). With slot H 3 mm longer the swing is clear to 40°.
+const HINGE = { up: 0, down: -18.8, downFixed: -40 };
+const HINGE_NOTE = {
+  up: 'Hinge stop at 0°: the front frame rests on the two foam up-stops (B18) glued under the deck, and the deck runs 135 mm ahead of the hinge with 5 mm over the track. Rev B bends nose-down only: down the stairs front-first, up the stairs rear-first.',
+  down: 'Hinge stop at 19°, as drawn: the top corner of the sector mount angle P14 (red) swings on a 53 mm radius into the nose end of the deck\'s sector slot H, which ends 46 mm ahead of the hinge. Lengthen slot H by 3 mm toward the nose (or chamfer the corner) and the swing is clear to 40°: tick "Deck slot H +3 mm".'
+};
 
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const stage = document.getElementById('stage'), markersEl = document.getElementById('markers'), panel = document.getElementById('panel');
@@ -236,8 +253,8 @@ async function load() {
     const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(colorFor(info.k)), metalness: info.k === 'buy' ? 0.75 : 0.05, roughness: 0.5, envMapIntensity: 0.4, transparent: true, opacity: 1 });
     const m = new THREE.Mesh(g, mat);
     const parent = c.parent || PARENT[key] || null;
-    m.userData = { p, key, side, move: parent && (key === 'other' || key === 'frame_misc') ? MOVE[parent] : MOVE[key], own: ownOf(key, side), parent, base: mat.color.clone(), vol: (p.mx[0] - p.mn[0]) * (p.mx[1] - p.mn[1]) * (p.mx[2] - p.mn[2]) };
-    (isFront(p, key) ? front : rear).add(m); meshes.push(m);
+    m.userData = { p, key, side, move: parent && (key === 'other' || key === 'frame_misc') ? MOVE[parent] : MOVE[key], own: ownOf(key, side), parent, base: mat.color.clone(), pad: !!c.pad, vol: (p.mx[0] - p.mn[0]) * (p.mx[1] - p.mn[1]) * (p.mx[2] - p.mn[2]) };
+    (isFront(p, key, parent) ? front : rear).add(m); meshes.push(m);
     const cur = byKey[key];
     if (!cur || (p.zc > 0 && cur.userData.p.zc <= 0) || (p.zc > 0 && cur.userData.p.zc > 0 && m.userData.vol > cur.userData.vol)) byKey[key] = m;
   }
@@ -245,7 +262,7 @@ async function load() {
   buildMarkers(); update(); showPanel();
 }
 
-const state = { a: MOVES.length, bend: 0, ghost: true, stairs: false, view: 'all', sel: null };
+const state = { a: MOVES.length, bend: 0, ghost: true, stairs: false, view: 'all', sel: null, hingeHit: null, slotFix: false };
 const ease = (t) => t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t);
 const prog = (move) => ease(state.a - move);
 function placement(m) {   // position offset from home, following the parents up the chain; placed = everything in the chain is home
@@ -272,6 +289,9 @@ function update() {
     if (state.sel === m) { m.material.color.set(new THREE.Color(css('--accent'))); m.material.emissive.set(new THREE.Color(css('--accent'))); m.material.emissiveIntensity = 0.25; }
     else if (inThisMove && !fastener) { m.material.emissive.set(new THREE.Color(css('--accent'))); m.material.emissiveIntensity = 0.28; }
     else m.material.emissive.set(0x000000);
+    if (state.hingeHit && (key === 'deck' || (state.hingeHit === 'down' && key === 'sector') || (state.hingeHit === 'up' && m.userData.pad))) {   // the parts that stop the hinge
+      m.material.emissive.set(0xc0392b); m.material.emissiveIntensity = key === 'deck' ? 0.32 : 0.7; if (m.userData.pad) { m.material.opacity = 1; m.material.depthWrite = true; }
+    }
   }
   front.rotation.z = THREE.MathUtils.degToRad(state.bend);
   stairs.visible = state.stairs;
@@ -317,7 +337,7 @@ function showPanel() {
   const done = state.a >= MOVES.length, cur = Math.min(Math.floor(state.a), MOVES.length - 1);
   let head;
   if (done) head = `<h2>Assembled</h2><p>Pull the Assemble slider left to take the robot apart, then push it right to rebuild it one connection at a time. Click any part or number for its job, fasteners and source. "Show: drive train only" strips the frame away so you can see the motors, belts, drive pulleys and hinge shafts.</p>
-    <div class="warn">Clearance to check with Nhien: the deck edge overhangs the front track lanes at y 25. Rev B's 7.9 mm cleats would touch it; my 3 mm cleats clear it by 5 mm.</div>`;
+    <div class="warn">To check with Nhien: (1) the deck edge overhangs the front track lanes at y 25, so Rev B's 7.9 mm cleats would touch it; my 3 mm cleats clear it by 5 mm. (2) The hinge bends nose-down only (foam up-stops B18 under the deck), and as drawn it jams at 19° where the corner of the P14 angle meets the end of deck slot H: 3 mm more slot toward the nose clears it. Drag the Hinge slider to see both stops.</div>`;
   else head = `<h2>Step ${cur + 1} of ${MOVES.length}</h2><p>${MOVES[cur].t}</p><h3>Connections made in this step</h3>${[...new Set(MOVES[cur].j)].map(jointLine).join('')}`;
   panel.innerHTML = head + `<h3>Build order</h3><div class="steps">${MOVES.map((s, i) => `<button type="button" data-step="${i}" class="${!done && i === cur ? 'on' : ''} ${state.a >= i + 1 ? 'done' : ''}">${i + 1}  ${s.t}</button>`).join('')}</div>
     <h3>Colours</h3><div class="legend"><span class="sw" style="background:var(--mine)"></span>my printed track<span class="sw" style="background:var(--buy)"></span>bought: wheels, bearings, shaft<span class="sw" style="background:var(--theirs)"></span>Nhien's plates, rails, bars, brackets<span class="sw" style="background:var(--deck)"></span>deck and tray (the box)<span class="sw" style="background:var(--drive)"></span>motors, belts, drive pulleys<span class="sw" style="background:var(--elec)"></span>controller, battery, cover<span class="sw" style="background:var(--ghost)"></span>screws, nuts, clips (faded)</div>
@@ -337,7 +357,19 @@ renderer.domElement.addEventListener('pointerup', (e) => {
   select(hits.length ? hits[0].object : null);
 });
 document.getElementById('assemble').addEventListener('input', (e) => { state.a = e.target.value / 1000 * MOVES.length; state.sel = null; update(); showPanel(); });
-document.getElementById('bend').addEventListener('input', (e) => { state.bend = +e.target.value; document.getElementById('bendv').textContent = state.bend + '°'; update(); });
+const HINT_TEXT = document.getElementById('hint').textContent;
+const cleanHint = () => { document.getElementById('hint').hidden = location.hash === '#clean'; };   // #clean: stills without overlays
+cleanHint(); addEventListener('hashchange', cleanHint);
+function setBend(want) {
+  const lo = state.slotFix ? HINGE.downFixed : HINGE.down, got = Math.max(lo, Math.min(HINGE.up, want));
+  state.bend = got; state.hingeHit = want > got ? 'up' : want < got ? 'down' : null;
+  const el = document.getElementById('bend'); if (+el.value !== got) el.value = got;
+  document.getElementById('bendv').textContent = (Number.isInteger(got) ? got : got.toFixed(1)) + '°' + (state.hingeHit ? ' stop' : '');
+  const hint = document.getElementById('hint'); hint.textContent = state.hingeHit ? HINGE_NOTE[state.hingeHit] : HINT_TEXT; hint.classList.toggle('stop', !!state.hingeHit);
+  update();
+}
+document.getElementById('bend').addEventListener('input', (e) => setBend(+e.target.value));
+document.getElementById('slotfix').addEventListener('change', (e) => { state.slotFix = e.target.checked; setBend(state.bend); });
 document.getElementById('view').addEventListener('change', (e) => { state.view = e.target.value; update(); });
 document.getElementById('stairs').addEventListener('change', (e) => { state.stairs = e.target.checked; update(); });
 document.getElementById('ghost').addEventListener('change', (e) => { state.ghost = e.target.checked; update(); });
