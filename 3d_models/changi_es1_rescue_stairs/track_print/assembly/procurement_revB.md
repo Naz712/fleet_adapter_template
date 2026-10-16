@@ -27,7 +27,20 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 | Part | Qty | Make / buy | Where | Price | Arrives |
 |---|---|---|---|---|---|
 | Timing pulley HTD 5M 20T, 15 mm belt, flanged, **plain (pilot) bore** | 8 | **Buy** | [MISUMI SG, Timing Pulleys HTD 5M](https://sg.misumi-ec.com/vona2/detail/110310532889/) | ~S$20 each | ships 1 day from SG stock; allow 2-5 days |
-| Pulley bore modification: 4 x D-bore Ø8 (M1), 4 x Ø16 H7 (M2) | 8 | **Make**: Professional Workshop request, Rev B sheet 21 | E3-01-06 | free | workshop queue, allow 1-2 weeks |
+| Pulley bore modification: 4 x ream Ø8 H7 (hinge, M1 and M3 stage-2) and 4 x bore Ø16 H7 (idlers, M2); cross holes Ø2.5 drilled at assembly (TS-06, TS-11) | 8 + 2 | **Make**: Professional Workshop request | E3-01-06 | free | workshop queue, allow 1-2 weeks |
+| Spring pins ISO 8752 2.5 x 24 (hinge pulleys and stage-2 pulleys, replaces E-clips F22 and the D-flats) | 6 + 4 spare | **Buy** | [RS SG spring pins](https://sg.rs-online.com/web/c/fasteners-fixings/pins/spring-pins/) | ~S$5 / pack | RS SG stock |
+| Hinge shaft: plain round Ø8 h7 ground steel, 200 mm (replaces the D-shaft B13; cut to 82.3 and 77.3, no grooves) | 1 | **Buy**, cut | [RS SG linear shafts](https://sg.rs-online.com/web/c/bearings-seals/linear-motion/linear-shafts/) or MISUMI SG PSFJ8 | ~S$10 | RS SG stock |
+
+## 1D. Tension and rail support (from the design review), both options
+
+| Part | Qty | Make / buy | Where | Price | Arrives |
+|---|---|---|---|---|---|
+| Tensioner tab, Al angle 20 x 20 x 3 cut 28 with an 8 x 6 ear, M4 tapped (TS-09) | 4 | **Make**: hacksaw, drill, M4 tap | from BOM B16 angle (order 300 mm instead of 100) | - | 1 h |
+| Tensioner slider, Al 3 mm, 8 x 16, Ø6.4 (TS-09; replaces the M6 washer under the nut) | 4 | **Make**: from offcut | laser with the plates, or hand cut | - | with the plates |
+| Jack screw M4 x 20 socket head + M3 x 6 for the tab | 4 + 4 | **Buy** | RS / local | - | stock |
+| New M3 tapped hole in P1 and P2 at (x +-223, y +10) for the tab (TS-09) | 4 | **Make**: add to the DXF, or drill 2.5 + tap M3 on site | with the plates | - | with the plates |
+| Rail carrier angle, Al 10 x 10 x 1.5 x 186, plate leg cut to 8, 3 + 3 holes (TS-10; replaces the 32 RS 427-991 clips) | 8 | **Make**: from 1.6 m of angle | local metal supplier / MISUMI SG | ~S$10 | 1-3 days |
+| Rails P3-P6 trimmed from 189 to 186 at the idler end (TS-10, TS-11) | 8 | Make: hacksaw | - | - | 10 min |
 
 ## 2. Nhien's (frame, drive, hinge, electronics), from the Rev B BOM
 
@@ -36,12 +49,13 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 | Side plates P1 (front) and P2 (rear), 5 mm Al, laser + tap | 2 + 2 | Make | DXF in the pack; Professional Workshop or a laser shop on the vendor list |
 | Slide rails P3-P6, UHMW strip 189 x 20 x 5 | 8 | Buy + drill | [MISUMI SG UPA-189-20-5](https://sg.misumi-ec.com/vona2/mech/M1500000000/M1501000000/) |
 | Rail brackets RS PRO 427-991 (angle 15 x 14.6 x 10) | 32 | Buy | [RS SG](https://sg.rs-online.com/) stock no. 427-991 |
-| Hinge shafts P20 A 82.3 + B 77.3 (or one 212), Ø8 D-shaft flat 7 | 2 | Buy stock, cut | [RS SG linear shafts](https://sg.rs-online.com/web/c/bearings-seals/linear-motion/linear-shafts/) or MISUMI SG |
+| Hinge shafts P20 A 82.3 + B 77.3, now plain round Ø8 h7 (section 1C), no D-flat, no E-clip grooves | 2 | Buy stock, cut | see 1C |
 | Bearing 688-2RS 8 x 16 x 5 | 14 | Buy | [RS SG ball bearings](https://sg.rs-online.com/web/c/bearings-seals/bearings/ball-bearings/) |
 | Shoulder screw ISO 7379 Ø8 x 25 M6 + washers, shim, spacer, nyloc | 4 sets | Buy | [RS SG shoulder screws](https://sg.rs-online.com/web/c/fasteners-fixings/screws-bolts/shoulder-screws/) |
 | 2020 profile x 110 (P7) x2, 3030 x 160 (P8) x2, corner posts P15 x4 | 1 m + 0.5 m | Buy, cut | MISUMI SG / local |
-| Corner brackets P18 (25x25x4 angle) x4, P19 (20x20x3) x4, T-nuts, E-clips, shims | - | Buy / make | Rev B BOM sections 3-4 |
+| Corner brackets: standard cast 2020 and 3030 inside corner brackets instead of the P18 / P19 angle offcuts (bigger contact area, design review); T-nuts, shims 8x11x0.5 and 8x11x1; E-clips F22 no longer needed | - | Buy | MISUMI SG / local |
 | Deck P12 (slot H 3 mm longer, see pack page 2), tray P16, cover P22, motors, drivers, ESP32, battery | - | Theirs | Rev B BOM |
+| Bearing seats in P1, P2, P17: laser-cut Ø15.8, reamed Ø16 H7 on site, 688-2RS retained with Loctite 641 (TS-11) | 6 | Make | Professional Workshop, 16 H7 reamer |
 
 ## 3. Choosing between A and B
 

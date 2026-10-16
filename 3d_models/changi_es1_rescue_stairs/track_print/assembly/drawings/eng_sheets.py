@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from drawing import DIM, INK, SPEC, centreline, dim_dia, dim_h, dim_v, leader  # noqa: E402
 from drawing import circle as _circle, rect as _rect  # noqa: E402
 from eng_sheet import a3_sheet, balloon, parts_list, save, section_mark  # noqa: E402
-from matplotlib.patches import PathPatch, Polygon, RegularPolygon  # noqa: E402
+from matplotlib.patches import PathPatch, Polygon, Rectangle, RegularPolygon  # noqa: E402
 from matplotlib.path import Path as MPath  # noqa: E402
 from shapely import affinity  # noqa: E402
 from shapely.geometry import Point, Polygon as SPoly, box as sbox  # noqa: E402
@@ -575,7 +575,8 @@ def sheet_pulley():
     fig, view, bg = a3_sheet("TIMING PULLEY HTD 5M 20T (BOUGHT, PLAIN BORE)", "TS-06", material="ALUMINIUM (VENDOR'S)", finish="VENDOR'S", qty=8, scale="2:1", notes=[
         "BOUGHT PART. ORDER: HTD 5M, 20 TEETH, FOR 15 MM BELT, FLANGES BOTH SIDES, PLAIN PILOT BORE. MISUMI SINGAPORE (APPROVED VENDOR). 8 OFF.",
         "WHAT MATTERS: 20T HTD 5M (PD 31.83) AND THE 15 MM BELT. ON NHIEN'S PLATES THE LANE IS 19-20 WIDE, SO NO HUB FITS: THE HUB AND SET SCREW DRAWN ARE THE PLA STAND-IN'S ONLY.",
-        "WORKSHOP BORE MODIFICATION (REV B SHEET 21): 4 x D-BORE Ø8 (FLAT 7) FOR THE HINGE SHAFT, 4 x Ø16 H7 FOR 2 x 688-2RS EACH (IDLERS ON Ø8 SHOULDER SCREWS).",
+        "WORKSHOP: 4 x REAM Ø8 H7 (HINGE SHAFT, ROUND, NO D-FLAT) + Ø2.5 CROSS HOLE AT MID-FACE DRILLED THROUGH PULLEY AND SHAFT TOGETHER AT ASSEMBLY, SPRING PIN ISO 8752 2.5 x 24. THE PIN DRIVES AND LOCATES: NO GRUB SCREW, NO E-CLIPS (TS-11).",
+        "4 x BORE Ø16 H7 THROUGH FOR 2 x 688-2RS EACH (IDLERS ON Ø8 SHOULDER SCREWS, SLEEVE 8 x 10 x 9 BETWEEN THE BEARINGS).",
         "PLA STAND-IN FOR FIT TESTS ONLY: stl/stand_in_pulley_20T_PLA_test_only.stl (M3 SET SCREW). NOT FOR DRIVING.",
     ])
     S = 2.0
@@ -606,8 +607,9 @@ def sheet_pulley():
     for x in (FL_T + 2.5 * i for i in range(1, 7)):
         ax.plot([x, x], [PU_OD_R - 2.06, PU_OD_R], color=INK, lw=0.4)
         ax.plot([x, x], [-PU_OD_R, -PU_OD_R + 2.06], color=INK, lw=0.4)
-    rect(ax, 2 * FL_T + PU_FACE + 2, HUB_R - 0.2, 3, -(HUB_R - PU["bore_mm"] / 2) + 0.2, "white", lw=0.4)
-    ax.text(2 * FL_T + PU_FACE + 3.5, HUB_R + 0.8, "SET SCREW\n2 x M4", fontsize=6, ha="center", va="bottom")
+    rect(ax, FL_T + PU_FACE / 2 - 1.25, -12, 2.5, 24, "white", lw=0.5)
+    leader(ax, (FL_T + PU_FACE / 2 + 1.25, 10), (24, 20), "CROSS PIN Ø2.5 x 24, HINGE PULLEYS:\nDRILL WITH THE SHAFT AT ASSEMBLY", fontsize=6.5)
+    ax.text(2 * FL_T + PU_FACE + 3.5, HUB_R + 0.8, "HUB: STAND-IN\nONLY", fontsize=6, ha="center", va="bottom")
     centreline(ax, -5, 0, OL + 5, 0)
     dim_h(ax, 0, FL_T, -FL_R - 3, f"{FL_T:g}", ext_from=-FL_R, fontsize=7)
     dim_h(ax, FL_T, FL_T + PU_FACE, -FL_R - 3, f"{PU_FACE:g}", ext_from=-PU_OD_R, fontsize=7)
@@ -619,6 +621,184 @@ def sheet_pulley():
     dim_v(ax, -PU["bore_mm"] / 2, PU["bore_mm"] / 2, OL + 9, f"Ø{PU['bore_mm']:g}", ext_from=OL)
     leader(ax, (FL_T + 8, PU_OD_R), (14, 21), f"BELT {TRK_W:g} WIDE SITS HERE", fontsize=7)
     save(fig, "TS-06_pulley_20T")
+
+
+# ------------------------------------------------------------------ TS-09 idler tensioner (tab, slider, jack screw)
+def sheet_tensioner():
+    fig, view, bg = a3_sheet("IDLER TENSIONER: TAB, SLIDER AND JACK SCREW", "TS-09", material="AL ANGLE 20x20x3; AL PLATE 3", finish="DEBURRED", qty="4 SETS", scale="2:1, PARTS 2:1", notes=[
+        "WHY: THE IDLER'S SHOULDER SCREW IS CLAMPED IN THE PLATE SLOT BY FRICTION ONLY. THE JACK SCREW PUSHES THE IDLER OUT TO A SET TENSION, THEN THE NUT IS TIGHTENED. 1 SET PER IDLER, 4 OFF.",
+        "SLIDER REPLACES THE M6 WASHER UNDER THE NUT (3 THICK INSTEAD OF 1.6). TAB BOLTS TO A NEW M3 TAPPED HOLE IN P1 / P2 AT x = +-223, y = +10 FROM THE HINGE AXIS: ADD TO THE DXF OR DRILL 2.5 AND TAP ON SITE.",
+        "FIT ORDER: IDLER INTO THE TRACK LOOP, SHOULDER SCREW THROUGH, SLIDER, NUT LOOSE, THEN THE TAB. TENSION: TURN THE JACK SCREW UNTIL THE TRACK'S UPPER RUN DEFLECTS 2-3 MM UNDER A FIRM FINGER PUSH AT MID-SPAN, TIGHTEN THE NUT, BACK THE JACK SCREW OFF 1/4 TURN.",
+        "DO NOT PUSH THE IDLER IN PAST x = 223 (RAIL END, TS-11). USABLE TRAVEL 223 TO 232.6 = 9.6 MM = 19 MM OF LOOP. JACK SCREW M4 x 20 SOCKET HEAD, KEY FROM THE HINGE SIDE, UNDER THE BAR.",
+    ])
+    S = 2.0
+    # view 1: nose end of P1 seen from inboard
+    ax = view(22, 162, (203, 244), (-19, 19), S, "NOSE END OF P1, SEEN FROM INBOARD (THE z 55 FACE)")
+    arc = [(225 + 15.2 * math.cos(a), 0.2 + 15.2 * math.sin(a)) for a in [math.radians(t) for t in range(-90, 91, 6)]]
+    ax.add_patch(Polygon([(203, -15), (225, -15)] + arc + [(225, 15.4), (203, 15.4)], closed=True, fc="white", ec=INK, lw=0.8, zorder=2))
+    shape_patch(ax, stadium(4.05, 220.4, 232.6), fc="white", zorder=3)
+    circle(ax, 225, 0, 4, ls=(0, (4, 2)), lw=0.5).set_zorder(4)
+    rect(ax, 221, -13, 8, 16, "white", lw=0.8, zorder=5)                                   # slider
+    ax.add_patch(RegularPolygon((225, 0), 6, radius=5.77, orientation=math.radians(30), fc="white", ec=INK, lw=0.8, zorder=6))   # nut
+    rect(ax, 217, -14, 3, 28, "white", lw=0.8, hatch="////", zorder=6)                   # tab leg B, edge on
+    rect(ax, 220, 6, 6, 8, "white", lw=0.8, zorder=5)                                    # ear on the plate
+    circle(ax, 223, 10, 1.5, fill="white", lw=0.6).set_zorder(7)
+    rect(ax, 210, -11.1, 10, 2.2, "white", lw=0.5, zorder=7)                             # jack screw shank (through leg B)
+    rect(ax, 206, -12.5, 4, 5, "white", lw=0.5, hatch="////", zorder=7)                  # its head
+    dim_h(ax, 220.4, 232.6, -17, "SLOT 12.2 x 8.1", ext_from=-4.05, fontsize=6.5)
+    dim_h(ax, 217, 220, 17, "3", ext_from=14, fontsize=6.5)
+    leader(ax, (229, -5), (233, -17), "SLIDER 8 x 16 x 3", fontsize=6.5)
+    leader(ax, (223, 11.5), (231, 16.5), "M3 x 6 INTO NEW TAPPED HOLE (223, +10)", fontsize=6.5)
+    leader(ax, (208, -12.5), (205, -17.5), "JACK SCREW M4 x 20", fontsize=6.5)
+    leader(ax, (229.5, 2.5), (234, 8), "M6 NYLOC", fontsize=6.5)
+    # view 2: plan from above (x along, z across)
+    ax = view(22, 40, (203, 244), (30, 86), S, "PLAN FROM ABOVE: PLATE, LANE, IDLER, TAB")
+    rect(ax, 203, 55, 37.2, 5, "white", lw=0.8, hatch="////")                            # plate P1 (z 55-60) to its end
+    ax.add_patch(Polygon([(240.2, 55), (240.2, 60)], closed=False, ec=INK, lw=0.8))
+    rect(ax, 207, 60.5, 36, 1.5, "white", lw=0.6); rect(ax, 207, 78, 36, 1.5, "white", lw=0.6)   # flanges
+    rect(ax, 209.6, 62, 30.8, 16, "white", lw=0.6)                                       # pulley body
+    rect(ax, 203, 60, 1.5, 20, "white", lw=0.5, hatch="\\\\")                        # rail carrier leg (TS-10) at the plate face
+    rect(ax, 221, 80.5, 8, 5.5, "white", lw=0.6)                                         # screw head
+    rect(ax, 219.5, 79.5, 11, 1, "white", lw=0.5)                                        # head washer
+    rect(ax, 221, 52, 8, 3, "white", lw=0.8)                                             # slider
+    rect(ax, 220, 46, 10, 6, "white", lw=0.8)                                            # nut
+    ax.add_patch(Rectangle((222, 44.5), 6, 41.5, fc="none", ec=INK, lw=0.5, ls=(0, (4, 2)), zorder=4))   # shoulder screw outline
+    rect(ax, 220, 52, 6, 3, "white", lw=0.8, hatch="////")                               # ear (leg A) on the plate face
+    rect(ax, 217, 35, 3, 20, "white", lw=0.8, hatch="////")                              # leg B
+    rect(ax, 203, 30.5, 7.9, 24.5, "white", lw=0.5, hatch="\\\\")                      # 2020 bar end (x to 210.9)
+    rect(ax, 203.5, 47.9, 16.5, 2.2, "white", lw=0.5)                                    # jack screw through leg B to the slider
+    dim_v(ax, 55, 60, 243, "5", ext_from=240.2, fontsize=6.5)
+    dim_v(ax, 60.5, 79.5, 243, "19", ext_from=243, fontsize=6.5)
+    dim_v(ax, 46, 55, 212, "NUT 6 + SLIDER 3", ext_from=220, fontsize=6.5)
+    dim_v(ax, 35, 55, 214.5, "20", ext_from=217, fontsize=6.5)
+    leader(ax, (210.9, 42), (206, 36), "2020 BAR P7 ENDS AT x 210.9", fontsize=6.5)
+    leader(ax, (218.5, 49), (206, 70), "JACK SCREW AXIS y -10, UNDER THE BAR", fontsize=6.5)
+    ax.text(203.5, 85, "OUTBOARD (LANE, TRACK)", fontsize=6.5, va="top"); ax.text(212, 31, "INBOARD", fontsize=6.5, va="bottom")
+    # parts
+    ax = view(190, 168, (-4, 34), (-4, 27), S, "TAB: AL ANGLE 20x20x3, CUT 28, LEG A CUT TO AN 8 x 6 EAR")
+    rect(ax, 0, 0, 28, 20, "white", lw=0.8)                                              # leg B, flat; the bend is its top edge (y 20)
+    circle(ax, 4, 14, 1.7, fill="white").set_zorder(4)                                   # M4 tapped: 4 from the bottom end, 6 from the bend
+    rect(ax, 20, 20, 8, 3, "white", lw=0.8, hatch="////")                                # ear seen edge on (leg A, 3 thick), 8 long at the top end
+    dim_h(ax, 0, 28, -2.5, "28", ext_from=0, fontsize=6.5)
+    dim_h(ax, 0, 4, 24.5, "4", ext_from=20, fontsize=6.5)
+    dim_v(ax, 14, 20, 31, "6", ext_from=28, fontsize=6.5)
+    dim_v(ax, 0, 20, 33, "20", ext_from=28, fontsize=6.5)
+    dim_h(ax, 20, 28, 25.5, "8 (EAR)", ext_from=23, fontsize=6.5)
+    leader(ax, (4, 15.7), (8, 10), "M4 TAPPED THROUGH (JACK SCREW)", fontsize=6.5)
+    ax = view(190, 104, (-4, 14), (-4, 24), S, "TAB, END VIEW")
+    rect(ax, 0, 0, 3, 20, "white", lw=0.8, hatch="////"); rect(ax, 0, 0, 6, 3, "white", lw=0.8, hatch="////")
+    dim_h(ax, 0, 6, -2.5, "6", ext_from=0, fontsize=6.5); dim_v(ax, 0, 3, 8, "3", ext_from=6, fontsize=6.5)
+    hidden_rect(ax, 1.3, 0, 3.4, 3)
+    leader(ax, (3, 3), (6, 12), "Ø3.4 THROUGH THE EAR\n(3 FROM THE BEND)", fontsize=6.5)
+    ax = view(190, 40, (-4, 14), (-4, 20), S, "SLIDER: AL 3 THICK")
+    rect(ax, 0, 0, 8, 16, "white", lw=0.8); circle(ax, 4, 13, 3.2, fill="white").set_zorder(4)
+    dim_h(ax, 0, 8, -2.5, "8", ext_from=0, fontsize=6.5); dim_v(ax, 0, 16, 11, "16", ext_from=8, fontsize=6.5); dim_v(ax, 0, 13, -2.5, "13", ext_from=0, fontsize=6.5)
+    leader(ax, (6.3, 14.5), (9, 18), "Ø6.4", fontsize=6.5)
+    save(fig, "TS-09_tensioner")
+
+
+# ------------------------------------------------------------------ TS-10 rail carrier angle (replaces the 4 small clips per rail)
+def sheet_rail_carrier():
+    fig, view, bg = a3_sheet("RAIL CARRIER ANGLE (REPLACES RS 427-991 CLIPS)", "TS-10", material="AL ANGLE 10x10x1.5", finish="DEBURRED", qty=8, scale="1:1, SECTION 4:1", notes=[
+        "WHY: EACH UHMW RAIL HUNG ON 4 SMALL CLIPS (10 x 14.6 FEET). THE ANGLE RUNS THE FULL RAIL LENGTH: 186 x 10 OF CONTACT ON THE PLATE AND ON THE RAIL INSTEAD OF 4 SMALL PATCHES.",
+        "TRIM EACH RAIL FROM 189 TO 186 (3 OFF THE IDLER END): THE IDLER PULLEY FLANGE REACHES x 207 AT ITS INNERMOST SLOT POSITION AND THE RAIL ENDED AT 207 (TS-11).",
+        "PLATE LEG CUT TO 8 SO IT STAYS INSIDE THE 15.4 PLATE HEIGHT. 3 x Ø3.4 IN THE PLATE LEG AT P1 / P2'S EXISTING RAIL-CLIP HOLES (REV B SHEETS 4, 5, 18), M3 x 6. 3 x Ø2.6 IN THE RAIL LEG, 3 x 10 THREAD-FORMING SCREWS INTO THE RAIL'S PILOT HOLES (BOM F3).",
+        "THE ANGLE SITS ON THE RAIL FACE AWAY FROM THE TRACK: UNDER THE UPPER RAIL, ON TOP OF THE LOWER RAIL. THE TRACK'S TOOTH TIPS RIDE ON THE OTHER FACE (y 13.3).",
+    ])
+    ax = view(22, 170, (-5, 195), (-6, 14), 1.0, "PLAN OF ONE ANGLE, 1:1 (RAIL LEG FLAT)")
+    rect(ax, 0, 0, 186, 10, "white", lw=0.8)
+    for x in (20, 93, 166): circle(ax, x, 5, 1.3, fill="white").set_zorder(4)
+    rect(ax, 0, 10, 186, 1.5, "white", lw=0.8, hatch="////")
+    dim_h(ax, 0, 186, -3.5, "186", ext_from=0, fontsize=7)
+    dim_h(ax, 0, 20, 12.5, "20", ext_from=10, fontsize=7); dim_h(ax, 20, 93, 12.5, "73", ext_from=10, fontsize=7); dim_h(ax, 93, 166, 12.5, "73", ext_from=10, fontsize=7)
+    leader(ax, (93, 6.3), (110, -4.5), "3 x Ø2.6 (RAIL SCREWS) IN THE RAIL LEG; 3 x Ø3.4 IN THE PLATE LEG AT THE SAME x", fontsize=6.5)
+    S = 4.0
+    ax = view(22, 60, (-12, 14), (-18, 2), S, "SECTION ACROSS THE LANE AT THE LOWER RAIL (4:1): PLATE, ANGLE, RAIL, TRACK")
+    rect(ax, -5, -16, 5, 18, "white", lw=0.8, hatch="////")                               # plate P1 (z 55-60), y to 15.4 (cut off)
+    rect(ax, 0, -13.3, 20 - 6, 5, "white", lw=0.8, hatch="\\\\")                        # rail z 60-74 (cut off at 74)
+    rect(ax, 0, -8.3, 1.5, 8, "white", lw=0.8)                                            # plate leg of the angle, 8 tall, on the plate face
+    rect(ax, 0, -8.3, 10, 1.5, "white", lw=0.8)                                            # rail leg on top of the lower rail
+    rect(ax, 2.5, -16.7, 11.5, 3.4, "white", lw=0.6, hatch="....")                        # track lower run, teeth down onto the rail (z 62.5-77.5 cut off)
+    for k in range(3): rect(ax, 3.5 + k * 4, -13.3, 2.0, -2.0, "white", lw=0.4)
+    ax.plot([0, 0], [-13.3, -8.3], color=INK, lw=0.4)
+    dim_v(ax, -13.3, -8.3, -7.5, "5 RAIL", ext_from=0, fontsize=6.5)
+    dim_v(ax, -8.3, -0.3, -9.5, "8 LEG", ext_from=0, fontsize=6.5)
+    dim_h(ax, 0, 10, 0.8, "10", ext_from=-6.8, fontsize=6.5)
+    dim_h(ax, -5, 0, -17.5, "5", ext_from=-16, fontsize=6.5)
+    leader(ax, (0.75, -3), (4, -2), "M3 x 6 INTO THE PLATE (3 OFF)", fontsize=6.5)
+    leader(ax, (6, -7.6), (8, -4.5), "3 x 10 THREAD-FORMING INTO THE RAIL (3 OFF)", fontsize=6.5)
+    leader(ax, (8, -15), (9, -17.6), "TRACK, TOOTH TIPS ON THE RAIL FACE y -13.3", fontsize=6.5)
+    ax.text(-4.8, 1.4, "PLATE", fontsize=6, va="bottom"); ax.text(10.5, -11.5, "RAIL (UHMW)", fontsize=6)
+    save(fig, "TS-10_rail_carrier")
+
+
+# ------------------------------------------------------------------ TS-11 stack-ups and fits (the spacing between parts)
+def sheet_stackup():
+    fig, view, bg = a3_sheet("STACK-UPS AND FITS: HINGE SHAFT AND IDLER SCREW", "TS-11", material="SEE PARTS", finish="-", qty="PER SIDE", scale="2:1", notes=[
+        "FITS: 688-2RS SEATS IN P1, P2, P17 LASER-CUT Ø15.8 THEN REAMED Ø16 H7, RETAINED WITH LOCTITE 641. HINGE PULLEYS Ø8 H7 ON A PLAIN Ø8 h7 ROUND SHAFT (NO D-FLAT, NO GROOVES).",
+        "IDLER PULLEYS Ø16 H7, 688-2RS LIGHT PRESS. SLOTS 8.1 (+0.1 / 0) FOR THE Ø8 f9 SHOULDER. LANE 20.0 +-0.2 = (160 - 110) / 2 - 5 FROM THE BAR CUT LENGTHS: CUT BARS TO +-0.1 AND SQUARE.",
+        "AXIAL LOCATION ON THE HINGE SHAFT: PINS, NOT E-CLIPS. PIN THE FRONT HINGE PULLEY FIRST: ONE 8x11x0.5 SHIM AGAINST THE P1 BEARING, 0.3-0.5 FEELER GAP TO THE P2 BEARING. THAT FIXES THE SHAFT.",
+        "THEN PIN THE REAR PULLEY (0.3-0.5 GAP TO ITS BEARING) AND THE STAGE-2 PULLEY (1 MM SHIM AGAINST THE P17 BEARING). SHIMS BEAR ON INNER RINGS ONLY: NO PULLEY FACE ON AN OUTER RING OR A PLATE.",
+        "IDLER SCREW: SHOULDER 25 vs STACK 25.5 (HEAD WASHER 1 + BEARINGS 10 + SLEEVE 9 + SHIM 0.5 + PLATE 5): THE NUT CLAMPS THE INNER-RING STACK AGAINST THE PLATE, AS INTENDED. KEEP THE 0.5 SHIM.",
+        "IDLER FLANGE MEETS THE RAIL END IF THE IDLER IS PUSHED IN PAST x 223: RAILS TRIMMED TO 186 (TS-10), TENSIONER TS-09 ONLY EVER PUSHES OUTWARD.",
+    ])
+    S = 2.0
+    # hinge shaft, B side: z along the sheet x, y vertical
+    ax = view(22, 150, (26, 110), (-20, 22), S, "SECTION ALONG THE HINGE SHAFT P20-B, FROM THE CENTRE (z 28.7) OUTWARD TO 106. PINS REPLACE THE E-CLIPS.")
+    rect(ax, 28.7, -4, 77.3, 8, "white", lw=0.8)                                           # shaft
+    rect(ax, 30.2, -8.8, 9.8, 17.6, "white", lw=0.8, hatch="////")                          # M3 stage-2 pulley
+    rect(ax, 40, -5.5, 1, 11, "white", lw=0.6)                                              # shim 1
+    rect(ax, 41, -12, 5, 30, "white", lw=0.8, hatch="\\\\")                              # P17 plate face
+    rect(ax, 41, -8, 5, 16, "white", lw=0.6)                                                # bearing in P17
+    rect(ax, 55, -15, 5, 30.4, "white", lw=0.8, hatch="\\\\")                            # front plate
+    rect(ax, 55, -8, 5, 16, "white", lw=0.6)                                                # bearing
+    rect(ax, 60, -5.5, 0.5, 11, "white", lw=0.6)                                            # shim 0.5
+    for z0 in (60.5, 85.5):
+        rect(ax, z0, -17.85, 1.5, 35.7, "white", lw=0.6); rect(ax, z0 + 17.5, -17.85, 1.5, 35.7, "white", lw=0.6)
+        rect(ax, z0 + 1.5, -15.3, 16, 30.6, "white", lw=0.8, hatch="////")
+    rect(ax, 80, -15, 5, 30.4, "white", lw=0.8, hatch="\\\\"); rect(ax, 80, -8, 5, 16, "white", lw=0.6)
+    for zc in (35.1, 70, 95): rect(ax, zc - 1.25, -12, 2.5, 24, "white", lw=0.6)          # pins
+    for z in (46, 55, 60.5, 79.5, 80, 85, 85.5): ax.plot([z, z], [-19, 19], color=DIM, lw=0.3, dashes=(2, 2))
+    y = -19.5
+    for a, b, t in ((28.7, 30.2, "1.5"), (30.2, 40, "9.8"), (40, 41, "1"), (41, 46, "5"), (46, 55, "9"), (55, 60, "5"), (60, 60.5, ".5"), (60.5, 79.5, "19"), (79.5, 80, ".5"), (80, 85, "5"), (85, 85.5, ".5"), (85.5, 104.5, "19"), (104.5, 106, "1.5")):
+        dim_h(ax, a, b, y, t, fontsize=5.5)
+    dim_h(ax, 28.7, 106, 21, "77.3 (P20-B)", ext_from=4, fontsize=6.5)
+    for z, t in ((35.1, "STAGE-2\nPULLEY M3"), (43.5, "P17 +\n688"), (57.5, "P1 +\n688"), (70, "FRONT HINGE\nPULLEY M1"), (82.5, "P2 +\n688"), (95, "REAR HINGE\nPULLEY M1")):
+        ax.text(z, 18.5, t, fontsize=5.5, ha="center", va="bottom")
+    leader(ax, (70, 12), (64, -16.5), "PIN Ø2.5 x 24 AT MID-FACE, 3 OFF PER SHAFT", fontsize=6)
+    leader(ax, (60.25, 5.5), (48, 14), "SHIM 8x11x0.5 ON THE INNER RING", fontsize=6)
+    leader(ax, (79.75, 0), (96, -13), "0.3-0.5 FEELER GAP (NO SHIM)", fontsize=6)
+    # idler screw, B side nose
+    ax = view(22, 60, (42, 90), (-16, 16), S, "SECTION ALONG THE NOSE IDLER SCREW (ISO 7379 8 x 25 M6), INBOARD TO OUTBOARD")
+    rect(ax, 44.5, -3, 11, 6, "white", lw=0.5, hatch="....")                                 # M6 thread
+    rect(ax, 55.5, -4, 25, 8, "white", lw=0.8)                                               # shoulder
+    rect(ax, 80.5, -6.5, 5.5, 13, "white", lw=0.8, hatch="////")                             # head
+    rect(ax, 46, -5, 6, 10, "white", lw=0.8)                                                 # nut
+    rect(ax, 52, -13, 3, 16, "white", lw=0.8)                                                # slider (TS-09)
+    rect(ax, 55, -15, 5, 30.4 - 15, "white", lw=0.8, hatch="\\\\")                       # plate (cut)
+    rect(ax, 60, -5.5, 0.5, 11, "white", lw=0.6)                                             # shim
+    rect(ax, 60.5, -8, 5, 16, "white", lw=0.6); rect(ax, 74.5, -8, 5, 16, "white", lw=0.6)   # bearings
+    rect(ax, 65.5, -5, 9, 10, "white", lw=0.6)                                               # sleeve
+    rect(ax, 60.5, -17.85, 1.5, 35.7 / 2 + 2.85, "white", lw=0.6); rect(ax, 78, -17.85, 1.5, 35.7 / 2 + 2.85, "white", lw=0.6)
+    rect(ax, 62, -15.3, 16, 15.3 + 8, "white", lw=0.8, hatch="////")                         # pulley body (cut at the top)
+    rect(ax, 79.5, -5.5, 1, 11, "white", lw=0.6)                                             # head washer
+    y = -15.5
+    for a, b, t in ((46, 52, "6"), (52, 55, "3"), (55, 60, "5"), (60, 60.5, ".5"), (60.5, 65.5, "5"), (65.5, 74.5, "9"), (74.5, 79.5, "5"), (79.5, 80.5, "1"), (80.5, 86, "5.5")):
+        dim_h(ax, a, b, y, t, fontsize=5.5)
+    dim_h(ax, 55.5, 80.5, 13, "SHOULDER 25", ext_from=4, fontsize=6.5)
+    dim_h(ax, 55, 80.5, 10, "STACK 25.5", ext_from=4, fontsize=6.5)
+    for z, t in ((49, "NYLOC"), (53.5, "SLIDER"), (57.5, "P1"), (63, "688"), (70, "SLEEVE\n8x10x9"), (77, "688"), (83, "HEAD")):
+        ax.text(z, -9.5 if t in ("688", "SLEEVE\n8x10x9") else 7, t, fontsize=5.5, ha="center", va="center")
+    # fits table
+    rows = [("P1 / P2 / P17 bearing seat", "laser Ø15.8, ream Ø16 H7", "688-2RS, Loctite 641"), ("hinge pulley bore M1, stage-2 M3", "ream Ø8 H7", "shaft Ø8 h7 round, pinned"),
+            ("idler pulley bore M2", "bore Ø16 H7", "2 x 688-2RS, light press"), ("plate slot", "8.1 +0.1 / 0 wide", "shoulder Ø8 f9"), ("lane, plate face to plate face", "20.0 +-0.2", "pulley 19.0: 0.5 each side"),
+            ("pulley to bearing gaps", "0.5 shim + 0.3-0.5 feeler", "never on the outer ring"), ("rail end to idler flange", "rail 186, idler >= x 223", "2 mm minimum"), ("deck over the front track", "25 above axis", "printed 19.7 / belt 25.0")]
+    y0 = 262
+    bg.text(250, y0 + 4, "FITS AND CLEARANCES", fontsize=7.5, fontweight="bold", va="bottom")
+    for i, (a, b, c) in enumerate(rows):
+        yy = y0 - 6 * i
+        bg.text(250, yy, a, fontsize=6, va="center"); bg.text(318, yy, b, fontsize=6, va="center"); bg.text(366, yy, c, fontsize=6, va="center")
+    save(fig, "TS-11_stackup")
 
 
 # ------------------------------------------------------------------ TS-07 bearing (bought)
@@ -786,7 +966,7 @@ def sheet_rear_to_base():
 if __name__ == "__main__":
     which = sys.argv[1:] or ["all"]
     fns = dict(assembly=sheet_assembly, track=sheet_track, front=lambda: sheet_side_plate(True), rear=lambda: sheet_side_plate(False),
-               axles=sheet_axles, spacer=sheet_spacer, pulley=sheet_pulley, bearing=sheet_bearing, base=sheet_rear_to_base, belt=sheet_belt)
+               axles=sheet_axles, spacer=sheet_spacer, pulley=sheet_pulley, bearing=sheet_bearing, base=sheet_rear_to_base, belt=sheet_belt, tensioner=sheet_tensioner, carrier=sheet_rail_carrier, stackup=sheet_stackup)
     for k, f in fns.items():
         if "all" in which or k in which:
             f()
