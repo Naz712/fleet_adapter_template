@@ -278,11 +278,11 @@
     "width_over_pulley_flanges_mm": 209,
     "inside_rear_plates_mm": 160,
     "axles": {
-      "hinge_shaft": "\u00d88 D-shaft flat 7: A 82.3 + B 77.3 (two motors) or one 212 (one motor)",
+      "hinge_shaft": "\u00d88 h7 plain round shaft (design review 16 Oct 2026: no D-flat, no E-clip grooves; pulleys pinned, TS-11): A 82.3 + B 77.3 (two motors) or one 212 (one motor)",
       "end_axles": "none: 4 x ISO 7379 \u00d88x25 M6 shoulder screws in the plate slots"
     },
     "bearings": "14 x 688-2RS (8x16x5)",
-    "pulleys": "HTD5M 20T 15 mm, plain bore, modified: 4 x D-bore 8, 4 x \u00d816 H7 for 2 x 688 each",
+    "pulleys": "HTD5M 20T 15 mm, plain bore, modified: 4 x reamed \u00d88 H7 + \u00d82.5 cross pin (TS-06), 4 x \u00d816 H7 for 2 x 688 each",
     "spacers": "none (2020 x 110 and 3030 x 160 bars)",
     "cross_bars": "none (bars + corner brackets + T-nuts)",
     "track": "unchanged (my printed track, 550 loop, 45 cleats); or Rev B stock belt 550-5M-15 with 22 glued cleats",

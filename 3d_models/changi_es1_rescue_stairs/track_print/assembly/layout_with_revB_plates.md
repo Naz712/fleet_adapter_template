@@ -39,11 +39,11 @@ is 160 wide inside (not 80 as in my layout): the box can be up to 160 wide.
 | **Side plates** | theirs (P1, P2). Not printed. |
 | **Spacers** | **none.** The 2020 and 3030 bars hold the plates apart. |
 | **Cross bar rods, nuts, washers** | **none.** Replaced by the bars, P18/P19 corner brackets, T-nuts. |
-| **Middle axle 230** | replaced by Rev B's two hinge half-shafts P20: Ø8 D-shaft (flat 7), A = 82.3 long (z 14 to 106 on the A side), B = 77.3 (z 31 to 106 on the B side). Two halves because Rev B has one motor per side. If the team goes to **one motor**, use one Ø8 D-shaft 212 long (z -106 to +106) instead, same stock. |
+| **Middle axle 230** | replaced by Rev B's two hinge half-shafts P20, now Ø8 h7 plain round (design review: no D-flat, no E-clip grooves; the pulleys are pinned, TS-11), A = 82.3 long (z 14 to 106 on the A side), B = 77.3 (z 31 to 106 on the B side). Two halves because Rev B has one motor per side. If the team goes to **one motor**, use one Ø8 D-shaft 212 long (z -106 to +106) instead, same stock. |
 | **Front and rear axles** | **none.** The end pulleys ride on Ø8 x 25 M6 shoulder screws (ISO 7379) through the plate slots, one per plate, 4 in all, each with two 688-2RS inside a Ø16-bored pulley. |
 | **Bearings** | 608ZZ x10 -> **688-2RS x14** (8 x 16 x 5): 4 in the plate hinge holes, 2 in the P17 supports, 8 in the idler pulleys. |
-| **Pulleys** | same HTD 5M 20T 15 mm belt, but the lanes are only 19-20 wide, so there is **no room for a set-screw hub**. Rev B modifies them: the 4 on the hinge shaft get a D-bore 8 (M1), the 4 idlers get a Ø16 H7 bore for the 688s (M2). That is lathe work at the Professional Workshop; order plain-bore (pilot-bore) pulleys for it. |
-| **Set screws** | none on the pulleys (D-bore drives them); E-clips DIN 6799-6 and a shim on each shaft end instead. |
+| **Pulleys** | same HTD 5M 20T 15 mm belt, but the lanes are only 19-20 wide, so there is **no room for a set-screw hub**. They are modified: the 4 on the hinge shaft are reamed Ø8 H7 and cross-pinned to the plain shaft (TS-06, TS-11); the 4 idlers are bored Ø16 H7 for two 688 bearings each. |
+| **Set screws** | none on the pulleys: one Ø2.5 spring pin per hinge pulley drives it and locates it (design review). No E-clips; shims 8x11x0.5 and feeler gaps per TS-11. |
 
 ## What I need from Nhien to finish the hybrid
 
@@ -52,3 +52,8 @@ is 160 wide inside (not 80 as in my layout): the box can be up to 160 wide.
    run just rides on nothing; my track's tooth tips sit 13.34 below the axle and need the rail.
 3. The track is still mine to print; the step-matched cleat pitch (12.22) replaces Rev B's 22 cleats
    at 25 mm on a stock belt. Both fit the same pulleys, so either can be tested on their frame.
+
+
+## Design review, 16 Oct 2026
+
+The reviewer asked for tolerances and part spacing, no E-clips on the axle, no D-shaft for the pulleys, positive track tension and more bracket contact. Answered by TS-06 (reamed, pinned pulleys), TS-09 (idler tensioner), TS-10 (rail carrier angles, rails trimmed to 186), TS-11 (stack-ups and fits) and the feasibility pages of the pack. Nhien's P20 and M1 / M3 rows are superseded by these sheets.

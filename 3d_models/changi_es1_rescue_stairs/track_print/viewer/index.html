@@ -71,6 +71,7 @@ aside .fast { font-family: var(--font-data); font-size: 12.5px; background: var(
   <div class="ctl"><label for="assemble">Assemble</label><input id="assemble" type="range" min="0" max="1000" value="1000"><span class="val" id="assv">done</span></div>
   <div class="ctl"><label for="bend">Hinge</label><input id="bend" type="range" min="-40" max="40" step="0.1" value="0"><span class="val" id="bendv">0°</span></div>
   <div class="ctl"><label for="view">Show</label><select id="view"><option value="all">everything</option><option value="drive">drive train only</option><option value="frame">frame and tracks only</option></select></div>
+  <div class="ctl"><label for="zoom">Zoom to</label><select id="zoom"><option value="all">everything</option><option value="hinge">hinge shaft and wheels</option><option value="nose">nose idler and tensioner</option><option value="rear">rear idler and tensioner</option><option value="sector">sector gear and hinge motor</option><option value="drive">drive train</option><option value="deck">deck and tray</option></select></div>
   <div class="ctl"><label for="track">Track</label><select id="track"><option value="mine">my printed track</option><option value="theirs">bought belt + cleats (B10)</option></select></div>
   <div class="ctl"><label for="stairs"><input id="stairs" type="checkbox"> ES1 stairs</label></div>
   <div class="ctl"><label for="ghost"><input id="ghost" type="checkbox" checked> Fade fasteners</label></div>
@@ -80,7 +81,7 @@ aside .fast { font-family: var(--font-data); font-size: 12.5px; background: var(
 <main>
   <div id="stage">
     <div id="markers"></div>
-    <div id="hint">Pull the Assemble slider left to take it apart, then push it right to put it together one connection at a time. Numbers are the joints; the panel names the fasteners for the joint being made.</div>
+    <div id="hint">Pull the Assemble slider left to take it apart, then push it right to put it together one connection at a time. Numbers are the joints; the panel names the fasteners for the joint being made. Double-click a part to zoom to it; the Zoom menu jumps to the hinge, idlers, drive or deck.</div>
     <div id="loading">Loading the model (7 MB)…</div>
   </div>
   <aside id="panel"></aside>
@@ -123,7 +124,7 @@ const INFO = {
   elec: { n: 0, t: 'Controller tray parts (Rev B)', k: 'elec', role: 'ESP32 on its sled P23, two MDD10A motor drivers, BNO085 IMU, 5 V regulator, battery, vented cover P22.', fast: 'MDD10A on M3 x 6 nylon standoffs; ESP32 sled M3; BNO085 M2.5 x 5; regulator M2 x 5. Cover: 4 x M3 x 25. Battery: hook-and-loop strap through the deck slots.', src: 'Nhien: Rev B BOM section 5, sheet 22.' },
   idler_hw: { n: 3, t: 'Idler stub axle set', k: 'buy', role: 'Shoulder screw, washers, shim, spacer and nyloc that carry an idler wheel on the plate.', fast: 'ISO 7379 Ø8 x 25 M6 through the plate slot; M6 washer + nyloc outside.', src: 'RS SG or MISUMI.' },
   frame_misc: { n: 0, t: 'Bracket (Rev B)', k: 'theirs', role: 'A corner bracket (P18, P19), rail bracket (RS 427-991) or similar small frame part.', fast: 'See the joint it belongs to: brackets M5/M6 + T-nuts into the bars, M3 to M5 into the tapped plates.', src: 'Nhien: Rev B sheets 12, 13, 16.' },
-  other: { n: 0, t: 'Fastener (Rev B)', k: 'other', role: 'A screw, nut, T-nut, washer, shim or E-clip from Nhien\'s pack. Faded by default so the real parts stay readable.', fast: 'See Rev B sheet 3 (joint and fastener schedule) for its place and torque.', src: 'Rev B BOM section 4.' }
+  other: { n: 0, t: 'Fastener (Rev B)', k: 'other', role: 'A screw, nut, T-nut, washer or shim from Nhien\'s pack. Faded by default so the real parts stay readable.', fast: 'See Rev B sheet 3 (joint and fastener schedule) for its place and torque.', src: 'Rev B BOM section 4.' }
 };
 // The build, one connection at a time (order from Rev B sheet 3). j = joints to show in the panel.
 // The same frame with Rev B's bought belt (BOM row B10) instead of my printed track. Same wheels, same 225 centres, same joints.
@@ -131,27 +132,31 @@ const INFO_BELT = {
   track_front: { n: 1, t: 'Front track belt (B10)', k: 'belt', role: 'Rev B\'s stock HTD 5M timing belt: 550 mm pitch length (110 teeth), 15 wide, with 22 rubber cleats 10 x 7.9 x 15 bonded on the back every 5th tooth (25 mm pitch). The teeth inside drive on the 20T wheels; the cleats grip the step edges. The cleat tips reach 25 mm above the hinge axis, which is exactly the deck\'s underside.', fast: 'No fastener. The loop goes over the two wheels from above; tension at the nose idler slot.\nCleats bonded by the belt shop (or cyanoacrylate for rubber), 22 per belt at 25 mm.', src: 'Buy: SKF PHG 550-5M-15, RS SG 058-6535, 4 belts; cleats cut 10 x 7.9 x 15 and bonded by a belt shop (Rev B BOM B10).' },
   track_rear: { n: 9, t: 'Rear track belt (B10)', k: 'belt', role: 'Same belt and cleats, outboard of the rear plate, on the rear hinge wheel and the rear idler.', fast: 'No fastener. Tension at the rear idler slot.', src: 'Buy: same, 4 belts in all.' },
 };
+INFO.tensioner = { n: 18, t: 'Idler tensioner (TS-09)', k: 'made', role: 'Tab, slider and M4 jack screw on each idler: the jack screw pushes the idler out along the plate slot to a set track tension, then the nut is tightened. Before this the shoulder screw was held by friction only (design review).', fast: 'Tab: M3 x 6 into a new tapped hole in the plate at (223, +10). Slider replaces the M6 washer under the nyloc. Jack screw M4 x 20: wind until the upper run deflects 2 to 3 mm under a firm push, tighten the nut, back off a quarter turn. Never push the idler in past x 223.', src: 'Make on site from 20 x 20 x 3 angle and 3 mm plate, TS-09. 4 sets.' };
+INFO.carrier = { n: 19, t: 'Rail carrier angle (TS-10)', k: 'made', role: 'A 10 x 10 x 1.5 aluminium angle the full length of each rail, in place of four small clips: 186 mm of contact on the plate and on the rail (design review). Sits on the rail face away from the track.', fast: '3 x M3 x 6 into the plate\'s existing clip holes; 3 x 3 x 10 thread-forming screws into the rail. Rails trimmed from 189 to 186 at the idler end.', src: 'Make from 1.6 m of 10 x 10 x 1.5 angle, 8 off, TS-10.' };
+INFO.pin = { n: 20, t: 'Cross pin, hinge pulleys (TS-11)', k: 'buy', role: 'Ø2.5 x 24 spring pin through pulley and shaft, drilled together at assembly. It drives the wheel and holds it along the shaft; the front one also locates the whole shaft between the two plate bearings. Replaces the D-flat, the grub screw and the E-clips.', fast: 'Set the shim and the 0.3 to 0.5 mm feeler gap, clamp in a V-block, drill Ø2.5 through pulley and shaft at mid-face, drive the pin flush. Three per shaft.', src: 'Buy ISO 8752 2.5 x 24, 6 + spares (RS SG).' };
 const infoOf = (key, variant) => (variant === 'theirs' && INFO_BELT[key]) || INFO[key];
 const HL_GROUPS = { track: ['track_front', 'track_rear'], pulley: ['wheel_nose', 'wheel_rear', 'wheel_hinge_front', 'wheel_hinge_rear'], plate_front: ['plate_front'], plate_rear: ['plate_rear'],
   rail: ['rail_front_lower', 'rail_front_upper', 'rail_rear_lower', 'rail_rear_upper'], hinge_shaft: ['shaft'], bearing: ['bearing_front_plate', 'bearing_rear_plate', 'bearing_idler', 'bearing_support'],
-  shoulder: ['idler_hw'], bar: ['bar_2020', 'bar_3030'], deck: ['deck', 'tray', 'posts', 'elec', 'drive', 'belt', 'drive_hinge_pulley'], all: [] };   // #hl-<name>: catalogue renders
+  shoulder: ['idler_hw'], tensioner: ['tensioner'], carrier: ['carrier'], pin: ['pin'], bar: ['bar_2020', 'bar_3030'], deck: ['deck', 'tray', 'posts', 'elec', 'drive', 'belt', 'drive_hinge_pulley'], all: [] };   // #hl-<name>: catalogue renders
 const MOVES = [
   { t: 'Press the 688 bearings into the plates, the P17 supports and the idler wheels', j: ['bearing_front_plate'] },
   { t: 'Rear frame: rear plates P2 onto the 3030 bars with P18 corner brackets, from the sides; P17 hinge supports onto the middle bar', j: ['plate_rear', 'bar_3030', 'p17'] },
-  { t: 'Rear slide rails P5 / P6 onto the outboard face of the rear plates', j: ['rail_rear_lower'] },
+  { t: 'Rear slide rails P5 / P6 on their carrier angles (TS-10) onto the outboard face of the rear plates', j: ['rail_rear_lower', 'carrier'] },
   { t: 'Front frame: front plates P1 with the 2020 bars, P19 brackets and the sector gear, lowered in between the rear plates', j: ['plate_front', 'bar_2020', 'sector'] },
-  { t: 'Front slide rails P3 / P4 onto the front plates', j: ['rail_front_lower'] },
+  { t: 'Front slide rails P3 / P4 on their carrier angles onto the front plates', j: ['rail_front_lower', 'carrier'] },
   { t: 'Hinge wheels and the drive pulleys dropped in between the plates, lined up with the bearing holes', j: ['wheel_hinge_front', 'wheel_hinge_rear', 'drive_hinge_pulley'] },
-  { t: 'Hinge shafts pushed in from outside through rear wheel, rear plate, front wheel, front plate and P17; E-clips and shims on', j: ['shaft'] },
+  { t: 'Plain round hinge shafts pushed in from outside through rear wheel, rear plate, front wheel, front plate and P17; shims and feeler gaps set, cross pins drilled and driven (TS-11)', j: ['shaft', 'pin'] },
   { t: 'Deck onto the 3030 bars; posts, drive motors, belts and hinge motor onto the deck', j: ['deck', 'drive'] },
   { t: 'Tray onto the posts; controller, battery and cover', j: ['tray', 'elec'] },
-  { t: 'Idler wheels onto their shoulder screws through the plate slots', j: ['wheel_nose', 'wheel_rear'] },
-  { t: 'Tracks over the wheels from above; slide the idlers out to tension, tighten the nuts', j: ['track_front', 'track_rear'] },
+  { t: 'Idler wheels onto their shoulder screws through the plate slots; sliders, nuts and the tensioner tabs (TS-09)', j: ['wheel_nose', 'wheel_rear', 'tensioner'] },
+  { t: 'Tracks over the wheels from above; wind the jack screws out to tension, tighten the nuts', j: ['track_front', 'track_rear'] },
 ];
 const MOVE = { bearing_front_plate: 0, bearing_rear_plate: 0, bearing_idler: 0, bearing_support: 0, plate_rear: 1, bar_3030: 1, p17: 1, rail_rear_lower: 2, rail_rear_upper: 2, plate_front: 3, bar_2020: 3, sector: 3, rail_front_lower: 4, rail_front_upper: 4, wheel_hinge_front: 5, wheel_hinge_rear: 5, drive_hinge_pulley: 5, shaft: 6, deck: 7, posts: 7, drive: 7, belt: 7, tray: 8, elec: 8, wheel_nose: 9, wheel_rear: 9, idler_hw: 9, track_front: 10, track_rear: 10, frame_misc: 1, other: 1 };
-const PARENT = { bearing_front_plate: 'plate_front', bearing_rear_plate: 'plate_rear', bearing_support: 'p17', rail_front_lower: 'plate_front', rail_front_upper: 'plate_front', rail_rear_lower: 'plate_rear', rail_rear_upper: 'plate_rear', sector: 'plate_front', wheel_nose: 'plate_front', wheel_rear: 'plate_rear', posts: 'deck', drive: 'deck', tray: 'deck', elec: 'tray' };
+const PARENT = { pin: 'shaft', bearing_front_plate: 'plate_front', bearing_rear_plate: 'plate_rear', bearing_support: 'p17', rail_front_lower: 'plate_front', rail_front_upper: 'plate_front', rail_rear_lower: 'plate_rear', rail_rear_upper: 'plate_rear', sector: 'plate_front', wheel_nose: 'plate_front', wheel_rear: 'plate_rear', posts: 'deck', drive: 'deck', tray: 'deck', elec: 'tray' };
 // Where a part waits, relative to its parent, when the build is taken apart. s = which side (+1 / -1).
 function ownOf(key, s) {
+  if (key === 'carrier') return [0, 0, s * 24]; if (key === 'tensioner') return [0, 0, s * 30]; if (key === 'pin') return [0, 0, 0];
   switch (key) {
     case 'plate_rear': return [0, 0, s * 90];
     case 'plate_front': return [0, 80, 0];
@@ -187,6 +192,9 @@ function classify(p) {
     case 'bar': return { key: p.xc > 0 ? 'bar_2020' : 'bar_3030' };
     case 'bearing': if (ax > 100) return { key: 'bearing_idler', parent: p.xc > 0 ? 'wheel_nose' : 'wheel_rear' }; return { key: p.tier === 1 ? 'bearing_front_plate' : p.tier === 3 ? 'bearing_rear_plate' : 'bearing_support' };
     case 'deck': return { key: p.yc < 60 ? 'deck' : 'tray' };
+    case 'pin': return { key: 'pin' };
+    case 'carrier': return { key: 'carrier', parent: p.xc > 0 ? 'plate_front' : 'plate_rear' };
+    case 'tensioner': return { key: 'tensioner', parent: p.xc > 0 ? 'plate_front' : 'plate_rear' };
     default:
       if (big < 14) {                                                            // a fastener: rides with whatever it is screwed into
         if (ax < 12 && Math.abs(p.yc) < 12) return { key: 'other', parent: 'shaft' };
@@ -214,6 +222,7 @@ function classify(p) {
 function isFront(p, key, parent) {
   if (['deck', 'tray', 'shaft', 'wheel_hinge_front', 'wheel_hinge_rear', 'bearing_support', 'p17', 'drive', 'elec', 'belt', 'posts', 'drive_hinge_pulley'].includes(key)) return false;
   if (key === 'bar_2020' || key === 'sector') return true;
+  if (key === 'carrier' || key === 'tensioner') return p.xc > 0;
   if (key === 'other' || key === 'frame_misc') return parent === 'sector' || (p.xc > 30 && p.yc < 25);
   return p.xc > 30;
 }
@@ -237,7 +246,7 @@ scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnviron
 scene.add(new THREE.HemisphereLight(0xffffff, 0x667788, 0.45));
 const sun = new THREE.DirectionalLight(0xffffff, 1.4); sun.position.set(250, 420, 320); scene.add(sun);
 const camera = new THREE.PerspectiveCamera(33, 1, 1, 6000);
-const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.1;
+const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.1; controls.minDistance = 15; controls.maxDistance = 3500; controls.zoomSpeed = 1.3; controls.screenSpacePanning = true;
 const HOME = { pos: new THREE.Vector3(540, 400, 980), tgt: new THREE.Vector3(0, 30, 0) };
 function resetView() { camera.position.copy(HOME.pos); controls.target.copy(HOME.tgt); controls.update(); }
 resetView();
@@ -249,7 +258,7 @@ const stairs = new THREE.Group(); stairs.visible = false; scene.add(stairs);
   for (let k = 0; k < 7; k++) { const s = new THREE.Mesh(new THREE.BoxGeometry(50, 320, 360), sm); s.position.set(60 + 25 + 50 * k, yb - 35 * (k + 1) - 160, 0); stairs.add(s); } }
 
 const meshes = [], byKey = {};
-const colorFor = (k) => (k === 'mine' || k === 'belt') ? css('--mine') : k === 'buy' ? css('--buy') : k === 'theirs' ? css('--theirs') : k === 'deck' ? css('--deck') : k === 'drive' ? css('--drive') : k === 'elec' ? css('--elec') : css('--ghost');
+const colorFor = (k) => (k === 'mine' || k === 'belt' || k === 'made') ? css('--mine') : k === 'buy' ? css('--buy') : k === 'theirs' ? css('--theirs') : k === 'deck' ? css('--deck') : k === 'drive' ? css('--drive') : k === 'elec' ? css('--elec') : css('--ghost');
 function applyTheme() { renderer.setClearColor(new THREE.Color(css('--soft'))); for (const m of meshes) m.userData.base.set(colorFor(infoOf(m.userData.key, m.userData.variant).k)); update(); }
 
 async function load() {
@@ -263,7 +272,7 @@ async function load() {
     const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(colorFor(info.k)), metalness: info.k === 'buy' ? 0.75 : 0.05, roughness: 0.5, envMapIntensity: 0.4, transparent: true, opacity: 1 });
     const m = new THREE.Mesh(g, mat);
     const parent = c.parent || PARENT[key] || null;
-    m.userData = { p, key, side, move: parent && (key === 'other' || key === 'frame_misc') ? MOVE[parent] : MOVE[key], own: ownOf(key, side), parent, base: mat.color.clone(), pad: !!c.pad, variant: p.var || null, vol: (p.mx[0] - p.mn[0]) * (p.mx[1] - p.mn[1]) * (p.mx[2] - p.mn[2]) };
+    m.userData = { p, key, side, move: key === 'carrier' ? (p.xc > 0 ? 4 : 2) : key === 'tensioner' ? 9 : key === 'pin' ? 6 : (parent && (key === 'other' || key === 'frame_misc') ? MOVE[parent] : MOVE[key]), own: ownOf(key, side), parent, base: mat.color.clone(), pad: !!c.pad, variant: p.var || null, vol: (p.mx[0] - p.mn[0]) * (p.mx[1] - p.mn[1]) * (p.mx[2] - p.mn[2]) };
     (isFront(p, key, parent) ? front : rear).add(m); meshes.push(m);
     const bk = key + (p.var ? '@' + p.var : ''), cur = byKey[bk];
     if (!cur || (p.zc > 0 && cur.userData.p.zc <= 0) || (p.zc > 0 && cur.userData.p.zc > 0 && m.userData.vol > cur.userData.vol)) byKey[bk] = m;
@@ -283,7 +292,7 @@ function placement(m) {   // position offset from home, following the parents up
   while (pk && depth < 4) { const po = ownOf(pk, d.side), pp = prog(MOVE[pk]); x += po[0] * (1 - pp); y += po[1] * (1 - pp); z += po[2] * (1 - pp); placed = placed && pp >= 1; pk = PARENT[pk]; depth++; }
   return [x, y, z, placed];
 }
-const DRIVE_KEYS = ['shaft', 'wheel_hinge_front', 'wheel_hinge_rear', 'drive_hinge_pulley', 'belt', 'drive', 'bar_2020', 'bar_3030', 'p17', 'bearing_support', 'sector'];
+const DRIVE_KEYS = ['pin', 'shaft', 'wheel_hinge_front', 'wheel_hinge_rear', 'drive_hinge_pulley', 'belt', 'drive', 'bar_2020', 'bar_3030', 'p17', 'bearing_support', 'sector'];
 const BOX_KEYS = ['deck', 'tray', 'elec', 'drive', 'belt', 'posts'];
 function update() {
   const cur = Math.min(Math.floor(state.a), MOVES.length - 1), transit = state.a < MOVES.length, hl = hlGroup();
@@ -313,7 +322,7 @@ function update() {
   stairs.visible = state.stairs;
   document.getElementById('assv').textContent = state.a >= MOVES.length ? 'done' : (cur + 1) + '/' + MOVES.length;
 }
-const NUMBERED = ['track_front', 'wheel_hinge_front', 'wheel_nose', 'shaft', 'plate_front', 'rail_front_lower', 'bearing_front_plate', 'plate_rear', 'track_rear', 'wheel_hinge_rear', 'wheel_rear', 'rail_rear_lower', 'bar_2020', 'bar_3030', 'deck', 'drive_hinge_pulley', 'drive'];
+const NUMBERED = ['tensioner', 'carrier', 'track_front', 'wheel_hinge_front', 'wheel_nose', 'shaft', 'plate_front', 'rail_front_lower', 'bearing_front_plate', 'plate_rear', 'track_rear', 'wheel_hinge_rear', 'wheel_rear', 'rail_rear_lower', 'bar_2020', 'bar_3030', 'deck', 'drive_hinge_pulley', 'drive'];
 const markers = [];
 function buildMarkers() {
   for (const key of NUMBERED) {
@@ -338,7 +347,7 @@ function placeMarkers() {
 }
 function select(m) { state.sel = m; update(); showPanel(); }
 function jointLine(key) { const i = infoOf(key, state.track); return `<div class="joint"><span class="n">${i.n || '·'}</span><div><b>${i.t}</b><div class="fast">${i.fast}</div></div></div>`; }
-const KIND = { mine: 'mine, printed', belt: 'bought belt (Rev B B10)', buy: 'bought', theirs: "Nhien's part", deck: 'the box', drive: 'drive train', elec: 'electronics', other: 'fastener' };
+const KIND = { mine: 'mine, printed', made: 'made on site (my sheets)', belt: 'bought belt (Rev B B10)', buy: 'bought', theirs: "Nhien's part", deck: 'the box', drive: 'drive train', elec: 'electronics', other: 'fastener' };
 function showPanel() {
   const m = state.sel;
   if (m) {
@@ -347,14 +356,15 @@ function showPanel() {
       <h3>What it does</h3><p>${i.role}</p><h3>How it is fastened</h3><div class="fast">${i.fast}</div><h3>Where it comes from</h3><p>${i.src}</p>
       <h3>Goes in at step ${m.userData.move + 1}</h3><p class="small">${mv.t}</p>
       <h3>Position (mm, 1:5)</h3><p class="small" style="font-family:var(--font-data)">x ${p.xc.toFixed(0)}, y ${p.yc.toFixed(0)}, z ${p.zc.toFixed(0)} from the hinge axis</p>
-      <p><button type="button" id="back" class="btn">Back</button></p>`;
+      <p><button type="button" id="back" class="btn">Back</button> <button type="button" id="zoomto" class="btn">Zoom to this part</button></p>`;
     panel.querySelector('#back').addEventListener('click', () => select(null));
+    panel.querySelector('#zoomto').addEventListener('click', () => focusMesh(m));
     return;
   }
   const done = state.a >= MOVES.length, cur = Math.min(Math.floor(state.a), MOVES.length - 1);
   let head;
   if (done) head = `<h2>Assembled</h2><p>Pull the Assemble slider left to take the robot apart, then push it right to rebuild it one connection at a time. Click any part or number for its job, fasteners and source. "Show: drive train only" strips the frame away so you can see the motors, belts, drive pulleys and hinge shafts.</p>
-    <div class="warn">To check with Nhien: (1) ${state.track === 'mine' ? 'the deck edge overhangs the front track lanes at y 25; my 3 mm cleats clear it by 5 mm (Rev B\'s 7.9 mm cleats would touch it).' : 'the deck edge overhangs the front track lanes at y 25 and the belt\'s 7.9 mm cleats reach exactly 25: they rub. Notch the deck 13 mm over each front lane from 25 mm behind the hinge to 110 mm ahead of it (clear of the posts), or use 5 mm cleats.'} (2) The hinge bends nose-down only (foam up-stops B18 under the deck), and as drawn it jams at 19° where the corner of the P14 angle meets the end of deck slot H: 3 mm more slot toward the nose clears it. Drag the Hinge slider to see both stops. (3) Design review, 16 Oct: round shaft with cross pins instead of D-flat and E-clips, jack-screw tensioners (TS-09), full-length rail carriers (TS-10), reamed bearing seats and the spacing sheet TS-11. The 3D model here still shows Rev B's D-shaft and E-clips.</div>`;
+    <div class="warn">To check with Nhien: (1) ${state.track === 'mine' ? 'the deck edge overhangs the front track lanes at y 25; my 3 mm cleats clear it by 5 mm (Rev B\'s 7.9 mm cleats would touch it).' : 'the deck edge overhangs the front track lanes at y 25 and the belt\'s 7.9 mm cleats reach exactly 25: they rub. Notch the deck 13 mm over each front lane from 25 mm behind the hinge to 110 mm ahead of it (clear of the posts), or use 5 mm cleats.'} (2) The hinge bends nose-down only (foam up-stops B18 under the deck), and as drawn it jams at 19° where the corner of the P14 angle meets the end of deck slot H: 3 mm more slot toward the nose clears it. Drag the Hinge slider to see both stops. (3) Design review, 16 Oct: round shaft with cross pins instead of D-flat and E-clips, jack-screw tensioners (18, TS-09), full-length rail carriers (19, TS-10), reamed bearing seats and the spacing sheet TS-11. The model shows the reviewed version.</div>`;
   else head = `<h2>Step ${cur + 1} of ${MOVES.length}</h2><p>${MOVES[cur].t}</p><h3>Connections made in this step</h3>${[...new Set(MOVES[cur].j)].map(jointLine).join('')}`;
   panel.innerHTML = head + `<h3>Build order</h3><div class="steps">${MOVES.map((s, i) => `<button type="button" data-step="${i}" class="${!done && i === cur ? 'on' : ''} ${state.a >= i + 1 ? 'done' : ''}">${i + 1}  ${s.t}</button>`).join('')}</div>
     <h3>Colours</h3><div class="legend"><span class="sw" style="background:var(--mine)"></span>${state.track === 'mine' ? 'my printed track' : 'bought belt + cleats (B10)'}<span class="sw" style="background:var(--buy)"></span>bought: wheels, bearings, shaft<span class="sw" style="background:var(--theirs)"></span>Nhien's plates, rails, bars, brackets<span class="sw" style="background:var(--deck)"></span>deck and tray (the box)<span class="sw" style="background:var(--drive)"></span>motors, belts, drive pulleys<span class="sw" style="background:var(--elec)"></span>controller, battery, cover<span class="sw" style="background:var(--ghost)"></span>screws, nuts, clips (faded)</div>
@@ -372,6 +382,33 @@ renderer.domElement.addEventListener('pointerup', (e) => {
   ray.setFromCamera(ptr, camera);
   const hits = ray.intersectObjects(meshes.filter(m => m.material.opacity > 0.3), false);
   select(hits.length ? hits[0].object : null);
+});
+// zoom: fit the camera to a set of parts, keeping the current viewing direction
+const ZOOM = { hinge: { keys: ['shaft', 'wheel_hinge_front', 'wheel_hinge_rear', 'drive_hinge_pulley', 'p17', 'pin'] }, nose: { keys: ['wheel_nose', 'tensioner', 'idler_hw'], x: 1 }, rear: { keys: ['wheel_rear', 'tensioner', 'idler_hw'], x: -1 },
+  sector: { keys: ['sector'] }, drive: { keys: ['drive', 'belt', 'drive_hinge_pulley'] }, deck: { keys: ['deck', 'tray', 'elec', 'posts'] } };
+const _box = new THREE.Box3(), _tmp = new THREE.Box3();
+function fitBox(box) {
+  if (box.isEmpty()) return;
+  const c = box.getCenter(new THREE.Vector3()), r = box.getSize(new THREE.Vector3()).length() / 2;
+  const dir = camera.position.clone().sub(controls.target).normalize(), d = Math.max(r / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2)) * 1.15, 40);
+  controls.target.copy(c); camera.position.copy(c).addScaledVector(dir, d); controls.update();
+}
+function focusKeys(name) {
+  if (name === 'all') { resetView(); return; }
+  const z = ZOOM[name]; _box.makeEmpty();
+  for (const m of meshes) {
+    if (!m.visible || !z.keys.includes(m.userData.key) || (z.x && Math.sign(m.userData.p.xc) !== z.x)) continue;
+    m.updateWorldMatrix(true, false); _tmp.copy(m.geometry.boundingBox).applyMatrix4(m.matrixWorld); _box.union(_tmp);
+  }
+  fitBox(_box);
+}
+function focusMesh(m) { m.updateWorldMatrix(true, false); fitBox(_tmp.copy(m.geometry.boundingBox).applyMatrix4(m.matrixWorld)); }
+document.getElementById('zoom').addEventListener('change', (e) => focusKeys(e.target.value));
+renderer.domElement.addEventListener('dblclick', (e) => {
+  const r = renderer.domElement.getBoundingClientRect(); ptr.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ptr, camera);
+  const hits = ray.intersectObjects(meshes.filter(m => m.visible && m.material.opacity > 0.3), false);
+  if (hits.length) { select(hits[0].object); focusMesh(hits[0].object); }
 });
 document.getElementById('assemble').addEventListener('input', (e) => { state.a = e.target.value / 1000 * MOVES.length; state.sel = null; update(); showPanel(); });
 const HINT_TEXT = document.getElementById('hint').textContent;

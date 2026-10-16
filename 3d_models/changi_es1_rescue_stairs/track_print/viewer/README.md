@@ -20,6 +20,11 @@ angle P14 meets the nose end of deck slot H. "Deck slot H +3 mm" releases the sw
 the slot needs. The front group that swings is the front plates, both 2020 bars, the sector gear P11 with
 P14 and their screws, the P19 brackets, the rails with their hardware and the nose idlers.
 
+The model carries the 16 Oct design review: plain round hinge shafts with cross pins (no D-flat, no
+E-clips), the TS-09 idler tensioners, the TS-10 rail carrier angles with rails trimmed to 186, and the
+nut positions that follow. Markers 18 and 19 are the tensioner and the carrier. Zoom: double-click a part
+to fly to it, "Zoom to this part" in the panel, or the Zoom menu for the hinge, idlers, sector, drive or deck.
+
 Open it from a web server (not file://), e.g. `python3 -m http.server` in this folder, or use the
 published artifact link in the chat. `parts.b64.txt` holds every solid as quantised 16-bit vertices, base64;
 `parts.json` is the index (name, class, bounding box, position, across-width tier, and `var` = mine / theirs
