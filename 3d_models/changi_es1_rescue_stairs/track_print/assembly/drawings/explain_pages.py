@@ -36,6 +36,16 @@ PAGES = [
   (340, 194, "Tooth profile (4:1)", "A tooth is 2 deep with a 1.45 radius tip and a 2.9 root; the 1.4 backing between teeth and cleats is the belt itself. Whole section 6.4 thick."),
   (60, 28, "Notes", "Print standing up as a ring, no supports, 100% infill, TPU 95A, on the Fab Lab UP300. Four tracks, about 32 g each."),
  ]),
+ ("TS-01B_track_belt", "How to read TS-01B: the bought track belt (Rev B B10)", [
+  (167, 244, "Cleats, outside", "22 rubber blocks 10 long, 7.9 high and the full 15 width, bonded on the belt back every 25 mm (every 5th tooth). They grip the step edges. Their tips are 25 mm from the axle: level with the deck underside, see the note."),
+  (115, 233, "Teeth, inside", "110 HTD 5M teeth, 5 apart, moulded into the belt. They mesh with the 20-tooth wheels, so the belt cannot slip."),
+  (54, 222, "Hinge wheel (dashed)", "The belt wraps the driven 20T wheel on the hinge shaft at the left and the idler at the right, 225 apart: 450 straight plus the two half wraps = 550, the belt's pitch length."),
+  (166, 196, "225 centres", "Same wheel spacing as the printed track, so the plates, slots and idlers do not change between the two versions."),
+  (74, 108, "Cleat profile (4:1)", "A cleat is a plain block 10 long and 7.9 high, bonded to the belt back; no taper. 11.7 total from tooth tip to cleat tip."),
+  (64, 80, "Tooth profile (4:1)", "HTD 5M tooth, 2.06 deep, on a 1.74 backing: 3.8 belt thickness. This is the belt as bought."),
+  (212, 82, "Across the belt (2:1)", "Belt and cleat are both 15 wide; the cleat spans the full width."),
+  (60, 28, "Notes", "Buy SKF PHG 550-5M-15 (RS SG 058-6535) x4; a belt shop cuts and bonds 88 cleats. The deck has to be notched 13 x 135 over each front lane, or the cleats cut to 5 high, before the belts fit under it."),
+ ]),
  ("TS-02_side_plate_front", "How to read TS-02: the front segment's side plate", [
   (162, 211.5, "Plate, seen from above", "7 thick, 265 long, 45 tall. Printed flat on the bed in PETG. Left plate drawn; the right one is its mirror."),
   (162, 226, "Slide rail, seen from above", "An 18 wide, 4 thick strip 185 long, joined to the plate by a web. It sits under the track's lower run so the track cannot sag between the wheels."),
@@ -141,5 +151,8 @@ def page(sheet, title, marks, n):
     out = HERE / f"EX-{sheet.split('_')[0][3:]}_{sheet.split('_', 1)[1]}.png"
     fig.savefig(out, dpi=150, facecolor="white"); plt.close(fig); print(out)
 
+import sys
+ONLY = sys.argv[1:]
 for n, (sheet, title, marks) in enumerate(PAGES):
-    page(sheet, title, marks, n)
+    if not ONLY or sheet in ONLY or sheet.split("_")[0] in ONLY:
+        page(sheet, title, marks, n)

@@ -319,6 +319,65 @@ def sheet_track():
     save(fig, "TS-01_track")
 
 
+# ------------------------------------------------------------------ TS-01B bought track belt (Rev B B10)
+B_PITCH, B_BACK, B_TIP = R_PITCH, 17.1, 13.3          # belt pitch line, back face and tooth-tip radii on the 20T wheel (back 3.8 thick)
+B_T, B_TOOTH_H, B_W = 3.8, 2.06, 15.0                  # HTD 5M belt: total thickness, tooth height, width
+CL_L, CL_H, CL_W, CL_PITCH, CL_N = 10.0, 7.9, 15.0, 25.0, 22   # cleats 10 along the belt x 7.9 high x 15 wide, every 5th tooth
+
+
+def belt_side(ax, zorder=3):
+    """The bought belt on its two wheels, seen from the side: belt band and 22 bonded cleats."""
+    shape_patch(ax, stadium(B_BACK).difference(stadium(B_TIP)), zorder=zorder)
+    b = B_BACK - B_PITCH
+    for k in range(CL_N):
+        (px, py), (nx, ny) = loop_point(k * CL_PITCH + 12.5)
+        tx, ty = -ny, nx
+        h = CL_L / 2
+        pts = [(px + nx * b + tx * h, py + ny * b + ty * h), (px + nx * b - tx * h, py + ny * b - ty * h),
+               (px + nx * (b + CL_H) - tx * h, py + ny * (b + CL_H) - ty * h), (px + nx * (b + CL_H) + tx * h, py + ny * (b + CL_H) + ty * h)]
+        ax.add_patch(Polygon(pts, closed=True, fc="white", ec=INK, lw=0.5, zorder=zorder))
+
+
+def sheet_belt():
+    fig, view, bg = a3_sheet("TRACK BELT, BOUGHT: HTD 550-5M-15 + 22 CLEATS", "TS-01B", material="NEOPRENE HTD BELT, RUBBER CLEATS", finish="AS BOUGHT, CLEATS BONDED", qty=4, scale="1:1, DETAILS 4:1 / 2:1", notes=[
+        "BELT: HTD 5M, 550 PITCH LENGTH (110 TEETH), 15 WIDE, E.G. SKF PHG 550-5M-15 (RS SG 058-6535). RUNS ON TWO HTD 5M 20T PULLEYS (TS-06) AT 225 CENTRES.",
+        f"CLEATS: {CL_N} PER BELT, RUBBER {CL_L:g} x {CL_H:g} x {CL_W:g}, ONE EVERY 5TH TOOTH ({CL_PITCH:g} PITCH), BONDED ON THE BELT BACK BY THE BELT SHOP (REV B BOM B10). 4 BELTS = 88 CLEATS.",
+        "CLEAT TIPS ARE 25.0 FROM THE AXLE, LEVEL WITH THE DECK UNDERSIDE: NOTCH DECK P12 13 x 135 OVER EACH FRONT LANE (x -25 TO 110) OR USE 5 MM CLEATS. SEE PACK PAGE 2.",
+        "ALTERNATIVE: TS-01 PRINTED TPU TRACK, 3 MM CLEATS, 5 MM UNDER THE DECK. SAME WHEELS, SAME CENTRES, SAME JOINTS.",
+    ])
+    # side view on the wheels, 1:1
+    ax = view(22, 190, (-32, 254), (-32, 32), 1.0, "SIDE VIEW, ON THE TWO WHEELS (WHEELS DASHED)")
+    belt_side(ax)
+    for cx in (0.0, C):
+        circle(ax, cx, 0, PU_OD_R, ls=(0, (4, 2)), lw=0.5)
+        centre_mark(ax, cx, 0, 12)
+    dim_h(ax, 0, C, -29, f"{C:g} CENTRES", ext_from=-PU_OD_R)
+    dim_v(ax, -25, 25, 250, "50 OVER CLEATS", ext_from=C + 20)
+    leader(ax, (112.5 + 5, 25), (150, 31), f"{CL_N} CLEATS AT {CL_PITCH:g} PITCH, EVERY 5TH TOOTH", fontsize=7)
+    leader(ax, (-11.5, 9.0), (-30, 29.5), "110 TEETH HTD 5M INSIDE (PD 31.83 ON THE WHEEL)", fontsize=7)
+    # section, straightened, 4:1
+    S = 4.0
+    ax = view(22, 60, (-3, 33), (-6, 15), S, "DETAIL: SECTION ALONG THE BELT, STRAIGHTENED (4:1)")
+    back = B_T - B_TOOTH_H
+    sec = [sbox(0, 0, 30, back)] + [tooth(2.5 + i * 5.0) for i in range(6)] + [SPoly([(5, back), (5 + CL_L, back), (5 + CL_L, back + CL_H), (5, back + CL_H)]), SPoly([(5 + CL_PITCH, back), (30, back), (30, back + CL_H), (5 + CL_PITCH, back + CL_H)])]
+    shape_patch(ax, unary_union(sec).intersection(sbox(0, -5, 30, 12)), hatch="////")
+    dim_h(ax, 2.5, 7.5, -4.0, "5", ext_from=-B_TOOTH_H, fontsize=7)
+    dim_h(ax, 5, 5 + CL_L, back + CL_H + 1.2, f"{CL_L:g}", ext_from=back + CL_H, fontsize=7)
+    dim_h(ax, 5, 5 + CL_PITCH, back + CL_H + 4.2, f"{CL_PITCH:g} CLEAT PITCH", ext_from=back + CL_H, fontsize=7)
+    dim_v(ax, -B_TOOTH_H, back, 31.5, f"{B_T:g}", ext_from=30, fontsize=7)
+    dim_v(ax, back, back + CL_H, 31.5, f"{CL_H:g}", ext_from=30, fontsize=7)
+    dim_v(ax, -B_TOOTH_H, back + CL_H, 33.0, f"{B_T + CL_H:g}", ext_from=30, fontsize=7)
+    ax.text(32, 12.0, "OUTSIDE (CLEATS, BONDED)", fontsize=6.5, ha="right", va="bottom")
+    ax.text(29.5, -5.6, "INSIDE (TEETH, ON THE WHEEL)", fontsize=6.5, ha="right", va="bottom")
+    # section across the belt, 2:1
+    ax = view(190, 60, (-11, 11), (-6, 13), 2.0, "SECTION ACROSS THE BELT (2:1)")
+    shape_patch(ax, unary_union([sbox(-B_W / 2, -B_TOOTH_H, B_W / 2, back), sbox(-CL_W / 2, back, CL_W / 2, back + CL_H)]), hatch="////")
+    dim_h(ax, -B_W / 2, B_W / 2, -4.5, f"{B_W:g}", ext_from=-B_TOOTH_H, fontsize=7)
+    dim_v(ax, back, back + CL_H, 9.5, f"{CL_H:g}", ext_from=CL_W / 2, fontsize=7)
+    ax.text(0, 11.6, "CLEAT FULL WIDTH", fontsize=6.5, ha="center", va="bottom")
+    save(fig, "TS-01B_track_belt")
+
+
 # ------------------------------------------------------------------ TS-02 / TS-03 side plates
 def sheet_side_plate(front):
     seg = "front" if front else "rear"
@@ -727,7 +786,7 @@ def sheet_rear_to_base():
 if __name__ == "__main__":
     which = sys.argv[1:] or ["all"]
     fns = dict(assembly=sheet_assembly, track=sheet_track, front=lambda: sheet_side_plate(True), rear=lambda: sheet_side_plate(False),
-               axles=sheet_axles, spacer=sheet_spacer, pulley=sheet_pulley, bearing=sheet_bearing, base=sheet_rear_to_base)
+               axles=sheet_axles, spacer=sheet_spacer, pulley=sheet_pulley, bearing=sheet_bearing, base=sheet_rear_to_base, belt=sheet_belt)
     for k, f in fns.items():
         if "all" in which or k in which:
             f()
