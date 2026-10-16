@@ -1,4 +1,4 @@
-# Procurement, hybrid build: my track on Nhien's Rev B frame
+# Procurement, Rev B build with my printed track
 
 Date 15 Oct 2026. Prices S$ ex GST as seen in listings; confirm at checkout. Rev B = Nhien's pack
 (`RB4107 Rev B`), whose BOM covers everything in section 2.

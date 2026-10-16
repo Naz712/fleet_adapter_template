@@ -67,10 +67,11 @@ aside .fast { font-family: var(--font-data); font-size: 12.5px; background: var(
 
 <header class="bar">
   <h1>RB4107 Track Assembly</h1>
-  <span class="sub">1:5 prototype, Nhien's Rev B frame with the printed track. Drag to orbit, scroll to zoom, click a part.</span>
+  <span class="sub">1:5 prototype on Nhien's Rev B frame, with my printed track or the bought belt. Drag to orbit, scroll to zoom, click a part.</span>
   <div class="ctl"><label for="assemble">Assemble</label><input id="assemble" type="range" min="0" max="1000" value="1000"><span class="val" id="assv">done</span></div>
   <div class="ctl"><label for="bend">Hinge</label><input id="bend" type="range" min="-40" max="40" step="0.1" value="0"><span class="val" id="bendv">0°</span></div>
   <div class="ctl"><label for="view">Show</label><select id="view"><option value="all">everything</option><option value="drive">drive train only</option><option value="frame">frame and tracks only</option></select></div>
+  <div class="ctl"><label for="track">Track</label><select id="track"><option value="mine">my printed track</option><option value="theirs">bought belt + cleats (B10)</option></select></div>
   <div class="ctl"><label for="stairs"><input id="stairs" type="checkbox"> ES1 stairs</label></div>
   <div class="ctl"><label for="ghost"><input id="ghost" type="checkbox" checked> Fade fasteners</label></div>
   <div class="ctl"><label for="slotfix"><input id="slotfix" type="checkbox"> Deck slot H +3 mm</label></div>
@@ -80,7 +81,7 @@ aside .fast { font-family: var(--font-data); font-size: 12.5px; background: var(
   <div id="stage">
     <div id="markers"></div>
     <div id="hint">Pull the Assemble slider left to take it apart, then push it right to put it together one connection at a time. Numbers are the joints; the panel names the fasteners for the joint being made.</div>
-    <div id="loading">Loading the model (6 MB)…</div>
+    <div id="loading">Loading the model (7 MB)…</div>
   </div>
   <aside id="panel"></aside>
 </main>
@@ -125,6 +126,15 @@ const INFO = {
   other: { n: 0, t: 'Fastener (Rev B)', k: 'other', role: 'A screw, nut, T-nut, washer, shim or E-clip from Nhien\'s pack. Faded by default so the real parts stay readable.', fast: 'See Rev B sheet 3 (joint and fastener schedule) for its place and torque.', src: 'Rev B BOM section 4.' }
 };
 // The build, one connection at a time (order from Rev B sheet 3). j = joints to show in the panel.
+// The same frame with Rev B's bought belt (BOM row B10) instead of my printed track. Same wheels, same 225 centres, same joints.
+const INFO_BELT = {
+  track_front: { n: 1, t: 'Front track belt (B10)', k: 'belt', role: 'Rev B\'s stock HTD 5M timing belt: 550 mm pitch length (110 teeth), 15 wide, with 22 rubber cleats 10 x 7.9 x 15 bonded on the back every 5th tooth (25 mm pitch). The teeth inside drive on the 20T wheels; the cleats grip the step edges. The cleat tips reach 25 mm above the hinge axis, which is exactly the deck\'s underside.', fast: 'No fastener. The loop goes over the two wheels from above; tension at the nose idler slot.\nCleats bonded by the belt shop (or cyanoacrylate for rubber), 22 per belt at 25 mm.', src: 'Buy: SKF PHG 550-5M-15, RS SG 058-6535, 4 belts; cleats cut 10 x 7.9 x 15 and bonded by a belt shop (Rev B BOM B10).' },
+  track_rear: { n: 9, t: 'Rear track belt (B10)', k: 'belt', role: 'Same belt and cleats, outboard of the rear plate, on the rear hinge wheel and the rear idler.', fast: 'No fastener. Tension at the rear idler slot.', src: 'Buy: same, 4 belts in all.' },
+};
+const infoOf = (key, variant) => (variant === 'theirs' && INFO_BELT[key]) || INFO[key];
+const HL_GROUPS = { track: ['track_front', 'track_rear'], pulley: ['wheel_nose', 'wheel_rear', 'wheel_hinge_front', 'wheel_hinge_rear'], plate_front: ['plate_front'], plate_rear: ['plate_rear'],
+  rail: ['rail_front_lower', 'rail_front_upper', 'rail_rear_lower', 'rail_rear_upper'], hinge_shaft: ['shaft'], bearing: ['bearing_front_plate', 'bearing_rear_plate', 'bearing_idler', 'bearing_support'],
+  shoulder: ['idler_hw'], bar: ['bar_2020', 'bar_3030'], deck: ['deck', 'tray', 'posts', 'elec', 'drive', 'belt', 'drive_hinge_pulley'], all: [] };   // #hl-<name>: catalogue renders
 const MOVES = [
   { t: 'Press the 688 bearings into the plates, the P17 supports and the idler wheels', j: ['bearing_front_plate'] },
   { t: 'Rear frame: rear plates P2 onto the 3030 bars with P18 corner brackets, from the sides; P17 hinge supports onto the middle bar', j: ['plate_rear', 'bar_3030', 'p17'] },
@@ -212,7 +222,7 @@ function isFront(p, key, parent) {
 // of the hinge, corner radius 53 mm). With slot H 3 mm longer the swing is clear to 40°.
 const HINGE = { up: 0, down: -18.8, downFixed: -40 };
 const HINGE_NOTE = {
-  up: 'Hinge stop at 0°: the front frame rests on the two foam up-stops (B18) glued under the deck, and the deck runs 135 mm ahead of the hinge with 5 mm over the track. Rev B bends nose-down only: down the stairs front-first, up the stairs rear-first.',
+  up: 'Hinge stop at 0°: the front frame rests on the two foam up-stops (B18) glued under the deck, and the deck runs 135 mm ahead of the hinge, 5 mm over the printed track (touching the bought belt\'s cleats). Rev B bends nose-down only: down the stairs front-first, up the stairs rear-first.',
   down: 'Hinge stop at 19°, as drawn: the top corner of the sector mount angle P14 (red) swings on a 53 mm radius into the nose end of the deck\'s sector slot H, which ends 46 mm ahead of the hinge. Lengthen slot H by 3 mm toward the nose (or chamfer the corner) and the swing is clear to 40°: tick "Deck slot H +3 mm".'
 };
 
@@ -239,8 +249,8 @@ const stairs = new THREE.Group(); stairs.visible = false; scene.add(stairs);
   for (let k = 0; k < 7; k++) { const s = new THREE.Mesh(new THREE.BoxGeometry(50, 320, 360), sm); s.position.set(60 + 25 + 50 * k, yb - 35 * (k + 1) - 160, 0); stairs.add(s); } }
 
 const meshes = [], byKey = {};
-const colorFor = (k) => k === 'mine' ? css('--mine') : k === 'buy' ? css('--buy') : k === 'theirs' ? css('--theirs') : k === 'deck' ? css('--deck') : k === 'drive' ? css('--drive') : k === 'elec' ? css('--elec') : css('--ghost');
-function applyTheme() { renderer.setClearColor(new THREE.Color(css('--soft'))); for (const m of meshes) m.userData.base.set(colorFor(INFO[m.userData.key].k)); update(); }
+const colorFor = (k) => (k === 'mine' || k === 'belt') ? css('--mine') : k === 'buy' ? css('--buy') : k === 'theirs' ? css('--theirs') : k === 'deck' ? css('--deck') : k === 'drive' ? css('--drive') : k === 'elec' ? css('--elec') : css('--ghost');
+function applyTheme() { renderer.setClearColor(new THREE.Color(css('--soft'))); for (const m of meshes) m.userData.base.set(colorFor(infoOf(m.userData.key, m.userData.variant).k)); update(); }
 
 async function load() {
   const [idx, b64] = await Promise.all([fetch('parts.json').then(r => r.json()), fetch('parts.b64.txt').then(r => r.text())]);
@@ -249,20 +259,22 @@ async function load() {
     const q = new Uint16Array(buf, p.o, p.v * 3), pos = new Float32Array(p.v * 3);
     for (let i = 0; i < p.v; i++) for (let k = 0; k < 3; k++) pos[i * 3 + k] = p.mn[k] + q[i * 3 + k] / 65535 * (p.mx[k] - p.mn[k]);
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.computeVertexNormals(); g.computeBoundingBox();
-    const c = classify(p), key = c.key, info = INFO[key], side = p.zc >= 0 ? 1 : -1;
+    const c = classify(p), key = c.key, info = infoOf(key, p.var), side = p.zc >= 0 ? 1 : -1;
     const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(colorFor(info.k)), metalness: info.k === 'buy' ? 0.75 : 0.05, roughness: 0.5, envMapIntensity: 0.4, transparent: true, opacity: 1 });
     const m = new THREE.Mesh(g, mat);
     const parent = c.parent || PARENT[key] || null;
-    m.userData = { p, key, side, move: parent && (key === 'other' || key === 'frame_misc') ? MOVE[parent] : MOVE[key], own: ownOf(key, side), parent, base: mat.color.clone(), pad: !!c.pad, vol: (p.mx[0] - p.mn[0]) * (p.mx[1] - p.mn[1]) * (p.mx[2] - p.mn[2]) };
+    m.userData = { p, key, side, move: parent && (key === 'other' || key === 'frame_misc') ? MOVE[parent] : MOVE[key], own: ownOf(key, side), parent, base: mat.color.clone(), pad: !!c.pad, variant: p.var || null, vol: (p.mx[0] - p.mn[0]) * (p.mx[1] - p.mn[1]) * (p.mx[2] - p.mn[2]) };
     (isFront(p, key, parent) ? front : rear).add(m); meshes.push(m);
-    const cur = byKey[key];
-    if (!cur || (p.zc > 0 && cur.userData.p.zc <= 0) || (p.zc > 0 && cur.userData.p.zc > 0 && m.userData.vol > cur.userData.vol)) byKey[key] = m;
+    const bk = key + (p.var ? '@' + p.var : ''), cur = byKey[bk];
+    if (!cur || (p.zc > 0 && cur.userData.p.zc <= 0) || (p.zc > 0 && cur.userData.p.zc > 0 && m.userData.vol > cur.userData.vol)) byKey[bk] = m;
   }
   document.getElementById('loading').hidden = true;
   buildMarkers(); update(); showPanel();
 }
 
-const state = { a: MOVES.length, bend: 0, ghost: true, stairs: false, view: 'all', sel: null, hingeHit: null, slotFix: false };
+const state = { a: MOVES.length, bend: 0, ghost: true, stairs: false, view: 'all', sel: null, hingeHit: null, slotFix: false, track: 'mine' };
+const hlGroup = () => location.hash.startsWith('#hl-') ? (HL_GROUPS[location.hash.slice(4)] || []) : null;
+const repOf = (key) => byKey[key + '@' + state.track] || byKey[key];
 const ease = (t) => t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t);
 const prog = (move) => ease(state.a - move);
 function placement(m) {   // position offset from home, following the parents up the chain; placed = everything in the chain is home
@@ -274,8 +286,10 @@ function placement(m) {   // position offset from home, following the parents up
 const DRIVE_KEYS = ['shaft', 'wheel_hinge_front', 'wheel_hinge_rear', 'drive_hinge_pulley', 'belt', 'drive', 'bar_2020', 'bar_3030', 'p17', 'bearing_support', 'sector'];
 const BOX_KEYS = ['deck', 'tray', 'elec', 'drive', 'belt', 'posts'];
 function update() {
-  const cur = Math.min(Math.floor(state.a), MOVES.length - 1), transit = state.a < MOVES.length;
+  const cur = Math.min(Math.floor(state.a), MOVES.length - 1), transit = state.a < MOVES.length, hl = hlGroup();
   for (const m of meshes) {
+    if (m.userData.variant && m.userData.variant !== state.track) { m.visible = false; continue; }   // the other track option
+    m.visible = true;
     const { key, move, base } = m.userData, [x, y, z, placed] = placement(m), fastener = key === 'other';
     m.position.set(x, y, z);
     const inThisMove = transit && move === cur;
@@ -284,8 +298,10 @@ function update() {
     if (!placed && !inThisMove) op *= 0.35;
     if (state.view === 'drive' && !DRIVE_KEYS.includes(key)) op = 0.06;
     if (state.view === 'frame' && BOX_KEYS.includes(key)) op = 0.06;
+    if (hl && hl.length) op = hl.includes(key) ? 1 : 0.1;                       // catalogue render: one group lit, the rest faded
     m.material.opacity = op; m.material.depthWrite = op > 0.5;
     m.material.color.copy(base);
+    if (hl && hl.includes(key)) { m.material.color.set(new THREE.Color(css('--accent'))); m.material.emissive.set(new THREE.Color(css('--accent'))); m.material.emissiveIntensity = 0.22; continue; }
     if (state.sel === m) { m.material.color.set(new THREE.Color(css('--accent'))); m.material.emissive.set(new THREE.Color(css('--accent'))); m.material.emissiveIntensity = 0.25; }
     else if (inThisMove && !fastener) { m.material.emissive.set(new THREE.Color(css('--accent'))); m.material.emissiveIntensity = 0.28; }
     else m.material.emissive.set(0x000000);
@@ -301,16 +317,17 @@ const NUMBERED = ['track_front', 'wheel_hinge_front', 'wheel_nose', 'shaft', 'pl
 const markers = [];
 function buildMarkers() {
   for (const key of NUMBERED) {
-    const m = byKey[key]; if (!m) continue;
+    if (!repOf(key)) continue;
     const el = document.createElement('button'); el.className = 'mk'; el.type = 'button'; el.textContent = INFO[key].n; el.title = INFO[key].t;
-    el.addEventListener('click', (e) => { e.stopPropagation(); select(m); });
-    markersEl.appendChild(el); markers.push({ el, m, key });
+    el.addEventListener('click', (e) => { e.stopPropagation(); select(repOf(key)); });
+    markersEl.appendChild(el); markers.push({ el, key });
   }
 }
 const v = new THREE.Vector3();
 function placeMarkers() {
-  const r = renderer.domElement.getBoundingClientRect(), clean = location.hash === '#clean';
-  for (const { el, m, key } of markers) {
+  const r = renderer.domElement.getBoundingClientRect(), clean = location.hash === '#clean' || location.hash.startsWith('#hl-');
+  for (const { el, key } of markers) {
+    const m = repOf(key); el.title = infoOf(key, state.track).t;
     const hiddenByView = (state.view === 'drive' && !DRIVE_KEYS.includes(key)) || (state.view === 'frame' && BOX_KEYS.includes(key));
     if (clean || hiddenByView || !placement(m)[3]) { el.hidden = true; continue; }
     const b = m.geometry.boundingBox; v.set((b.min.x + b.max.x) / 2, (b.min.y + b.max.y) / 2, (b.min.z + b.max.z) / 2); m.localToWorld(v); v.project(camera);
@@ -320,12 +337,12 @@ function placeMarkers() {
   }
 }
 function select(m) { state.sel = m; update(); showPanel(); }
-function jointLine(key) { const i = INFO[key]; return `<div class="joint"><span class="n">${i.n || '·'}</span><div><b>${i.t}</b><div class="fast">${i.fast}</div></div></div>`; }
-const KIND = { mine: 'mine, printed', buy: 'bought', theirs: "Nhien's part", deck: 'the box', drive: 'drive train', elec: 'electronics', other: 'fastener' };
+function jointLine(key) { const i = infoOf(key, state.track); return `<div class="joint"><span class="n">${i.n || '·'}</span><div><b>${i.t}</b><div class="fast">${i.fast}</div></div></div>`; }
+const KIND = { mine: 'mine, printed', belt: 'bought belt (Rev B B10)', buy: 'bought', theirs: "Nhien's part", deck: 'the box', drive: 'drive train', elec: 'electronics', other: 'fastener' };
 function showPanel() {
   const m = state.sel;
   if (m) {
-    const i = INFO[m.userData.key], p = m.userData.p, mv = MOVES[m.userData.move];
+    const i = infoOf(m.userData.key, m.userData.variant), p = m.userData.p, mv = MOVES[m.userData.move];
     panel.innerHTML = `<h2>${i.n ? i.n + '.  ' : ''}${i.t}</h2><span class="tag ${i.k}">${KIND[i.k]}</span>
       <h3>What it does</h3><p>${i.role}</p><h3>How it is fastened</h3><div class="fast">${i.fast}</div><h3>Where it comes from</h3><p>${i.src}</p>
       <h3>Goes in at step ${m.userData.move + 1}</h3><p class="small">${mv.t}</p>
@@ -337,10 +354,10 @@ function showPanel() {
   const done = state.a >= MOVES.length, cur = Math.min(Math.floor(state.a), MOVES.length - 1);
   let head;
   if (done) head = `<h2>Assembled</h2><p>Pull the Assemble slider left to take the robot apart, then push it right to rebuild it one connection at a time. Click any part or number for its job, fasteners and source. "Show: drive train only" strips the frame away so you can see the motors, belts, drive pulleys and hinge shafts.</p>
-    <div class="warn">To check with Nhien: (1) the deck edge overhangs the front track lanes at y 25, so Rev B's 7.9 mm cleats would touch it; my 3 mm cleats clear it by 5 mm. (2) The hinge bends nose-down only (foam up-stops B18 under the deck), and as drawn it jams at 19° where the corner of the P14 angle meets the end of deck slot H: 3 mm more slot toward the nose clears it. Drag the Hinge slider to see both stops.</div>`;
+    <div class="warn">To check with Nhien: (1) ${state.track === 'mine' ? 'the deck edge overhangs the front track lanes at y 25; my 3 mm cleats clear it by 5 mm (Rev B\'s 7.9 mm cleats would touch it).' : 'the deck edge overhangs the front track lanes at y 25 and the belt\'s 7.9 mm cleats reach exactly 25: they rub. Notch the deck 13 mm over each front lane from 25 mm behind the hinge to 110 mm ahead of it (clear of the posts), or use 5 mm cleats.'} (2) The hinge bends nose-down only (foam up-stops B18 under the deck), and as drawn it jams at 19° where the corner of the P14 angle meets the end of deck slot H: 3 mm more slot toward the nose clears it. Drag the Hinge slider to see both stops.</div>`;
   else head = `<h2>Step ${cur + 1} of ${MOVES.length}</h2><p>${MOVES[cur].t}</p><h3>Connections made in this step</h3>${[...new Set(MOVES[cur].j)].map(jointLine).join('')}`;
   panel.innerHTML = head + `<h3>Build order</h3><div class="steps">${MOVES.map((s, i) => `<button type="button" data-step="${i}" class="${!done && i === cur ? 'on' : ''} ${state.a >= i + 1 ? 'done' : ''}">${i + 1}  ${s.t}</button>`).join('')}</div>
-    <h3>Colours</h3><div class="legend"><span class="sw" style="background:var(--mine)"></span>my printed track<span class="sw" style="background:var(--buy)"></span>bought: wheels, bearings, shaft<span class="sw" style="background:var(--theirs)"></span>Nhien's plates, rails, bars, brackets<span class="sw" style="background:var(--deck)"></span>deck and tray (the box)<span class="sw" style="background:var(--drive)"></span>motors, belts, drive pulleys<span class="sw" style="background:var(--elec)"></span>controller, battery, cover<span class="sw" style="background:var(--ghost)"></span>screws, nuts, clips (faded)</div>
+    <h3>Colours</h3><div class="legend"><span class="sw" style="background:var(--mine)"></span>${state.track === 'mine' ? 'my printed track' : 'bought belt + cleats (B10)'}<span class="sw" style="background:var(--buy)"></span>bought: wheels, bearings, shaft<span class="sw" style="background:var(--theirs)"></span>Nhien's plates, rails, bars, brackets<span class="sw" style="background:var(--deck)"></span>deck and tray (the box)<span class="sw" style="background:var(--drive)"></span>motors, belts, drive pulleys<span class="sw" style="background:var(--elec)"></span>controller, battery, cover<span class="sw" style="background:var(--ghost)"></span>screws, nuts, clips (faded)</div>
     <p class="small" style="margin-top:8px">Order and fasteners from Rev B sheet 3. Small hardware travels with the part it is screwed into.</p>`;
   panel.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => { setA(+b.dataset.step + 0.5); }));
 }
@@ -358,7 +375,7 @@ renderer.domElement.addEventListener('pointerup', (e) => {
 });
 document.getElementById('assemble').addEventListener('input', (e) => { state.a = e.target.value / 1000 * MOVES.length; state.sel = null; update(); showPanel(); });
 const HINT_TEXT = document.getElementById('hint').textContent;
-const cleanHint = () => { document.getElementById('hint').hidden = location.hash === '#clean'; };   // #clean: stills without overlays
+const cleanHint = () => { document.getElementById('hint').hidden = location.hash === '#clean' || location.hash.startsWith('#hl-'); };   // #clean: stills without overlays
 cleanHint(); addEventListener('hashchange', cleanHint);
 function setBend(want) {
   const lo = state.slotFix ? HINGE.downFixed : HINGE.down, got = Math.max(lo, Math.min(HINGE.up, want));
@@ -371,6 +388,8 @@ function setBend(want) {
 document.getElementById('bend').addEventListener('input', (e) => setBend(+e.target.value));
 document.getElementById('slotfix').addEventListener('change', (e) => { state.slotFix = e.target.checked; setBend(state.bend); });
 document.getElementById('view').addEventListener('change', (e) => { state.view = e.target.value; update(); });
+document.getElementById('track').addEventListener('change', (e) => { state.track = e.target.value; state.sel = null; update(); showPanel(); });
+addEventListener('hashchange', () => update());
 document.getElementById('stairs').addEventListener('change', (e) => { state.stairs = e.target.checked; update(); });
 document.getElementById('ghost').addEventListener('change', (e) => { state.ghost = e.target.checked; update(); });
 document.getElementById('reset').addEventListener('click', resetView);
