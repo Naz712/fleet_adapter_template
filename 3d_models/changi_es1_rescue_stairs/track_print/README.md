@@ -149,3 +149,8 @@ assembly plan document):
   in place at assembly. TS-06, EX-06, the viewer texts and the pack's feasibility and build-day pages say so.
 - Everything else of the 16 Oct feasibility check stands: buildable with the Professional Workshop and the
   Fab Lab; it works as a 1:5 demonstrator of the ES1 descent once the review changes are in.
+- TS-09 and TS-10 corrected 18 Oct while building the CAD copy: the tab is 30 long with leg B 1.5 mm off the slot end
+  and its M3 hole at (+-223, +11); the slider is an 8 mm slice of the same angle with an 8 mm foot that the jack screw
+  pushes (the old flat slider sat 1 mm below the jack's axis); the carrier angles' plate legs are 6.5, not 8, so the
+  upper and lower angles clear each other, with six new M3 holes per plate at y +-3.5. `cad/RB4107_track_unit_reviewed.step`
+  carries all of it, interference-checked.

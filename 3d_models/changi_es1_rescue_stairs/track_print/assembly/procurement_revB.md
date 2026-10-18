@@ -35,11 +35,11 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 
 | Part | Qty | Make / buy | Where | Price | Arrives |
 |---|---|---|---|---|---|
-| Tensioner tab, Al angle 20 x 20 x 3 cut 28 with an 8 x 6 ear, M4 tapped (TS-09) | 4 | **Make**: hacksaw, drill, M4 tap | from BOM B16 angle (order 300 mm instead of 100) | - | 1 h |
-| Tensioner slider, Al 3 mm, 8 x 16, Ø6.4 (TS-09; replaces the M6 washer under the nut) | 4 | **Make**: from offcut | laser with the plates, or hand cut | - | with the plates |
+| Tensioner tab, Al angle 20 x 20 x 3 cut 30 with a 7.5 x 8 ear, M4 tapped (TS-09) | 4 | **Make**: hacksaw, drill, M4 tap | from BOM B16 angle (order 300 mm instead of 100) | - | 1 h |
+| Tensioner slider, an 8 mm slice of the same angle, leg 19 with Ø6.4, foot 8 (TS-09; replaces the M6 washer under the nut) | 4 | **Make**: hacksaw, drill | from the same angle (order 400 mm) | - | 30 min |
 | Jack screw M4 x 20 socket head + M3 x 6 for the tab | 4 + 4 | **Buy** | RS / local | - | stock |
-| New M3 tapped hole in P1 and P2 at (x +-223, y +10) for the tab (TS-09) | 4 | **Make**: add to the DXF, or drill 2.5 + tap M3 on site | with the plates | - | with the plates |
-| Rail carrier angle, Al 10 x 10 x 1.5 x 186, plate leg cut to 8, 3 + 3 holes (TS-10; replaces the 32 RS 427-991 clips) | 8 | **Make**: from 1.6 m of angle | local metal supplier / MISUMI SG | ~S$10 | 1-3 days |
+| New M3 tapped holes in P1 and P2: (x +-223, y +11) for the tab (TS-09) and six at (x +-40, +-105, +-170; y +-3.5) for the carriers (TS-10) | 4 | **Make**: add to the DXF, or drill 2.5 + tap M3 on site | with the plates | - | with the plates |
+| Rail carrier angle, Al 10 x 10 x 1.5 x 186, plate leg cut to 6.5, 3 + 3 holes (TS-10; replaces the 32 RS 427-991 clips) | 8 | **Make**: from 1.6 m of angle | local metal supplier / MISUMI SG | ~S$10 | 1-3 days |
 | Rails P3-P6 trimmed from 189 to 186 at the idler end (TS-10, TS-11) | 8 | Make: hacksaw | - | - | 10 min |
 
 ## 2. Nhien's (frame, drive, hinge, electronics), from the Rev B BOM

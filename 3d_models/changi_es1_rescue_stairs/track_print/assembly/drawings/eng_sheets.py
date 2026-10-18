@@ -627,32 +627,33 @@ def sheet_pulley():
 def sheet_tensioner():
     fig, view, bg = a3_sheet("IDLER TENSIONER: TAB, SLIDER AND JACK SCREW", "TS-09", material="AL ANGLE 20x20x3; AL PLATE 3", finish="DEBURRED", qty="4 SETS", scale="2:1, PARTS 2:1", notes=[
         "THE SHOULDER SCREW IS CLAMPED IN THE SLOT BY FRICTION ONLY. THE JACK SCREW SETS THE IDLER, THEN THE NUT IS TIGHTENED.",
-        "SLIDER REPLACES THE M6 WASHER UNDER THE NUT (3 THICK). TAB: NEW M3 TAPPED HOLE IN P1 / P2 AT x = +-223, y = +10\n    (ADD TO THE DXF, OR DRILL 2.5 AND TAP ON SITE).",
+        "SLIDER REPLACES THE M6 WASHER UNDER THE NUT (3 THICK). TAB: NEW M3 TAPPED HOLE IN P1 / P2 AT x = +-223, y = +11\n    (ADD TO THE DXF, OR DRILL 2.5 AND TAP ON SITE).",
         "FIT: IDLER INTO THE LOOP, SHOULDER SCREW THROUGH, SLIDER, NUT LOOSE, THEN THE TAB. TENSION (MACHINE ON BLOCKS):\n    HOOK A CLEAT OF THE LOWER RUN AT MID-SPAN, PULL IT OFF ITS RAIL WITH 4 N, WIND THE JACK SCREW UNTIL IT GIVES 2-3 MM,\n    TIGHTEN THE NUT, BACK OFF 1/4 TURN. PUSHING A RUN INWARD MOVES NOTHING: THE RAILS SIT UNDER BOTH RUNS.",
-        "DO NOT PUSH THE IDLER IN PAST x = 223 (RAIL END): TRAVEL 223 TO 232.6 = 9.6 MM = 19 MM OF LOOP.\n    JACK SCREW M4 x 20 SOCKET HEAD, KEY FROM THE HINGE SIDE, UNDER THE BAR.",
+        "DO NOT PUSH THE IDLER IN PAST x = 223 (RAIL END): TRAVEL 223 TO 232.6 = 9.6 MM = 19 MM OF LOOP.\n    JACK SCREW M4 x 20 SOCKET HEAD, KEY FROM THE HINGE SIDE, UNDER THE BAR; IT PUSHES THE SLIDER'S FOOT. LEG B 1.5 OFF THE SLOT END.",
     ])
     S = 2.0
     # view 1: nose end of P1 seen from inboard
-    ax = view(22, 162, (203, 244), (-19, 19), S, "NOSE END OF P1, SEEN FROM INBOARD (THE z 55 FACE)")
+    ax = view(22, 162, (195, 244), (-19, 19), S, "NOSE END OF P1, SEEN FROM INBOARD (THE z 55 FACE)")
     arc = [(225 + 15.2 * math.cos(a), 0.2 + 15.2 * math.sin(a)) for a in [math.radians(t) for t in range(-90, 91, 6)]]
     ax.add_patch(Polygon([(203, -15), (225, -15)] + arc + [(225, 15.4), (203, 15.4)], closed=True, fc="white", ec=INK, lw=0.8, zorder=2))
     shape_patch(ax, stadium(4.05, 220.4, 232.6), fc="white", zorder=3)
     circle(ax, 225, 0, 4, ls=(0, (4, 2)), lw=0.5).set_zorder(4)
-    rect(ax, 221, -13, 8, 16, "white", lw=0.8, zorder=5)                                   # slider
+    rect(ax, 221, -13, 8, 19, "white", lw=0.8, zorder=5)                                   # slider leg
+    rect(ax, 221, -13, 8, 3, "white", lw=0.8, hatch="////", zorder=6)                     # its foot, edge on
     ax.add_patch(RegularPolygon((225, 0), 6, radius=5.77, orientation=math.radians(30), fc="white", ec=INK, lw=0.8, zorder=6))   # nut
-    rect(ax, 217, -14, 3, 28, "white", lw=0.8, hatch="////", zorder=6)                   # tab leg B, edge on
-    rect(ax, 220, 6, 6, 8, "white", lw=0.8, zorder=5)                                    # ear on the plate
-    circle(ax, 223, 10, 1.5, fill="white", lw=0.6).set_zorder(7)
-    rect(ax, 210, -11.1, 10, 2.2, "white", lw=0.5, zorder=7)                             # jack screw shank (through leg B)
-    rect(ax, 206, -12.5, 4, 5, "white", lw=0.5, hatch="////", zorder=7)                  # its head
+    rect(ax, 215.5, -15, 3, 30, "white", lw=0.8, hatch="////", zorder=6)                 # tab leg B, edge on, 1.5 off the slot end
+    rect(ax, 218.5, 7, 7.5, 8, "white", lw=0.8, zorder=5)                                # ear on the plate
+    circle(ax, 223, 11, 1.7, fill="white", lw=0.6).set_zorder(7)
+    rect(ax, 202.5, -12.1, 18.5, 2.2, "white", lw=0.5, zorder=7)                         # jack screw shank (through leg B to the foot)
+    rect(ax, 198.5, -14.5, 4, 7, "white", lw=0.5, hatch="////", zorder=7)                # its head
     dim_h(ax, 220.4, 232.6, -17, "SLOT 12.2 x 8.1", ext_from=-4.05, fontsize=6.5)
-    dim_h(ax, 217, 220, 17, "3", ext_from=14, fontsize=6.5)
-    leader(ax, (229, -5), (233, -17), "SLIDER 8 x 16 x 3", fontsize=6.5)
-    leader(ax, (223, 11.5), (231, 16.5), "M3 x 6 INTO NEW TAPPED HOLE (223, +10)", fontsize=6.5)
-    leader(ax, (208, -12.5), (205, -17.5), "JACK SCREW M4 x 20", fontsize=6.5)
+    dim_h(ax, 215.5, 218.5, 17, "3", ext_from=15, fontsize=6.5)
+    leader(ax, (229, -5), (233, -17), "SLIDER: 8 SLICE OF THE ANGLE, LEG 19 + FOOT 8", fontsize=6.5)
+    leader(ax, (223, 12.7), (231, 16.5), "M3 x 6 INTO NEW TAPPED HOLE (223, +11)", fontsize=6.5)
+    leader(ax, (200.5, -14.5), (199, -18.3), "JACK SCREW M4 x 20, ON THE FOOT", fontsize=6.5)
     leader(ax, (229.5, 2.5), (234, 8), "M6 NYLOC", fontsize=6.5)
     # view 2: plan from above (x along, z across)
-    ax = view(22, 52, (203, 244), (34, 86), S * 0.9, "PLAN FROM ABOVE: PLATE, LANE, IDLER, TAB")
+    ax = view(22, 52, (195, 244), (34, 86), S * 0.9, "PLAN FROM ABOVE: PLATE, LANE, IDLER, TAB")
     rect(ax, 203, 55, 37.2, 5, "white", lw=0.8, hatch="////")                            # plate P1 (z 55-60) to its end
     ax.add_patch(Polygon([(240.2, 55), (240.2, 60)], closed=False, ec=INK, lw=0.8))
     rect(ax, 207, 60.5, 36, 1.5, "white", lw=0.6); rect(ax, 207, 78, 36, 1.5, "white", lw=0.6)   # flanges
@@ -660,39 +661,43 @@ def sheet_tensioner():
     rect(ax, 203, 60, 1.5, 20, "white", lw=0.5, hatch="\\\\")                        # rail carrier leg (TS-10) at the plate face
     rect(ax, 221, 80.5, 8, 5.5, "white", lw=0.6)                                         # screw head
     rect(ax, 219.5, 79.5, 11, 1, "white", lw=0.5)                                        # head washer
-    rect(ax, 221, 52, 8, 3, "white", lw=0.8)                                             # slider
+    rect(ax, 221, 52, 8, 3, "white", lw=0.8)                                             # slider leg on the plate face
+    rect(ax, 221, 47, 8, 5, "white", lw=0.8, hatch="\\\\")                              # slider foot, 8 inboard
     rect(ax, 220, 46, 10, 6, "white", lw=0.8)                                            # nut
     ax.add_patch(Rectangle((222, 44.5), 6, 41.5, fc="none", ec=INK, lw=0.5, ls=(0, (4, 2)), zorder=4))   # shoulder screw outline
-    rect(ax, 220, 52, 6, 3, "white", lw=0.8, hatch="////")                               # ear (leg A) on the plate face
-    rect(ax, 217, 35, 3, 20, "white", lw=0.8, hatch="////")                              # leg B
+    rect(ax, 218.5, 52, 7.5, 3, "white", lw=0.8, hatch="////")                           # ear (leg A) on the plate face
+    rect(ax, 215.5, 35, 3, 20, "white", lw=0.8, hatch="////")                            # leg B
     rect(ax, 203, 30.5, 7.9, 24.5, "white", lw=0.5, hatch="\\\\")                      # 2020 bar end (x to 210.9)
-    rect(ax, 203.5, 47.9, 16.5, 2.2, "white", lw=0.5)                                    # jack screw through leg B to the slider
+    rect(ax, 202.5, 47.9, 18.5, 2.2, "white", lw=0.5)                                    # jack screw through leg B to the slider foot
+    rect(ax, 198.5, 45.5, 4, 7, "white", lw=0.5, hatch="////")                           # its head
     dim_v(ax, 55, 60, 243, "5", ext_from=240.2, fontsize=6.5)
     dim_v(ax, 60.5, 79.5, 243, "19", ext_from=243, fontsize=6.5)
     dim_v(ax, 46, 55, 212, "NUT 6 + SLIDER 3", ext_from=220, fontsize=6.5)
-    dim_v(ax, 35, 55, 214.5, "20", ext_from=217, fontsize=6.5)
+    dim_v(ax, 35, 55, 213, "20", ext_from=215.5, fontsize=6.5)
     leader(ax, (210.9, 42), (206, 38.5), "2020 BAR P7 ENDS AT x 210.9", fontsize=6.5)
-    leader(ax, (218.5, 49), (206, 70), "JACK SCREW AXIS y -10, UNDER THE BAR", fontsize=6.5)
+    leader(ax, (217, 49), (206, 70), "JACK SCREW AXIS y -11, UNDER THE BAR, TIP ON THE FOOT", fontsize=6.5)
     ax.text(203.5, 85, "OUTBOARD (LANE, TRACK)", fontsize=6.5, va="top"); ax.text(212, 35, "INBOARD", fontsize=6.5, va="bottom")
     # parts
-    ax = view(190, 168, (-4, 34), (-4, 27), S, "TAB: AL ANGLE 20x20x3, CUT 28, LEG A CUT TO AN 8 x 6 EAR")
-    rect(ax, 0, 0, 28, 20, "white", lw=0.8)                                              # leg B, flat; the bend is its top edge (y 20)
+    ax = view(190, 168, (-4, 36), (-4, 27), S, "TAB: AL ANGLE 20x20x3, CUT 30, LEG A CUT TO A 7.5 x 8 EAR")
+    rect(ax, 0, 0, 30, 20, "white", lw=0.8)                                              # leg B, flat; the bend is its top edge (y 20)
     circle(ax, 4, 14, 1.7, fill="white").set_zorder(4)                                   # M4 tapped: 4 from the bottom end, 6 from the bend
-    rect(ax, 20, 20, 8, 3, "white", lw=0.8, hatch="////")                                # ear seen edge on (leg A, 3 thick), 8 long at the top end
-    dim_h(ax, 0, 28, -2.5, "28", ext_from=0, fontsize=6.5)
+    rect(ax, 22, 20, 8, 3, "white", lw=0.8, hatch="////")                                # ear seen edge on (leg A, 3 thick), 8 long at the top end
+    dim_h(ax, 0, 30, -2.5, "30", ext_from=0, fontsize=6.5)
     dim_h(ax, 0, 4, 24.5, "4", ext_from=20, fontsize=6.5)
     dim_v(ax, 14, 20, 31, "6", ext_from=28, fontsize=6.5)
     dim_v(ax, 0, 20, 33, "20", ext_from=28, fontsize=6.5)
-    dim_h(ax, 20, 28, 25.5, "8 (EAR)", ext_from=23, fontsize=6.5)
+    dim_h(ax, 22, 30, 25.5, "8 (EAR)", ext_from=23, fontsize=6.5)
     leader(ax, (4, 15.7), (8, 10), "M4 TAPPED THROUGH (JACK SCREW)", fontsize=6.5)
     ax = view(190, 104, (-4, 14), (-4, 24), S, "TAB, END VIEW")
-    rect(ax, 0, 0, 3, 20, "white", lw=0.8, hatch="////"); rect(ax, 0, 0, 6, 3, "white", lw=0.8, hatch="////")
-    dim_h(ax, 0, 6, -2.5, "6", ext_from=0, fontsize=6.5); dim_v(ax, 0, 3, 8, "3", ext_from=6, fontsize=6.5)
-    hidden_rect(ax, 1.3, 0, 3.4, 3)
-    leader(ax, (3, 3), (6, 12), "Ø3.4 THROUGH THE EAR\n(3 FROM THE BEND)", fontsize=6.5)
-    ax = view(190, 40, (-4, 14), (-4, 20), S, "SLIDER: AL 3 THICK")
-    rect(ax, 0, 0, 8, 16, "white", lw=0.8); circle(ax, 4, 13, 3.2, fill="white").set_zorder(4)
-    dim_h(ax, 0, 8, -2.5, "8", ext_from=0, fontsize=6.5); dim_v(ax, 0, 16, 11, "16", ext_from=8, fontsize=6.5); dim_v(ax, 0, 13, -2.5, "13", ext_from=0, fontsize=6.5)
+    rect(ax, 0, 0, 3, 20, "white", lw=0.8, hatch="////"); rect(ax, 0, 0, 7.5, 3, "white", lw=0.8, hatch="////")
+    dim_h(ax, 0, 7.5, -2.5, "7.5", ext_from=0, fontsize=6.5); dim_v(ax, 0, 3, 9.5, "3", ext_from=7.5, fontsize=6.5)
+    hidden_rect(ax, 2.8, 0, 3.4, 3)
+    leader(ax, (3, 3), (6, 12), "Ø3.4 THROUGH THE EAR\n(4.5 FROM THE BEND)", fontsize=6.5)
+    ax = view(160, 40, (-4, 26), (-4, 23), S, "SLIDER: 8 SLICE OF THE 20x20x3 ANGLE, FACE AND END VIEW")
+    rect(ax, 0, 0, 8, 19, "white", lw=0.8); circle(ax, 4, 13, 3.2, fill="white").set_zorder(4)
+    rect(ax, 14, 0, 3, 19, "white", lw=0.8, hatch="////"); rect(ax, 14, 0, 8, 3, "white", lw=0.8, hatch="////")   # end view: leg 19 and foot 8
+    dim_h(ax, 14, 22, -2.5, "8 FOOT", ext_from=0, fontsize=6.5)
+    dim_h(ax, 0, 8, -2.5, "8", ext_from=0, fontsize=6.5); dim_v(ax, 0, 19, 11, "19", ext_from=8, fontsize=6.5); dim_v(ax, 0, 13, -2.5, "13", ext_from=0, fontsize=6.5)
     leader(ax, (6.3, 14.5), (9, 18), "Ø6.4", fontsize=6.5)
     save(fig, "TS-09_tensioner")
 
@@ -700,32 +705,32 @@ def sheet_tensioner():
 # ------------------------------------------------------------------ TS-10 rail carrier angle (replaces the 4 small clips per rail)
 def sheet_rail_carrier():
     fig, view, bg = a3_sheet("RAIL CARRIER ANGLE (REPLACES RS 427-991 CLIPS)", "TS-10", material="AL ANGLE 10x10x1.5", finish="DEBURRED", qty=8, scale="1:1, SECTION 4:1", notes=[
-        "WHY: EACH UHMW RAIL HUNG ON 4 SMALL CLIPS (10 x 14.6 FEET). THE ANGLE RUNS THE FULL RAIL LENGTH: 186 x 10 OF CONTACT ON THE PLATE AND ON THE RAIL INSTEAD OF 4 SMALL PATCHES.",
-        "TRIM EACH RAIL FROM 189 TO 186 (3 OFF THE IDLER END): THE IDLER PULLEY FLANGE REACHES x 207 AT ITS INNERMOST SLOT POSITION AND THE RAIL ENDED AT 207 (TS-11).",
-        "PLATE LEG CUT TO 8 SO IT STAYS INSIDE THE 15.4 PLATE HEIGHT. 3 x Ø3.4 IN THE PLATE LEG AT P1 / P2'S EXISTING RAIL-CLIP HOLES (REV B SHEETS 4, 5, 18), M3 x 6. 3 x Ø2.6 IN THE RAIL LEG, 3 x 10 THREAD-FORMING SCREWS INTO THE RAIL'S PILOT HOLES (BOM F3).",
-        "THE ANGLE SITS ON THE RAIL FACE AWAY FROM THE TRACK: UNDER THE UPPER RAIL, ON TOP OF THE LOWER RAIL. THE TRACK'S TOOTH TIPS RIDE ON THE OTHER FACE (y 13.3).",
+        "WHY: EACH UHMW RAIL HUNG ON 4 SMALL CLIPS (10 x 14.6 FEET). THE ANGLE RUNS THE FULL RAIL LENGTH: 186 x 10 OF CONTACT\n    ON THE PLATE AND ON THE RAIL INSTEAD OF 4 SMALL PATCHES.",
+        "TRIM EACH RAIL FROM 189 TO 186 (3 OFF THE IDLER END): THE IDLER PULLEY FLANGE REACHES x 207 AT ITS INNERMOST SLOT POSITION\n    AND THE RAIL ENDED AT 207 (TS-11).",
+        "PLATE LEG CUT TO 6.5 SO THE UPPER AND LOWER ANGLES DO NOT MEET ON THE PLATE'S CENTRELINE. 3 x Ø3.4 IN THE PLATE LEG AT\n    x 40, 105, 170 FROM THE HINGE, y +-3.5: SIX NEW M3 HOLES IN P1 / P2 (THE OLD CLIP HOLES ON THE CENTRELINE ARE NOT USED).\n    3 x Ø2.6 IN THE RAIL LEG, 3 x 10 THREAD-FORMING SCREWS.",
+        "THE ANGLE SITS ON THE RAIL FACE AWAY FROM THE TRACK: UNDER THE UPPER RAIL, ON TOP OF THE LOWER RAIL. THE TRACK'S TOOTH TIPS\n    RIDE ON THE OTHER FACE (y 13.3).",
     ])
     ax = view(22, 170, (-5, 195), (-6, 14), 1.0, "PLAN OF ONE ANGLE, 1:1 (RAIL LEG FLAT)")
     rect(ax, 0, 0, 186, 10, "white", lw=0.8)
-    for x in (20, 93, 166): circle(ax, x, 5, 1.3, fill="white").set_zorder(4)
+    for x in (22, 87, 152): circle(ax, x, 5, 1.3, fill="white").set_zorder(4)
     rect(ax, 0, 10, 186, 1.5, "white", lw=0.8, hatch="////")
     dim_h(ax, 0, 186, -3.5, "186", ext_from=0, fontsize=7)
-    dim_h(ax, 0, 20, 12.5, "20", ext_from=10, fontsize=7); dim_h(ax, 20, 93, 12.5, "73", ext_from=10, fontsize=7); dim_h(ax, 93, 166, 12.5, "73", ext_from=10, fontsize=7)
+    dim_h(ax, 0, 22, 12.5, "22", ext_from=10, fontsize=7); dim_h(ax, 22, 87, 12.5, "65", ext_from=10, fontsize=7); dim_h(ax, 87, 152, 12.5, "65", ext_from=10, fontsize=7)
     leader(ax, (93, 6.3), (110, -4.5), "3 x Ø2.6 (RAIL SCREWS) IN THE RAIL LEG; 3 x Ø3.4 IN THE PLATE LEG AT THE SAME x", fontsize=6.5)
     S = 4.0
     ax = view(22, 60, (-12, 14), (-18, 2), S, "SECTION ACROSS THE LANE AT THE LOWER RAIL (4:1): PLATE, ANGLE, RAIL, TRACK")
     rect(ax, -5, -16, 5, 18, "white", lw=0.8, hatch="////")                               # plate P1 (z 55-60), y to 15.4 (cut off)
     rect(ax, 0, -13.3, 20 - 6, 5, "white", lw=0.8, hatch="\\\\")                        # rail z 60-74 (cut off at 74)
-    rect(ax, 0, -8.3, 1.5, 8, "white", lw=0.8)                                            # plate leg of the angle, 8 tall, on the plate face
+    rect(ax, 0, -6.8, 1.5, 6.5, "white", lw=0.8)                                          # plate leg of the angle, 6.5 tall, on the plate face
     rect(ax, 0, -8.3, 10, 1.5, "white", lw=0.8)                                            # rail leg on top of the lower rail
     rect(ax, 2.5, -16.7, 11.5, 3.4, "white", lw=0.6, hatch="....")                        # track lower run, teeth down onto the rail (z 62.5-77.5 cut off)
     for k in range(3): rect(ax, 3.5 + k * 4, -13.3, 2.0, -2.0, "white", lw=0.4)
     ax.plot([0, 0], [-13.3, -8.3], color=INK, lw=0.4)
     dim_v(ax, -13.3, -8.3, -7.5, "5 RAIL", ext_from=0, fontsize=6.5)
-    dim_v(ax, -8.3, -0.3, -9.5, "8 LEG", ext_from=0, fontsize=6.5)
+    dim_v(ax, -6.8, -0.3, -9.5, "6.5 LEG", ext_from=0, fontsize=6.5)
     dim_h(ax, 0, 10, 0.8, "10", ext_from=-6.8, fontsize=6.5)
     dim_h(ax, -5, 0, -17.5, "5", ext_from=-16, fontsize=6.5)
-    leader(ax, (0.75, -3), (4, -2), "M3 x 6 INTO THE PLATE (3 OFF)", fontsize=6.5)
+    leader(ax, (0.75, -3.5), (4, -2), "M3 x 6 INTO THE PLATE AT y -3.5 (3 OFF)", fontsize=6.5)
     leader(ax, (6, -7.6), (8, -4.5), "3 x 10 THREAD-FORMING INTO THE RAIL (3 OFF)", fontsize=6.5)
     leader(ax, (8, -15), (9, -17.6), "TRACK, TOOTH TIPS ON THE RAIL FACE y -13.3", fontsize=6.5)
     ax.text(-4.8, 1.4, "PLATE", fontsize=6, va="bottom"); ax.text(10.5, -11.5, "RAIL (UHMW)", fontsize=6)
