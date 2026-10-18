@@ -126,7 +126,7 @@ PAGES = [
   (88, 148, "Bore", "Bought with a small pilot bore. The 4 hinge wheels and the 2 stage-2 pulleys are reamed Ø8 H7 to run on the plain round shaft; the 4 idlers are bored Ø16 H7 for two 688 bearings each."),
   (163.5, 176, "Flange", "Ø35.7 flanges both sides, 1.5 thick, keep the track on the wheel. 19 over the flanges, 0.5 clear of each plate in the 20 lane."),
   (181, 190, "Belt face", "16 between the flanges; the 15 wide track sits here."),
-  (181, 166, "Cross pin", "Ø2.5 x 24 spring pin through wheel and shaft at mid-face, drilled together at assembly. It drives the wheel and holds it along the shaft: no D-flat, no grub screw, no E-clips (design review, TS-11)."),
+  (181, 166, "Cross pin", "Ø2.5 x 24 spring pin through wheel and shaft at mid-face: the hub is drilled on the press when the pulley is bored, the shaft is drilled through that hole at assembly, in place. It drives the wheel and holds it along the shaft: no D-flat, no grub screw, no E-clips (design review, TS-11)."),
   (210, 156, "Hub", "Only the printed stand-in has a hub and set screw. The bought wheel is a plain flanged disc, because the lane has no room for a hub."),
   (60, 28, "Notes", "Order 8 from MISUMI SG plain bore; the Professional Workshop reams and bores them; pins go in on the build day."),
  ]),

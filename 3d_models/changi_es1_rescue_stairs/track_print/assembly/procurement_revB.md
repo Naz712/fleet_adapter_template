@@ -26,10 +26,10 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 
 | Part | Qty | Make / buy | Where | Price | Arrives |
 |---|---|---|---|---|---|
-| Timing pulley HTD 5M 20T, 15 mm belt, flanged, **plain (pilot) bore** | 8 | **Buy** | [MISUMI SG, Timing Pulleys HTD 5M](https://sg.misumi-ec.com/vona2/detail/110310532889/) | ~S$20 each | ships 1 day from SG stock; allow 2-5 days |
-| Pulley bore modification: 4 x ream Ø8 H7 (hinge, M1 and M3 stage-2) and 4 x bore Ø16 H7 (idlers, M2); cross holes Ø2.5 drilled at assembly (TS-06, TS-11) | 8 + 2 | **Make**: Professional Workshop request | E3-01-06 | free | workshop queue, allow 1-2 weeks |
+| Timing pulley HTD 5M 20T, 15 mm belt, flanged, **plain (pilot) bore** | 8 + 1 to practise boring and pinning on | **Buy** | [MISUMI SG, Timing Pulleys HTD 5M](https://sg.misumi-ec.com/vona2/detail/110310532889/) | ~S$20 each | ships 1 day from SG stock; allow 2-5 days |
+| Pulley bore modification: 4 x ream Ø8 H7 (hinge, M1 and M3 stage-2) and 4 x bore Ø16 H7 (idlers, M2); hub cross holes Ø2.5 drilled on the press when boring, shaft drilled through them at assembly (TS-06, TS-11) | 8 + 2 | **Make**: Professional Workshop request | E3-01-06 | free | workshop queue, allow 1-2 weeks |
 | Spring pins ISO 8752 2.5 x 24 (hinge pulleys and stage-2 pulleys, replaces E-clips F22 and the D-flats) | 6 + 4 spare | **Buy** | [RS SG spring pins](https://sg.rs-online.com/web/c/fasteners-fixings/pins/spring-pins/) | ~S$5 / pack | RS SG stock |
-| Hinge shaft: plain round Ø8 h7 ground steel, 200 mm (replaces the D-shaft B13; cut to 82.3 and 77.3, no grooves) | 1 | **Buy**, cut | [RS SG linear shafts](https://sg.rs-online.com/web/c/bearings-seals/linear-motion/linear-shafts/) or MISUMI SG PSFJ8 | ~S$10 | RS SG stock |
+| Hinge shaft: plain round Ø8 h7 ground steel, 300 mm (100 mm to practise on) (replaces the D-shaft B13; cut to 82.3 and 77.3, no grooves) | 1 | **Buy**, cut | [RS SG linear shafts](https://sg.rs-online.com/web/c/bearings-seals/linear-motion/linear-shafts/) or MISUMI SG PSFJ8 | ~S$10 | RS SG stock |
 
 ## 1D. Tension and rail support (from the design review), both options
 

@@ -134,3 +134,18 @@ python3 preview_track.py                         # redraws preview/
 The cleat count becomes the nearest to five per step round the 550 mm loop. Every value
 (belt teeth, pulley teeth, cleat size, track width) is in the `Design` dataclass at the top of
 `generate_track.py`. Every file is checked to be a single closed solid.
+
+## Buildability and function check, 18 Oct 2026
+
+Measured on the shared model before the build steps were written (full write-up in the manufacturing and
+assembly plan document):
+
+- Hinge sector travel: the sector spans 31.4° behind to 42.3° ahead of vertical and the pinion sits 10.4°
+  ahead (centre x 11, y 60), so 41.8° of teeth lie behind the pinion; less 5 to 7° to keep 1.5 teeth in
+  mesh that is 35 to 37° of nose-down travel against the 35° stair pitch. Ask Nhien for two more teeth at
+  the rear end (+7°) and 3 mm more slot H toward the rear.
+- Cross pins: the shaft cannot go to the drill press with its pulleys on (they sit between the plates), so
+  the hub holes are drilled on the press when the pulleys are bored and the shaft is drilled through them
+  in place at assembly. TS-06, EX-06, the viewer texts and the pack's feasibility and build-day pages say so.
+- Everything else of the 16 Oct feasibility check stands: buildable with the Professional Workshop and the
+  Fab Lab; it works as a 1:5 demonstrator of the ES1 descent once the review changes are in.
