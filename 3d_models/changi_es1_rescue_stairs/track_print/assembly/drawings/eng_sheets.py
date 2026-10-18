@@ -626,10 +626,10 @@ def sheet_pulley():
 # ------------------------------------------------------------------ TS-09 idler tensioner (tab, slider, jack screw)
 def sheet_tensioner():
     fig, view, bg = a3_sheet("IDLER TENSIONER: TAB, SLIDER AND JACK SCREW", "TS-09", material="AL ANGLE 20x20x3; AL PLATE 3", finish="DEBURRED", qty="4 SETS", scale="2:1, PARTS 2:1", notes=[
-        "WHY: THE IDLER'S SHOULDER SCREW IS CLAMPED IN THE PLATE SLOT BY FRICTION ONLY. THE JACK SCREW PUSHES THE IDLER OUT TO A SET TENSION, THEN THE NUT IS TIGHTENED. 1 SET PER IDLER, 4 OFF.",
-        "SLIDER REPLACES THE M6 WASHER UNDER THE NUT (3 THICK INSTEAD OF 1.6). TAB BOLTS TO A NEW M3 TAPPED HOLE IN P1 / P2 AT x = +-223, y = +10 FROM THE HINGE AXIS: ADD TO THE DXF OR DRILL 2.5 AND TAP ON SITE.",
-        "FIT ORDER: IDLER INTO THE TRACK LOOP, SHOULDER SCREW THROUGH, SLIDER, NUT LOOSE, THEN THE TAB. TENSION: TURN THE JACK SCREW UNTIL THE TRACK'S UPPER RUN DEFLECTS 2-3 MM UNDER A FIRM FINGER PUSH AT MID-SPAN, TIGHTEN THE NUT, BACK THE JACK SCREW OFF 1/4 TURN.",
-        "DO NOT PUSH THE IDLER IN PAST x = 223 (RAIL END, TS-11). USABLE TRAVEL 223 TO 232.6 = 9.6 MM = 19 MM OF LOOP. JACK SCREW M4 x 20 SOCKET HEAD, KEY FROM THE HINGE SIDE, UNDER THE BAR.",
+        "THE SHOULDER SCREW IS CLAMPED IN THE SLOT BY FRICTION ONLY. THE JACK SCREW SETS THE IDLER, THEN THE NUT IS TIGHTENED.",
+        "SLIDER REPLACES THE M6 WASHER UNDER THE NUT (3 THICK). TAB: NEW M3 TAPPED HOLE IN P1 / P2 AT x = +-223, y = +10\n    (ADD TO THE DXF, OR DRILL 2.5 AND TAP ON SITE).",
+        "FIT: IDLER INTO THE LOOP, SHOULDER SCREW THROUGH, SLIDER, NUT LOOSE, THEN THE TAB. TENSION (MACHINE ON BLOCKS):\n    HOOK A CLEAT OF THE LOWER RUN AT MID-SPAN, PULL IT OFF ITS RAIL WITH 4 N, WIND THE JACK SCREW UNTIL IT GIVES 2-3 MM,\n    TIGHTEN THE NUT, BACK OFF 1/4 TURN. PUSHING A RUN INWARD MOVES NOTHING: THE RAILS SIT UNDER BOTH RUNS.",
+        "DO NOT PUSH THE IDLER IN PAST x = 223 (RAIL END): TRAVEL 223 TO 232.6 = 9.6 MM = 19 MM OF LOOP.\n    JACK SCREW M4 x 20 SOCKET HEAD, KEY FROM THE HINGE SIDE, UNDER THE BAR.",
     ])
     S = 2.0
     # view 1: nose end of P1 seen from inboard
@@ -652,7 +652,7 @@ def sheet_tensioner():
     leader(ax, (208, -12.5), (205, -17.5), "JACK SCREW M4 x 20", fontsize=6.5)
     leader(ax, (229.5, 2.5), (234, 8), "M6 NYLOC", fontsize=6.5)
     # view 2: plan from above (x along, z across)
-    ax = view(22, 40, (203, 244), (30, 86), S, "PLAN FROM ABOVE: PLATE, LANE, IDLER, TAB")
+    ax = view(22, 52, (203, 244), (34, 86), S * 0.9, "PLAN FROM ABOVE: PLATE, LANE, IDLER, TAB")
     rect(ax, 203, 55, 37.2, 5, "white", lw=0.8, hatch="////")                            # plate P1 (z 55-60) to its end
     ax.add_patch(Polygon([(240.2, 55), (240.2, 60)], closed=False, ec=INK, lw=0.8))
     rect(ax, 207, 60.5, 36, 1.5, "white", lw=0.6); rect(ax, 207, 78, 36, 1.5, "white", lw=0.6)   # flanges
@@ -671,9 +671,9 @@ def sheet_tensioner():
     dim_v(ax, 60.5, 79.5, 243, "19", ext_from=243, fontsize=6.5)
     dim_v(ax, 46, 55, 212, "NUT 6 + SLIDER 3", ext_from=220, fontsize=6.5)
     dim_v(ax, 35, 55, 214.5, "20", ext_from=217, fontsize=6.5)
-    leader(ax, (210.9, 42), (206, 36), "2020 BAR P7 ENDS AT x 210.9", fontsize=6.5)
+    leader(ax, (210.9, 42), (206, 38.5), "2020 BAR P7 ENDS AT x 210.9", fontsize=6.5)
     leader(ax, (218.5, 49), (206, 70), "JACK SCREW AXIS y -10, UNDER THE BAR", fontsize=6.5)
-    ax.text(203.5, 85, "OUTBOARD (LANE, TRACK)", fontsize=6.5, va="top"); ax.text(212, 31, "INBOARD", fontsize=6.5, va="bottom")
+    ax.text(203.5, 85, "OUTBOARD (LANE, TRACK)", fontsize=6.5, va="top"); ax.text(212, 35, "INBOARD", fontsize=6.5, va="bottom")
     # parts
     ax = view(190, 168, (-4, 34), (-4, 27), S, "TAB: AL ANGLE 20x20x3, CUT 28, LEG A CUT TO AN 8 x 6 EAR")
     rect(ax, 0, 0, 28, 20, "white", lw=0.8)                                              # leg B, flat; the bend is its top edge (y 20)

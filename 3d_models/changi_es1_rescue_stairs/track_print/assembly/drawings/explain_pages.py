@@ -52,7 +52,7 @@ PAGES = [
   (62, 181, "Slider", "A 3 mm aluminium plate, 8 x 16 with a Ø6.4 hole, on the screw's thread under the nut in place of the M6 washer. It gives the jack screw a flat face to push on, 10 mm below the axis so the hex key clears the bar."),
   (53, 214, "Tab, leg B", "The angle's long leg stands off the plate, inboard. The M4 jack screw threads through it along the slot direction."),
   (62, 218, "Ear and M3", "The short leg is cut down to an 8 x 6 ear above the slot and bolted to the plate with one M3 x 6 into a new tapped hole at (223, +10). Fit the tab after the nut is on loosely."),
-  (32, 178, "Jack screw", "M4 x 20 socket head. Wind it in until the track's upper run deflects 2 to 3 mm under a firm finger push at mid-span, tighten the nut, then back it off a quarter turn."),
+  (32, 178, "Jack screw", "M4 x 20 socket head. Wind it in until the lower run, hooked at a cleat at mid-span and pulled off its rail with 4 N (machine on blocks), gives 2 to 3 mm; pushing a run inward moves nothing because the rails sit under both runs, tighten the nut, then back it off a quarter turn."),
   (66, 120, "Plan: the lane", "Seen from above: plate P1 at z 55 to 60, the idler wheel in the lane with the screw head outside, the nut, slider and tab inboard, the 2020 bar ending at x 210.9 just behind the tab."),
   (206, 201, "Tab, flat", "Angle 20 x 20 x 3 cut 28 long; the M4 hole is 4 from the bottom end and 6 from the bend; the ear is the top 8 of the other leg, trimmed to 6."),
   (206, 64, "Slider", "8 x 16 x 3, hole Ø6.4 at 13 from the bottom."),
