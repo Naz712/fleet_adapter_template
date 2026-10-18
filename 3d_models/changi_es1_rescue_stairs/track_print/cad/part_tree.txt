@@ -1,0 +1,174 @@
+01 Rear frame (step 2)
+  P2 side plates and hinge bearings
+    P2 side plate, rear A (reviewed: tab hole at +11, six carrier holes)
+    P2 side plate, rear B (reviewed: tab hole at +11, six carrier holes)
+    Bearing 688-2RS, P2 plate A (seat laser 15.8, reamed 16 H7)
+    Bearing 688-2RS, P2 plate B (seat laser 15.8, reamed 16 H7)
+  3030 bars and corner brackets
+    P8 bar 3030 x 160, rear
+    P8 bar 3030 x 160, middle
+    Corner bracket 3030, rear bar A
+    M6x10 SHCS, bracket into rear bar A
+    T-nut M6 slot 8, bracket in rear bar A
+    M5x8 SHCS, bracket into P2, rear bar A #1
+    M5x8 SHCS, bracket into P2, rear bar A #2
+    Corner bracket 3030, rear bar B
+    M6x10 SHCS, bracket into rear bar B
+    T-nut M6 slot 8, bracket in rear bar B
+    M5x8 SHCS, bracket into P2, rear bar B #1
+    M5x8 SHCS, bracket into P2, rear bar B #2
+    Corner bracket 3030, middle bar A
+    M6x10 SHCS, bracket into middle bar A
+    T-nut M6 slot 8, bracket in middle bar A
+    M5x8 SHCS, bracket into P2, middle bar A #1
+    M5x8 SHCS, bracket into P2, middle bar A #2
+    Corner bracket 3030, middle bar B
+    M6x10 SHCS, bracket into middle bar B
+    T-nut M6 slot 8, bracket in middle bar B
+    M5x8 SHCS, bracket into P2, middle bar B #1
+    M5x8 SHCS, bracket into P2, middle bar B #2
+  T-nuts for the deck screws (Nhien's deck P12)
+    T-nut M5 slot 8, deck to rear bar #1
+    T-nut M5 slot 8, deck to rear bar #2
+    T-nut M5 slot 8, deck to rear bar #3
+    T-nut M5 slot 8, deck to rear bar #4
+    T-nut M5 slot 8, deck to middle bar #1
+    T-nut M5 slot 8, deck to middle bar #2
+    T-nut M5 slot 8, deck to middle bar #3
+    T-nut M5 slot 8, deck to middle bar #4
+  P17 hinge shaft supports
+    P17 hinge shaft support A (5 mm plate + 4 mm foot)
+    Bearing 688-2RS, P17 support A
+    M5x10 SHCS, P17 A into middle bar #1
+    M5x10 SHCS, P17 A into middle bar #2
+    P17 hinge shaft support B (5 mm plate + 4 mm foot)
+    Bearing 688-2RS, P17 support B
+    M5x10 SHCS, P17 B into middle bar #1
+    M5x10 SHCS, P17 B into middle bar #2
+    T-nut M5 slot 8, P17 A #1
+    T-nut M5 slot 8, P17 A #2
+    T-nut M5 slot 8, P17 B #1
+    T-nut M5 slot 8, P17 B #2
+02 Front frame (step 4)
+  P1 side plates and hinge bearings
+    P1 side plate, front A (reviewed: tab hole at +11, six carrier holes)
+    P1 side plate, front B (reviewed: tab hole at +11, six carrier holes)
+    Bearing 688-2RS, P1 plate A (seat laser 15.8, reamed 16 H7)
+    Bearing 688-2RS, P1 plate B (seat laser 15.8, reamed 16 H7)
+  2020 bars and corner brackets
+    P7 bar 2020 x 110, hinge side
+    P7 bar 2020 x 110, nose
+    Corner bracket 2020, hinge-side bar A
+    M5x8 SHCS, bracket into hinge-side bar A
+    T-nut M5 slot 6, bracket in hinge-side bar A
+    M4x8 SHCS, bracket into P1, hinge-side bar A #1
+    M4x8 SHCS, bracket into P1, hinge-side bar A #2
+    Corner bracket 2020, hinge-side bar B
+    M5x8 SHCS, bracket into hinge-side bar B
+    T-nut M5 slot 6, bracket in hinge-side bar B
+    M4x8 SHCS, bracket into P1, hinge-side bar B #1
+    M4x8 SHCS, bracket into P1, hinge-side bar B #2
+    Corner bracket 2020, nose bar A
+    M5x8 SHCS, bracket into nose bar A
+    T-nut M5 slot 6, bracket in nose bar A
+    M4x8 SHCS, bracket into P1, nose bar A #1
+    M4x8 SHCS, bracket into P1, nose bar A #2
+    Corner bracket 2020, nose bar B
+    M5x8 SHCS, bracket into nose bar B
+    T-nut M5 slot 6, bracket in nose bar B
+    M4x8 SHCS, bracket into P1, nose bar B #1
+    M4x8 SHCS, bracket into P1, nose bar B #2
+03 Rails and carrier angles (steps 2-3, TS-10)
+  Rear rails A
+    P5 rail, rear upper A (UHMW, trimmed to 186)
+    P6 rail, rear lower A (UHMW, trimmed to 186)
+    TS-10 carrier angle, rear A upper (10x10x1.5 x 186, 6.5 leg, three M3)
+    TS-10 carrier angle, rear A lower (10x10x1.5 x 186, 6.5 leg, three M3)
+  Rear rails B
+    P5 rail, rear upper B (UHMW, trimmed to 186)
+    P6 rail, rear lower B (UHMW, trimmed to 186)
+    TS-10 carrier angle, rear B upper (10x10x1.5 x 186, 6.5 leg, three M3)
+    TS-10 carrier angle, rear B lower (10x10x1.5 x 186, 6.5 leg, three M3)
+  Front rails A
+    P3 rail, front upper A (UHMW, trimmed to 186)
+    P4 rail, front lower A (UHMW, trimmed to 186)
+    TS-10 carrier angle, front A upper (10x10x1.5 x 186, 6.5 leg, three M3)
+    TS-10 carrier angle, front A lower (10x10x1.5 x 186, 6.5 leg, three M3)
+  Front rails B
+    P3 rail, front upper B (UHMW, trimmed to 186)
+    P4 rail, front lower B (UHMW, trimmed to 186)
+    TS-10 carrier angle, front B upper (10x10x1.5 x 186, 6.5 leg, three M3)
+    TS-10 carrier angle, front B lower (10x10x1.5 x 186, 6.5 leg, three M3)
+04 Hinge shaft A, wheels and pins (steps 6-7, TS-06, TS-11)
+  Shim 8x11x1, stage-2 pulley A to the P17 bearing
+  Hinge wheel HTD 5M 20T, rear A (bore 8 H7, cross pinned, TS-06)
+  Stage-2 pulley M3, A (bore 8 H7, cross pinned)
+  Hinge wheel HTD 5M 20T, front A (bore 8 H7, cross pinned, TS-06)
+  Hinge shaft A, d8 h7 plain round x 82.3 (TS-11)
+  Spring pin 2.5x24, rear wheel A
+  Spring pin 2.5x24, stage-2 pulley A
+  Spring pin 2.5x24, front wheel A
+  Shim 8x11x0.5, front wheel A to the P1 bearing
+05 Hinge shaft B, wheels and pins (steps 6-7, TS-06, TS-11)
+  Shim 8x11x1, stage-2 pulley B to the P17 bearing
+  Hinge wheel HTD 5M 20T, rear B (bore 8 H7, cross pinned, TS-06)
+  Stage-2 pulley M3, B (bore 8 H7, cross pinned)
+  Hinge wheel HTD 5M 20T, front B (bore 8 H7, cross pinned, TS-06)
+  Hinge shaft B, d8 h7 plain round x 77.3 (TS-11)
+  Spring pin 2.5x24, rear wheel B
+  Spring pin 2.5x24, stage-2 pulley B
+  Spring pin 2.5x24, front wheel B
+  Shim 8x11x0.5, front wheel B to the P1 bearing
+06 Nose idler A and tensioner (steps 10-11, TS-09)
+  Bearing 688-2RS, nose idler A #1
+  Bearing 688-2RS, nose idler A #2
+  Washer 8x11x1 under the shoulder screw head, nose idler A
+  Nyloc nut M6, nose idler A (1.4 inboard for the slider)
+  Idler wheel HTD 5M 20T, nose A (bore 16 H7 for two 688s)
+  Shim 8x11x0.5, nose idler A to the plate
+  Spacer sleeve 8x10x9, nose idler A
+  Shoulder screw ISO 7379 8x25 M6, nose idler A (stub axle)
+  TS-09 tensioner tab, nose A (20x20x3 angle cut 30, 7.5x8 ear, M3 into the plate)
+  TS-09 slider, nose A (8 mm angle slice, 19 leg + 8 foot, d6.4)
+  TS-09 jack screw M4x20, nose A (through leg B, tip on the foot)
+07 Nose idler B and tensioner (steps 10-11, TS-09)
+  Bearing 688-2RS, nose idler B #1
+  Bearing 688-2RS, nose idler B #2
+  Washer 8x11x1 under the shoulder screw head, nose idler B
+  Nyloc nut M6, nose idler B (1.4 inboard for the slider)
+  Idler wheel HTD 5M 20T, nose B (bore 16 H7 for two 688s)
+  Shim 8x11x0.5, nose idler B to the plate
+  Spacer sleeve 8x10x9, nose idler B
+  Shoulder screw ISO 7379 8x25 M6, nose idler B (stub axle)
+  TS-09 tensioner tab, nose B (20x20x3 angle cut 30, 7.5x8 ear, M3 into the plate)
+  TS-09 slider, nose B (8 mm angle slice, 19 leg + 8 foot, d6.4)
+  TS-09 jack screw M4x20, nose B (through leg B, tip on the foot)
+08 Rear idler A and tensioner (steps 10-11, TS-09)
+  Bearing 688-2RS, rear idler A #1
+  Bearing 688-2RS, rear idler A #2
+  Washer 8x11x1 under the shoulder screw head, rear idler A
+  Nyloc nut M6, rear idler A (1.4 inboard for the slider)
+  Idler wheel HTD 5M 20T, rear A (bore 16 H7 for two 688s)
+  Shim 8x11x0.5, rear idler A to the plate
+  Spacer sleeve 8x10x9, rear idler A
+  Shoulder screw ISO 7379 8x25 M6, rear idler A (stub axle)
+  TS-09 tensioner tab, rear A (20x20x3 angle cut 30, 7.5x8 ear, M3 into the plate)
+  TS-09 slider, rear A (8 mm angle slice, 19 leg + 8 foot, d6.4)
+  TS-09 jack screw M4x20, rear A (through leg B, tip on the foot)
+09 Rear idler B and tensioner (steps 10-11, TS-09)
+  Bearing 688-2RS, rear idler B #1
+  Bearing 688-2RS, rear idler B #2
+  Washer 8x11x1 under the shoulder screw head, rear idler B
+  Nyloc nut M6, rear idler B (1.4 inboard for the slider)
+  Idler wheel HTD 5M 20T, rear B (bore 16 H7 for two 688s)
+  Shim 8x11x0.5, rear idler B to the plate
+  Spacer sleeve 8x10x9, rear idler B
+  Shoulder screw ISO 7379 8x25 M6, rear idler B (stub axle)
+  TS-09 tensioner tab, rear B (20x20x3 angle cut 30, 7.5x8 ear, M3 into the plate)
+  TS-09 slider, rear B (8 mm angle slice, 19 leg + 8 foot, d6.4)
+  TS-09 jack screw M4x20, rear B (through leg B, tip on the foot)
+10 Tracks (step 11; option B belts shown, option A printed loop has the same envelope)
+  Track belt HTD 550-5M-15 with 22 cleats, rear A
+  Track belt HTD 550-5M-15 with 22 cleats, rear B
+  Track belt HTD 550-5M-15 with 22 cleats, front A
+  Track belt HTD 550-5M-15 with 22 cleats, front B

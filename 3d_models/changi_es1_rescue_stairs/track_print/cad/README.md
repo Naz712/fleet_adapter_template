@@ -2,13 +2,32 @@
 
 `RB4107_track_unit_reviewed.step` is a copy of Nhien's Rev B Fusion model ("Redesign", exported
 15 Oct 2026) reduced to the track unit, with the design-review changes of 16 to 18 Oct applied.
-Open it in Fusion with Insert > Insert Derive or File > Open; it comes in as one component per part,
-named, in Nhien's coordinates (origin on the hinge axis, +X toward the nose, +Y up, Z across,
+Open it in Fusion with File > Open (or upload it to the project in the Data Panel and open it from there,
+or Insert > Insert Derive into Nhien's design); it comes in as a component tree, grouped and named so the
+browser reads as the build order, in Nhien's coordinates (origin on the hinge axis, +X toward the nose, +Y up, Z across,
 A side at Z < 60, B side at Z > 60; the Z numbers below are Fusion's, 60 more than the viewer's).
 
 154 parts. Nothing in it interferes with anything else (checked part against part with a solid
 intersection, tolerance 0.05 mm3). Made by `build_track_step.py` from
-`RB4107 assembly (Rev B) - SolidWorks.step`; `check_render.py` is the interference check.
+`RB4107 assembly (Rev B) - SolidWorks.step`, then grouped and renamed by `relabel_track_step.py`;
+`check_render.py` is the interference check. The full tree is in `part_tree.txt`.
+
+## The part tree in Fusion's browser
+
+| Group | What is in it |
+|---|---|
+| 01 Rear frame (step 2) | P2 plates with their hinge bearings; 3030 bars and corner brackets with screws and T-nuts; the deck T-nuts; P17 supports with bearings and screws |
+| 02 Front frame (step 4) | P1 plates with their hinge bearings; 2020 bars and corner brackets with screws and T-nuts |
+| 03 Rails and carrier angles (steps 2-3, TS-10) | Front rails A and B, rear rails A and B: upper and lower rail with their two carrier angles |
+| 04 / 05 Hinge shaft A / B, wheels and pins (steps 6-7, TS-06, TS-11) | the plain shaft, front and rear hinge wheels, stage-2 pulley, three spring pins, the 0.5 and 1 mm shims |
+| 06 / 07 Nose idler A / B and tensioner (steps 10-11, TS-09) | idler wheel, two bearings, sleeve, shoulder screw, head washer, 0.5 shim, nyloc, TS-09 tab, slider and jack screw |
+| 08 / 09 Rear idler A / B and tensioner | the same at the rear |
+| 10 Tracks (step 11) | Nhien's four cleated belts (option B); the printed loop has the same envelope |
+
+Every part name says what it is, where it goes and what changed, for example
+`Hinge wheel HTD 5M 20T, front A (bore 8 H7, cross pinned, TS-06)` or
+`TS-09 slider, nose B (8 mm angle slice, 19 leg + 8 foot, d6.4)`. New parts are orange, plates blue,
+rails off-white, belts dark, steel parts grey.
 
 ## What is in it
 
