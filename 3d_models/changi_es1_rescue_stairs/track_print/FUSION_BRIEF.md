@@ -81,6 +81,22 @@ jack screw through leg B pushes the foot. Half a turn moves the idler 0.35 mm; u
 4 N (belt 1.5 to 2.5), lock the M6 nyloc at 7 N·m with the screw head held, back the jack screw
 off a quarter turn.
 
+## 3a. Fasteners that are not in the STEP: add them in Fusion
+
+The screws of the new parts were not modelled. Add them as standard components, so the
+drawing's parts list is complete:
+
+- 24 x M3 x 6 socket head ISO 4762: carrier angles to the plates, through the 6.5 plate leg,
+  three per angle at x 40, 105, 170 (negative x for the rear plates), y +3.5 for the upper
+  angle and y -3.5 for the lower one; head on the leg, 4.5 of thread in the 5 mm plate.
+- 4 x M3 x 6 socket head ISO 4762: tensioner tab ear to the plate at (+-223, +11), head on
+  the 3 mm ear.
+- 24 x 3 x 5 pan-head thread-forming screws for plastics: rail to carrier angle, through the
+  10 leg into blind pilots in the rail at 20, 93 and 166 from the rail's hinge end, heads on
+  the leg's inner face. 3 x 5, not the 3 x 10 that older sheets and the first plan text
+  said: the rail is only 5 mm thick and its far face is the track's sliding face, so a 10 mm
+  screw would come 3.5 mm out of it. Corrected 18 Oct in the plan, TS-10 and EX-10.
+
 ## 4. The job in Fusion
 
 1. Import the STEP as a new design named "RB4107 track unit, reviewed 18 Oct 2026" in the

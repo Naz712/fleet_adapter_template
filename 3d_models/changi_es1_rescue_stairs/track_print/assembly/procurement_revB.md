@@ -38,6 +38,8 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 |---|---|---|---|---|---|
 | Tensioner tab, Al angle 20 x 20 x 3 cut 30 with a 7.5 x 8 ear, M4 tapped (TS-09) | 4 | **Make**: hacksaw, drill, M4 tap | from BOM B16 angle (order 300 mm instead of 100) | - | 1 h |
 | Tensioner slider, an 8 mm slice of the same angle, leg 19 with Ø6.4, foot 8 (TS-09; replaces the M6 washer under the nut) | 4 | **Make**: hacksaw, drill | from the same angle (order 400 mm) | - | 30 min |
+| Thread-forming screws 3 x 5 pan head for plastics (rail to carrier angle, 3 per rail; 3 x 5 not 3 x 10: the rail is 5 thick) | 24 + 6 spare | **Buy** | [RS SG thread-forming screws](https://sg.rs-online.com/web/c/fasteners-fixings/screws-bolts/thread-forming-screws/) | ~S$6 / pack | RS SG stock |
+| M3 x 6 SHCS ISO 4762 (carrier angles to plates 24, tensioner tab ears 4) | 28 + 4 spare | **Buy** | RS SG | ~S$5 / pack | RS SG stock |
 | Jack screw M4 x 20 socket head + M3 x 6 for the tab | 4 + 4 | **Buy** | RS / local | - | stock |
 | New M3 tapped holes in P1 and P2: (x +-223, y +11) for the tab (TS-09) and six at (x +-40, +-105, +-170; y +-3.5) for the carriers (TS-10) | 4 | **Make**: add to the DXF, or drill 2.5 + tap M3 on site | with the plates | - | with the plates |
 | Rail carrier angle, Al 10 x 10 x 1.5 x 186, plate leg cut to 6.5, 3 + 3 holes (TS-10; replaces the 32 RS 427-991 clips) | 8 | **Make**: from 1.6 m of angle | local metal supplier / MISUMI SG | ~S$10 | 1-3 days |

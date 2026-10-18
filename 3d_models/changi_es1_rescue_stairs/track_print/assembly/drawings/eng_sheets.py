@@ -731,7 +731,7 @@ def sheet_rail_carrier():
     dim_h(ax, 0, 10, 0.8, "10", ext_from=-6.8, fontsize=6.5)
     dim_h(ax, -5, 0, -17.5, "5", ext_from=-16, fontsize=6.5)
     leader(ax, (0.75, -3.5), (4, -2), "M3 x 6 INTO THE PLATE AT y -3.5 (3 OFF)", fontsize=6.5)
-    leader(ax, (6, -7.6), (8, -4.5), "3 x 10 THREAD-FORMING INTO THE RAIL (3 OFF)", fontsize=6.5)
+    leader(ax, (6, -7.6), (8, -4.5), "3 x 5 THREAD-FORMING INTO THE RAIL (3 OFF), PILOT 2.2 x 4 DEEP, BLIND", fontsize=6.5)
     leader(ax, (8, -15), (9, -17.6), "TRACK, TOOTH TIPS ON THE RAIL FACE y -13.3", fontsize=6.5)
     ax.text(-4.8, 1.4, "PLATE", fontsize=6, va="bottom"); ax.text(10.5, -11.5, "RAIL (UHMW)", fontsize=6)
     save(fig, "TS-10_rail_carrier")

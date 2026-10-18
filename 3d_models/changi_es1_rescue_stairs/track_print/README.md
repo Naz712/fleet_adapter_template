@@ -163,3 +163,6 @@ assembly plan document):
   from it with the P14 holes drilled first on the whole gear; pitch radius 50 instead of 51, so the pinion centre
   distance becomes 60.1 to 60.2 or the pinion becomes 22 teeth. Plan section 5.14 and Appendix C item 16, pending
   Nhien's OK.
+- Rail screws corrected 18 Oct (found when the fasteners were added in Fusion): 3 x 5 thread-forming into blind
+  pilots 4 deep, not 3 x 10; the rail is 5 thick and its far face carries the track. The 24 carrier M3 x 6 and the
+  4 tab M3 x 6 are listed in the brief and the procurement list; none of these 52 screws are in the STEP.

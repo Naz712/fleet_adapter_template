@@ -49,7 +49,7 @@ H.append('''<h1>Track unit assembly, in detail</h1>
 <tr><td>Shoulder screw set: head washer 8 x 11 x 1, 0.5 shim, slider TS-09, M6 nyloc</td><td>2 sets</td><td>The stub axle of the idler and its clamp</td><td>Nyloc 7 N·m once tensioned; slider replaces the washer under the nut</td></tr>
 <tr><td>Tensioner tab TS-09 with M3 x 6 and M4 x 20 jack screw</td><td>2</td><td>Pushes the idler out along the slot and holds that position while the nut is tightened</td><td>M3 into the plate's new tapped hole at (±223, +11), Loctite 243</td></tr>
 <tr><td>Track loops: option A printed TPU (TS-01) or option B HTD 550-5M-15 belt with 22 bonded cleats</td><td>2</td><td>The track</td><td>Teeth in the wheel grooves; tension only</td></tr>
-<tr><td>Slide rails P3 to P6 (UHMW 186 x 20 x 5) on carrier angles TS-10</td><td>2 + 2 per segment</td><td>The runs slide on them so the loop stays straight under load</td><td>Carrier angle M3 x 6 into the plate (3 off), rail 3 x 10 thread-forming into the angle</td></tr>
+<tr><td>Slide rails P3 to P6 (UHMW 186 x 20 x 5) on carrier angles TS-10</td><td>2 + 2 per segment</td><td>The runs slide on them so the loop stays straight under load</td><td>Carrier angle M3 x 6 into the plate (3 off), rail 3 x 5 thread-forming into the angle</td></tr>
 </table>''')
 
 # ---------- Section 1
@@ -161,7 +161,7 @@ H.append(sheet("TS-01", "Sheet TS-01: the printed track loop (option A)"))
 # ---------- Section 5
 H.append('''<div class="page"><h2>5. What the runs slide on: rails and carrier angles</h2>
 <p>Between the two wheels of a segment the loop would sag and the teeth would climb under load, so each run slides on a UHMW rail, 186 x 20 x 5, one above and one below, on each plate. The rails sit 13.3 mm from the shaft axis, just under the tooth tips, which is why the tension check pulls a run away from the rail instead of pushing it.</p>
-<p>Rev B held each rail with four small clips; the reviewer called the contact area too small. TS-10 replaces them with a full-length 10 x 10 x 1.5 aluminium angle per rail: one leg on the plate face, screwed with three M3 x 6 into new tapped holes at x 40, 105 and 170 (y ±3.5), Loctite 243, 1.0 N·m; the other leg under the upper rail or on top of the lower rail, with the rail screwed to it by three 3 x 10 thread-forming screws. The plate leg is cut down to 6.5 mm so the upper and lower angles do not meet on the plate's centreline. The rails are trimmed from 189 to 186 so the idler's flange clears them at x 223.</p>
+<p>Rev B held each rail with four small clips; the reviewer called the contact area too small. TS-10 replaces them with a full-length 10 x 10 x 1.5 aluminium angle per rail: one leg on the plate face, screwed with three M3 x 6 into new tapped holes at x 40, 105 and 170 (y ±3.5), Loctite 243, 1.0 N·m; the other leg under the upper rail or on top of the lower rail, with the rail screwed to it by three 3 x 5 thread-forming screws into blind pilots 4 deep: the rail is only 5 mm thick and its far face is what the track slides on, so a longer screw would come out of it. The plate leg is cut down to 6.5 mm so the upper and lower angles do not meet on the plate's centreline. The rails are trimmed from 189 to 186 so the idler's flange clears them at x 223.</p>
 ''' + fig("cat_carrier", "<b>Fig. 11</b> A rail on its carrier angle on the plate face, from the interactive model.") + '</div>')
 H.append(sheet("TS-10", "Sheet TS-10: rail carrier angle"))
 
@@ -182,7 +182,7 @@ H.append('''<div class="page"><h2>6. Order of work for the track side, and what 
 <tr><td>Idlers</td><td>ISO 7379 Ø8 x 25 M6 shoulder screw; 8 x 11 x 1 head washer; 8 x 11 x 0.5 shim; sleeve 8 x 10 x 9; slider; M6 nyloc</td><td>4 sets</td><td>7 N·m</td><td>none</td></tr>
 <tr><td>Tensioner tabs</td><td>M3 x 6 SHCS into the plate; M4 x 20 jack screw</td><td>4 + 4</td><td>1.0 N·m / by feel, backed off a quarter turn</td><td>243 on the M3</td></tr>
 <tr><td>Rail carriers to plates</td><td>3 x M3 x 6 SHCS per angle</td><td>24</td><td>1.0 N·m</td><td>243</td></tr>
-<tr><td>Rails to carriers</td><td>3 x 3 x 10 thread-forming per rail</td><td>24</td><td>seat the head, no more</td><td>none</td></tr>
+<tr><td>Rails to carriers</td><td>3 x 3 x 5 thread-forming per rail, blind pilots</td><td>24</td><td>seat the head, no more</td><td>none</td></tr>
 <tr><td>Bearings in P1, P2, P17</td><td>688-2RS pressed, seat reamed 16 H7</td><td>6</td><td>press</td><td>641 on the outer ring</td></tr>
 </table>
 <h3>Tools for these steps</h3>

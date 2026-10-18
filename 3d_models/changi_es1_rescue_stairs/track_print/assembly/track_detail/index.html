@@ -1,0 +1,247 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Track unit assembly, in detail</title><style>
+@page { size: A4; margin: 11mm 11mm 11mm 11mm }
+@page land { size: A4 landscape; margin: 8mm 10mm 8mm 10mm }
+.land { page: land } .land figure img { max-height: 186mm; width: auto; max-width: 100%; margin: 0 auto }
+html, body { margin: 0; padding: 0 }
+body { font: 9.4pt/1.32 "Helvetica Neue", Arial, "Liberation Sans", sans-serif; color: #111 }
+h1 { font-size: 19pt; margin: 0 0 2mm; letter-spacing: -0.01em; padding-bottom: 1.5mm; border-bottom: 1.4px solid #c85d1a }
+h2 { font-size: 12.5pt; margin: 5mm 0 1.5mm; color: #c85d1a; text-transform: uppercase; letter-spacing: 0.05em; break-after: avoid }
+h3 { font-size: 10.2pt; margin: 3.5mm 0 1mm; break-after: avoid }
+p { margin: 0 0 1.8mm } ul, ol { margin: 0 0 1.8mm; padding-left: 4.5mm } li { margin: 0 0 1mm }
+b { font-weight: 700 }
+.lead { font-size: 10pt }
+figure { margin: 2mm 0 3mm; break-inside: avoid } figure img { display: block; width: 100%; border: 0.5px solid #cfcac0 }
+figcaption { font-size: 8.3pt; color: #222; margin-top: 1mm; line-height: 1.3 }
+.two { display: flex; gap: 4mm; align-items: flex-start } .two > * { flex: 1 1 0; min-width: 0 }
+.box { border: 0.6px solid #c9c4ba; border-radius: 1.5mm; padding: 2mm 2.5mm; background: #faf8f3; margin: 1.5mm 0 3mm; break-inside: avoid }
+.box b.t { display: block; color: #c85d1a; text-transform: uppercase; letter-spacing: 0.05em; font-size: 8.6pt; margin-bottom: 1mm }
+table { border-collapse: collapse; width: 100%; font-size: 8.6pt; margin: 1mm 0 3mm } th { text-align: left; color: #c85d1a; border-bottom: 0.8px solid #c85d1a; padding: 0.8mm 1.5mm 0.8mm 0; font-size: 8.2pt; text-transform: uppercase; letter-spacing: 0.04em }
+td { vertical-align: top; padding: 0.9mm 1.5mm 0.9mm 0; border-bottom: 0.4px solid #e2ddd3 } tr { break-inside: avoid }
+.page { page-break-before: always } .apx h2 { margin-top: 0 }
+.warn { border-left: 2.5px solid #c85d1a; padding-left: 2.5mm; margin: 2mm 0 3mm }
+.small { font-size: 8.4pt; color: #333 }
+</style></head><body>
+<h1>Track unit assembly, in detail</h1>
+<p class="lead">Only the track side of the RB4107 1:5 carrier: the toothed wheels, how each one is fixed to its shaft, how the shaft is held in place, the idler wheels on their shoulder screws, the tensioner, and how the track loop goes on and is set. The frame, deck, drive train and electronics are left out; they are in the full plan. Everything here is for one side; the other side is the same, mirrored. Dimensions are in millimetres and come from the shared 3D model (Nhien's Rev B with the track added, reviewed 16 to 18 October 2026).</p>
+<div class="two"><figure class=""><img src="img/cat_hinge_shaft.jpg"><figcaption><b>Fig. 1a</b> The hinge shaft of one side with its three toothed parts: rear hinge wheel outside the rear plate, front hinge wheel in the lane between the plates, stage-2 pulley inboard of the P17 support. This shaft is the drive shaft: the stage-2 belt turns it, the two wheels drive the two track loops.</figcaption></figure><figure class=""><img src="img/zoom_nose.jpg"><figcaption><b>Fig. 1b</b> The nose end: idler wheel on its shoulder screw in the plate slot, the tensioner tab and slider, the rail ending short of the wheel.</figcaption></figure></div>
+<h2>What is in one side's track unit</h2>
+<table><tr><th>Part</th><th>Qty per side</th><th>What it does</th><th>How it is fixed</th></tr>
+<tr><td>Hinge wheels, HTD 5M 20T for 15 mm belt, flanged, bore reamed 8 H7 (TS-06)</td><td>2</td><td>Drive the front and the rear track loops; the front one also locates the shaft</td><td>Ø2.5 spring pin through hub and shaft, at mid-face, flush</td></tr>
+<tr><td>Stage-2 pulley M3 (Nhien's, HTD 5M 9 wide), bore 8 H7</td><td>1</td><td>Brings the drive from the motor belt onto the shaft</td><td>Spring pin, or a cone-point set screw into a seat drilled in the shaft (section 1.3)</td></tr>
+<tr><td>Hinge shaft P20, Ø8 h7 plain round, A 82.3 / B 77.3</td><td>1</td><td>Carries the three parts above, turns in three 688 bearings</td><td>Held along its axis by the pinned front wheel between the P1 and P2 bearings; nothing else</td></tr>
+<tr><td>Bearings 688-2RS (8 x 16 x 5) in P2, P1 and P17</td><td>3</td><td>The shaft turns in them</td><td>Pressed into seats laser-cut 15.8 and reamed 16 H7, Loctite 641</td></tr>
+<tr><td>Shims 8 x 11: 0.5 (front wheel) and 1.0 (stage-2 pulley)</td><td>1 + 1</td><td>Keep the wheel and pulley faces off the bearings' outer rings</td><td>Trapped between the pinned part and the bearing's inner ring</td></tr>
+<tr><td>Idler wheels, same HTD 5M 20T, bored 16 H7 for two 688s with an 8 x 10 x 9 sleeve</td><td>2 (nose, rear)</td><td>Free-running far wheel of each loop; the tensioner moves it</td><td>On an ISO 7379 Ø8 x 25 M6 shoulder screw through the plate slot</td></tr>
+<tr><td>Shoulder screw set: head washer 8 x 11 x 1, 0.5 shim, slider TS-09, M6 nyloc</td><td>2 sets</td><td>The stub axle of the idler and its clamp</td><td>Nyloc 7 N·m once tensioned; slider replaces the washer under the nut</td></tr>
+<tr><td>Tensioner tab TS-09 with M3 x 6 and M4 x 20 jack screw</td><td>2</td><td>Pushes the idler out along the slot and holds that position while the nut is tightened</td><td>M3 into the plate's new tapped hole at (±223, +11), Loctite 243</td></tr>
+<tr><td>Track loops: option A printed TPU (TS-01) or option B HTD 550-5M-15 belt with 22 bonded cleats</td><td>2</td><td>The track</td><td>Teeth in the wheel grooves; tension only</td></tr>
+<tr><td>Slide rails P3 to P6 (UHMW 186 x 20 x 5) on carrier angles TS-10</td><td>2 + 2 per segment</td><td>The runs slide on them so the loop stays straight under load</td><td>Carrier angle M3 x 6 into the plate (3 off), rail 3 x 5 thread-forming into the angle</td></tr>
+</table>
+<div class="page"><h2>1. The hinge shaft and what is fixed to it</h2>
+<p>Each side has one shaft. It is also the drive shaft, so three toothed parts turn with it: the rear hinge wheel (outside the rear plate P2), the front hinge wheel (in the 20 mm lane between P2 and the front plate P1) and the stage-2 pulley (inboard of the P17 support). The shaft runs in three 688 bearings, one in each of P2, P1 and P17. Fig. 2 shows the whole stack.</p>
+<figure><svg viewBox="0 0 740 330" role="img" aria-label="What sits on the hinge shaft, in order, with the shims, gaps and pins" style="width:100%;height:auto"><defs><marker id="a" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,3 L6,0 L6,6 z" fill="#c85d1a"/></marker></defs><rect x="179.5" y="40.0" width="32.5" height="220.0" fill="#dbe6f0" stroke="#7a8ea3" stroke-width="0.8"/>
+<rect x="342.0" y="40.0" width="32.5" height="220.0" fill="#dbe6f0" stroke="#7a8ea3" stroke-width="0.8"/>
+<rect x="465.5" y="90.0" width="32.5" height="120.0" fill="#dbe6f0" stroke="#7a8ea3" stroke-width="0.8"/>
+<rect x="43.0" y="142.0" width="534.9" height="16.0" fill="#7d8186" stroke="#333" stroke-width="0.8"/>
+<rect x="52.8" y="114.3" width="123.5" height="71.4" fill="#c9ccd1" stroke="#333" stroke-width="0.8"/>
+<rect x="215.2" y="114.3" width="123.5" height="71.4" fill="#c9ccd1" stroke="#333" stroke-width="0.8"/>
+<rect x="504.5" y="110.0" width="63.7" height="80.0" fill="#c9ccd1" stroke="#333" stroke-width="0.8"/>
+<rect x="179.5" y="134.0" width="32.5" height="32.0" fill="#9aa0a6" stroke="#333" stroke-width="0.8"/>
+<rect x="342.0" y="134.0" width="32.5" height="32.0" fill="#9aa0a6" stroke="#333" stroke-width="0.8"/>
+<rect x="465.5" y="134.0" width="32.5" height="32.0" fill="#9aa0a6" stroke="#333" stroke-width="0.8"/>
+<rect x="338.8" y="139.0" width="3.2" height="22.0" fill="#e07a2e" stroke="#9a4a10" stroke-width="0.8"/>
+<rect x="498.0" y="139.0" width="6.5" height="22.0" fill="#e07a2e" stroke="#9a4a10" stroke-width="0.8"/>
+<rect x="106.4" y="126.0" width="16.2" height="48.0" fill="#c85d1a" stroke="#7a3a0e" stroke-width="0.8"/>
+<rect x="268.9" y="126.0" width="16.2" height="48.0" fill="#c85d1a" stroke="#7a3a0e" stroke-width="0.8"/>
+<rect x="528.2" y="126.0" width="16.2" height="48.0" fill="#c85d1a" stroke="#7a3a0e" stroke-width="0.8"/>
+<line x1="179.5" y1="14" x2="374.5" y2="14" stroke="#c85d1a" stroke-width="0.9" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="277.0" y="10" font-size="10" text-anchor="middle" fill="#c85d1a">lane 20.0 between the plate faces = wheel 19 + shim 0.5 + gap 0.5</text>
+<line x1="277.0" y1="113.3" x2="277.0" y2="34" stroke="#555" stroke-width="0.7"/>
+<text x="277.0" y="30" font-size="10.5" text-anchor="middle" fill="#111">Front hinge wheel, pinned FIRST: it locates the shaft</text>
+<line x1="114.5" y1="113.3" x2="114.5" y2="50" stroke="#555" stroke-width="0.7"/>
+<text x="114.5" y="46" font-size="10.5" text-anchor="middle" fill="#111">Rear hinge wheel, pinned</text>
+<line x1="536.4" y1="110" x2="536.4" y2="50" stroke="#555" stroke-width="0.7"/>
+<text x="536.4" y="46" font-size="10.5" text-anchor="middle" fill="#111">Stage-2 pulley, pinned (or seated set screw)</text>
+<line x1="195.8" y1="94" x2="195.8" y2="68" stroke="#555" stroke-width="0.7"/>
+<text x="195.8" y="64" font-size="10.5" text-anchor="middle" fill="#111">P2 plate, 688 bearing</text>
+<line x1="358.2" y1="94" x2="358.2" y2="68" stroke="#555" stroke-width="0.7"/>
+<text x="358.2" y="64" font-size="10.5" text-anchor="middle" fill="#111">P1 plate, 688</text>
+<line x1="481.8" y1="120" x2="481.8" y2="68" stroke="#555" stroke-width="0.7"/>
+<text x="481.8" y="64" font-size="10.5" text-anchor="middle" fill="#111">P17 support, 688</text>
+<line x1="177.9" y1="186.7" x2="177.9" y2="208" stroke="#555" stroke-width="0.7"/>
+<text x="181.9" y="212" font-size="10.5" text-anchor="start" fill="#111">0.3 to 0.5 gap, rear wheel to the P2 bearing</text>
+<line x1="213.6" y1="186.7" x2="213.6" y2="226" stroke="#555" stroke-width="0.7"/>
+<text x="217.6" y="230" font-size="10.5" text-anchor="start" fill="#111">0.3 to 0.5 feeler gap, front wheel to the P2 bearing</text>
+<line x1="340.4" y1="161" x2="340.4" y2="244" stroke="#555" stroke-width="0.7"/>
+<text x="336.4" y="248" font-size="10.5" text-anchor="end" fill="#111">0.5 shim against the P1 bearing</text>
+<line x1="501.2" y1="161" x2="501.2" y2="244" stroke="#555" stroke-width="0.7"/>
+<text x="505.2" y="248" font-size="10.5" text-anchor="start" fill="#111">1 mm shim against the P17 bearing</text>
+<text x="43.0" y="268" font-size="10.5" text-anchor="start" fill="#111">shaft end 1.5 mm proud of the wheel face</text>
+<text x="577.9" y="268" font-size="10.5" text-anchor="end" fill="#111">1.5 mm proud of the pulley face</text>
+<text x="309.5" y="288" font-size="10.5" text-anchor="middle" fill="#111">Plain round shaft Ø8 h7, 82.3 long (side A; side B is 77.3).</text>
+<text x="309.5" y="302" font-size="10.5" text-anchor="middle" fill="#111">Three Ø2.5 spring pins at mid-face, driven flush. No flats, no grooves, no E-clips.</text>
+<text x="30.0" y="322" font-size="10.5" text-anchor="start" fill="#555">OUTSIDE the machine</text>
+<text x="582.5" y="322" font-size="10.5" text-anchor="end" fill="#555">INBOARD, towards the middle</text></svg>
+<figcaption><b>Fig. 2</b> One hinge shaft seen from above, side A, drawn to scale along the shaft. Everything that must not move is pinned to the shaft; the shaft itself is held by the pinned front wheel sitting between the P1 and P2 bearings.</figcaption></figure>
+<h3>1.1 How each wheel and pulley is fixed to the shaft: the cross pin</h3>
+<p>One ISO 8752 spring pin, 2.5 x 24, through the hub and the shaft at the middle of the toothed face, driven flush on both sides. The pin does two jobs at once: it makes the part turn with the shaft (torque goes through the pin in double shear, which carries many times the 60 N this drive puts on it), and it stops the part sliding along the shaft, because the pin is in the shaft too. Nothing else holds the wheels: no grub screw, no flat on the shaft, no E-clip groove.</p>
+<p><b>Why not a set screw on the wheels.</b> The hinge wheels fill the 20 mm lane at 19 mm over their flanges with 0.5 mm each side, so they have no hub boss. A set screw would have to go through the toothed rim, under the track, with no way to reach it once the track is on. And on a plain round shaft a set screw holds only by friction: an M3 or M4 cup point gives about 1 to 1.5 N·m against 0.25 N·m running and 0.75 N·m in a shock, it works loose when the drive reverses, and its burr stops the shaft pulling back out through the bearings. The reviewer's set screw is right where there is a hub for it; that is the stage-2 pulley, in 1.3.</p>
+<p><b>Why not a D-flat or an E-clip.</b> A flat fixes rotation but not position along the shaft, so the clips come back; a 70 mm milled flat weakens the shaft; an E-clip groove cuts the Ø8 shaft to Ø6 where it bends most. The pin hole sits beside a bearing where bending is small: an Ø8 shaft with a Ø2.5 hole keeps about half its section modulus and runs at about 40 MPa against a yield above 350 MPa.</p>
+<h3>1.2 How the shaft is held in place along its axis</h3>
+<p>The front hinge wheel is pinned first, sitting in the lane with its 0.5 mm shim against the P1 bearing's inner ring and a 0.3 to 0.5 mm feeler gap to the P2 bearing. Once that pin is in, the shaft cannot move more than the feeler gap in either direction, because the wheel is trapped between the two plate bearings and the shaft is pinned to the wheel. That is the whole axial location. The rear wheel and the stage-2 pulley are then pinned where they stand, each with its own small gap or shim to the bearing beside it, and the shaft ends stand 1.5 mm proud of the outer faces. The rear wheel is the part at the very end of the shaft: its pin is what keeps it there; nothing can walk off because nothing is free on the shaft.</p>
+<p>Check after pinning: push and pull the front wheel; it moves only by the feeler gap. A strip of paper passes between every wheel face and the bearing's outer ring next to it; if it does not, the face rubs the ring and the bearing drags.</p>
+<h3>1.3 The stage-2 pulley: pin, or a seated set screw</h3>
+<p>Nhien's pulley M3 has a hub boss with a tapped hole, outside the belt width, in the open space inboard of P17. Two ways are good; pick one and do the same on both sides.</p>
+<ul>
+<li><b>Pin</b>, exactly as the wheels: the tapped hole is drilled through to Ø2.5 on the press (the thread goes), the far side of the hub is drilled through it, and the shaft is drilled through both in place (procedure 1.4). Nothing to come loose, nothing sticking out.</li>
+<li><b>Seated set screw.</b> Push the pulley against its 1 mm shim, then through the tapped hole spot-drill the shaft with a Ø3 drill point about 1 mm deep, in place, exactly as the pin hole would be drilled. Fit an M4 cone-point set screw with Loctite 243 and tighten to about 1 N·m. The cone sits in the seat, so the screw takes the torque in bearing (well over 2 N·m) and holds the pulley along the shaft; without the seat it would be friction only. Never a hole bigger than Ø3 into an Ø8 shaft.</li>
+</ul>
+<p>A screw right through the hub and the shaft (M3 x 30 with a nyloc through a Ø3.2 hole) also works and is removable with tools, as long as the head and the nut clear the belt and the P17 support as the pulley turns.</p>
+<div class="page"><h3>1.4 Procedure: pinning the three parts to the shaft (2 hours for both sides)</h3>
+<p><b>What you are doing.</b> The pin hole through the shaft is drilled with the parts in place, because the wheels sit between the plates and the shaft only ever goes in through the bearings. The hole in each hub was drilled on the drill press beforehand (when the bore was reamed: Ø2.5 through both walls at mid-face, 9.5 from a flange face, centre-punched first) and now serves as the drill guide. That is what keeps a hand-drilled hole straight.</p>
+<p><b>Tools.</b> Cordless drill with a sharp long-series Ø2.5 HSS bit (two new ones in the kit), cutting fluid, 2.5 mm pin punch and a small hammer, feeler gauges 0.3 and 0.5, the shims, two G-clamps, a marker, a strip of paper.</p>
+<ol>
+<li>The frame sits on the bench with its plates clamped down, no deck yet, so every hub hole is reachable from above. Mark each hub hole with the marker so you can find it when the wheel is in the lane.</li>
+<li>Put the shaft in from outside, chamfered end first: through the rear wheel, the P2 bearing, the front wheel with its 0.5 shim on the P1 side, the P1 bearing, the P17 bearing, the 1 mm shim and the stage-2 pulley. Push until the outer end stands 1.5 mm proud of the rear wheel's outer face.</li>
+<li><b>Front wheel first</b>, because it locates the whole shaft. Push the wheel and its shim gently against the P1 bearing. Slide the 0.3 feeler between the wheel's other face and the P2 bearing: it must go in with a light drag. The 0.5 must not. If the 0.5 goes in, the lane is too wide (check the bars); if the 0.3 will not, the lane is too narrow.</li>
+<li>Turn the wheel so its hub hole points straight up. Hold it there by its flange; the shaft is free to turn, so make sure the hub hole and nothing else is what the drill meets.</li>
+<li>Oil on the bit. Put the bit into the hub hole, sight along the plate so the drill is square to the shaft, and drill with steady pressure. You feel it cut aluminium for a moment, then steel; keep the speed moderate and let it cut. When it breaks through the far side of the shaft it enters the far hub hole: ease off. Pull out, clear the chips, blow out the hole.</li>
+<li>Start a spring pin with the hammer, then drive it with the punch until it sits the same depth both sides, about 3 mm below the tooth roots. It must not stand up into a tooth space on either side, or the track will click over it.</li>
+<li>Check: the shaft turns freely by hand with the wheel; pushing and pulling the wheel moves it only by the feeler gap; the strip of paper passes between the wheel face and the bearing's outer ring on both sides.</li>
+<li><b>Rear wheel.</b> Slide it so the 0.3 feeler passes between its inner face and the P2 bearing and the 0.5 does not. Hub hole up, drill, pin, check.</li>
+<li><b>Stage-2 pulley.</b> Push it and its 1 mm shim against the P17 bearing's inner ring. Hub hole up, drill, pin (or spot-drill and set screw, 1.3), check.</li>
+<li>Other side the same. Final check for the side: the shaft turns freely with its three parts; runout over the wheel teeth under 0.1 mm against a fixed pointer; the front frame still swings 0 to 35°.</li>
+</ol>
+<div class="warn"><p><b>Mistakes to avoid.</b> Drilling without the hub hole as a guide (the hole wanders, the pin is loose, the wheel knocks under load). Forgetting a shim before the shaft goes in (everything comes out again). Driving the pin too far (it pokes into the tooth space on the far side). A dull bit: a 2.5 mm drill that is not cutting steel within a few seconds is blunt; change it before it snaps.</p>
+<p><b>If a pin ends up loose.</b> Drill a second pair of hub holes at 90° to the first on the drill press, with the wheel off on a spare piece of shaft, and pin again. On the assembled machine that means the shaft comes out, which is why the practice run on scrap (a spare wheel and 100 mm of spare shaft are in the order) is worth the hour.</p></div>
+<div class="two"><figure class=""><img src="img/cat_pulley.jpg"><figcaption><b>Fig. 3</b> The hinge wheel as bought (MISUMI HTD 5M 20T for 15 mm belt, flanged), with the bore reamed 8 H7 and the Ø2.5 hub hole at mid-face.</figcaption></figure><figure class=""><img src="img/r_hinge.jpg"><figcaption><b>Fig. 4</b> Solid-model check at the hinge: plates, bearings, wheels, shims and the pinned shaft, nothing touching that should not.</figcaption></figure></div></div>
+<div class="apx land"><h2>Sheet TS-11: where every part sits along the hinge shaft and the idler screw, with the fits</h2><figure><img src="img/TS-11.jpg"></figure></div>
+
+<div class="apx land"><h2>How to read TS-11</h2><figure><img src="img/EX-11.jpg"></figure></div>
+
+<div class="apx land"><h2>Sheet TS-06: the toothed wheel, reamed bore and cross pin</h2><figure><img src="img/TS-06.jpg"></figure></div>
+
+<div class="apx land"><h2>How to read TS-06</h2><figure><img src="img/EX-06.jpg"></figure></div>
+
+<div class="page"><h2>2. The idler wheels on their shoulder screws</h2>
+<p>The far wheel of each loop (at the nose for the front segment, at the tail for the rear one) is an idler: it carries no drive, it only guides the loop and takes the tension. It turns on two 688 bearings on an ISO 7379 shoulder screw, Ø8 x 25 with an M6 thread, which passes through the slot in the plate. The screw is the idler's stub axle; the slot lets the axle move 9.6 mm along the plate for tensioning.</p>
+<h3>2.1 The stack on the shoulder screw, from the head</h3>
+<table><tr><th>Order</th><th>Part</th><th>Thickness</th><th>Why it is there</th></tr>
+<tr><td>1</td><td>Head washer 8 x 11 x 1</td><td>1</td><td>Keeps the screw head off the bearing's outer ring; it bears on the inner ring only</td></tr>
+<tr><td>2</td><td>Bearing 688-2RS, outer</td><td>5</td><td>Pressed in the wheel (bore 16 H7, light press)</td></tr>
+<tr><td>3</td><td>Sleeve 8 x 10 x 9, aluminium</td><td>9</td><td>Between the two inner rings, so the nut can clamp them without squeezing the wheel</td></tr>
+<tr><td>4</td><td>Bearing 688-2RS, inner</td><td>5</td><td>Second bearing: the wheel runs on two, no rock</td></tr>
+<tr><td>5</td><td>Shim 8 x 11 x 0.5</td><td>0.5</td><td>Keeps the wheel's inner flange off the plate and the rail's carrier</td></tr>
+<tr><td>6</td><td>Plate P1 or P2, through the slot 8.1 x 20.3</td><td>5</td><td>The Ø8 shank sits in the 8.1 slot with 0.1 to 0.15 clearance</td></tr>
+<tr><td>7</td><td>Slider TS-09 (Ø6.4 hole on the thread)</td><td>3</td><td>Replaces the plain M6 washer; its foot is what the jack screw pushes</td></tr>
+<tr><td>8</td><td>M6 nyloc nut</td><td>5</td><td>Clamps plate, shim and the two inner rings against the head at 7 N·m; the outer rings and the wheel stay free</td></tr>
+</table>
+<p>The stack on the 25 mm shoulder is 1 + 5 + 9 + 5 + 0.5 = 20.5, plus the 5 mm plate: the shoulder ends 0.5 mm inside the plate, so the nut tightens the inner-ring stack solid against the head and never pinches the wheel. With the 3 mm slider in place of the 1.6 mm washer, 1.5 mm of thread still shows past the nut. The wheel must spin free with the nut tight; if it does not, a bearing is seated crooked or the sleeve is missing.</p>
+<h3>2.2 Where the idler can sit</h3>
+<p>The slot runs from x 220.4 to 232.6 (screw centres, measured from the hinge axis). The rail ends at 207 and its carrier angle at 204, and the wheel's flange reaches 16 mm inboard of the screw centre, so the idler must never sit closer to the hinge than x 223 or the flange hits the rail end. The usable travel is therefore 223 to 232.6: 9.6 mm of axle movement, which takes up 19 mm of loop. Measured from the plate's nose end at x 240.2, that is 17.2 mm down to 7.6 mm.</p>
+<div class="two"><figure class=""><img src="img/cat_shoulder.jpg"><figcaption><b>Fig. 5a</b> The idler set: shoulder screw, head washer, the two bearings with the sleeve between them, the 0.5 shim, the slider and the nyloc.</figcaption></figure><figure class=""><img src="img/cat_tensioner.jpg"><figcaption><b>Fig. 5b</b> The tensioner set that goes with it: the tab with its ear and the jack screw, and the slider with its foot.</figcaption></figure></div></div>
+<div class="page"><h2>3. The tensioner: how it works</h2>
+<p>The track loop is tight when the idler is pushed out along its slot. Rev B relied on the nut's friction alone to hold the idler wherever a hand had put it, which is why the reviewer said the track would be loose: nothing set the tension and nothing kept it. TS-09 adds a pusher and a lock at each idler, four sets per machine.</p>
+<figure><svg viewBox="0 0 846 390" role="img" aria-label="The tensioner at the nose end seen from inboard: tab, slider with foot, jack screw and the shoulder screw in its slot" style="width:100%;height:auto"><defs><marker id="b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#c85d1a"/></marker></defs><rect x="262.0" y="24.0" width="321.6" height="352.0" rx="0" fill="#dbe6f0" stroke="#7a8ea3" stroke-width="0.8"/>
+<rect x="262.0" y="133.6" width="56.0" height="132.8" rx="0" fill="#eceae3" stroke="#8a877d" stroke-width="0.8"/>
+<rect x="262.0" y="133.6" width="32.0" height="12.0" rx="0" fill="#e07a2e" stroke="#9a4a10" stroke-width="0.8"/>
+<rect x="262.0" y="254.4" width="32.0" height="12.0" rx="0" fill="#e07a2e" stroke="#9a4a10" stroke-width="0.8"/>
+<rect x="392.8" y="167.6" width="162.4" height="64.8" rx="32" fill="#fff" stroke="#333" stroke-width="0.8"/>
+<rect x="414.0" y="152.0" width="64.0" height="152.0" rx="0" fill="#e9a06a" stroke="#9a4a10" stroke-width="0.8"/>
+<rect x="414.0" y="280.0" width="64.0" height="24.0" rx="0" fill="#c85d1a" stroke="#7a3a0e" stroke-width="0.8"/>
+<polygon points="492.2,200.0 469.1,160.0 422.9,160.0 399.8,200.0 422.9,240.0 469.1,240.0" fill="#b9bdc2" stroke="#333" stroke-width="0.8"/>
+<circle cx="446.0" cy="200.0" r="24.0" fill="#8d9196" stroke="#333" stroke-width="0.8"/>
+<rect x="386.0" y="80.0" width="24.0" height="240.0" rx="0" fill="#c85d1a" stroke="#7a3a0e" stroke-width="0.8"/>
+<rect x="410.0" y="80.0" width="60.0" height="64.0" rx="0" fill="#e9a06a" stroke="#9a4a10" stroke-width="0.8"/>
+<circle cx="446.0" cy="112.0" r="13.6" fill="#fff" stroke="#333" stroke-width="0.8"/>
+<rect x="354.0" y="274.0" width="32.0" height="28.0" rx="0" fill="#7d8186" stroke="#333" stroke-width="0.8"/>
+<rect x="386.0" y="280.0" width="28.0" height="16.0" rx="0" fill="#9aa0a6" stroke="#333" stroke-width="0.8"/>
+<line x1="446.0" y1="52.0" x2="522.8" y2="52.0" stroke="#c85d1a" stroke-width="1" marker-end="url(#b)"/>
+<text x="484.4000000000001" y="37.599999999999994" font-size="10" text-anchor="middle" fill="#c85d1a">idler travel 223 to 232.6 = 9.6 mm (19 mm of loop)</text>
+<line x1="398.0" y1="96.0" x2="250" y2="62" stroke="#555" stroke-width="0.7"/>
+<text x="246" y="60" font-size="10.5" fill="#111" text-anchor="end"><tspan x="246" dy="0">Leg B of the tab stands off the plate,</tspan><tspan x="246" dy="12.5">1.5 mm clear of the slot end:</tspan><tspan x="246" dy="12.5">the nut never touches it</tspan></text>
+<line x1="370.0" y1="288.0" x2="250" y2="150" stroke="#555" stroke-width="0.7"/>
+<text x="246" y="148" font-size="10.5" fill="#111" text-anchor="end"><tspan x="246" dy="0">M4 x 20 jack screw through leg B:</tspan><tspan x="246" dy="12.5">half a turn = 0.35 mm along the slot</tspan></text>
+<line x1="422.0" y1="292.0" x2="250" y2="222" stroke="#555" stroke-width="0.7"/>
+<text x="246" y="220" font-size="10.5" fill="#111" text-anchor="end"><tspan x="246" dy="0">The slider&#x27;s foot, bent inboard:</tspan><tspan x="246" dy="12.5">what the jack screw pushes</tspan></text>
+<line x1="310.0" y1="140.0" x2="250" y2="300" stroke="#555" stroke-width="0.7"/>
+<text x="246" y="298" font-size="10.5" fill="#111" text-anchor="end"><tspan x="246" dy="0">Rail (186) and carrier end at 204 to 207:</tspan><tspan x="246" dy="12.5">the idler never comes in past 223</tspan></text>
+<line x1="462.0" y1="112.0" x2="596.0" y2="60" stroke="#555" stroke-width="0.7"/>
+<text x="600.0" y="58" font-size="10.5" fill="#111" text-anchor="start"><tspan x="600.0" dy="0">Ear of the tab on the plate face:</tspan><tspan x="600.0" dy="12.5">M3 x 6 into the new tapped hole</tspan><tspan x="600.0" dy="12.5">at (223, +11), Loctite 243</tspan></text>
+<line x1="542.0" y1="184.0" x2="596.0" y2="140" stroke="#555" stroke-width="0.7"/>
+<text x="600.0" y="138" font-size="10.5" fill="#111" text-anchor="start"><tspan x="600.0" dy="0">Slot 8.1 x 20.3 in the plate;</tspan><tspan x="600.0" dy="12.5">the Ø8 shank of the shoulder</tspan><tspan x="600.0" dy="12.5">screw slides in it</tspan></text>
+<line x1="486.0" y1="224.0" x2="596.0" y2="222" stroke="#555" stroke-width="0.7"/>
+<text x="600.0" y="220" font-size="10.5" fill="#111" text-anchor="start"><tspan x="600.0" dy="0">M6 nyloc on the shoulder screw:</tspan><tspan x="600.0" dy="12.5">finger-tight while tensioning,</tspan><tspan x="600.0" dy="12.5">7 N·m to lock</tspan></text>
+<line x1="470.0" y1="260.0" x2="596.0" y2="300" stroke="#555" stroke-width="0.7"/>
+<text x="600.0" y="298" font-size="10.5" fill="#111" text-anchor="start"><tspan x="600.0" dy="0">Slider: an 8 mm slice of angle</tspan><tspan x="600.0" dy="12.5">on the screw&#x27;s thread, in place</tspan><tspan x="600.0" dy="12.5">of the M6 washer</tspan></text></svg>
+<figcaption><b>Fig. 6</b> How the tensioner works, to scale: the inboard face of plate P1 at the nose end (the shoulder screw head and the idler wheel are on the far side). The tab is fixed to the plate; the jack screw turns in the tab and pushes the slider's foot; the slider sits on the shoulder screw, so the idler moves out along the slot and the loop tightens. The nut then locks the shoulder screw; the jack screw is backed off a quarter turn and carries nothing.</figcaption></figure>
+<h3>3.1 The three parts</h3>
+<ul>
+<li><b>The tab.</b> A 30 mm length of 20 x 20 x 3 aluminium angle. One leg is cut back to a 7.5 x 8 ear that lies on the plate's inboard face and is screwed to it with an M3 x 6 into the new tapped hole at (±223, +11), Loctite 243, 1.0 N·m. The other leg, leg B, stands off the plate at right angles, 1.5 mm on the hinge side of the slot end, so the nut's corners never touch it as the idler travels. Leg B carries an M4 tapped hole at the height of the slider's foot (6 mm off the plate face, 11 mm below the slot centreline).</li>
+<li><b>The slider.</b> An 8 mm wide slice of the same angle. Its 19 mm leg lies on the plate over the slot with a Ø6.4 hole 13 mm from its bottom, so it sits on the shoulder screw's M6 thread under the nut, in place of the plain washer. Its short leg, 8 mm, is bent inboard at the bottom: the foot.</li>
+<li><b>The jack screw.</b> An M4 x 20 socket head screw through the tapped hole in leg B, tip against the foot, turned with a 3 mm key from the hinge side, under the bar.</li>
+</ul>
+<h3>3.2 What happens when you turn it</h3>
+<p>The tab cannot move: it is screwed to the plate. The jack screw advances through leg B by 0.7 mm per turn (the M4 pitch), so each half turn pushes the foot, and with it the slider, the shoulder screw and the idler wheel, 0.35 mm outward along the slot. The loop passes over the idler, so pushing the idler out stretches the loop: 1 mm of idler travel takes up 2 mm of loop. When the deflection is right, the nyloc is tightened to 7 N·m with the screw head held by its 4 mm key: now the nut and the clamped stack hold the idler, by far more force than the belt pull. The jack screw is then backed off a quarter turn so that it carries no load, and stays there as the stop for the next re-tension.</p>
+<h3>3.3 How tight is right, and how to measure it</h3>
+<p>The rails sit directly under both runs of the loop, so pushing a run inward moves nothing and tells you nothing. Pull a run away from its rail instead: with the machine on blocks, hook a cleat of the lower run at mid-span (about 110 mm from either wheel) with a bent wire on a small spring scale and pull it away from the machine with 4 N, about 400 g, reading the movement against a steel rule held beside it. The printed TPU track should give 2 to 3 mm; the stiffer belt of option B, 1.5 to 2.5 mm. Less than that loads the bearings and makes a TPU loop creep faster; more than that and the teeth ride up under load and skip.</p>
+<div class="two"><figure class=""><img src="img/tens3d.jpg"><figcaption><b>Fig. 7</b> The tensioner on the solid model, nose A, from inboard: tab standing off the plate (orange), jack screw on the slider's foot, shoulder screw and nut in the slot, carrier angle below.</figcaption></figure><figure class=""><img src="img/ts09plan.jpg"><figcaption><b>Fig. 8</b> The same corner as drawn on TS-09, plan from inboard: slot, shoulder screw and nut, slider, tab with its ear and M3, jack screw on the foot, and the rail and carrier ending short of the wheel.</figcaption></figure></div>
+<div class="box"><b class="t">Numbers to remember</b>Idler travel 223 to 232.6 (9.6 mm, 19 mm of loop). Half a turn of the jack screw = 0.35 mm. Deflection 2 to 3 mm (TPU) or 1.5 to 2.5 mm (belt) at 4 N on the lower run at mid-span. Nyloc 7 N·m with the screw head held. Jack screw backed off a quarter turn after locking. A TPU loop settles 1 to 2 % in its first days: re-check after the first run and after a day.</div></div>
+<div class="apx land"><h2>Sheet TS-09: idler tensioner, tab, slider and jack screw</h2><figure><img src="img/TS-09.jpg"></figure></div>
+
+<div class="apx land"><h2>How to read TS-09</h2><figure><img src="img/EX-09.jpg"></figure></div>
+
+<div class="page"><h2>4. Fitting the track loop and setting the tension</h2>
+<p>This is assembly steps 10 and 11 of the plan, for one loop; four loops per machine, the two of one side set to the same feel. Before this, each loop has been fit-checked on two wheels at 223 mm centres (option A, the printed TPU loop: the fit-test slice and then the rings; option B: the belt back from the belt shop with its cleats).</p>
+<h3>4.1 Parts for one loop</h3>
+<p>The idler wheel with its two bearings and sleeve already pressed in; the shoulder screw, head washer 8 x 11 x 1, shim 8 x 11 x 0.5, slider, M6 nyloc; the tab with its M3 x 6 and M4 x 20 jack screw; the loop. Tools: 4 mm hex key (shoulder screw head), 10 mm spanner (nyloc), 2.5 mm key (M3), 3 mm key (jack screw), the hook and spring scale, a steel rule, Loctite 243.</p>
+<h3>4.2 Procedure</h3>
+<ol>
+<li>Put the idler wheel inside the loop and hang the loop over the hinge wheel, teeth into the grooves, so the idler sits near its slot in the plate.</li>
+<li>Build the shoulder screw stack from the head: head washer, through the idler's two bearings and sleeve, the 0.5 shim, through the plate slot, the slider with its foot pointing inboard and down, the nyloc finger-tight only. Push the idler toward the hinge until the screw sits at x 223: that is 17.2 mm from the plate's nose end, and no closer, because the rail ends there.</li>
+<li>Fit the tab: ear onto the plate's tapped hole with the M3 x 6 and a drop of 243, 1.0 N·m. Leg B stands 1.5 mm off the slot end on the hinge side. Run the M4 jack screw through the tapped leg until its tip touches the slider's foot.</li>
+<li>Turn the jack screw clockwise in half turns. Each half turn moves the idler 0.35 mm outward. After each, pull the lower run with the hook and scale at mid-span and read how far it comes away from the rail. Stop at 2 to 3 mm (TPU) or 1.5 to 2.5 mm (belt).</li>
+<li>Lock it: 4 mm key in the shoulder screw head so it cannot turn, 10 mm spanner on the nyloc, 7 N·m (snug plus a quarter turn with the long leg of the key is close). The nut clamps the plate between the slider and the shim.</li>
+<li>Back the jack screw off a quarter turn so it carries no load; the nut holds the position now.</li>
+<li>Turn the loop one full turn by hand. Listen: no clicks (a click is a tooth riding up or a pin standing proud). Look: the cleats clear the deck (option A by 5 mm; option B runs through the deck notch), the loop runs centrally between the flanges without walking, the flanges clear the rail end by at least 2 mm and the bar end by 3.7.</li>
+<li>Do the other loop of the same side to the same deflection, then the other side.</li>
+<li>Re-check the deflection after the first run and again after a day. A TPU loop settles; if it reads over 3 mm, loosen the nut, half a turn on the jack screw, tighten again. That is the whole re-tensioning job.</li>
+</ol>
+<h3>4.3 Checks before the first run</h3>
+<ul>
+<li>Shoulder screw centre between 223 and 232.6, measured from the plate's nose end as 17.2 down to 7.6 mm.</li>
+<li>The idler spins free with the nut tight; the hinge wheel turns the loop by hand with no tight spot once a turn (a tight spot means a pin proud or a bearing crooked).</li>
+<li>Each side on blocks under power: no tooth jump when the loop is braked by hand.</li>
+</ul>
+<div class="two"><figure class=""><img src="img/cat_track.jpg"><figcaption><b>Fig. 9</b> The loop: option A is the printed TPU track, 110 HTD 5M teeth inside, 45 cleats outside, five cleats per ES1 step; option B is a bought HTD 550-5M-15 belt with 22 bonded cleats.</figcaption></figure><figure class=""><img src="img/seq85.jpg"><figcaption><b>Fig. 10</b> Steps 8 to 10 in the interactive model: the idlers go on last, through the plate slots, with the sliders, nuts and tabs.</figcaption></figure></div></div>
+<div class="apx land"><h2>Sheet TS-01: the printed track loop (option A)</h2><figure><img src="img/TS-01.jpg"></figure></div>
+
+<div class="page"><h2>5. What the runs slide on: rails and carrier angles</h2>
+<p>Between the two wheels of a segment the loop would sag and the teeth would climb under load, so each run slides on a UHMW rail, 186 x 20 x 5, one above and one below, on each plate. The rails sit 13.3 mm from the shaft axis, just under the tooth tips, which is why the tension check pulls a run away from the rail instead of pushing it.</p>
+<p>Rev B held each rail with four small clips; the reviewer called the contact area too small. TS-10 replaces them with a full-length 10 x 10 x 1.5 aluminium angle per rail: one leg on the plate face, screwed with three M3 x 6 into new tapped holes at x 40, 105 and 170 (y ±3.5), Loctite 243, 1.0 N·m; the other leg under the upper rail or on top of the lower rail, with the rail screwed to it by three 3 x 5 thread-forming screws into blind pilots 4 deep: the rail is only 5 mm thick and its far face is what the track slides on, so a longer screw would come out of it. The plate leg is cut down to 6.5 mm so the upper and lower angles do not meet on the plate's centreline. The rails are trimmed from 189 to 186 so the idler's flange clears them at x 223.</p>
+<figure class=""><img src="img/cat_carrier.jpg"><figcaption><b>Fig. 11</b> A rail on its carrier angle on the plate face, from the interactive model.</figcaption></figure></div>
+<div class="apx land"><h2>Sheet TS-10: rail carrier angle</h2><figure><img src="img/TS-10.jpg"></figure></div>
+
+<div class="page"><h2>6. Order of work for the track side, and what to have on the bench</h2>
+<table><tr><th>When</th><th>Step</th><th>Time</th><th>Go / no-go check</th></tr>
+<tr><td>Before build day</td><td>Wheels back from the workshop: 4 hinge wheels and 2 stage-2 pulleys reamed 8 H7 with their Ø2.5 hub holes; 4 idler wheels bored 16 H7. Shaft cut to 82.3 and 77.3, ends chamfered. Tabs, sliders, carrier angles made; rails trimmed and drilled. Loops fit-checked on two wheels at 223 centres.</td><td>workshop 1 to 2 weeks; 4 h of own work</td><td>Shaft slides through every reamed bore with no shake and no stiff spot; a 688 enters the idler bore with a light press and does not fall out</td></tr>
+<tr><td>Step 1</td><td>Press the 688s: into P1, P2 and P17 (Loctite 641 on the outer ring), and two into each idler wheel with the sleeve between</td><td>30 min, then cure</td><td>An idler on its bearings spins free with no rock</td></tr>
+<tr><td>Steps 3 and 5</td><td>Rails on their carrier angles, angles onto the plates</td><td>30 min each</td><td>Angle lies flat with no rock; rail ends at 207</td></tr>
+<tr><td>Step 6</td><td>Hinge wheels and stage-2 pulley held in position with their shims</td><td>20 min</td><td>The bare shaft enters each wheel from the bearing without lifting it</td></tr>
+<tr><td>Step 7</td><td>Shafts in, feeler gaps set, three pins per side (section 1.4)</td><td>2 h both sides</td><td>Shaft turns free; axial play = feeler gap only; paper passes at every face</td></tr>
+<tr><td>Step 10</td><td>Idlers on their shoulder screws through the slots, sliders, nuts finger-tight, tabs on (section 4.2, 1 to 3)</td><td>40 min for four</td><td>Wheel spins free on the loose screw; jack screw meets the foot squarely</td></tr>
+<tr><td>Step 11</td><td>Loops on, tensioned, locked (section 4.2, 4 to 9)</td><td>30 min for four</td><td>Deflection in range; one full turn by hand with no click; nut 7 N·m</td></tr>
+</table>
+<h3>Fasteners for these joints</h3>
+<table><tr><th>Joint</th><th>Fastener</th><th>Qty per machine</th><th>Torque</th><th>Thread-locker</th></tr>
+<tr><td>Hinge wheels and stage-2 pulleys to the shafts</td><td>ISO 8752 spring pins 2.5 x 24 (or M4 cone-point set screw in a seat on the stage-2 pulley)</td><td>6</td><td>driven flush (set screw about 1 N·m)</td><td>none (243 on a set screw)</td></tr>
+<tr><td>Idlers</td><td>ISO 7379 Ø8 x 25 M6 shoulder screw; 8 x 11 x 1 head washer; 8 x 11 x 0.5 shim; sleeve 8 x 10 x 9; slider; M6 nyloc</td><td>4 sets</td><td>7 N·m</td><td>none</td></tr>
+<tr><td>Tensioner tabs</td><td>M3 x 6 SHCS into the plate; M4 x 20 jack screw</td><td>4 + 4</td><td>1.0 N·m / by feel, backed off a quarter turn</td><td>243 on the M3</td></tr>
+<tr><td>Rail carriers to plates</td><td>3 x M3 x 6 SHCS per angle</td><td>24</td><td>1.0 N·m</td><td>243</td></tr>
+<tr><td>Rails to carriers</td><td>3 x 3 x 5 thread-forming per rail, blind pilots</td><td>24</td><td>seat the head, no more</td><td>none</td></tr>
+<tr><td>Bearings in P1, P2, P17</td><td>688-2RS pressed, seat reamed 16 H7</td><td>6</td><td>press</td><td>641 on the outer ring</td></tr>
+</table>
+<h3>Tools for these steps</h3>
+<p>Arbor press or a vice with soft jaws (bearings); cordless drill, long-series Ø2.5 HSS bits x2, cutting fluid, 2.5 pin punch, small hammer; feeler gauges 0.3 and 0.5; hex keys 2.5, 3 and 4; 10 mm spanner; torque screwdriver to 1 N·m and a torque wrench to 7 N·m if available (otherwise the feel described); digital calipers; steel rule; a bent-wire hook and a spring scale reading 4 N; two G-clamps; Loctite 641 and 243; marker; a strip of paper.</p>
+<p class="small">Sources: the manufacturing and assembly plan (sections 5.3 to 5.8, 7 steps 6, 7, 10, 11, and procedures 8.2 and 8.3), sheets TS-01, TS-06, TS-09, TS-10 and TS-11 with their explainer pages, and the shared 3D model. Decisions on set screws and the sector gear: plan Appendix C, items 12, 13, 16 and 17.</p></div>
+</body></html>

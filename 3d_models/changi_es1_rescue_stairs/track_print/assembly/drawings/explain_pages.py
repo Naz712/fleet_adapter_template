@@ -63,7 +63,7 @@ PAGES = [
   (177, 187, "Plate leg", "Seen edge on above the rail leg. It is cut down to 8 so it stays inside the 15.4 plate height."),
   (60, 100, "Plate", "P1 or P2, 5 thick. The three M3 x 6 go through the angle into the plate's tapped holes, the same ones the four RS clips used."),
   (73, 116, "Angle on the plate", "The 8 leg lies flat on the plate's lane-side face, full length: 186 x 8 of contact instead of four 10 x 14.6 clip feet."),
-  (90, 102, "Angle on the rail", "The 10 leg lies on the rail's face away from the track: on top of the lower rail, under the upper one. Three 3 x 10 thread-forming screws into the rail."),
+  (90, 102, "Angle on the rail", "The 10 leg lies on the rail's face away from the track: on top of the lower rail, under the upper one. Three 3 x 5 thread-forming screws into blind Ø2.2 pilots 4 deep: the rail is only 5 thick and its far face carries the track, so a longer screw would come out of the sliding face."),
   (98, 89, "Rail", "UHMW strip 20 wide, 5 thick, trimmed from 189 to 186 at the idler end so the idler wheel's flange can never reach it."),
   (102, 72, "Track", "The track's lower run rides tooth-tips-down on the rail's other face at y -13.3; the angle never touches the track."),
   (60, 28, "Notes", "Eight angles from 1.6 m of stock; the RS 427-991 clips and their 24 M3 x 6 are no longer needed (keep the thread-forming screws)."),
