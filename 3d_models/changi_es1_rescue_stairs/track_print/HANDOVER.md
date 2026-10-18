@@ -75,7 +75,7 @@ pins); the shared STEP for a re-check; hinge angle sensing; stage-2 pulley fixin
 
 ## Immediate next steps
 
-1. Fusion: import `cad/RB4107_track_unit_reviewed.step`, verify the tree against
+1. Fusion, per `FUSION_BRIEF.md`: import `cad/RB4107_track_unit_reviewed.step`, verify the tree against
    `cad/part_tree.txt`, make the A3 drawing (assembly with balloons and parts list; section along
    hinge shaft A with the shims, gaps and pins; nose tensioner detail at 2:1), export the PDF to
    `assembly/drawings/fusion/`, commit and push on the same branch.
