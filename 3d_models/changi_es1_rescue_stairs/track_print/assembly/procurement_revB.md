@@ -29,6 +29,7 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 | Timing pulley HTD 5M 20T, 15 mm belt, flanged, **plain (pilot) bore** | 8 + 1 to practise boring and pinning on | **Buy** | [MISUMI SG, Timing Pulleys HTD 5M](https://sg.misumi-ec.com/vona2/detail/110310532889/) | ~S$20 each | ships 1 day from SG stock; allow 2-5 days |
 | Pulley bore modification: 4 x ream Ø8 H7 (hinge, M1 and M3 stage-2) and 4 x bore Ø16 H7 (idlers, M2); hub cross holes Ø2.5 drilled on the press when boring, shaft drilled through them at assembly (TS-06, TS-11) | 8 + 2 | **Make**: Professional Workshop request | E3-01-06 | free | workshop queue, allow 1-2 weeks |
 | Spring pins ISO 8752 2.5 x 24 (hinge pulleys and stage-2 pulleys, replaces E-clips F22 and the D-flats) | 6 + 4 spare | **Buy** | [RS SG spring pins](https://sg.rs-online.com/web/c/fasteners-fixings/pins/spring-pins/) | ~S$5 / pack | RS SG stock |
+| Set screws M4 x 5 cone point DIN 914 (stage-2 pulleys M3 only, if Nhien keeps his pulley's tapped hole: cone point into a seat spot-drilled in the shaft through that hole, Loctite 243; the hinge wheels have no hub in the 20 mm lane, so they stay pinned; plan Appendix C item 17) | 2 + 2 spare | **Buy** | [RS SG set screws](https://sg.rs-online.com/web/c/fasteners-fixings/screws-bolts/set-screws/) | ~S$3 / pack | RS SG stock |
 | Hinge shaft: plain round Ø8 h7 ground steel, 300 mm (100 mm to practise on) (replaces the D-shaft B13; cut to 82.3 and 77.3, no grooves) | 1 | **Buy**, cut | [RS SG linear shafts](https://sg.rs-online.com/web/c/bearings-seals/linear-motion/linear-shafts/) or MISUMI SG PSFJ8 | ~S$10 | RS SG stock |
 
 ## 1D. Tension and rail support (from the design review), both options
@@ -50,6 +51,7 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 | Slide rails P3-P6, UHMW strip 189 x 20 x 5 | 8 | Buy + drill | [MISUMI SG UPA-189-20-5](https://sg.misumi-ec.com/vona2/mech/M1500000000/M1501000000/) |
 | Rail brackets RS PRO 427-991 (angle 15 x 14.6 x 10) | 32 | Buy | [RS SG](https://sg.rs-online.com/) stock no. 427-991 |
 | Hinge shafts P20 A 82.3 + B 77.3, now plain round Ø8 h7 (section 1C), no D-flat, no E-clip grooves | 2 | Buy stock, cut | see 1C |
+| Sector gear P11: proposed KHK SSAY1-100 (module 1, 100 teeth, 20°, face 6, bore 10, S45C, flat plate) cut to a 23-tooth sector (plan 5.14); needs Nhien's OK on the centre distance 60.1 to 60.2 (P13 slot 1 mm closer) or a 22-tooth module 1 pinion in place of M6 | 1 | Buy, cut | KHK catalog (thin-face hubless SSAY series, about US$43) or MISUMI SG (KHK brand), search SSAY1-100; plan B any 1M 100T 45# steel gear from Shopee / AliExpress, faced to 6 mm at the Professional Workshop |
 | Bearing 688-2RS 8 x 16 x 5 | 14 | Buy | [RS SG ball bearings](https://sg.rs-online.com/web/c/bearings-seals/bearings/ball-bearings/) |
 | Shoulder screw ISO 7379 Ø8 x 25 M6 + washers, shim, spacer, nyloc | 4 sets | Buy | [RS SG shoulder screws](https://sg.rs-online.com/web/c/fasteners-fixings/screws-bolts/shoulder-screws/) |
 | 2020 profile x 110 (P7) x2, 3030 x 160 (P8) x2, corner posts P15 x4 | 1 m + 0.5 m | Buy, cut | MISUMI SG / local |

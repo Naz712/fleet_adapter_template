@@ -154,3 +154,12 @@ assembly plan document):
   pushes (the old flat slider sat 1 mm below the jack's axis); the carrier angles' plate legs are 6.5, not 8, so the
   upper and lower angles clear each other, with six new M3 holes per plate at y +-3.5. `cad/RB4107_track_unit_reviewed.step`
   carries all of it, interference-checked.
+- Pulley to shaft, settled 18 Oct after Nhien's notes and the reviewer's set-screw advice: the hinge wheels stay pinned,
+  because they fill the 20 mm lane at 19 over the flanges and have no hub for a set screw (it would sit under the
+  track); the stage-2 pulley M3 may keep its set screw if it is a cone point into a seat spot-drilled in the shaft
+  through the hub hole, with Loctite 243; a set screw on the plain round shaft (friction only) and a D-flat are both
+  out. Plan Appendix C item 17.
+- Hinge sector gear, proposed: buy a KHK SSAY1-100 (module 1, 100 teeth, 6 mm S45C plate) and cut a 23-tooth sector
+  from it with the P14 holes drilled first on the whole gear; pitch radius 50 instead of 51, so the pinion centre
+  distance becomes 60.1 to 60.2 or the pinion becomes 22 teeth. Plan section 5.14 and Appendix C item 16, pending
+  Nhien's OK.
