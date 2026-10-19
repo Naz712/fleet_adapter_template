@@ -52,7 +52,7 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 |---|---|---|---|
 | Side plates P1 (front) and P2 (rear), 5 mm Al, laser + tap | 2 + 2 | Make | DXF in the pack; Professional Workshop or a laser shop on the vendor list |
 | Slide rails P3-P6, UHMW strip 189 x 20 x 5 | 8 | Buy + drill | [MISUMI SG UPA-189-20-5](https://sg.misumi-ec.com/vona2/mech/M1500000000/M1501000000/) |
-| Rail brackets RS PRO 427-991 (angle 15 x 14.6 x 10) | 32 | Buy | [RS SG](https://sg.rs-online.com/) stock no. 427-991 |
+| ~~Rail brackets RS PRO 427-991~~: **do not order**, replaced by the TS-10 carrier angles (1D) | 0 | - | - |
 | Hinge shafts P20 A 82.3 + B 77.3, now plain round Ø8 h7 (section 1C), no D-flat, no E-clip grooves | 2 | Buy stock, cut | see 1C |
 | Sector gear P11: proposed KHK SSAY1-100 (module 1, 100 teeth, 20°, face 6, bore 10, S45C, flat plate) cut to a 23-tooth sector (plan 5.14); needs Nhien's OK on the centre distance 60.1 to 60.2 (P13 slot 1 mm closer) or a 22-tooth module 1 pinion in place of M6 | 1 | Buy, cut | KHK catalog (thin-face hubless SSAY series, about US$43) or MISUMI SG (KHK brand), search SSAY1-100; plan B any 1M 100T 45# steel gear from Shopee / AliExpress, faced to 6 mm at the Professional Workshop |
 | Bearing 688-2RS 8 x 16 x 5 | 14 | Buy | [RS SG ball bearings](https://sg.rs-online.com/web/c/bearings-seals/bearings/ball-bearings/) |
@@ -69,12 +69,13 @@ to the ES1 step. Option B is bought: belts from RS in days, but the 88 cleats ne
 and the deck needs a notch or shorter cleats. Wheels, bore modification, plates, shafts, bearings and
 shoulder screws are the same in both.
 
-## 4. Order of events
+## 4. Order of events (19 Oct)
 
-1. Order the 8 plain-bore pulleys today (critical path, then the workshop bore mod); for option B also
-   order the 4 belts and send them with TS-01B to the belt shop. For option A print the stand-in pulley
-   and fit-test slice, then the 4 tracks as soon as a UP300 slot is free.
-2. Nhien: laser plates and deck (slot H 74 long; notched if option B), order rails, bearings, shoulder
-   screws, profiles.
-3. Workshop: pulley bores, plate tapping, shaft cutting (one request form).
-4. Assemble per Rev B sheet 3; fit the tracks on the real pulleys; tension at the slots.
+1. Mon 19 to Tue 20 Oct: check the MISUMI H5M 20T 150 drawing (19 or less over the flanges, no hub),
+   then order the pulleys (4 + 1 bored 8, 4 idlers smallest bore), the RS order (shaft, pins, screws,
+   jack screws) and the aluminium angle. Print the fit-test slice and stand-in pulley (option A).
+2. 22 to 29 Oct: Nhien re-issues the P1 / P2 DXF and has the plates laser cut. As parts arrive, make
+   the tabs, sliders and carrier angles, trim and drill the rails, drill the hinge wheels' Ø2.5 holes.
+3. When the idlers arrive (about 23 to 26 Oct): one workshop request for the idler bores (16 H7), the
+   stage-2 pulley reams (8 H7) and, once the plates are back, the bearing seats (16 H7). Allow 1 to 2 weeks.
+4. 9 to 10 Nov: assemble; 11 to 13 Nov: tension and run tests; 16 Nov: advisor demo.
