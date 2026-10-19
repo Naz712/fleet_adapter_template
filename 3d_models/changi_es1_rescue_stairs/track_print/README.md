@@ -169,5 +169,7 @@ assembly plan document):
 - Rail screw positions settled 19 Oct: 20, 93, 166 from the rail's hinge end (x 38, 111, 184), 7.5 from the plate
   face, not at the plate screws' x (TS-10 redrawn). Do not drill the old clip pilots in the rails: they overlap the
   new ones at x 38 / 40 and 184 / 185.
-- Stage-2 pulley pin, if Nhien pins it: 2.5 x 12, not 2.5 x 24 or 16 (Ø17.5 OD, tooth roots about Ø13.4; measured in Fusion 19 Oct). The hinge wheels keep
-  2.5 x 24. TS-11 and procurement 1C updated.
+- Stage-2 pulley, 20 Oct: no cross pin after all (drilling through its small toothed part is fiddly). It becomes a MISUMI
+  HTD 5M pulley for the 9 mm belt with a hub, bore 8, held by two cone-point set screws in seats drilled 1 mm into
+  the shaft, Loctite 243. The hub makes each hinge shaft longer by its length (to confirm with Nhien). The hinge
+  wheels keep their 2.5 x 24 pins. TS-06, TS-11, TS-12 and procurement 1C updated.

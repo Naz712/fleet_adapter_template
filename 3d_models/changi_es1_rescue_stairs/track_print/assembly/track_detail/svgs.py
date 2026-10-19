@@ -19,7 +19,7 @@ def svg_shaft():
     s.append(lab(X(-10), 10, "lane 20.0 between the plate faces = wheel 19 + shim 0.5 + gap 0.5", "middle", "#c85d1a", 10))
     s += [lead(-10, wt-1, 34), lab(X(-10), 30, "Front hinge wheel, pinned FIRST: it locates the shaft"),
           lead(-35, wt-1, 50), lab(X(-35), 46, "Rear hinge wheel, pinned"),
-          lead(29.9, cy-40, 50), lab(X(29.9), 46, "Stage-2 pulley, pinned (or seated set screw)"),
+          lead(29.9, cy-40, 50), lab(X(29.9), 46, "Stage-2 pulley, 2 set screws in seats"),
           lead(-22.5, pt-1, 68), lab(X(-22.5), 64, "P2 plate, 688 bearing"),
           lead(2.5, pt-1, 68), lab(X(2.5), 64, "P1 plate, 688"),
           lead(21.5, cy-30, 68), lab(X(21.5), 64, "P17 support, 688"),

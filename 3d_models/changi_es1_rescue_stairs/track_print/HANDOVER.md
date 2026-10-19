@@ -69,7 +69,7 @@ Living documents outside the repository (same claude.ai account):
 
 Agreed: P17 in aluminium with a 15.8 seat reamed 16 H7; cast corner brackets; sector +2 teeth and
 slot H 74; KHK SSAY1-100 cut to 23 teeth at centre distance 60.1 to 60.2 (he has already changed the
-base); stage-2 pulleys pinned (2.5 x 12); track option B with the cleats cut to 5 mm (no deck notch),
+base); stage-2 pulleys: hub + 2 set screws in seats (changed 20 Oct, no pins); track option B with the cleats cut to 5 mm (no deck notch),
 bonded by the belt maker. No DXF re-issue: the new M3 holes in P1 / P2 are drilled and tapped on site.
 
 ## Still open with Nhien
@@ -81,6 +81,8 @@ bonded by the belt maker. No DXF re-issue: the new M3 holes in P1 / P2 are drill
 - BOM: M6x10 (4), M5x8 (12), M5x10 (4), M4x8 (8), the stage-2 pulley and P17.
 - Who orders: cast brackets + T-nuts, shims 8x11x0.5 (2) and 8x11x1 (2), 688-2RS bearings (14).
 - Belt maker's lead time for bonding the cleats.
+- Stage-2 pulley: belt type (HTD 5M 9 mm?), tooth count, hub length and which way it faces; the hinge
+  shafts grow by the hub length, so they are not cut until this is known.
 
 ## Immediate next steps
 
@@ -90,7 +92,7 @@ bonded by the belt maker. No DXF re-issue: the new M3 holes in P1 / P2 are drill
    hand, then copy the drawing PDF to `assembly/drawings/fusion/` and a STEP export over
    `cad/RB4107_track_unit_reviewed.step` (the repo STEP is behind the Fusion model, see `cad/README.md`).
 2. 19 Oct: order pulleys (8 + 1), d8 h7 shaft (300), 688 bearings (14), shoulder screws (4 sets),
-   spring pins (4 x 2.5 x 24; 2 x 2.5 x 12 if the stage-2 pulleys are pinned), angle stock; workshop request for the bores (critical path, 1 to 2 weeks).
+   spring pins (4 x 2.5 x 24), stage-2 pulleys with hub + set screws, angle stock; workshop request for the bores (critical path, 1 to 2 weeks).
 3. Nhien's DXF re-issue, laser 22 to 29 Oct; fit-test slice and four TPU rings; carriers, tabs,
    sliders; assembly 9 to 10 Nov, tests 11 to 13 Nov, advisor demo 16 Nov.
 4. Individual update (one page plus appendix) exists outside the repository; the next one is due

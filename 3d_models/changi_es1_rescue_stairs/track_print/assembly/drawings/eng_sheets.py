@@ -572,10 +572,10 @@ def sheet_spacer():
 
 # ------------------------------------------------------------------ TS-06 pulley (bought)
 def sheet_pulley():
-    fig, view, bg = a3_sheet("TIMING PULLEY HTD 5M 20T (BOUGHT, PLAIN BORE)", "TS-06", material="ALUMINIUM (VENDOR'S)", finish="VENDOR'S", qty=8, scale="2:1", notes=[
-        "BOUGHT PART. ORDER: HTD 5M, 20 TEETH, FOR 15 MM BELT, FLANGES BOTH SIDES, PLAIN PILOT BORE.\n    MISUMI SINGAPORE (APPROVED VENDOR). 8 OFF, PLUS 1 TO PRACTISE THE BORING AND PINNING ON.",
+    fig, view, bg = a3_sheet("TIMING PULLEY HTD 5M 20T (BOUGHT)", "TS-06", material="ALUMINIUM (VENDOR'S)", finish="VENDOR'S", qty=8, scale="2:1", notes=[
+        "BOUGHT PART, MISUMI ECONOMY HTD 5M (H5M, NOT S5M), 20 TEETH, 15 MM BELT, FLANGES BOTH SIDES, NO HUB. HINGE WHEELS: 4 + 1 WITH\n    BORE Ø8 TYPE H (ELSE P, IGNORE ITS SCREW). IDLERS: 4 WITH THE SMALLEST BORE, BORED Ø16 AT THE WORKSHOP. CHECK 19 OR LESS OVER THE FLANGES.",
         "WHAT MATTERS: 20T HTD 5M (PD 31.83) AND THE 15 MM BELT. ON NHIEN'S PLATES THE LANE IS 19-20 WIDE, SO NO HUB FITS:\n    THE HUB AND SET SCREW DRAWN ARE THE PLA STAND-IN'S ONLY.",
-        "WORKSHOP: 4 x REAM Ø8 H7 (HINGE SHAFT, PLAIN ROUND, NO D-FLAT). Ø2.5 CROSS HOLE AT MID-FACE: DRILL THE HUB NOW,\n    ON THE PRESS IN A V-BLOCK. AT ASSEMBLY THE SHAFT IS DRILLED THROUGH THE HUB HOLE IN PLACE. SPRING PIN ISO 8752 2.5 x 24.",
+        "HINGE WHEELS: Ø2.5 CROSS HOLE AT MID-FACE (90° FROM ANY TAPPED HOLE): DRILL IT NOW,\n    ON THE PRESS IN A V-BLOCK. AT ASSEMBLY THE SHAFT IS DRILLED THROUGH THE HUB HOLE IN PLACE. SPRING PIN ISO 8752 2.5 x 24.",
         "THE PIN DRIVES AND LOCATES THE PULLEY: NO GRUB SCREW, NO E-CLIPS (TS-11).\n    4 x BORE Ø16 H7 THROUGH FOR 2 x 688-2RS EACH (IDLERS ON Ø8 SHOULDER SCREWS, SLEEVE 8 x 10 x 9 BETWEEN).",
         "PLA STAND-IN FOR FIT TESTS ONLY: stl/stand_in_pulley_20T_PLA_test_only.stl (M3 SET SCREW). NOT FOR DRIVING.",
     ])
@@ -746,7 +746,7 @@ def sheet_stackup():
         "FITS: 688-2RS SEATS IN P1, P2, P17 LASER-CUT Ø15.8 THEN REAMED Ø16 H7, RETAINED WITH LOCTITE 641. HINGE PULLEYS Ø8 H7 ON A PLAIN Ø8 h7 ROUND SHAFT (NO D-FLAT, NO GROOVES).",
         "IDLER PULLEYS Ø16 H7, 688-2RS LIGHT PRESS. SLOTS 8.1 (+0.1 / 0) FOR THE Ø8 f9 SHOULDER. LANE 20.0 +-0.2 = (160 - 110) / 2 - 5 FROM THE BAR CUT LENGTHS: CUT BARS TO +-0.1 AND SQUARE.",
         "AXIAL LOCATION ON THE HINGE SHAFT: PINS, NOT E-CLIPS. PIN THE FRONT HINGE PULLEY FIRST: ONE 8x11x0.5 SHIM AGAINST THE P1 BEARING, 0.3-0.5 FEELER GAP TO THE P2 BEARING. THAT FIXES THE SHAFT.",
-        "THEN PIN THE REAR PULLEY (0.3-0.5 GAP TO ITS BEARING) AND THE STAGE-2 PULLEY (1 MM SHIM AGAINST THE P17 BEARING). SHIMS BEAR ON INNER RINGS ONLY: NO PULLEY FACE ON AN OUTER RING OR A PLATE.",
+        "THEN PIN THE REAR PULLEY (0.3-0.5 GAP TO ITS BEARING). STAGE-2 PULLEY (1 MM SHIM AGAINST THE P17 BEARING): HUB TYPE, 2 CONE-POINT SET SCREWS\n    IN SEATS 1 MM DEEP, LOCTITE 243. ITS HUB (NOT DRAWN) RUNS ON THE SHAFT: SHAFT LENGTH GROWS BY THE HUB LENGTH, TBC. SHIMS BEAR ON INNER RINGS ONLY.",
         "IDLER SCREW: SHOULDER 25 vs STACK 25.5 (HEAD WASHER 1 + BEARINGS 10 + SLEEVE 9 + SHIM 0.5 + PLATE 5): THE NUT CLAMPS THE INNER-RING STACK AGAINST THE PLATE, AS INTENDED. KEEP THE 0.5 SHIM.",
         "IDLER FLANGE MEETS THE RAIL END IF THE IDLER IS PUSHED IN PAST x 223: RAILS TRIMMED TO 186 (TS-10), TENSIONER TS-09 ONLY EVER PUSHES OUTWARD.",
     ])
@@ -766,7 +766,7 @@ def sheet_stackup():
         rect(ax, z0 + 1.5, -15.3, 16, 30.6, "white", lw=0.8, hatch="////")
     rect(ax, 80, -15, 5, 30.4, "white", lw=0.8, hatch="\\\\"); rect(ax, 80, -8, 5, 16, "white", lw=0.6)
     for zc in (70, 95): rect(ax, zc - 1.25, -12, 2.5, 24, "white", lw=0.6)               # hinge pulley pins 2.5 x 24
-    rect(ax, 35.1 - 1.25, -6, 2.5, 12, "white", lw=0.6)                                     # stage-2 pin 2.5 x 12 (tooth roots about Ø13.4)
+    ax.add_patch(Polygon([(33.6, 8.8), (36.6, 8.8), (36.6, 5.0), (35.1, 3.6), (33.6, 5.0)], closed=True, fc="white", ec=INK, lw=0.6))   # stage-2 set screw, cone point in its seat
     for z in (46, 55, 60.5, 79.5, 80, 85, 85.5): ax.plot([z, z], [-19, 19], color=DIM, lw=0.3, dashes=(2, 2))
     y = -19.5
     for a, b, t in ((28.7, 30.2, "1.5"), (30.2, 40, "9.8"), (40, 41, "1"), (41, 46, "5"), (46, 55, "9"), (55, 60, "5"), (60, 60.5, ".5"), (60.5, 79.5, "19"), (79.5, 80, ".5"), (80, 85, "5"), (85, 85.5, ".5"), (85.5, 104.5, "19"), (104.5, 106, "1.5")):
@@ -774,7 +774,7 @@ def sheet_stackup():
     dim_h(ax, 28.7, 106, 21, "77.3 (P20-B)", ext_from=4, fontsize=6.5)
     for z, t in ((35.1, "STAGE-2\nPULLEY M3"), (43.5, "P17 +\n688"), (57.5, "P1 +\n688"), (70, "FRONT HINGE\nPULLEY M1"), (82.5, "P2 +\n688"), (95, "REAR HINGE\nPULLEY M1")):
         ax.text(z, 18.5, t, fontsize=5.5, ha="center", va="bottom")
-    leader(ax, (70, 12), (64, -16.5), "PINS Ø2.5 AT MID-FACE, 3 OFF PER SHAFT:\nx 24 IN THE HINGE PULLEYS, x 12 IN THE STAGE-2", fontsize=6)
+    leader(ax, (70, 12), (64, -16.5), "PINS Ø2.5 x 24 AT MID-FACE, 2 OFF PER SHAFT\n(HINGE PULLEYS); STAGE-2: SET SCREWS IN SEATS", fontsize=6)
     leader(ax, (60.25, 5.5), (48, 14), "SHIM 8x11x0.5 ON THE INNER RING", fontsize=6)
     leader(ax, (79.75, 0), (96, -13), "0.3-0.5 FEELER GAP (NO SHIM)", fontsize=6)
     # idler screw, B side nose
@@ -799,7 +799,7 @@ def sheet_stackup():
     for z, t in ((49, "NYLOC"), (53.5, "SLIDER"), (57.5, "P1"), (63, "688"), (70, "SLEEVE\n8x10x9"), (77, "688"), (83, "HEAD")):
         ax.text(z, -9.5 if t in ("688", "SLEEVE\n8x10x9") else 7, t, fontsize=5.5, ha="center", va="center")
     # fits table
-    rows = [("P1 / P2 / P17 bearing seat", "laser Ø15.8, ream Ø16 H7", "688-2RS, Loctite 641"), ("hinge pulley bore M1, stage-2 M3", "ream Ø8 H7", "shaft Ø8 h7 round, pinned"),
+    rows = [("P1 / P2 / P17 bearing seat", "laser Ø15.8, ream Ø16 H7", "688-2RS, Loctite 641"), ("hinge pulley M1, stage-2 M3 bores", "Ø8, bought bored", "M1 pinned, M3 set screws in seats"),
             ("idler pulley bore M2", "bore Ø16 H7", "2 x 688-2RS, light press"), ("plate slot", "8.1 +0.1 / 0 wide", "shoulder Ø8 f9"), ("lane, plate face to plate face", "20.0 +-0.2", "pulley 19.0: 0.5 each side"),
             ("pulley to bearing gaps", "0.5 shim + 0.3-0.5 feeler", "never on the outer ring"), ("rail end to idler flange", "rail 186, idler >= x 223", "2 mm minimum"), ("deck over the front track", "25 above axis", "printed 19.7 / belt 25.0")]
     y0 = 262
@@ -975,14 +975,14 @@ def sheet_rear_to_base():
 # ------------------------------------------------------------------ TS-12 hinge shafts and rail drilling (what Nazim makes from bar and strip)
 def sheet_shafts_rails():
     fig, view, bg = a3_sheet("HINGE SHAFTS A + B, RAIL TRIM AND PILOTS", "TS-12", material="Ø8 h7 GROUND STEEL; UHMW-PE 20 x 5", finish="DEBURRED", qty="2 SHAFTS, 8 RAILS", scale="1:1, DETAILS 4:1", notes=[
-        "SHAFTS: CUT BOTH FROM ONE 300 MM Ø8 h7 GROUND SHAFT: A = 82.3, B = 77.3 (+-0.1). FACE SQUARE, CHAMFER 0.5 x 45° BOTH ENDS.\n    PLAIN ROUND: NO D-FLAT, NO E-CLIP GROOVES. KEEP THE GROUND SURFACE CLEAN: IT RUNS IN THE 688 BEARINGS.",
+        "SHAFTS: CUT BOTH FROM ONE 300 MM Ø8 h7 GROUND SHAFT: A = 82.3, B = 77.3 (+-0.1), EACH PLUS THE STAGE-2 PULLEY'S HUB LENGTH (TBC 20 OCT):\n    DO NOT CUT UNTIL THE HUB IS CONFIRMED. FACE SQUARE, CHAMFER 0.5 x 45° BOTH ENDS.     PLAIN ROUND: NO D-FLAT, NO E-CLIP GROOVES. KEEP THE GROUND SURFACE CLEAN: IT RUNS IN THE 688 BEARINGS.",
         "DO NOT DRILL THE Ø2.5 PIN HOLES NOW. AT ASSEMBLY EACH ONE IS DRILLED THROUGH THE SHAFT USING THE PULLEY'S HUB HOLE AS THE GUIDE,\n    AFTER THE SHIM AND FEELER GAP ARE SET (TS-11). THE PIN POSITIONS SHOWN ON B ARE NOMINAL, FOR REFERENCE ONLY; A IS THE SAME STACK.",
         "RAILS: MISUMI UPA-189-20-5. CUT 3 OFF THE IDLER END: 186 LONG. THE SAME PART SERVES AS UPPER AND LOWER RAIL: DRILL THE FACE\n    AWAY FROM THE TRACK, WHERE THE CARRIER ANGLE SITS (TS-10). MARK THE HINGE END AND THE PLATE EDGE ON EACH RAIL BEFORE DRILLING.",
         "PILOTS Ø2.2 x 4 DEEP, BLIND, WITH A DEPTH STOP: THE OTHER FACE IS WHAT THE TRACK SLIDES ON AND MUST STAY UNBROKEN.\n    DO NOT DRILL THE REV B SHEET 18 PILOTS: THEY OVERLAP THESE AT 20 / 22 AND 166 / 167.",
     ])
     D = 8.0
-    for y, L, name, pins in ((222, 82.3, "SHAFT P20-A, 82.3, QTY 1 (1:1)", None),
-                             (178, 77.3, "SHAFT P20-B, 77.3, QTY 1 (1:1). PIN POSITIONS NOMINAL, DRILLED AT ASSEMBLY", ((6.4, "STAGE-2 PULLEY, PIN 2.5 x 12"), (41.3, "FRONT HINGE WHEEL, PIN 2.5 x 24"), (66.3, "REAR HINGE WHEEL, PIN 2.5 x 24")))):
+    for y, L, name, pins in ((222, 82.3, "SHAFT P20-A, 82.3 + HUB (TBC), QTY 1 (1:1)", None),
+                             (178, 77.3, "SHAFT P20-B, 77.3 + HUB (TBC), QTY 1 (1:1). POSITIONS NOMINAL, DRILLED AT ASSEMBLY", ((6.4, "STAGE-2 PULLEY: 2 SET SCREW SEATS, NO PIN"), (41.3, "FRONT HINGE WHEEL, PIN 2.5 x 24"), (66.3, "REAR HINGE WHEEL, PIN 2.5 x 24")))):
         ax = view(22, y, (-6, 100), (-14, 14), 1.0, name)
         ax.add_patch(Polygon([(0.5, -D / 2), (L - 0.5, -D / 2), (L, -D / 2 + 0.5), (L, D / 2 - 0.5), (L - 0.5, D / 2), (0.5, D / 2), (0, D / 2 - 0.5), (0, -D / 2 + 0.5)], closed=True, fc="white", ec=INK, lw=0.8))
         for xx in (0.5, L - 0.5): ax.plot([xx, xx], [-D / 2, D / 2], color=INK, lw=0.4)

@@ -69,12 +69,12 @@ PAGES = [
   (60, 28, "Notes", "Eight angles from 1.6 m of stock; the RS 427-991 clips and their 24 M3 x 6 are no longer needed (keep the thread-forming screws)."),
  ]),
  ("TS-11_stackup", "How to read TS-11: the spacing between parts", [
-  (40, 190, "Stage-2 pulley", "The HTD 5M drive pulley on the hinge shaft, 9.8 wide, z 30.2 to 40, pinned, with a 1 mm shim between it and the P17 bearing."),
+  (40, 190, "Stage-2 pulley", "The HTD 5M drive pulley on the hinge shaft, z 30.2 to 40, held by two cone-point set screws in seats drilled 1 mm into the shaft, with a 1 mm shim between it and the P17 bearing. Its hub (not drawn) makes the shaft longer, by an amount still to confirm."),
   (57, 190, "P17 and its bearing", "The hinge-shaft support on the middle bar, bearing at z 41 to 46. 9 mm of bare shaft follow before the front plate."),
   (85, 180, "P1 and its bearing", "Front plate at z 55 to 60; the 688 sits flush in a reamed Ø16 H7 seat with Loctite 641."),
   (90.5, 200, "Shim 0.5", "An 8 x 11 x 0.5 shim on the bearing's inner ring, so the pulley face never touches the outer ring. The pulley is pinned hard against it."),
   (110, 210, "Front hinge pulley", "19 over the flanges in the 20 lane, z 60.5 to 79.5. Pinned to the shaft first: it is what locates the whole shaft between the two plate bearings."),
-  (110, 174, "Cross pin", "Ø2.5 spring pin at mid-face, drilled through pulley and shaft together. Three per shaft: 2.5 x 24 in the front and rear pulleys, 2.5 x 12 in the stage-2 pulley (Ø17.5)."),
+  (110, 174, "Cross pin", "Ø2.5 x 24 spring pin at mid-face, drilled through pulley and shaft together. Two per shaft, in the front and rear hinge pulleys; the stage-2 pulley uses set screws instead."),
   (129.5, 190, "Feeler gap", "0.3 to 0.5 mm between the front pulley and the P2 bearing, set with a feeler gauge before pinning. This is the shaft's total end float."),
   (160, 210, "Rear hinge pulley", "Outboard of P2 at z 85.5 to 104.5, pinned with its own 0.3 to 0.5 gap to the bearing. The shaft ends 1.5 past it; no E-clip."),
   (100, 151, "Station chain", "Every width along the shaft from the centre outward. Sum from 28.7: the 77.3 mm half shaft P20-B."),
@@ -123,7 +123,7 @@ PAGES = [
  ]),
  ("TS-06_pulley_20T", "How to read TS-06: the toothed wheel (bought, reamed, pinned)", [
   (88, 179, "Teeth", "20 HTD 5M teeth on a 31.83 pitch circle: the same tooth form as the track's inside, so they mesh without slip."),
-  (88, 148, "Bore", "Bought with a small pilot bore. The 4 hinge wheels and the 2 stage-2 pulleys are reamed Ø8 H7 to run on the plain round shaft; the 4 idlers are bored Ø16 H7 for two 688 bearings each."),
+  (88, 148, "Bore", "Bought with a small pilot bore. The 4 hinge wheels are bought bored Ø8 to run on the plain round shaft; the 4 idlers are bored Ø16 H7 for two 688 bearings each."),
   (163.5, 176, "Flange", "Ø35.7 flanges both sides, 1.5 thick, keep the track on the wheel. 19 over the flanges, 0.5 clear of each plate in the 20 lane."),
   (181, 190, "Belt face", "16 between the flanges; the 15 wide track sits here."),
   (181, 166, "Cross pin", "Ø2.5 x 24 spring pin through wheel and shaft at mid-face: the hub is drilled on the press when the pulley is bored, the shaft is drilled through that hole at assembly, in place. It drives the wheel and holds it along the shaft: no D-flat, no grub screw, no E-clips (design review, TS-11)."),
