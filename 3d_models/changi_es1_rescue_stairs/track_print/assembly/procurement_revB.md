@@ -19,8 +19,8 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 | Part | Qty | Make / buy | Where | Price | Arrives |
 |---|---|---|---|---|---|
 | Track belt HTD 550-5M-15, 110 teeth, 15 wide (e.g. SKF PHG 550-5M-15), drawing TS-01B | 4 | **Buy** | [RS SG, stock no. 058-6535](https://sg.rs-online.com/web/c/?searchTerm=058-6535) or MISUMI SG HTD 5M belts | see listing (about S$25-35 each) | RS SG stock: 1-3 days |
-| Cleats, rubber 10 x 7.9 x 15, bonded on the belt back every 5th tooth (25 mm), 22 per belt | 88 | **Buy + bond**: belt shop | Local belt / conveyor shop (Fenner, Megadyne or Gates distributor), with the belts | quote | allow 1-2 weeks |
-| Deck change for the belt: notch P12 13 x 135 over each front lane (x -25 to 110), or cut the cleats to 5 high | 1 | **Make**: with the deck laser cut, or file / mill after | Professional Workshop | - | with the deck |
+| Cleats, rubber 10 x **5** x 15 (cut down from 7.9, Nhien 19 Oct), bonded on the belt back every 5th tooth (25 mm), 22 per belt | 88 | **Buy + bond**: belt shop | Local belt / conveyor shop (Fenner, Megadyne or Gates distributor), with the belts | quote | allow 1-2 weeks |
+| Deck change for the belt: **not needed**, the 5 mm cleats pass 2.9 under the deck (Nhien 19 Oct) | 0 | - | - | - | - |
 
 ## 1C. Wheels, both options
 
@@ -29,8 +29,8 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 | Timing pulley HTD 5M 20T, 15 mm belt, flanged (19 Oct: MISUMI economy HTD 5M, code **H5M**, not S5M). **Hinge wheels: 4 + 1 with a finished Ø8 bore**: shaft-hole type H (plain round, no tapped hole) if the configurator offers it for 20T, else P (round with tapped hole, ignore the screw; pin hole 90° from it). **Idlers: 4 with the smallest bore offered**, bored to Ø16 at the workshop (20T stops at about Ø15, so no 16 bore). Before ordering, check on the drawing: width over the flanges 19 or less (the lane is 20) and no hub (shape B has a Ø19 hub) | 8 + 1 | **Buy** | [MISUMI SG, Timing Pulleys HTD 5M](https://sg.misumi-ec.com/vona2/detail/110310532889/) | ~S$20 each | ships 1 day from SG stock; allow 2-5 days |
 | Pulley bore modification: 4 x bore Ø16 H7 (idlers, M2) only; the hinge wheels come bored Ø8. Stage-2 pulleys M3 (Nhien's): ream Ø8 H7. Ø2.5 cross holes drilled on our drill press in a V-block, shaft drilled through them at assembly (TS-06, TS-11) | 4 + 2 | **Make**: Professional Workshop request | E3-01-06 | free | workshop queue, allow 1-2 weeks |
 | Spring pins ISO 8752 2.5 x 24 (hinge pulleys, replaces E-clips F22 and the D-flats) | 4 + 4 spare | **Buy** | [RS SG spring pins](https://sg.rs-online.com/web/c/fasteners-fixings/pins/spring-pins/) | ~S$5 / pack | RS SG stock |
-| Spring pins ISO 8752 2.5 x 12 (stage-2 pulleys M3 only, if Nhien pins them (Ø17.5 OD, tooth roots about Ø13.4: a longer pin would reach into the belt grooves)) | 2 + 2 spare | **Buy** | [RS SG spring pins](https://sg.rs-online.com/web/c/fasteners-fixings/pins/spring-pins/) | ~S$5 / pack | RS SG stock |
-| Set screws M4 x 5 cone point DIN 914 (stage-2 pulleys M3 only, if Nhien keeps his pulley's tapped hole: cone point into a seat spot-drilled in the shaft through that hole, Loctite 243; the hinge wheels have no hub in the 20 mm lane, so they stay pinned; plan Appendix C item 17) | 2 + 2 spare | **Buy** | [RS SG set screws](https://sg.rs-online.com/web/c/fasteners-fixings/screws-bolts/set-screws/) | ~S$3 / pack | RS SG stock |
+| Spring pins ISO 8752 2.5 x 12 (stage-2 pulleys M3: **pinned, Nhien 19 Oct** (Ø17.5 OD, tooth roots about Ø13.4: a longer pin would reach into the belt grooves)) | 2 + 2 spare | **Buy** | [RS SG spring pins](https://sg.rs-online.com/web/c/fasteners-fixings/pins/spring-pins/) | ~S$5 / pack | RS SG stock |
+| ~~Set screws M4 x 5 cone point~~: **not needed**, the stage-2 pulleys are pinned (Nhien 19 Oct) | 0 | - | - | - | - |
 | Hinge shaft: plain round Ø8 h7 ground steel, 300 mm (100 mm to practise on) (replaces the D-shaft B13; cut to 82.3 and 77.3, no grooves) | 1 | **Buy**, cut | [RS SG linear shafts](https://sg.rs-online.com/web/c/bearings-seals/linear-motion/linear-shafts/) or MISUMI SG PSFJ8 | ~S$10 | RS SG stock |
 
 ## 1D. Tension and rail support (from the design review), both options
@@ -42,7 +42,7 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 | Thread-forming screws 3 x 5 pan head for plastics (rail to carrier angle, 3 per rail; 3 x 5 not 3 x 10: the rail is 5 thick) | 24 + 6 spare | **Buy** | [RS SG thread-forming screws](https://sg.rs-online.com/web/c/fasteners-fixings/screws-bolts/thread-forming-screws/) | ~S$6 / pack | RS SG stock |
 | M3 x 6 SHCS ISO 4762 (carrier angles to plates 24, tensioner tab ears 4) | 28 + 4 spare | **Buy** | RS SG | ~S$5 / pack | RS SG stock |
 | Jack screw M4 x 20 socket head + M3 x 6 for the tab | 4 + 4 | **Buy** | RS / local | - | stock |
-| New M3 tapped holes in P1 and P2: (x +-223, y +11) for the tab (TS-09) and six at (x +-40, +-105, +-170; y +-3.5) for the carriers (TS-10) | 4 | **Make**: add to the DXF, or drill 2.5 + tap M3 on site | with the plates | - | with the plates |
+| New M3 tapped holes in P1 and P2: (x +-223, y +11) for the tab (TS-09) and six at (x +-40, +-105, +-170; y +-3.5) for the carriers (TS-10) | 4 | **Make**: drill 2.5 + tap M3 on site (Nhien 19 Oct: no DXF re-issue) | with the plates | - | with the plates |
 | Rail carrier angle, Al 10 x 10 x 1.5 x 186, plate leg cut to 6.5, 3 + 3 holes (TS-10; replaces the 32 RS 427-991 clips) | 8 | **Make**: from 1.6 m of angle | local metal supplier / MISUMI SG | ~S$10 | 1-3 days |
 | Rails P3-P6 trimmed from 189 to 186 at the idler end (TS-10, TS-11) | 8 | Make: hacksaw | - | - | 10 min |
 
@@ -54,7 +54,7 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 | Slide rails P3-P6, UHMW strip 189 x 20 x 5 | 8 | Buy + drill | [MISUMI SG UPA-189-20-5](https://sg.misumi-ec.com/vona2/mech/M1500000000/M1501000000/) |
 | ~~Rail brackets RS PRO 427-991~~: **do not order**, replaced by the TS-10 carrier angles (1D) | 0 | - | - |
 | Hinge shafts P20 A 82.3 + B 77.3, now plain round Ø8 h7 (section 1C), no D-flat, no E-clip grooves | 2 | Buy stock, cut | see 1C |
-| Sector gear P11: proposed KHK SSAY1-100 (module 1, 100 teeth, 20°, face 6, bore 10, S45C, flat plate) cut to a 23-tooth sector (plan 5.14); needs Nhien's OK on the centre distance 60.1 to 60.2 (P13 slot 1 mm closer) or a 22-tooth module 1 pinion in place of M6 | 1 | Buy, cut | KHK catalog (thin-face hubless SSAY series, about US$43) or MISUMI SG (KHK brand), search SSAY1-100; plan B any 1M 100T 45# steel gear from Shopee / AliExpress, faced to 6 mm at the Professional Workshop |
+| Sector gear P11: proposed KHK SSAY1-100 (module 1, 100 teeth, 20°, face 6, bore 10, S45C, flat plate) cut to a 23-tooth sector (plan 5.14); **Nhien OK 19 Oct**: centre distance 60.1 to 60.2, base already changed for the new sector | 1 | Buy, cut | KHK catalog (thin-face hubless SSAY series, about US$43) or MISUMI SG (KHK brand), search SSAY1-100; plan B any 1M 100T 45# steel gear from Shopee / AliExpress, faced to 6 mm at the Professional Workshop |
 | Bearing 688-2RS 8 x 16 x 5 | 14 | Buy | [RS SG ball bearings](https://sg.rs-online.com/web/c/bearings-seals/bearings/ball-bearings/) |
 | Shoulder screw ISO 7379 Ø8 x 25 M6 + washers, shim, spacer, nyloc | 4 sets | Buy | [RS SG shoulder screws](https://sg.rs-online.com/web/c/fasteners-fixings/screws-bolts/shoulder-screws/) |
 | 2020 profile x 110 (P7) x2, 3030 x 160 (P8) x2, corner posts P15 x4 | 1 m + 0.5 m | Buy, cut | MISUMI SG / local |
@@ -64,17 +64,17 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 
 ## 3. Choosing between A and B
 
-Option A is in-house: four 3 h prints, no supplier, 5 mm deck clearance, and the cleat spacing is matched
-to the ES1 step. Option B is bought: belts from RS in days, but the 88 cleats need a belt shop (1-2 weeks)
-and the deck needs a notch or shorter cleats. Wheels, bore modification, plates, shafts, bearings and
-shoulder screws are the same in both.
+**19 Oct: option B, Nhien's belts.** He has cut the cleats to 5 mm (no deck notch) and will have the
+belt maker bond them, since they need a chemical bond to the belt. Allow 1 to 2 weeks for that, so the
+belts go out first. Option A (printed track) stays as the fallback if the bonded belts are late.
 
 ## 4. Order of events (19 Oct)
 
-1. Mon 19 to Tue 20 Oct: check the MISUMI H5M 20T 150 drawing (19 or less over the flanges, no hub),
+1. Mon 19 to Tue 20 Oct: belts and cleats to the belt maker (Nhien, 1 to 2 weeks: now on the critical path).
+   Check the MISUMI H5M 20T 150 drawing (19 or less over the flanges, no hub),
    then order the pulleys (4 + 1 bored 8, 4 idlers smallest bore), the RS order (shaft, pins, screws,
    jack screws) and the aluminium angle. Print the fit-test slice and stand-in pulley (option A).
-2. 22 to 29 Oct: Nhien re-issues the P1 / P2 DXF and has the plates laser cut. As parts arrive, make
+2. 22 to 29 Oct: plates from Nhien's existing DXF (no re-issue); drill and tap the new M3 holes on site. As parts arrive, make
    the tabs, sliders and carrier angles, trim and drill the rails, drill the hinge wheels' Ø2.5 holes.
 3. When the idlers arrive (about 23 to 26 Oct): one workshop request for the idler bores (16 H7), the
    stage-2 pulley reams (8 H7) and, once the plates are back, the bearing seats (16 H7). Allow 1 to 2 weeks.

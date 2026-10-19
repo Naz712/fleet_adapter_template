@@ -65,14 +65,22 @@ Living documents outside the repository (same claude.ai account):
 | Proposed: buy a KHK SSAY1-100 (module 1, 100 teeth, 6 mm S45C plate) and cut a 23-tooth sector, which moves the centre distance to 60.1 to 60.2 or needs a 22-tooth pinion | plan 5.14, Appendix C item 16; procurement section 2 |
 | Hinge motor 5840-31ZY in the 12 to 40 rpm variant; fuse 20 A; 2020 bars kept; hinge zero by microswitch plus a second IMU | plan Appendix C items 5, 11, 14 |
 
-## Open with Nhien (plan Appendix C, items 1 to 17 in short)
+## Nhien's answers (19 Oct)
 
-Re-issue P1 and P2 DXF (seats 15.8, tap-drill holes, M3 tab hole at (+-223, +11), six carrier
-holes, slots 8.1 +0.1/0); deck slot H 74 (+3 nose, +3 rear); option B deck notch; sector gear
-(+2 teeth, or the bought gear and the centre distance choice); cast corner brackets; hinge motor
-variant; 20 A fuse; P17 in aluminium with 15.8 seats; sheets 20 and 21 superseded (round shafts,
-pins); the shared STEP for a re-check; hinge angle sensing; stage-2 pulley fixing choice; the old
-rail-clip holes on the plate centreline are unused (found 19 Oct in Fusion): drop them from the DXF.
+Agreed: P17 in aluminium with a 15.8 seat reamed 16 H7; cast corner brackets; sector +2 teeth and
+slot H 74; KHK SSAY1-100 cut to 23 teeth at centre distance 60.1 to 60.2 (he has already changed the
+base); stage-2 pulleys pinned (2.5 x 12); track option B with the cleats cut to 5 mm (no deck notch),
+bonded by the belt maker. No DXF re-issue: the new M3 holes in P1 / P2 are drilled and tapped on site.
+
+## Still open with Nhien
+
+- The bearing seats (15.8 then ream 16 H7) and the longer idler slots (8.1 x 20.3) are not drill-on-site
+  jobs. Are the plates already cut? If not, these two still need the DXF changed; if they are, the
+  slots must be milled or filed and the seats checked before reaming.
+- Old rail-clip pilots: are any rails already drilled? (x 38 / 40, 184 / 185.)
+- BOM: M6x10 (4), M5x8 (12), M5x10 (4), M4x8 (8), the stage-2 pulley and P17.
+- Who orders: cast brackets + T-nuts, shims 8x11x0.5 (2) and 8x11x1 (2), 688-2RS bearings (14).
+- Belt maker's lead time for bonding the cleats.
 
 ## Immediate next steps
 

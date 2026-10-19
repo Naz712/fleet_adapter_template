@@ -37,14 +37,14 @@ PAGES = [
   (60, 28, "Notes", "Print standing up as a ring, no supports, 100% infill, TPU 95A, on the Fab Lab UP300. Four tracks, about 32 g each."),
  ]),
  ("TS-01B_track_belt", "How to read TS-01B: the bought track belt (Rev B B10)", [
-  (167, 244, "Cleats, outside", "22 rubber blocks 10 long, 7.9 high and the full 15 width, bonded on the belt back every 25 mm (every 5th tooth). They grip the step edges. Their tips are 25 mm from the axle: level with the deck underside, see the note."),
+  (167, 244, "Cleats, outside", "22 rubber blocks 10 long, 5 high (cut down from 7.9) and the full 15 width, bonded on the belt back every 25 mm (every 5th tooth). They grip the step edges. Their tips are 22.1 mm from the axle, 2.9 under the deck, so the deck needs no notch."),
   (115, 233, "Teeth, inside", "110 HTD 5M teeth, 5 apart, moulded into the belt. They mesh with the 20-tooth wheels, so the belt cannot slip."),
   (54, 222, "Hinge wheel (dashed)", "The belt wraps the driven 20T wheel on the hinge shaft at the left and the idler at the right, 225 apart: 450 straight plus the two half wraps = 550, the belt's pitch length."),
   (166, 196, "225 centres", "Same wheel spacing as the printed track, so the plates, slots and idlers do not change between the two versions."),
-  (74, 108, "Cleat profile (4:1)", "A cleat is a plain block 10 long and 7.9 high, bonded to the belt back; no taper. 11.7 total from tooth tip to cleat tip."),
+  (74, 108, "Cleat profile (4:1)", "A cleat is a plain block 10 long and 5 high, bonded to the belt back; no taper. 8.8 total from tooth tip to cleat tip."),
   (64, 80, "Tooth profile (4:1)", "HTD 5M tooth, 2.06 deep, on a 1.74 backing: 3.8 belt thickness. This is the belt as bought."),
   (212, 82, "Across the belt (2:1)", "Belt and cleat are both 15 wide; the cleat spans the full width."),
-  (60, 28, "Notes", "Buy SKF PHG 550-5M-15 (RS SG 058-6535) x4; a belt shop cuts and bonds 88 cleats. The deck has to be notched 13 x 135 over each front lane, or the cleats cut to 5 high, before the belts fit under it."),
+  (60, 28, "Notes", "Buy SKF PHG 550-5M-15 (RS SG 058-6535) x4; a belt shop cuts and bonds 88 cleats, 5 high, so the belts fit under the deck with no notch."),
  ]),
  ("TS-09_tensioner", "How to read TS-09: the idler tensioner", [
   (69, 198, "Slot and shoulder screw", "The idler's Ø8 shoulder screw sits in the plate's 12.2 x 8.1 slot. Sliding it outward tightens the track; before this sheet only the nut's friction held it."),
