@@ -169,5 +169,5 @@ assembly plan document):
 - Rail screw positions settled 19 Oct: 20, 93, 166 from the rail's hinge end (x 38, 111, 184), 7.5 from the plate
   face, not at the plate screws' x (TS-10 redrawn). Do not drill the old clip pilots in the rails: they overlap the
   new ones at x 38 / 40 and 184 / 185.
-- Stage-2 pulley pin, if Nhien pins it: 2.5 x 16, not 2.5 x 24 (the pulley is Ø17.5). The hinge wheels keep
+- Stage-2 pulley pin, if Nhien pins it: 2.5 x 12, not 2.5 x 24 or 16 (Ø17.5 OD, tooth roots about Ø13.4; measured in Fusion 19 Oct). The hinge wheels keep
   2.5 x 24. TS-11 and procurement 1C updated.

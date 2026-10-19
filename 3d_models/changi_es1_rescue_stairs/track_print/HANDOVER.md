@@ -82,7 +82,7 @@ rail-clip holes on the plate centreline are unused (found 19 Oct in Fusion): dro
    hand, then copy the drawing PDF to `assembly/drawings/fusion/` and a STEP export over
    `cad/RB4107_track_unit_reviewed.step` (the repo STEP is behind the Fusion model, see `cad/README.md`).
 2. 19 Oct: order pulleys (8 + 1), d8 h7 shaft (300), 688 bearings (14), shoulder screws (4 sets),
-   spring pins (4 x 2.5 x 24; 2 x 2.5 x 16 if the stage-2 pulleys are pinned), angle stock; workshop request for the bores (critical path, 1 to 2 weeks).
+   spring pins (4 x 2.5 x 24; 2 x 2.5 x 12 if the stage-2 pulleys are pinned), angle stock; workshop request for the bores (critical path, 1 to 2 weeks).
 3. Nhien's DXF re-issue, laser 22 to 29 Oct; fit-test slice and four TPU rings; carriers, tabs,
    sliders; assembly 9 to 10 Nov, tests 11 to 13 Nov, advisor demo 16 Nov.
 4. Individual update (one page plus appendix) exists outside the repository; the next one is due

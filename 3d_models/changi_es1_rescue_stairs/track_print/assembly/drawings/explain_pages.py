@@ -74,7 +74,7 @@ PAGES = [
   (85, 180, "P1 and its bearing", "Front plate at z 55 to 60; the 688 sits flush in a reamed Ø16 H7 seat with Loctite 641."),
   (90.5, 200, "Shim 0.5", "An 8 x 11 x 0.5 shim on the bearing's inner ring, so the pulley face never touches the outer ring. The pulley is pinned hard against it."),
   (110, 210, "Front hinge pulley", "19 over the flanges in the 20 lane, z 60.5 to 79.5. Pinned to the shaft first: it is what locates the whole shaft between the two plate bearings."),
-  (110, 174, "Cross pin", "Ø2.5 spring pin at mid-face, drilled through pulley and shaft together. Three per shaft: 2.5 x 24 in the front and rear pulleys, 2.5 x 16 in the stage-2 pulley (Ø17.5)."),
+  (110, 174, "Cross pin", "Ø2.5 spring pin at mid-face, drilled through pulley and shaft together. Three per shaft: 2.5 x 24 in the front and rear pulleys, 2.5 x 12 in the stage-2 pulley (Ø17.5)."),
   (129.5, 190, "Feeler gap", "0.3 to 0.5 mm between the front pulley and the P2 bearing, set with a feeler gauge before pinning. This is the shaft's total end float."),
   (160, 210, "Rear hinge pulley", "Outboard of P2 at z 85.5 to 104.5, pinned with its own 0.3 to 0.5 gap to the bearing. The shaft ends 1.5 past it; no E-clip."),
   (100, 151, "Station chain", "Every width along the shaft from the centre outward. Sum from 28.7: the 77.3 mm half shaft P20-B."),
@@ -157,11 +157,16 @@ PAGES = [
  ]),
 ]
 
+SUPERSEDED = {"TS-00_assembly_front_segment", "TS-02_side_plate_front", "TS-03_side_plate_rear", "TS-04_axles", "TS-05_spacer", "TS-07_bearing_608ZZ", "TS-08_rear_segment_to_base"}
+
+
 def page(sheet, title, marks, n):
     fig = plt.figure(figsize=(W / 25.4, H / 25.4), dpi=150)
     bg = fig.add_axes([0, 0, 1, 1]); bg.set_xlim(0, W); bg.set_ylim(0, H); bg.axis("off")
     bg.add_patch(Rectangle((10, 10), W - 20, H - 20, fc="none", ec="black", lw=0.8))
     bg.text(16, H - 18, title, fontsize=14, fontweight="bold", va="top")
+    if sheet in SUPERSEDED:
+        bg.text(W - 16, H - 18, "SUPERSEDED 19 OCT 2026: first own-frame layout, replaced by Nhien's Rev B frame. Do not make from it.", fontsize=9, color="#B03A2E", fontweight="bold", ha="right", va="top")
     bg.text(16, H - 25, f"Markers below sit on a reduced copy of sheet {sheet.split('_')[0]} (previous page, full size). Numbers match the key on the right.", fontsize=7.5, va="top", color="#444")
     # locator image: 255 mm wide at the left
     img = Image.open(HERE / f"{sheet}.png")

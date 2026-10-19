@@ -42,7 +42,7 @@ two stage-2 pulleys, the hinge shafts, Nhien's four cleated belts (option B trac
 |---|---|
 | Hinge drive shafts A (82.3) and B (77.3) | plain round d8 h7, no D-flat, no E-clip grooves; d2.5 cross holes at each pulley |
 | Track drive pulleys M1 (4) and stage-2 pulleys M3 (2) | bore rounded to d8 H7 (the D-flat removed), d2.5 cross hole at mid-face; grub screws deleted |
-| Spring pins ISO 8752 2.5 x 24 (6) | new: through each hinge pulley and stage-2 pulley and the shaft. The two stage-2 pins should be 2.5 x 16 (pulley Ø17.5); this STEP still shows 24 |
+| Spring pins ISO 8752 2.5 x 24 (6) | new: through each hinge pulley and stage-2 pulley and the shaft. The two stage-2 pins should be 2.5 x 12 (tooth roots about Ø13.4); this STEP still shows 24 |
 | E-clips DIN 6799-6 (4) | deleted: the pinned front wheel locates the shaft |
 | Shim washers 8x11x0.5 (2) | new: front wheel to the P1 bearing (the 0.3 to 0.5 feeler gap is at the P2 side) |
 | Side plates P1, P2 (4) | new M3 tap-drill hole for the tensioner tab at (+-223, +11); six M3 tap-drill holes for the rail carriers at x 40, 105, 170 and y +-3.5. Bearing seats stay at 16 in the model: the DXF carries 15.8 for the laser, reamed to 16 H7 |

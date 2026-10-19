@@ -766,7 +766,7 @@ def sheet_stackup():
         rect(ax, z0 + 1.5, -15.3, 16, 30.6, "white", lw=0.8, hatch="////")
     rect(ax, 80, -15, 5, 30.4, "white", lw=0.8, hatch="\\\\"); rect(ax, 80, -8, 5, 16, "white", lw=0.6)
     for zc in (70, 95): rect(ax, zc - 1.25, -12, 2.5, 24, "white", lw=0.6)               # hinge pulley pins 2.5 x 24
-    rect(ax, 35.1 - 1.25, -8, 2.5, 16, "white", lw=0.6)                                     # stage-2 pin 2.5 x 16 (pulley Ø17.5)
+    rect(ax, 35.1 - 1.25, -6, 2.5, 12, "white", lw=0.6)                                     # stage-2 pin 2.5 x 12 (tooth roots about Ø13.4)
     for z in (46, 55, 60.5, 79.5, 80, 85, 85.5): ax.plot([z, z], [-19, 19], color=DIM, lw=0.3, dashes=(2, 2))
     y = -19.5
     for a, b, t in ((28.7, 30.2, "1.5"), (30.2, 40, "9.8"), (40, 41, "1"), (41, 46, "5"), (46, 55, "9"), (55, 60, "5"), (60, 60.5, ".5"), (60.5, 79.5, "19"), (79.5, 80, ".5"), (80, 85, "5"), (85, 85.5, ".5"), (85.5, 104.5, "19"), (104.5, 106, "1.5")):
@@ -774,7 +774,7 @@ def sheet_stackup():
     dim_h(ax, 28.7, 106, 21, "77.3 (P20-B)", ext_from=4, fontsize=6.5)
     for z, t in ((35.1, "STAGE-2\nPULLEY M3"), (43.5, "P17 +\n688"), (57.5, "P1 +\n688"), (70, "FRONT HINGE\nPULLEY M1"), (82.5, "P2 +\n688"), (95, "REAR HINGE\nPULLEY M1")):
         ax.text(z, 18.5, t, fontsize=5.5, ha="center", va="bottom")
-    leader(ax, (70, 12), (64, -16.5), "PINS Ø2.5 AT MID-FACE, 3 OFF PER SHAFT:\nx 24 IN THE HINGE PULLEYS, x 16 IN THE STAGE-2", fontsize=6)
+    leader(ax, (70, 12), (64, -16.5), "PINS Ø2.5 AT MID-FACE, 3 OFF PER SHAFT:\nx 24 IN THE HINGE PULLEYS, x 12 IN THE STAGE-2", fontsize=6)
     leader(ax, (60.25, 5.5), (48, 14), "SHIM 8x11x0.5 ON THE INNER RING", fontsize=6)
     leader(ax, (79.75, 0), (96, -13), "0.3-0.5 FEELER GAP (NO SHIM)", fontsize=6)
     # idler screw, B side nose
@@ -972,10 +972,73 @@ def sheet_rear_to_base():
     save(fig, "TS-08_rear_segment_to_base")
 
 
+# ------------------------------------------------------------------ TS-12 hinge shafts and rail drilling (what Nazim makes from bar and strip)
+def sheet_shafts_rails():
+    fig, view, bg = a3_sheet("HINGE SHAFTS A + B, RAIL TRIM AND PILOTS", "TS-12", material="Ø8 h7 GROUND STEEL; UHMW-PE 20 x 5", finish="DEBURRED", qty="2 SHAFTS, 8 RAILS", scale="1:1, DETAILS 4:1", notes=[
+        "SHAFTS: CUT BOTH FROM ONE 300 MM Ø8 h7 GROUND SHAFT: A = 82.3, B = 77.3 (+-0.1). FACE SQUARE, CHAMFER 0.5 x 45° BOTH ENDS.\n    PLAIN ROUND: NO D-FLAT, NO E-CLIP GROOVES. KEEP THE GROUND SURFACE CLEAN: IT RUNS IN THE 688 BEARINGS.",
+        "DO NOT DRILL THE Ø2.5 PIN HOLES NOW. AT ASSEMBLY EACH ONE IS DRILLED THROUGH THE SHAFT USING THE PULLEY'S HUB HOLE AS THE GUIDE,\n    AFTER THE SHIM AND FEELER GAP ARE SET (TS-11). THE PIN POSITIONS SHOWN ON B ARE NOMINAL, FOR REFERENCE ONLY; A IS THE SAME STACK.",
+        "RAILS: MISUMI UPA-189-20-5. CUT 3 OFF THE IDLER END: 186 LONG. THE SAME PART SERVES AS UPPER AND LOWER RAIL: DRILL THE FACE\n    AWAY FROM THE TRACK, WHERE THE CARRIER ANGLE SITS (TS-10). MARK THE HINGE END AND THE PLATE EDGE ON EACH RAIL BEFORE DRILLING.",
+        "PILOTS Ø2.2 x 4 DEEP, BLIND, WITH A DEPTH STOP: THE OTHER FACE IS WHAT THE TRACK SLIDES ON AND MUST STAY UNBROKEN.\n    DO NOT DRILL THE REV B SHEET 18 PILOTS: THEY OVERLAP THESE AT 20 / 22 AND 166 / 167.",
+    ])
+    D = 8.0
+    for y, L, name, pins in ((222, 82.3, "SHAFT P20-A, 82.3, QTY 1 (1:1)", None),
+                             (178, 77.3, "SHAFT P20-B, 77.3, QTY 1 (1:1). PIN POSITIONS NOMINAL, DRILLED AT ASSEMBLY", ((6.4, "STAGE-2 PULLEY, PIN 2.5 x 12"), (41.3, "FRONT HINGE WHEEL, PIN 2.5 x 24"), (66.3, "REAR HINGE WHEEL, PIN 2.5 x 24")))):
+        ax = view(22, y, (-6, 100), (-14, 14), 1.0, name)
+        ax.add_patch(Polygon([(0.5, -D / 2), (L - 0.5, -D / 2), (L, -D / 2 + 0.5), (L, D / 2 - 0.5), (L - 0.5, D / 2), (0.5, D / 2), (0, D / 2 - 0.5), (0, -D / 2 + 0.5)], closed=True, fc="white", ec=INK, lw=0.8))
+        for xx in (0.5, L - 0.5): ax.plot([xx, xx], [-D / 2, D / 2], color=INK, lw=0.4)
+        centreline(ax, -4, 0, L + 4, 0)
+        dim_h(ax, 0, L, -10, f"{L:g}", ext_from=-D / 2, fontsize=7)
+        dim_v(ax, -D / 2, D / 2, L + 6, "Ø8 h7", ext_from=L, fontsize=7)
+        if pins:
+            for k, (x, lab) in enumerate(pins):
+                ax.plot([x, x], [-D / 2 - 1, D / 2 + 1], color=INK, lw=0.5, dashes=(2, 1.5))
+                leader(ax, (x, D / 2), (x + 2, 9 + (k % 2) * 3.5), f"{x:g}: {lab}", fontsize=5.5)
+            ax.text(-1, -D / 2 - 1, "INNER END", fontsize=5.5, ha="left", va="top")
+    ax = view(150, 120, (-4, 7), (-6, 6), 4.0, "DETAIL: SHAFT END (4:1)")
+    ax.add_patch(Polygon([(-4, -4), (-0.5, -4), (0, -3.5), (0, 3.5), (-0.5, 4), (-4, 4)], closed=True, fc="white", ec=INK, lw=0.8))
+    centreline(ax, -4, 0, 2, 0)
+    leader(ax, (-0.25, 3.75), (1.5, 5), "0.5 x 45°, BOTH ENDS", fontsize=6.5)
+    # rail plan: hinge end at x 0, plate edge on top (y 20)
+    ax = view(22, 72, (-10, 205), (-9, 30), 1.0, "RAIL P3-P6, DRILLING FACE UP (1:1). PLATE EDGE AT THE TOP, HINGE END ON THE LEFT")
+    rect(ax, 0, 0, 186, 20, "white")
+    rect(ax, 186, 0, 3, 20, "white", lw=0.4, hatch="////")
+    for x in (20, 93, 166): circle(ax, x, 12.5, 1.1, fill="white")
+    dim_h(ax, 0, 20, -4, "20", ext_from=0, fontsize=6.5); dim_h(ax, 20, 93, -4, "73", ext_from=0, fontsize=6.5); dim_h(ax, 93, 166, -4, "73", ext_from=0, fontsize=6.5)
+    dim_h(ax, 0, 186, -8, "186", ext_from=0, fontsize=7)
+    dim_v(ax, 12.5, 20, -5, "7.5", ext_from=0, fontsize=6.5)
+    dim_v(ax, 0, 20, 194, "20", ext_from=189, fontsize=6.5)
+    ax.text(93, 22, "PLATE EDGE (AGAINST THE CARRIER ANGLE'S PLATE LEG)", fontsize=6, ha="center", va="bottom")
+    leader(ax, (187.5, 16), (170, 27), "CUT OFF 3 (189 TO 186), IDLER END", fontsize=6)
+    leader(ax, (93, 13.6), (110, 26.5), "3 x Ø2.2 x 4 DEEP, BLIND", fontsize=6)
+    ax = view(270, 92, (-3, 24), (-8, 10), 4.0, "SECTION THROUGH A PILOT (4:1)")
+    rect(ax, 0, -5, 20, 5, "white", hatch="\\\\")
+    rect(ax, 12.5 - 1.1, -4, 2.2, 4, "white", lw=0.6)
+    ax.plot([12.5 - 1.1, 12.5, 12.5 + 1.1], [-4, -4.6, -4], color=INK, lw=0.6)
+    dim_v(ax, -4, 0, 17, "4", ext_from=13.6, fontsize=6.5)
+    dim_v(ax, -5, 0, 22, "5", ext_from=20, fontsize=6.5)
+    ax.text(10, 1, "DRILLED FACE (CARRIER ANGLE SIDE)", fontsize=6, ha="center", va="bottom")
+    ax.text(10, -6, "TRACK SLIDES ON THIS FACE: DO NOT BREAK THROUGH", fontsize=6, ha="center", va="top")
+    save(fig, "TS-12_shafts_rails")
+
+
+# Sheets from the first own-frame layout (608ZZ, printed spacers, own side plates), replaced by Nhien's Rev B frame.
+SUPERSEDED = {"TS-00_assembly_front_segment", "TS-02_side_plate_front", "TS-03_side_plate_rear", "TS-04_axles", "TS-05_spacer", "TS-07_bearing_608ZZ", "TS-08_rear_segment_to_base"}
+SUPERSEDED_NOTE = "SUPERSEDED 19 OCT 2026: FIRST OWN-FRAME LAYOUT, REPLACED BY NHIEN'S REV B FRAME. DO NOT MAKE FROM THIS SHEET.\nCURRENT SHEETS: TS-01, TS-01B, TS-06, TS-09, TS-10, TS-11, TS-12."
+_save = save
+
+
+def save(fig, name):
+    if name in SUPERSEDED:
+        fig.text(0.5, 0.52, "SUPERSEDED", fontsize=120, color="#B03A2E", alpha=0.28, rotation=22, ha="center", va="center", fontweight="bold")
+        fig.text(0.5, 0.935, SUPERSEDED_NOTE, fontsize=10, color="#B03A2E", ha="center", va="top", fontweight="bold",
+                 bbox=dict(boxstyle="square,pad=0.6", fc="white", ec="#B03A2E", lw=1.5))
+    return _save(fig, name)
+
+
 if __name__ == "__main__":
     which = sys.argv[1:] or ["all"]
     fns = dict(assembly=sheet_assembly, track=sheet_track, front=lambda: sheet_side_plate(True), rear=lambda: sheet_side_plate(False),
-               axles=sheet_axles, spacer=sheet_spacer, pulley=sheet_pulley, bearing=sheet_bearing, base=sheet_rear_to_base, belt=sheet_belt, tensioner=sheet_tensioner, carrier=sheet_rail_carrier, stackup=sheet_stackup)
+               axles=sheet_axles, spacer=sheet_spacer, pulley=sheet_pulley, bearing=sheet_bearing, base=sheet_rear_to_base, belt=sheet_belt, tensioner=sheet_tensioner, carrier=sheet_rail_carrier, stackup=sheet_stackup, shafts=sheet_shafts_rails)
     for k, f in fns.items():
         if "all" in which or k in which:
             f()

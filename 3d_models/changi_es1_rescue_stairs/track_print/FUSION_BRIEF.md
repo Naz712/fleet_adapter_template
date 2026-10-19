@@ -33,7 +33,7 @@ dark, steel parts grey.
 | Nhien's Rev B | Reviewed model | Why |
 |---|---|---|
 | Hinge shaft Ø8 with a D-flat and E-clip grooves at both ends | plain round Ø8 h7, 82.3 (A) and 77.3 (B), no flat, no grooves | the flat only serves a set screw and gives no axial location; the grooves cut Ø8 to Ø6 at the ends |
-| Hinge wheels M1 and stage-2 pulleys M3 with D-bores and M4 grub screws | bores round, reamed 8 H7; one Ø2.5 cross hole at mid-face; one ISO 8752 spring pin each: 2.5 x 24 in the hinge wheels, 2.5 x 16 in the stage-2 pulley (Ø17.5, so a 24 pin would stick out) | a pin drives the part and fixes it along the shaft at once; nothing to loosen |
+| Hinge wheels M1 and stage-2 pulleys M3 with D-bores and M4 grub screws | bores round, reamed 8 H7; one Ø2.5 cross hole at mid-face; one ISO 8752 spring pin each: 2.5 x 24 in the hinge wheels, 2.5 x 12 in the stage-2 pulley (Ø17.5 OD, tooth roots about Ø13.4, so a longer pin reaches into the belt grooves) | a pin drives the part and fixes it along the shaft at once; nothing to loosen |
 | E-clips DIN 6799-6 at the shaft ends | deleted | the pinned front wheel between the P1 and P2 bearings locates the shaft; the rear wheel's own pin keeps it at the shaft end |
 | Idler shoulder screw clamped by its nut in the plate slot | slot kept; TS-09 tab, slider with foot and M4 x 20 jack screw added at each idler; M6 washer deleted, nut 1.4 mm inboard | nothing pushed the idler out or held it there except friction; tension could not be set or kept |
 | Four RS clips per rail | one full-length 10 x 10 x 1.5 carrier angle per rail (TS-10), plate leg cut to 6.5, rails trimmed 189 to 186 | reviewer: contact area too small; the flange needs the rail to end short at x 207 |
