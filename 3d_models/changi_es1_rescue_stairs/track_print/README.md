@@ -166,3 +166,8 @@ assembly plan document):
 - Rail screws corrected 18 Oct (found when the fasteners were added in Fusion): 3 x 5 thread-forming into blind
   pilots 4 deep, not 3 x 10; the rail is 5 thick and its far face carries the track. The 24 carrier M3 x 6 and the
   4 tab M3 x 6 are listed in the brief and the procurement list; none of these 52 screws are in the STEP.
+- Rail screw positions settled 19 Oct: 20, 93, 166 from the rail's hinge end (x 38, 111, 184), 7.5 from the plate
+  face, not at the plate screws' x (TS-10 redrawn). Do not drill the old clip pilots in the rails: they overlap the
+  new ones at x 38 / 40 and 184 / 185.
+- Stage-2 pulley pin, if Nhien pins it: 2.5 x 16, not 2.5 x 24 (the pulley is Ø17.5). The hinge wheels keep
+  2.5 x 24. TS-11 and procurement 1C updated.

@@ -707,16 +707,19 @@ def sheet_rail_carrier():
     fig, view, bg = a3_sheet("RAIL CARRIER ANGLE (REPLACES RS 427-991 CLIPS)", "TS-10", material="AL ANGLE 10x10x1.5", finish="DEBURRED", qty=8, scale="1:1, SECTION 4:1", notes=[
         "WHY: EACH UHMW RAIL HUNG ON 4 SMALL CLIPS (10 x 14.6 FEET). THE ANGLE RUNS THE FULL RAIL LENGTH: 186 x 10 OF CONTACT\n    ON THE PLATE AND ON THE RAIL INSTEAD OF 4 SMALL PATCHES.",
         "TRIM EACH RAIL FROM 189 TO 186 (3 OFF THE IDLER END): THE IDLER PULLEY FLANGE REACHES x 207 AT ITS INNERMOST SLOT POSITION\n    AND THE RAIL ENDED AT 207 (TS-11).",
-        "PLATE LEG CUT TO 6.5 SO THE UPPER AND LOWER ANGLES DO NOT MEET ON THE PLATE'S CENTRELINE. 3 x Ø3.4 IN THE PLATE LEG AT\n    x 40, 105, 170 FROM THE HINGE, y +-3.5: SIX NEW M3 HOLES IN P1 / P2 (THE OLD CLIP HOLES ON THE CENTRELINE ARE NOT USED).\n    3 x Ø2.6 IN THE RAIL LEG, 3 x 10 THREAD-FORMING SCREWS.",
+        "PLATE LEG CUT TO 6.5 SO THE UPPER AND LOWER ANGLES DO NOT MEET ON THE PLATE'S CENTRELINE. 3 x Ø3.4 IN THE PLATE LEG AT\n    x 40, 105, 170 FROM THE HINGE, y +-3.5: SIX NEW M3 HOLES IN P1 / P2 (THE OLD CLIP HOLES ON THE CENTRELINE ARE NOT USED).\n    3 x Ø2.6 IN THE RAIL LEG AT 20, 93, 166 FROM THE RAIL'S HINGE END (x 38, 111, 184), 7.5 FROM THE PLATE FACE: 3 x 5 THREAD-FORMING SCREWS.\n    DO NOT DRILL THE OLD CLIP PILOTS IN THE RAIL: THEY OVERLAP THE NEW ONES AT x 38 / 40 AND 184 / 185.",
         "THE ANGLE SITS ON THE RAIL FACE AWAY FROM THE TRACK: UNDER THE UPPER RAIL, ON TOP OF THE LOWER RAIL. THE TRACK'S TOOTH TIPS\n    RIDE ON THE OTHER FACE (y 13.3).",
     ])
-    ax = view(22, 170, (-5, 195), (-6, 14), 1.0, "PLAN OF ONE ANGLE, 1:1 (RAIL LEG FLAT)")
+    ax = view(22, 170, (-5, 200), (-10, 14), 1.0, "PLAN OF ONE ANGLE, 1:1 (RAIL LEG FLAT)")
     rect(ax, 0, 0, 186, 10, "white", lw=0.8)
-    for x in (22, 87, 152): circle(ax, x, 5, 1.3, fill="white").set_zorder(4)
+    for x in (20, 93, 166): circle(ax, x, 4, 1.3, fill="white").set_zorder(4)              # rail leg, 7.5 from the plate face (y 11.5)
     rect(ax, 0, 10, 186, 1.5, "white", lw=0.8, hatch="////")
+    for x in (22, 87, 152): ax.plot([x, x], [10, 11.5], color=INK, lw=0.6, dashes=(1, 1))  # plate-leg holes, seen edge on
     dim_h(ax, 0, 186, -3.5, "186", ext_from=0, fontsize=7)
+    dim_h(ax, 0, 20, -1.5, "20", ext_from=4, fontsize=6.5); dim_h(ax, 20, 93, -1.5, "73", ext_from=4, fontsize=6.5); dim_h(ax, 93, 166, -1.5, "73", ext_from=4, fontsize=6.5)
     dim_h(ax, 0, 22, 12.5, "22", ext_from=10, fontsize=7); dim_h(ax, 22, 87, 12.5, "65", ext_from=10, fontsize=7); dim_h(ax, 87, 152, 12.5, "65", ext_from=10, fontsize=7)
-    leader(ax, (93, 6.3), (110, -4.5), "3 x Ø2.6 (RAIL SCREWS) IN THE RAIL LEG; 3 x Ø3.4 IN THE PLATE LEG AT THE SAME x", fontsize=6.5)
+    dim_v(ax, 4, 11.5, 189, "7.5", ext_from=186, fontsize=6.5)
+    leader(ax, (93, 2.7), (100, -8.5), "3 x Ø2.6 IN THE RAIL LEG AT 20 / 93 / 166 (RAIL SCREWS); 3 x Ø3.4 IN THE PLATE LEG AT 22 / 87 / 152 (DIMS ABOVE)", fontsize=6.5)
     S = 4.0
     ax = view(22, 60, (-12, 14), (-18, 2), S, "SECTION ACROSS THE LANE AT THE LOWER RAIL (4:1): PLATE, ANGLE, RAIL, TRACK")
     rect(ax, -5, -16, 5, 18, "white", lw=0.8, hatch="////")                               # plate P1 (z 55-60), y to 15.4 (cut off)
@@ -731,7 +734,7 @@ def sheet_rail_carrier():
     dim_h(ax, 0, 10, 0.8, "10", ext_from=-6.8, fontsize=6.5)
     dim_h(ax, -5, 0, -17.5, "5", ext_from=-16, fontsize=6.5)
     leader(ax, (0.75, -3.5), (4, -2), "M3 x 6 INTO THE PLATE AT y -3.5 (3 OFF)", fontsize=6.5)
-    leader(ax, (6, -7.6), (8, -4.5), "3 x 5 THREAD-FORMING INTO THE RAIL (3 OFF), PILOT 2.2 x 4 DEEP, BLIND", fontsize=6.5)
+    leader(ax, (7.5, -7.6), (8, -4.5), "3 x 5 THREAD-FORMING INTO THE RAIL (3 OFF), PILOT 2.2 x 4 DEEP, BLIND", fontsize=6.5)
     leader(ax, (8, -15), (9, -17.6), "TRACK, TOOTH TIPS ON THE RAIL FACE y -13.3", fontsize=6.5)
     ax.text(-4.8, 1.4, "PLATE", fontsize=6, va="bottom"); ax.text(10.5, -11.5, "RAIL (UHMW)", fontsize=6)
     save(fig, "TS-10_rail_carrier")
@@ -762,7 +765,8 @@ def sheet_stackup():
         rect(ax, z0, -17.85, 1.5, 35.7, "white", lw=0.6); rect(ax, z0 + 17.5, -17.85, 1.5, 35.7, "white", lw=0.6)
         rect(ax, z0 + 1.5, -15.3, 16, 30.6, "white", lw=0.8, hatch="////")
     rect(ax, 80, -15, 5, 30.4, "white", lw=0.8, hatch="\\\\"); rect(ax, 80, -8, 5, 16, "white", lw=0.6)
-    for zc in (35.1, 70, 95): rect(ax, zc - 1.25, -12, 2.5, 24, "white", lw=0.6)          # pins
+    for zc in (70, 95): rect(ax, zc - 1.25, -12, 2.5, 24, "white", lw=0.6)               # hinge pulley pins 2.5 x 24
+    rect(ax, 35.1 - 1.25, -8, 2.5, 16, "white", lw=0.6)                                     # stage-2 pin 2.5 x 16 (pulley Ø17.5)
     for z in (46, 55, 60.5, 79.5, 80, 85, 85.5): ax.plot([z, z], [-19, 19], color=DIM, lw=0.3, dashes=(2, 2))
     y = -19.5
     for a, b, t in ((28.7, 30.2, "1.5"), (30.2, 40, "9.8"), (40, 41, "1"), (41, 46, "5"), (46, 55, "9"), (55, 60, "5"), (60, 60.5, ".5"), (60.5, 79.5, "19"), (79.5, 80, ".5"), (80, 85, "5"), (85, 85.5, ".5"), (85.5, 104.5, "19"), (104.5, 106, "1.5")):
@@ -770,7 +774,7 @@ def sheet_stackup():
     dim_h(ax, 28.7, 106, 21, "77.3 (P20-B)", ext_from=4, fontsize=6.5)
     for z, t in ((35.1, "STAGE-2\nPULLEY M3"), (43.5, "P17 +\n688"), (57.5, "P1 +\n688"), (70, "FRONT HINGE\nPULLEY M1"), (82.5, "P2 +\n688"), (95, "REAR HINGE\nPULLEY M1")):
         ax.text(z, 18.5, t, fontsize=5.5, ha="center", va="bottom")
-    leader(ax, (70, 12), (64, -16.5), "PIN Ø2.5 x 24 AT MID-FACE, 3 OFF PER SHAFT", fontsize=6)
+    leader(ax, (70, 12), (64, -16.5), "PINS Ø2.5 AT MID-FACE, 3 OFF PER SHAFT:\nx 24 IN THE HINGE PULLEYS, x 16 IN THE STAGE-2", fontsize=6)
     leader(ax, (60.25, 5.5), (48, 14), "SHIM 8x11x0.5 ON THE INNER RING", fontsize=6)
     leader(ax, (79.75, 0), (96, -13), "0.3-0.5 FEELER GAP (NO SHIM)", fontsize=6)
     # idler screw, B side nose

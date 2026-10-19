@@ -33,7 +33,7 @@ dark, steel parts grey.
 | Nhien's Rev B | Reviewed model | Why |
 |---|---|---|
 | Hinge shaft Ø8 with a D-flat and E-clip grooves at both ends | plain round Ø8 h7, 82.3 (A) and 77.3 (B), no flat, no grooves | the flat only serves a set screw and gives no axial location; the grooves cut Ø8 to Ø6 at the ends |
-| Hinge wheels M1 and stage-2 pulleys M3 with D-bores and M4 grub screws | bores round, reamed 8 H7; one Ø2.5 cross hole at mid-face; one ISO 8752 spring pin 2.5 x 24 each | a pin drives the part and fixes it along the shaft at once; nothing to loosen |
+| Hinge wheels M1 and stage-2 pulleys M3 with D-bores and M4 grub screws | bores round, reamed 8 H7; one Ø2.5 cross hole at mid-face; one ISO 8752 spring pin each: 2.5 x 24 in the hinge wheels, 2.5 x 16 in the stage-2 pulley (Ø17.5, so a 24 pin would stick out) | a pin drives the part and fixes it along the shaft at once; nothing to loosen |
 | E-clips DIN 6799-6 at the shaft ends | deleted | the pinned front wheel between the P1 and P2 bearings locates the shaft; the rear wheel's own pin keeps it at the shaft end |
 | Idler shoulder screw clamped by its nut in the plate slot | slot kept; TS-09 tab, slider with foot and M4 x 20 jack screw added at each idler; M6 washer deleted, nut 1.4 mm inboard | nothing pushed the idler out or held it there except friction; tension could not be set or kept |
 | Four RS clips per rail | one full-length 10 x 10 x 1.5 carrier angle per rail (TS-10), plate leg cut to 6.5, rails trimmed 189 to 186 | reviewer: contact area too small; the flange needs the rail to end short at x 207 |
@@ -92,8 +92,10 @@ drawing's parts list is complete:
 - 4 x M3 x 6 socket head ISO 4762: tensioner tab ear to the plate at (+-223, +11), head on
   the 3 mm ear.
 - 24 x 3 x 5 pan-head thread-forming screws for plastics: rail to carrier angle, through the
-  10 leg into blind pilots in the rail at 20, 93 and 166 from the rail's hinge end, heads on
-  the leg's inner face. 3 x 5, not the 3 x 10 that older sheets and the first plan text
+  10 leg into blind pilots in the rail at 20, 93 and 166 from the rail's hinge end (x 38, 111,
+  184 on the plate; not at the plate screws' x), 7.5 from the plate face, heads on the leg's
+  inner face. Do not drill Nhien's old clip pilots in the rail: they overlap the new ones at
+  x 38 / 40 and 184 / 185. 3 x 5, not the 3 x 10 that older sheets and the first plan text
   said: the rail is only 5 mm thick and its far face is the track's sliding face, so a 10 mm
   screw would come 3.5 mm out of it. Corrected 18 Oct in the plan, TS-10 and EX-10.
 
