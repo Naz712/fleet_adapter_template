@@ -71,7 +71,8 @@ Re-issue P1 and P2 DXF (seats 15.8, tap-drill holes, M3 tab hole at (+-223, +11)
 holes, slots 8.1 +0.1/0); deck slot H 74 (+3 nose, +3 rear); option B deck notch; sector gear
 (+2 teeth, or the bought gear and the centre distance choice); cast corner brackets; hinge motor
 variant; 20 A fuse; P17 in aluminium with 15.8 seats; sheets 20 and 21 superseded (round shafts,
-pins); the shared STEP for a re-check; hinge angle sensing; stage-2 pulley fixing choice.
+pins); the shared STEP for a re-check; hinge angle sensing; stage-2 pulley fixing choice; the old
+rail-clip holes on the plate centreline are unused (found 19 Oct in Fusion): drop them from the DXF.
 
 ## Immediate next steps
 
