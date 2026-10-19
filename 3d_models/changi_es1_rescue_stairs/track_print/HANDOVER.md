@@ -75,12 +75,13 @@ pins); the shared STEP for a re-check; hinge angle sensing; stage-2 pulley fixin
 
 ## Immediate next steps
 
-1. Fusion, per `FUSION_BRIEF.md`: import `cad/RB4107_track_unit_reviewed.step`, verify the tree against
-   `cad/part_tree.txt`, make the A3 drawing (assembly with balloons and parts list; section along
-   hinge shaft A with the shims, gaps and pins; nose tensioner detail at 2:1), export the PDF to
-   `assembly/drawings/fusion/`, commit and push on the same branch.
+1. Fusion: done on Nazim's PC 19 Oct (design "RB4107 track unit, reviewed 18 Oct 2026", 206 parts with
+   the 52 screws; front wheel Ø3.3 holes removed, idler slots 220.4 to 232.6, rail-leg holes and rail
+   pilots at 20 / 93 / 166). Still to do: finish the shaft section and the 2:1 tensioner detail by
+   hand, then copy the drawing PDF to `assembly/drawings/fusion/` and a STEP export over
+   `cad/RB4107_track_unit_reviewed.step` (the repo STEP is behind the Fusion model, see `cad/README.md`).
 2. 19 Oct: order pulleys (8 + 1), d8 h7 shaft (300), 688 bearings (14), shoulder screws (4 sets),
-   spring pins, angle stock; workshop request for the bores (critical path, 1 to 2 weeks).
+   spring pins (4 x 2.5 x 24; 2 x 2.5 x 16 if the stage-2 pulleys are pinned), angle stock; workshop request for the bores (critical path, 1 to 2 weeks).
 3. Nhien's DXF re-issue, laser 22 to 29 Oct; fit-test slice and four TPU rings; carriers, tabs,
    sliders; assembly 9 to 10 Nov, tests 11 to 13 Nov, advisor demo 16 Nov.
 4. Individual update (one page plus appendix) exists outside the repository; the next one is due

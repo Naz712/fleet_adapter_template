@@ -59,7 +59,7 @@ PAGES = [
   (60, 28, "Notes", "Four sets: nose and rear idler on each side. The rear tab mirrors the front; the jack screw always pushes outward, never in past x 223."),
  ]),
  ("TS-10_rail_carrier", "How to read TS-10: the rail carrier angle", [
-  (120, 181, "Angle, plan", "One 10 x 10 x 1.5 aluminium angle per rail, 186 long: three Ø2.6 holes in the rail leg for the thread-forming screws, three Ø3.4 in the plate leg at 22, 87 and 152 from the hinge end (x 40, 105, 170), 3.5 from the leg's edge, for M3 x 6 into six new tapped holes in the plate."),
+  (120, 181, "Angle, plan", "One 10 x 10 x 1.5 aluminium angle per rail, 186 long: three Ø2.6 holes in the rail leg for the thread-forming screws at 20, 93 and 166 from the rail's hinge end, 7.5 from the plate face, three Ø3.4 in the plate leg at 22, 87 and 152 from the hinge end (x 40, 105, 170), 3.5 from the leg's edge, for M3 x 6 into six new tapped holes in the plate."),
   (177, 187, "Plate leg", "Seen edge on above the rail leg. It is cut down to 8 so it stays inside the 15.4 plate height."),
   (60, 100, "Plate", "P1 or P2, 5 thick. The three M3 x 6 go through the angle into the plate's tapped holes, the same ones the four RS clips used."),
   (73, 116, "Angle on the plate", "The 8 leg lies flat on the plate's lane-side face, full length: 186 x 8 of contact instead of four 10 x 14.6 clip feet."),
@@ -74,7 +74,7 @@ PAGES = [
   (85, 180, "P1 and its bearing", "Front plate at z 55 to 60; the 688 sits flush in a reamed Ø16 H7 seat with Loctite 641."),
   (90.5, 200, "Shim 0.5", "An 8 x 11 x 0.5 shim on the bearing's inner ring, so the pulley face never touches the outer ring. The pulley is pinned hard against it."),
   (110, 210, "Front hinge pulley", "19 over the flanges in the 20 lane, z 60.5 to 79.5. Pinned to the shaft first: it is what locates the whole shaft between the two plate bearings."),
-  (110, 174, "Cross pin", "Ø2.5 x 24 spring pin at mid-face, drilled through pulley and shaft together. Three per shaft: front pulley, rear pulley, stage-2 pulley."),
+  (110, 174, "Cross pin", "Ø2.5 spring pin at mid-face, drilled through pulley and shaft together. Three per shaft: 2.5 x 24 in the front and rear pulleys, 2.5 x 16 in the stage-2 pulley (Ø17.5)."),
   (129.5, 190, "Feeler gap", "0.3 to 0.5 mm between the front pulley and the P2 bearing, set with a feeler gauge before pinning. This is the shaft's total end float."),
   (160, 210, "Rear hinge pulley", "Outboard of P2 at z 85.5 to 104.5, pinned with its own 0.3 to 0.5 gap to the bearing. The shaft ends 1.5 past it; no E-clip."),
   (100, 151, "Station chain", "Every width along the shaft from the centre outward. Sum from 28.7: the 77.3 mm half shaft P20-B."),

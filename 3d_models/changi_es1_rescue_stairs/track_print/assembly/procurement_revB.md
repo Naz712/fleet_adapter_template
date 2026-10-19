@@ -1,6 +1,6 @@
 # Procurement: the track unit on Nhien's Rev B frame
 
-Date 16 Oct 2026. Prices S$ ex GST as seen in listings; confirm at checkout. Rev B = Nhien's pack
+Date 16 Oct 2026, updated 19 Oct (3 x 5 rail screws, stage-2 pins 2.5 x 16). Prices S$ ex GST as seen in listings; confirm at checkout. Rev B = Nhien's pack
 (`RB4107 Rev B`), whose BOM covers everything in section 2. The track comes in two options, A and B;
 everything else is the same whichever is chosen, so section 2 and the pulleys can be ordered first.
 
