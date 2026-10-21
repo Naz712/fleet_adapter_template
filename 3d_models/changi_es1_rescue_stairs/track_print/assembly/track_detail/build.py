@@ -48,7 +48,7 @@ H.append('''<h1>Track unit assembly, in detail</h1>
 <tr><td>Idler wheels, same HTD 5M 20T, bored 16 H7 for two 688s with an 8 x 10 x 9 sleeve</td><td>2 (nose, rear)</td><td>Free-running far wheel of each loop; the tensioner moves it</td><td>On an ISO 7379 Ø8 x 25 M6 shoulder screw through the plate slot</td></tr>
 <tr><td>Shoulder screw set: head washer 8 x 11 x 1, 0.5 shim, slider TS-09, M6 nyloc</td><td>2 sets</td><td>The stub axle of the idler and its clamp</td><td>Nyloc 7 N·m once tensioned; slider replaces the washer under the nut</td></tr>
 <tr><td>Tensioner tab TS-09 with M3 x 6 and M4 x 20 jack screw</td><td>2</td><td>Pushes the idler out along the slot and holds that position while the nut is tightened</td><td>M3 into the plate's new tapped hole at (±223, +11), Loctite 243</td></tr>
-<tr><td>Track loops: bought HTD 550-5M-15 belt with 22 bonded cleats, 5 high (TS-01B; chosen 19 Oct). Fallback: printed TPU loop (TS-01)</td><td>2</td><td>The track</td><td>Teeth in the wheel grooves; tension only</td></tr>
+<tr><td>Track: HTD 550-5M-15 belt, 22 cleats 5 high (TS-01B)</td><td>2</td><td>The track</td><td>Teeth in the wheel grooves; tension only</td></tr>
 <tr><td>Slide rails P3 to P6 (UHMW 186 x 20 x 5) on carrier angles TS-10</td><td>2 + 2 per segment</td><td>The runs slide on them so the loop stays straight under load</td><td>Carrier angle M3 x 6 into the plate (3 off), rail 3 x 5 thread-forming into the angle</td></tr>
 </table>''')
 
