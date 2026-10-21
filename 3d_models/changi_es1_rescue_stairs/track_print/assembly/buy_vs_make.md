@@ -1,5 +1,8 @@
 # Buy or make: the track segments of the 1:5 prototype
 
+> **Superseded (21 Oct 2026).** This is from the first own-frame layout with the printed track. The build now uses
+> Nhien's Rev B frame and **bought belts with 5 mm bonded cleats**. Current list: `procurement_revB.md`; start at `../START_HERE.md`.
+
 Source of the parts and sizes: `parts_spec.json` in this folder (1:5 model size, mm). Quantities are
 for the whole prototype, two segments, as `qty_total` gives them. Vendors are from the school's
 approved vendor list (`vendors.txt`), or "print" for parts we make ourselves.

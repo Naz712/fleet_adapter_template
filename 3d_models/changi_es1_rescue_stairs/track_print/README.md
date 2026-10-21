@@ -1,5 +1,9 @@
 # Printable track for the 1:5 prototype
 
+> **21 Oct 2026: the team is buying the track.** Nhien and Nazim chose bought HTD 550-5M-15 belts with 22 cleats,
+> cut to 5 mm and bonded by the belt maker (drawing TS-01B). The printed track below is kept as the fallback.
+> Start at `START_HERE.md`.
+
 A 3D-print file for the tracks of the team's 1:5 base: two track segments, 225 mm axle to
 axle (45 cm in all, 1.125 m segments at full size), each with a 550 mm track loop on wheels
 about 1.5 cm in radius. The track is printed; the pulleys are bought.

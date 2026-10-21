@@ -1,5 +1,8 @@
 # Parts list and build guide: track segments of the 1:5 prototype
 
+> **Superseded (21 Oct 2026).** This is from the first own-frame layout with the printed track. The build now uses
+> Nhien's Rev B frame and **bought belts with 5 mm bonded cleats**. Current list: `procurement_revB.md`; start at `../START_HERE.md`.
+
 Numbers from `parts_spec.json` v2 and the TS-00 to TS-07 sheets. Prices S$ ex GST as seen in vendor
 listings on 14 Oct 2026 (vendor pages could not be opened from this machine: confirm at checkout).
 

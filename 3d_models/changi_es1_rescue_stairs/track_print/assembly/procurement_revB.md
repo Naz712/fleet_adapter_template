@@ -4,7 +4,15 @@ Date 16 Oct 2026, updated 20 Oct (3 x 5 rail screws; stage-2 pulleys with hub an
 (`RB4107 Rev B`), whose BOM covers everything in section 2. The track comes in two options, A and B;
 everything else is the same whichever is chosen, so section 2 and the pulleys can be ordered first.
 
-## 1A. Track, option A: my printed track
+## 1A. Track: bought belts with cleats (chosen 19 Oct; Rev B B10)
+
+| Part | Qty | Make / buy | Where | Price | Arrives |
+|---|---|---|---|---|---|
+| Track belt HTD 550-5M-15, 110 teeth, 15 wide (e.g. SKF PHG 550-5M-15), drawing TS-01B | 4 | **Buy** | [RS SG, stock no. 058-6535](https://sg.rs-online.com/web/c/?searchTerm=058-6535) or MISUMI SG HTD 5M belts | see listing (about S$25-35 each) | RS SG stock: 1-3 days |
+| Cleats, rubber 10 x **5** x 15 (cut down from 7.9, Nhien 19 Oct), bonded on the belt back every 5th tooth (25 mm), 22 per belt | 88 | **Buy + bond**: belt shop | Local belt / conveyor shop (Fenner, Megadyne or Gates distributor), with the belts | quote | allow 1-2 weeks |
+| Deck change for the belt: **not needed**, the 5 mm cleats pass 2.9 under the deck (Nhien 19 Oct) | 0 | - | - | - | - |
+
+## 1B. Track fallback: printed TPU track (only if the bonded belts will be late)
 
 | Part | Qty | Make / buy | Where | Price | Arrives |
 |---|---|---|---|---|---|
@@ -14,15 +22,7 @@ everything else is the same whichever is chosen, so section 2 and the pulleys ca
 
 Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 
-## 1B. Track, option B: Nhien's bought belt with cleats (Rev B B10)
-
-| Part | Qty | Make / buy | Where | Price | Arrives |
-|---|---|---|---|---|---|
-| Track belt HTD 550-5M-15, 110 teeth, 15 wide (e.g. SKF PHG 550-5M-15), drawing TS-01B | 4 | **Buy** | [RS SG, stock no. 058-6535](https://sg.rs-online.com/web/c/?searchTerm=058-6535) or MISUMI SG HTD 5M belts | see listing (about S$25-35 each) | RS SG stock: 1-3 days |
-| Cleats, rubber 10 x **5** x 15 (cut down from 7.9, Nhien 19 Oct), bonded on the belt back every 5th tooth (25 mm), 22 per belt | 88 | **Buy + bond**: belt shop | Local belt / conveyor shop (Fenner, Megadyne or Gates distributor), with the belts | quote | allow 1-2 weeks |
-| Deck change for the belt: **not needed**, the 5 mm cleats pass 2.9 under the deck (Nhien 19 Oct) | 0 | - | - | - | - |
-
-## 1C. Wheels, both options
+## 1C. Wheels
 
 | Part | Qty | Make / buy | Where | Price | Arrives |
 |---|---|---|---|---|---|
@@ -34,7 +34,7 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 | Set screws, **cone point**, size to suit the pulley's tapped holes (usually M3 or M4 x 4-5), 2 per stage-2 pulley, each into a seat spot-drilled about 1 mm into the shaft, Loctite 243. Check whether MISUMI includes them | 4 + 4 spare | **Buy** | [RS SG set screws](https://sg.rs-online.com/web/c/fasteners-fixings/screws-bolts/set-screws/) | ~S$3 / pack | RS SG stock |
 | Hinge shaft: plain round Ø8 h7 ground steel, 300 mm (100 mm to practise on) (replaces the D-shaft B13; cut to 82.3 and 77.3, no grooves) | 1 | **Buy**, cut | [RS SG linear shafts](https://sg.rs-online.com/web/c/bearings-seals/linear-motion/linear-shafts/) or MISUMI SG PSFJ8 | ~S$10 | RS SG stock |
 
-## 1D. Tension and rail support (from the design review), both options
+## 1D. Tension and rail support (from the design review)
 
 | Part | Qty | Make / buy | Where | Price | Arrives |
 |---|---|---|---|---|---|
@@ -63,7 +63,7 @@ Deck: no change needed; the 3 mm cleats sit 5 mm under the deck.
 | Deck P12 (slot H 3 mm longer, see pack page 2), tray P16, cover P22, motors, drivers, ESP32, battery | - | Theirs | Rev B BOM |
 | Bearing seats in P1, P2, P17: laser-cut Ø15.8, reamed Ø16 H7 on site, 688-2RS retained with Loctite 641 (TS-11) | 6 | Make | Professional Workshop, 16 H7 reamer |
 
-## 3. Choosing between A and B
+## 3. Track choice: bought belts (decided 19 Oct)
 
 **19 Oct: option B, Nhien's belts.** He has cut the cleats to 5 mm (no deck notch) and will have the
 belt maker bond them, since they need a chemical bond to the belt. Allow 1 to 2 weeks for that, so the
@@ -74,7 +74,7 @@ belts go out first. Option A (printed track) stays as the fallback if the bonded
 1. Mon 19 to Tue 20 Oct: belts and cleats to the belt maker (Nhien, 1 to 2 weeks: now on the critical path).
    Check the MISUMI H5M 20T 150 drawing (19 or less over the flanges, no hub),
    then order the pulleys (4 + 1 bored 8, 4 idlers smallest bore), the RS order (shaft, pins, screws,
-   jack screws) and the aluminium angle. Print the fit-test slice and stand-in pulley (option A).
+   jack screws) and the aluminium angle. (The printed track is only the fallback: no printing needed unless the belts run late.)
 2. 22 to 29 Oct: plates from Nhien's existing DXF (no re-issue); drill and tap the new M3 holes on site. As parts arrive, make
    the tabs, sliders and carrier angles, trim and drill the rails, drill the hinge wheels' Ø2.5 holes.
 3. When the idlers arrive (about 23 to 26 Oct): one workshop request for the idler bores (16 H7) and, once the plates are back, the bearing seats (16 H7). Allow 1 to 2 weeks.
