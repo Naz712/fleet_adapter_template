@@ -18,8 +18,8 @@ Everything for building the track side, in the order you will want it. Paths are
 
 | Sheet | Part |
 |---|---|
-| TS-01 / EX-01 | Printed TPU track (option A) |
-| TS-01B / EX-01B | Bought belt with cleats (option B) |
+| TS-01B / EX-01B | The track: bought belt with 22 cleats, 5 high (chosen 19 Oct) |
+| TS-01 / EX-01 | Printed TPU track: fallback only, if the bonded belts are late |
 | TS-06 / EX-06 | Hinge wheel: bore and Ø2.5 pin hole |
 | TS-09 / EX-09 | Tensioner tab, slider and jack screw |
 | TS-10 / EX-10 | Rail carrier angle, and how plate, angle, rail and track stack up |
@@ -31,7 +31,7 @@ SUPERSEDED. Do not make parts from them.
 
 ## 3. Files for making
 
-- 3D printing (`stl/`): `track_TPU_x4.stl`, `fit_test_track_5mm_TPU.stl`, `stand_in_pulley_20T_PLA_test_only.stl`.
+- 3D printing (`stl/`), fallback and fit tests only: `track_TPU_x4.stl`, `fit_test_track_5mm_TPU.stl`, `stand_in_pulley_20T_PLA_test_only.stl`.
   The other STL files there belong to the superseded own-frame layout.
 - 3D model: `cad/RB4107_track_unit_reviewed.step`. It is behind the Fusion model; see `cad/README.md`.
 - Side plates P1 / P2: Nhien's DXF (his pack), being re-issued.

@@ -48,7 +48,7 @@ H.append('''<h1>Track unit assembly, in detail</h1>
 <tr><td>Idler wheels, same HTD 5M 20T, bored 16 H7 for two 688s with an 8 x 10 x 9 sleeve</td><td>2 (nose, rear)</td><td>Free-running far wheel of each loop; the tensioner moves it</td><td>On an ISO 7379 Ø8 x 25 M6 shoulder screw through the plate slot</td></tr>
 <tr><td>Shoulder screw set: head washer 8 x 11 x 1, 0.5 shim, slider TS-09, M6 nyloc</td><td>2 sets</td><td>The stub axle of the idler and its clamp</td><td>Nyloc 7 N·m once tensioned; slider replaces the washer under the nut</td></tr>
 <tr><td>Tensioner tab TS-09 with M3 x 6 and M4 x 20 jack screw</td><td>2</td><td>Pushes the idler out along the slot and holds that position while the nut is tightened</td><td>M3 into the plate's new tapped hole at (±223, +11), Loctite 243</td></tr>
-<tr><td>Track loops: option A printed TPU (TS-01) or option B HTD 550-5M-15 belt with 22 bonded cleats</td><td>2</td><td>The track</td><td>Teeth in the wheel grooves; tension only</td></tr>
+<tr><td>Track loops: bought HTD 550-5M-15 belt with 22 bonded cleats, 5 high (TS-01B; chosen 19 Oct). Fallback: printed TPU loop (TS-01)</td><td>2</td><td>The track</td><td>Teeth in the wheel grooves; tension only</td></tr>
 <tr><td>Slide rails P3 to P6 (UHMW 186 x 20 x 5) on carrier angles TS-10</td><td>2 + 2 per segment</td><td>The runs slide on them so the loop stays straight under load</td><td>Carrier angle M3 x 6 into the plate (3 off), rail 3 x 5 thread-forming into the angle</td></tr>
 </table>''')
 
@@ -136,7 +136,7 @@ H.append(sheet("EX-09", "How to read TS-09"))
 
 # ---------- Section 4
 H.append('''<div class="page"><h2>4. Fitting the track loop and setting the tension</h2>
-<p>This is assembly steps 10 and 11 of the plan, for one loop; four loops per machine, the two of one side set to the same feel. Before this, each loop has been fit-checked on two wheels at 223 mm centres (option A, the printed TPU loop: the fit-test slice and then the rings; option B: the belt back from the belt shop with its cleats).</p>
+<p>This is assembly steps 10 and 11 of the plan, for one loop; four loops per machine, the two of one side set to the same feel. Before this, each belt has come back from the belt maker with its 22 cleats (5 high) and has been fit-checked on two wheels at 223 mm centres. (Fallback, the printed TPU loop: the fit-test slice and then the rings.)</p>
 <h3>4.1 Parts for one loop</h3>
 <p>The idler wheel with its two bearings and sleeve already pressed in; the shoulder screw, head washer 8 x 11 x 1, shim 8 x 11 x 0.5, slider, M6 nyloc; the tab with its M3 x 6 and M4 x 20 jack screw; the loop. Tools: 4 mm hex key (shoulder screw head), 10 mm spanner (nyloc), 2.5 mm key (M3), 3 mm key (jack screw), the hook and spring scale, a steel rule, Loctite 243.</p>
 <h3>4.2 Procedure</h3>
@@ -147,9 +147,9 @@ H.append('''<div class="page"><h2>4. Fitting the track loop and setting the tens
 <li>Turn the jack screw clockwise in half turns. Each half turn moves the idler 0.35 mm outward. After each, pull the lower run with the hook and scale at mid-span and read how far it comes away from the rail. Stop at 2 to 3 mm (TPU) or 1.5 to 2.5 mm (belt).</li>
 <li>Lock it: 4 mm key in the shoulder screw head so it cannot turn, 10 mm spanner on the nyloc, 7 N·m (snug plus a quarter turn with the long leg of the key is close). The nut clamps the plate between the slider and the shim.</li>
 <li>Back the jack screw off a quarter turn so it carries no load; the nut holds the position now.</li>
-<li>Turn the loop one full turn by hand. Listen: no clicks (a click is a tooth riding up or a pin standing proud). Look: the cleats clear the deck (option A by 5 mm; option B runs through the deck notch), the loop runs centrally between the flanges without walking, the flanges clear the rail end by at least 2 mm and the bar end by 3.7.</li>
+<li>Turn the loop one full turn by hand. Listen: no clicks (a click is a tooth riding up or a pin standing proud). Look: the 5 mm cleats clear the deck underside by about 3 mm (no notch), the loop runs centrally between the flanges without walking, the flanges clear the rail end by at least 2 mm and the bar end by 3.7.</li>
 <li>Do the other loop of the same side to the same deflection, then the other side.</li>
-<li>Re-check the deflection after the first run and again after a day. A TPU loop settles; if it reads over 3 mm, loosen the nut, half a turn on the jack screw, tighten again. That is the whole re-tensioning job.</li>
+<li>Re-check the deflection after the first run and again after a day. A new belt settles a little (a TPU loop more); if it reads over 2.5 mm (TPU: 3 mm), loosen the nut, half a turn on the jack screw, tighten again. That is the whole re-tensioning job.</li>
 </ol>
 <h3>4.3 Checks before the first run</h3>
 <ul>
@@ -157,8 +157,8 @@ H.append('''<div class="page"><h2>4. Fitting the track loop and setting the tens
 <li>The idler spins free with the nut tight; the hinge wheel turns the loop by hand with no tight spot once a turn (a tight spot means a pin proud or a bearing crooked).</li>
 <li>Each side on blocks under power: no tooth jump when the loop is braked by hand.</li>
 </ul>
-<div class="two">''' + fig("cat_track", "<b>Fig. 9</b> The loop: option A is the printed TPU track, 110 HTD 5M teeth inside, 45 cleats outside, five cleats per ES1 step; option B is a bought HTD 550-5M-15 belt with 22 bonded cleats.") + fig("seq85", "<b>Fig. 10</b> Steps 8 to 10 in the interactive model: the idlers go on last, through the plate slots, with the sliders, nuts and tabs.") + '</div></div>')
-H.append(sheet("TS-01", "Sheet TS-01: the printed track loop (option A)"))
+<div class="two">''' + fig("cat_track", "<b>Fig. 9</b> The loop. Chosen: a bought HTD 550-5M-15 belt with 22 bonded cleats, 5 high. Fallback: the printed TPU track, 110 HTD 5M teeth inside, 45 cleats outside.") + fig("seq85", "<b>Fig. 10</b> Steps 8 to 10 in the interactive model: the idlers go on last, through the plate slots, with the sliders, nuts and tabs.") + '</div></div>')
+H.append(sheet("TS-01B", "Sheet TS-01B: the bought belt with 5 mm cleats (chosen)"))
 
 # ---------- Section 5
 H.append('''<div class="page"><h2>5. What the runs slide on: rails and carrier angles</h2>
